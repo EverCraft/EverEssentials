@@ -499,7 +499,13 @@ public class ESubject implements EssentialsSubject {
 	public boolean setBack(Transform<World> location) {
 		Preconditions.checkNotNull(location, "location");
 		
-		if(!this.back.isPresent() || !this.back.get().getTransform().equals(location)) {
+		if(!this.back.isPresent()) {
+			final LocationSQL locationSQL = new LocationSQL(this.plugin, location);
+			this.back = Optional.of(locationSQL);
+			this.plugin.getGame().getScheduler().createTaskBuilder().async().execute(() -> this.plugin.getDataBases().addBack(this.identifier, locationSQL))
+				.name("setBack").submit(this.plugin);
+			return true;
+		} else if (!this.back.get().getTransform().equals(location)) {
 			final LocationSQL locationSQL = new LocationSQL(this.plugin, location);
 			this.back = Optional.of(locationSQL);
 			this.plugin.getGame().getScheduler().createTaskBuilder().async().execute(() -> this.plugin.getDataBases().setBack(this.identifier, locationSQL))
