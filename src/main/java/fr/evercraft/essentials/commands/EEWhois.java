@@ -133,6 +133,7 @@ public class EEWhois extends ECommand<EverEssentials> {
 						.replaceAll("<uuid>", player.getUniqueId().toString())).toBuilder()
 					.onHover(TextActions.showText(EChat.of(this.plugin.getEverAPI().getMessages().getMessage("HOVER_COPY"))))
 					.onClick(TextActions.suggestCommand(player.getUniqueId().toString()))
+					.onShiftClick(TextActions.insertText(player.getUniqueId().toString()))
 					.build();
 	}
 	
@@ -147,6 +148,7 @@ public class EEWhois extends ECommand<EverEssentials> {
 				.replaceAll("<ip>", player.getConnection().getAddress().getAddress().getHostAddress().toString())).toBuilder()
 			.onHover(TextActions.showText(EChat.of(this.plugin.getEverAPI().getMessages().getMessage("HOVER_COPY"))))
 			.onClick(TextActions.suggestCommand(player.getConnection().getAddress().getAddress().getHostAddress().toString()))
+			.onShiftClick(TextActions.insertText(player.getConnection().getAddress().getAddress().getHostAddress().toString()))
 			.build();
 	}
 	

@@ -18,15 +18,19 @@ package fr.evercraft.essentials.commands;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
+import org.spongepowered.api.text.BookView;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
+import org.spongepowered.api.text.format.TextColor;
 import org.spongepowered.api.text.format.TextColors;
 
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.plugin.ECommand;
 import fr.evercraft.everapi.server.player.EPlayer;
+import fr.evercraft.everapi.text.ETextBuilder;
 
 public class EEColor extends ECommand<EverEssentials> {
 	
@@ -71,8 +75,35 @@ public class EEColor extends ECommand<EverEssentials> {
 	}
 	
 	public boolean commandColor(final EPlayer player) {
-		this.plugin.getEverAPI().getManagerService().getEPagination().sendTo(this.plugin.getMessages().getText("COLOR_LIST_TITLE").toBuilder()
-				.build(), this.plugin.getMessages().getListText("COLOR_LIST_MESSAGE"), player);
+		List<Text> texts = new ArrayList<Text>();
+		texts.add(this.plugin.getMessages().getText("COLOR_LIST_TITLE"));
+		
+		texts.add(this.getButtomColor("0", TextColors.BLACK));
+		texts.add(this.getButtomColor("1", TextColors.DARK_BLUE));
+		texts.add(this.getButtomColor("2", TextColors.DARK_GREEN));
+		texts.add(this.getButtomColor("3", TextColors.DARK_AQUA));
+		texts.add(this.getButtomColor("4", TextColors.DARK_RED));
+		texts.add(this.getButtomColor("5", TextColors.DARK_PURPLE));
+		texts.add(this.getButtomColor("6", TextColors.GOLD));
+		texts.add(this.getButtomColor("7", TextColors.GRAY));
+		texts.add(this.getButtomColor("8", TextColors.DARK_GRAY));
+		texts.add(this.getButtomColor("9", TextColors.BLUE));
+		texts.add(this.getButtomColor("a", TextColors.GREEN));
+		texts.add(this.getButtomColor("b", TextColors.AQUA));
+		texts.add(this.getButtomColor("c", TextColors.RED));
+		texts.add(this.getButtomColor("d", TextColors.LIGHT_PURPLE));
+		texts.add(this.getButtomColor("e", TextColors.YELLOW));
+		texts.add(this.getButtomColor("f", TextColors.WHITE));
+		
+		player.sendBookView(BookView.builder().addPage(Text.joinWith(Text.of("\n"), texts)).build());
 		return true;
+	}
+	
+	private Text getButtomColor(String id, TextColor text) {
+		return ETextBuilder.toBuilder(this.plugin.getMessages().getMessage("COLOR_LIST_MESSAGE")
+						.replaceAll("<color>", "&" + id)
+						.replaceAll("<name>", this.plugin.getEverAPI().getMessages().getColor(text)))
+				.replace("<id>", Text.of("&" + id))
+				.build();
 	}
 }

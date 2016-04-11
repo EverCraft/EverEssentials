@@ -125,6 +125,7 @@ public class EEUuid extends ECommand<EverEssentials> {
 		return EChat.of(this.plugin.getMessages().getMessage("UUID_NAME").replace("<uuid>", uuid.toString())).toBuilder()
 				.onHover(TextActions.showText(this.plugin.getEverAPI().getMessages().getText("HOVER_COPY")))
 					.onClick(TextActions.suggestCommand(uuid.toString()))
+					.onShiftClick(TextActions.insertText(uuid.toString()))
 					.build();
 	}
 }
