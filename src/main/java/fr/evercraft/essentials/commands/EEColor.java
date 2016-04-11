@@ -71,8 +71,8 @@ public class EEColor extends ECommand<EverEssentials> {
 	}
 	
 	public boolean commandColor(final EPlayer player) {
-		player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("PING_PLAYER")
-				.replaceAll("<ping>", String.valueOf(player.getConnection().getLatency())));
+		this.plugin.getEverAPI().getManagerService().getEPagination().sendTo(this.plugin.getMessages().getText("COLOR_LIST_TITLE").toBuilder()
+				.build(), this.plugin.getMessages().getListText("COLOR_LIST_MESSAGE"), player);
 		return true;
 	}
 }

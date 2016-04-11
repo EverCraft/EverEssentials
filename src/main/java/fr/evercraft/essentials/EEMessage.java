@@ -60,10 +60,11 @@ public class EEMessage extends EMessage {
 		addDefault("clearinventory.othersStaff", "&7Tous les objets de l'inventaire de &6<player> &7ont été supprimés.");
 		
 		addDefault("color.description", "Affiche les différentes couleurs dans Minecraft.");
-		List<String> color = Arrays.asList("color.message", "&0█ &r: 0-Noir", "&1█ &r: 1-Bleu foncé", "&2█ &r: 2-Vert foncé", "&3█ &r: 3-Bleu ciel", 
+		addDefault("color.list.title", "&7Liste des couleurs"); 
+		List<String> color = Arrays.asList("&0█ &r: 0-Noir", "&1█ &r: 1-Bleu foncé", "&2█ &r: 2-Vert foncé", "&3█ &r: 3-Bleu ciel", 
 				"&4█ &r: 4-Rouge foncé", "&5█ &r: 5-Violet", "&6█ &r: 6-Or", "&7█ &r: 7-Gris", "&8█ &r: 8-Gris foncé", "&9█ &r: 9-Bleu clair",
 				"&a█ &r: a-Vert clair", "&b█ &r: b-Cyan", "&c█ &r: c-Rouge", "&d█ &r: d-Magenta", "&e█ &r: e-Jaune", "&f█ &r: f-Blanc");
-		addDefault("color.description", color); 
+		addDefault("color.list.message", color); 
 		
 		addDefault("enchant.description", "Enchante l'objet dans votre main.");
 		addDefault("enchant.notFound", "&cErreur : cet enchantement n'existe pas.");
@@ -489,6 +490,8 @@ public class EEMessage extends EMessage {
 		addMessage("CLEARINVENTORY_OTHERS_STAFF", "clearinventory.othersStaff");
 		
 		addMessage("COLOR_DESCRIPTION", "color.description");
+		addListMessages("COLOR_LIST_MESSAGE", "color.list.message");
+		addMessage("COLOR_LIST_TITLE", "color.list.title");
 		
 		addMessage("DAY_DESCRIPTION", "day.description");
 		
