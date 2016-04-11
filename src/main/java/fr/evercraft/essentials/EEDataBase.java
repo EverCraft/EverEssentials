@@ -439,17 +439,17 @@ public class EEDataBase extends EDataBase<EverEssentials> {
 		PreparedStatement preparedStatement = null;
     	try {
     		connection = this.getConnection();
-    		String query = 	  "UPDATE INTO `" + this.getTableBacks() + "` "
+    		String query = 	  "UPDATE `" + this.getTableBacks() + "` "
     						+ "SET `world` = ? , `x` = ? , `y` = ? , `z` = ? , `yaw` = ? , `pitch` = ? "
     						+ "WHERE `uuid` = ? ;";
 			preparedStatement = connection.prepareStatement(query);
-			preparedStatement.setString(2, location.getWorldUUID());
-			preparedStatement.setDouble(3, location.getX());
-			preparedStatement.setDouble(4, location.getY());
-			preparedStatement.setDouble(5, location.getZ());
-			preparedStatement.setDouble(6, location.getYaw());
-			preparedStatement.setDouble(7, location.getPitch());
-			preparedStatement.setString(1, identifier);
+			preparedStatement.setString(1, location.getWorldUUID());
+			preparedStatement.setDouble(2, location.getX());
+			preparedStatement.setDouble(3, location.getY());
+			preparedStatement.setDouble(4, location.getZ());
+			preparedStatement.setDouble(5, location.getYaw());
+			preparedStatement.setDouble(6, location.getPitch());
+			preparedStatement.setString(7, identifier);
 			
 			preparedStatement.execute();
 			this.plugin.getLogger().debug("Updating the database : (identifier='" + identifier + "';location='" + location + "')");
