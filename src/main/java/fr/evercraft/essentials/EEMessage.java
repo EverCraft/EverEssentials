@@ -58,7 +58,7 @@ public class EEMessage extends EMessage {
 		
 		addDefault("color.description", "Affiche les différentes couleurs dans Minecraft.");
 		addDefault("color.list.title", "&7Liste des couleurs"); 
-		addDefault("color.list.message", "<color>█ &r: <id>-<name>"); 
+		addDefault("color.list.message", "<color>█ &0: <id>-<name>"); 
 		
 		addDefault("enchant.description", "Enchante l'objet dans votre main.");
 		addDefault("enchant.notFound", "&cErreur : cet enchantement n'existe pas.");

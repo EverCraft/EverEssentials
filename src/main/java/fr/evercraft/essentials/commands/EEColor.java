@@ -22,6 +22,7 @@ import java.util.List;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.text.BookView;
+import org.spongepowered.api.text.BookView.Builder;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColor;
@@ -75,27 +76,33 @@ public class EEColor extends ECommand<EverEssentials> {
 	}
 	
 	public boolean commandColor(final EPlayer player) {
-		List<Text> texts = new ArrayList<Text>();
-		texts.add(this.plugin.getMessages().getText("COLOR_LIST_TITLE"));
+		Builder book = BookView.builder();
 		
-		texts.add(this.getButtomColor("0", TextColors.BLACK));
-		texts.add(this.getButtomColor("1", TextColors.DARK_BLUE));
-		texts.add(this.getButtomColor("2", TextColors.DARK_GREEN));
-		texts.add(this.getButtomColor("3", TextColors.DARK_AQUA));
-		texts.add(this.getButtomColor("4", TextColors.DARK_RED));
-		texts.add(this.getButtomColor("5", TextColors.DARK_PURPLE));
-		texts.add(this.getButtomColor("6", TextColors.GOLD));
-		texts.add(this.getButtomColor("7", TextColors.GRAY));
-		texts.add(this.getButtomColor("8", TextColors.DARK_GRAY));
-		texts.add(this.getButtomColor("9", TextColors.BLUE));
-		texts.add(this.getButtomColor("a", TextColors.GREEN));
-		texts.add(this.getButtomColor("b", TextColors.AQUA));
-		texts.add(this.getButtomColor("c", TextColors.RED));
-		texts.add(this.getButtomColor("d", TextColors.LIGHT_PURPLE));
-		texts.add(this.getButtomColor("e", TextColors.YELLOW));
-		texts.add(this.getButtomColor("f", TextColors.WHITE));
+		List<Text> page = new ArrayList<Text>();
+		page.add(this.plugin.getMessages().getText("COLOR_LIST_TITLE"));
+		page.add(this.getButtomColor("0", TextColors.BLACK));
+		page.add(this.getButtomColor("1", TextColors.DARK_BLUE));
+		page.add(this.getButtomColor("2", TextColors.DARK_GREEN));
+		page.add(this.getButtomColor("3", TextColors.DARK_AQUA));
+		page.add(this.getButtomColor("4", TextColors.DARK_RED));
+		page.add(this.getButtomColor("5", TextColors.DARK_PURPLE));
+		page.add(this.getButtomColor("6", TextColors.GOLD));
+		page.add(this.getButtomColor("7", TextColors.GRAY));
+		page.add(this.getButtomColor("8", TextColors.DARK_GRAY));
+		page.add(this.getButtomColor("9", TextColors.BLUE));
+		page.add(this.getButtomColor("a", TextColors.GREEN));
+		page.add(this.getButtomColor("b", TextColors.AQUA));
+		page.add(this.getButtomColor("c", TextColors.RED));
+		book.addPage(Text.joinWith(Text.of("\n"), page));
 		
-		player.sendBookView(BookView.builder().addPage(Text.joinWith(Text.of("\n"), texts)).build());
+		
+		page.clear();
+		page.add(this.getButtomColor("d", TextColors.LIGHT_PURPLE));
+		page.add(this.getButtomColor("e", TextColors.YELLOW));
+		page.add(this.getButtomColor("f", TextColors.WHITE));
+		book.addPage(Text.joinWith(Text.of("\n"), page));
+		
+		player.sendBookView(book.build());
 		return true;
 	}
 	
