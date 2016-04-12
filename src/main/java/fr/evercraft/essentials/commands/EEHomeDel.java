@@ -101,7 +101,7 @@ public class EEHomeDel extends ECommand<EverEssentials> {
 	
 	public boolean commandDeleteHome(final EPlayer player, final String home_name) {
 		String name = EChat.fixLength(home_name, this.plugin.getEverAPI().getConfigs().get("maxCaractere").getInt(16));
-		ESubject subject = this.plugin.getManagerServices().getEssentials().get(player.getIdentifier());
+		ESubject subject = this.plugin.getManagerServices().getEssentials().get(player.getUniqueId());
 		if(subject != null) {
 			Optional<LocationSQL> home = subject.getHomeLocation(name);
 			// Le joueur a bien un home qui porte ce nom
@@ -123,7 +123,7 @@ public class EEHomeDel extends ECommand<EverEssentials> {
 	
 	public boolean commandDeleteHomeConfirmation(final EPlayer player, final String home_name) {
 		String name = EChat.fixLength(home_name, this.plugin.getEverAPI().getConfigs().get("maxCaractere").getInt(16));
-		ESubject subject = this.plugin.getManagerServices().getEssentials().get(player.getIdentifier());
+		ESubject subject = this.plugin.getManagerServices().getEssentials().get(player.getUniqueId());
 		if(subject != null) {
 			Optional<LocationSQL> home = subject.getHomeLocation(name);
 			// Le joueur a bien un home qui porte ce nom
@@ -175,7 +175,7 @@ public class EEHomeDel extends ECommand<EverEssentials> {
 		return this.plugin.getMessages().getText("DELHOME_CONFIRMATION_VALID").toBuilder()
 					.onHover(TextActions.showText(EChat.of(this.plugin.getMessages().getMessage("DELHOME_CONFIRMATION_VALID_HOVER")
 							.replaceAll("<home>", name))))
-					.onClick(TextActions.runCommand("/delhome " + name + " confirmation"))
+					.onClick(TextActions.runCommand("/delhome \"" + name + "\" confirmation"))
 					.build();
 	}
 }

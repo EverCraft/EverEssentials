@@ -136,7 +136,7 @@ public class EEWarpDel extends ECommand<EverEssentials> {
 		return this.plugin.getMessages().getText("DELWARP_CONFIRMATION_VALID").toBuilder()
 					.onHover(TextActions.showText(EChat.of(this.plugin.getMessages().getMessage("DELWARP_CONFIRMATION_VALID_HOVER")
 							.replaceAll("<warp>", name))))
-					.onClick(TextActions.runCommand("/delwarp " + name + " confirmation"))
+					.onClick(TextActions.runCommand("/delwarp \"" + name + "\" confirmation"))
 					.build();
 	}
 }

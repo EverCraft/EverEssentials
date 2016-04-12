@@ -16,6 +16,7 @@
  */
 package fr.evercraft.essentials;
 
+import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.file.EMessage;
 
 public class EEMessage extends EMessage {
@@ -28,6 +29,18 @@ public class EEMessage extends EMessage {
 	public void loadDefault() {
 		// Prefix
 		addDefault("prefix", "[&4Ever&6&lEssentials&f] ");
+		
+		addDefault("afk.description", "Permet de vous signalez AFK.");
+		addDefault("afk.allEnable", "&6" + EChat.DISPLAYNAME_FORMAT + " &7est désormais AFK.");
+		addDefault("afk.allDisable", "&6" + EChat.DISPLAYNAME_FORMAT + " &7n'est plus AFK.");
+		addDefault("afk.playerEnable", "&7Vous êtes désormais AFK.");
+		addDefault("afk.playerDisable", "&7Vous n'êtes plus AFK.");
+		addDefault("afk.playerEnableError", "&cVous êtes déjà AFK.");
+		addDefault("afk.playerDisableError", "&cVous n'êtes pas AFK.");
+		addDefault("afk.staffEnable", "&6<player> &7est désormais AFK.");
+		addDefault("afk.staffDisable", "&6<player> &7n'est plus AFK.");
+		addDefault("afk.staffEnableError", "&6<player> &cest déjà signalé AFK.");
+		addDefault("afk.staffDisableError", "&6<player> &cn'est pas AFK.");
 		
 		addDefault("back.description", "Retourne à la dernière position sauvegardé.");
 		addDefault("back.name", "&6&lposition");
@@ -57,7 +70,7 @@ public class EEMessage extends EMessage {
 		addDefault("clearinventory.othersStaff", "&7Tous les objets de l'inventaire de &6<player> &7ont été supprimés.");
 		
 		addDefault("color.description", "Affiche les différentes couleurs dans Minecraft.");
-		addDefault("color.list.title", "&7Liste des couleurs"); 
+		addDefault("color.list.title", "&l&7Liste des couleurs :"); 
 		addDefault("color.list.message", "<color>█ &0: <id>-<name>"); 
 		
 		addDefault("enchant.description", "Enchante l'objet dans votre main.");
@@ -227,6 +240,16 @@ public class EEMessage extends EMessage {
 		addDefault("lag.worldsLine", "        &6&l●  &6<world>");
 		addDefault("lag.worldsLineHover", "&6Chunks : &c<chunks>[RT]&6Entités : &c<entities>[RT]&6Tiles : &c<tiles>");
 		
+		addDefault("list.description", "Affiche la liste des joueurs connecté");
+		addDefault("list.title", "&aListe des joueurs connecté : &6<PLAYERS_NO_VANISH> &a/ &6<MAX_PLAYERS>");
+		addDefault("list.titleVanish", "&aListe des joueurs connecté : &6<PLAYERS_NO_VANISH> &a(+&6<vanish>&a) / &6<MAX_PLAYERS>");
+		addDefault("list.group", "&6<group> &f : <players>");
+		addDefault("list.separator", ", ");
+		addDefault("list.player", "<afk>&r<vanish>&r <DISPLAYNAME_FORMAT>");
+		addDefault("list.tagAFK", "&7[AFK]");
+		addDefault("list.tagVanish", "&7[HIDDEN]", "&7[VANISH]");
+		addDefault("list.empty", "&7Aucun joueur");
+		
 		addDefault("me.description", "Envoie un texte d'action dans le tchat");
 		addDefault("me.prefix", "&f* <player> &r");
 		
@@ -354,6 +377,18 @@ public class EEMessage extends EMessage {
 		addDefault("uuid.player", "&7Votre UUID est <uuid>");
 		addDefault("uuid.otherPlayer", "L'UUID de <player> est <uuid>");
 		
+		addDefault("vanish.description", "Permet de vous rendre invisible.");
+		addDefault("vanish.playerEnable", "&7Vous êtes désormais invisible.");
+		addDefault("vanish.playerEnableError", "&7Vous êtes déjà invisible.");
+		addDefault("vanish.playerDisable", "&7Vous n'êtes plus invisible.");
+		addDefault("vanish.playerDisableError", "&7Vous êtes déjà visible.");
+		addDefault("vanish.othersPlayerEnable", "&7Vous êtes désormais invisible grâce à &6<staff>&7.");
+		addDefault("vanish.othersPlayerDisable", "&7Vous n'êtes plus invisible à cause de &6<staff>&7.");
+		addDefault("vanish.othersStaffEnable", "&7Vous venez de rendre invisible &6<player>&7.");
+		addDefault("vanish.othersStaffEnableError", "&6<player> &7est déjà invisible.");
+		addDefault("vanish.othersStaffDisable", "&7Vous venez de rendre visible &6<player>&7.");
+		addDefault("vanish.othersStaffDisableError", "&6<player> &7est déjà visible.");
+		
 		addDefault("warp.description", "Se téléporte à un warp");
 		addDefault("warp.name", "&6&l<name>");
 		addDefault("warp.nameHover", "&cMonde : &6<world>[RT]&cX : &6<x>[RT]&cY : &6<y>[RT]&cZ : &6<z>");
@@ -455,6 +490,18 @@ public class EEMessage extends EMessage {
 	public void loadConfig() {
 		// Prefix
 		addMessage("PREFIX", "prefix");
+		
+		addMessage("AFK_DESCRIPTION", "afk.description");
+		addMessage("AFK_ALL_ENABLE", "afk.allEnable");
+		addMessage("AFK_ALL_DISABLE", "afk.allDisable");
+		addMessage("AFK_PLAYER_ENABLE", "afk.playerEnable");
+		addMessage("AFK_PLAYER_DISABLE", "afk.playerDisable");
+		addMessage("AFK_PLAYER_ENABLE_ERROR", "afk.playerEnableError");
+		addMessage("AFK_PLAYER_DISABLE", "afk.playerDisableError");
+		addMessage("AFK_STAFF_ENABLE", "afk.staffEnable");
+		addMessage("AFK_STAFF_DISABLE", "afk.staffDisable");
+		addMessage("AFK_STAFF_ENABLE_ERROR", "afk.staffEnableError");
+		addMessage("AFK_STAFF_DISABLE_ERROR", "afk.staffDisableError");
 		
 		addMessage("BACK_DESCRIPTION", "back.description");
 		addMessage("BACK_NAME", "back.name");
@@ -654,6 +701,16 @@ public class EEMessage extends EMessage {
 		addMessage("LAG_WORLDS_LINE", "lag.worldsLine");
 		addMessage("LAG_WORLDS_LINE_HOVER", "lag.worldsLineHover");
 		
+		addMessage("LIST_DESCRIPTION", "list.description");
+		addMessage("LIST_TITLE", "list.title");
+		addMessage("LIST_TITLE_VANISH", "list.titleVanish");
+		addMessage("LIST_GROUP", "list.group");
+		addMessage("LIST_SEPARATOR", "list.separator");
+		addMessage("LIST_PLAYER", "list.player");
+		addMessage("LIST_TAG_AFK", "list.tagAFK");
+		addMessage("LIST_TAG_VANISH", "list.tagVanish");
+		addMessage("LIST_EMPTY", "list.empty");
+		
 		addMessage("ME_DESCRIPTION", "me.description");
 		addMessage("ME_PREFIX", "me.prefix");
 		
@@ -781,6 +838,18 @@ public class EEMessage extends EMessage {
 		addMessage("UUID_NAME", "uuid.name");
 		addMessage("UUID_PLAYER", "uuid.player");
 		addMessage("UUID_PLAYER_OTHERS", "uuid.otherPlayer");
+		
+		addMessage("VANISH_DESCRIPTION", "vanish.description");
+		addMessage("VANISH_PLAYER_ENABLE", "vanish.playerEnable");
+		addMessage("VANISH_PLAYER_ENABLE_ERROR", "vanish.playerEnableError");
+		addMessage("VANISH_PLAYER_DISABLE", "vanish.playerDisable");
+		addMessage("VANISH_PLAYER_DISABLE_ERROR", "vanish.playerDisableError");
+		addMessage("VANISH_OTHERS_PLAYER_ENABLE", "vanish.othersPlayerEnable");
+		addMessage("VANISH_OTHERS_PLAYER_DISABLE", "vanish.othersPlayerDisable");
+		addMessage("VANISH_OTHERS_STAFF_ENABLE", "vanish.othersStaffEnable");
+		addMessage("VANISH_OTHERS_STAFF_ENABLE_ERROR", "vanish.othersStaffEnableError");
+		addMessage("VANISH_OTHERS_STAFF_DISABLE", "vanish.othersStaffDisable");
+		addMessage("VANISH_OTHERS_STAFF_DISABLE_ERROR", "vanish.othersStaffDisableError");
 		
 		addMessage("WARP_NAME", "warp.name");
 		addMessage("WARP_NAME_HOVER", "warp.nameHover");

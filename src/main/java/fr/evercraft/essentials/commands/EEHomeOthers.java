@@ -132,7 +132,7 @@ public class EEHomeOthers extends ECommand<EverEssentials> {
 	}
 	
 	public boolean commandHomeList(final CommandSource staff, final EPlayer player){
-		ESubject subject = this.plugin.getManagerServices().getEssentials().get(player.getIdentifier());
+		ESubject subject = this.plugin.getManagerServices().getEssentials().get(player.getUniqueId());
 		if(subject != null) {
 			Map<String, LocationSQL> homes = subject.getAllHomes();
 			// Le joueur n'as pas de home
@@ -184,7 +184,7 @@ public class EEHomeOthers extends ECommand<EverEssentials> {
 	
 	public boolean commandHomeDelete(final CommandSource staff, final EPlayer player, final String home_name){
 		String name = EChat.fixLength(home_name, this.plugin.getEverAPI().getConfigs().get("maxCaractere").getInt(16));
-		ESubject subject = this.plugin.getManagerServices().getEssentials().get(player.getIdentifier());
+		ESubject subject = this.plugin.getManagerServices().getEssentials().get(player.getUniqueId());
 		if(subject != null) {
 			Optional<LocationSQL> home = subject.getHomeLocation(name);
 			// Le joueur a bien un home qui porte ce nom
@@ -209,7 +209,7 @@ public class EEHomeOthers extends ECommand<EverEssentials> {
 	
 	public boolean commandHomeDeleteConfirmation(final CommandSource staff, final EPlayer player, final String home_name){
 		String name = EChat.fixLength(home_name, this.plugin.getEverAPI().getConfigs().get("maxCaractere").getInt(16));
-		ESubject subject = this.plugin.getManagerServices().getEssentials().get(player.getIdentifier());
+		ESubject subject = this.plugin.getManagerServices().getEssentials().get(player.getUniqueId());
 		if(subject != null) {
 			Optional<LocationSQL> home = subject.getHomeLocation(name);
 			// Le joueur a bien un home qui porte ce nom
@@ -263,7 +263,7 @@ public class EEHomeOthers extends ECommand<EverEssentials> {
 					.onHover(TextActions.showText(EChat.of(this.plugin.getMessages().getMessage("HOMEOTHERS_LIST_TELEPORT_HOVER")
 							.replaceAll("<player>", player)
 							.replaceAll("<home>", name))))
-					.onClick(TextActions.runCommand("/homeothers " + player + " " + name))
+					.onClick(TextActions.runCommand("/homeothers " + player + " \"" + name + "\""))
 					.build();
 	}
 	
@@ -272,7 +272,7 @@ public class EEHomeOthers extends ECommand<EverEssentials> {
 				.onHover(TextActions.showText(EChat.of(this.plugin.getMessages().getMessage("HOMEOTHERS_LIST_DELETE_HOVER")
 						.replaceAll("<player>", player)
 						.replaceAll("<home>", name))))
-				.onClick(TextActions.runCommand("/homeothers " + player + " " + name + " delete"))
+				.onClick(TextActions.runCommand("/homeothers " + player + " \"" + name + "\" delete"))
 				.build();
 	}
 	
@@ -281,7 +281,7 @@ public class EEHomeOthers extends ECommand<EverEssentials> {
 					.onHover(TextActions.showText(EChat.of(this.plugin.getMessages().getMessage("HOMEOTHERS_DELETE_CONFIRMATION_VALID_HOVER")
 							.replaceAll("<player>", player)
 							.replaceAll("<home>", name))))
-					.onClick(TextActions.runCommand("/homeothers " + player + " " + name + " delete confirmation"))
+					.onClick(TextActions.runCommand("/homeothers " + player + " \"" + name + "\" delete confirmation"))
 					.build();
 	}
 }
