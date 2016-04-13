@@ -45,6 +45,7 @@ public class EEManagerCommands extends TreeMap<String, ECommand<EverEssentials>>
 		register(this.homeSet);
 		register(this.near);
 		
+		register(new EEAfk(this.plugin));
 		register(new EEBack(this.plugin));
 		register(new EEBook(this.plugin));
 		register(new EEBroadcast(this.plugin));
@@ -70,6 +71,7 @@ public class EEManagerCommands extends TreeMap<String, ECommand<EverEssentials>>
 		register(new EEKickall(this.plugin));
 		register(new EEKill(this.plugin));
 		register(new EELag(this.plugin));
+		register(new EEList(this.plugin));
 		register(new EEMe(this.plugin));
 		register(new EEMore(this.plugin));
 		register(new EEMotd(this.plugin));
@@ -96,6 +98,7 @@ public class EEManagerCommands extends TreeMap<String, ECommand<EverEssentials>>
 		register(new EETop(this.plugin));
 		register(new EETree(this.plugin));
 		register(new EEUuid(this.plugin));
+		register(new EEVanish(this.plugin));
 		register(new EEWarp(this.plugin));
 		register(new EEWarpDel(this.plugin));
 		register(new EEWarpSet(this.plugin));

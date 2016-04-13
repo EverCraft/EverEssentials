@@ -36,36 +36,36 @@ import fr.evercraft.everapi.services.essentials.EssentialsService;
 public class EEssentialsService implements EssentialsService {
 	private final EverEssentials plugin;
 	
-	private final ConcurrentMap<String, ESubject> subjects;
-	private final LoadingCache<String, ESubject> cache;
+	private final ConcurrentMap<UUID, ESubject> subjects;
+	private final LoadingCache<UUID, ESubject> cache;
 
 	public EEssentialsService(final EverEssentials plugin) {		
 		this.plugin = plugin;
 		
-		this.subjects = new ConcurrentHashMap<String, ESubject>();
+		this.subjects = new ConcurrentHashMap<UUID, ESubject>();
 		this.cache = CacheBuilder.newBuilder()
 					    .maximumSize(100)
 					    .expireAfterAccess(5, TimeUnit.MINUTES)
-					    .removalListener(new RemovalListener<String, ESubject>() {
+					    .removalListener(new RemovalListener<UUID, ESubject>() {
 					    	/**
 					    	 * Supprime un joueur du cache
 					    	 */
 							@Override
-							public void onRemoval(RemovalNotification<String, ESubject> notification) {
+							public void onRemoval(RemovalNotification<UUID, ESubject> notification) {
 								//EssentialsSubject.this.plugin.getManagerEvent().post(notification.getValue(), PermUserEvent.Action.USER_REMOVED);
 							}
 					    	
 					    })
-					    .build(new CacheLoader<String, ESubject>() {
+					    .build(new CacheLoader<UUID, ESubject>() {
 					    	/**
 					    	 * Ajoute un joueur au cache
 					    	 */
 					        @Override
-					        public ESubject load(String identifier){
+					        public ESubject load(UUID uuid){
 					        	Chronometer chronometer = new Chronometer();
 					        	
-					        	ESubject subject = new ESubject(EEssentialsService.this.plugin, identifier);
-					        	EEssentialsService.this.plugin.getLogger().debug("Loading user '" + identifier + "' in " +  chronometer.getMilliseconds().toString() + " ms");
+					        	ESubject subject = new ESubject(EEssentialsService.this.plugin, uuid);
+					        	EEssentialsService.this.plugin.getLogger().debug("Loading user '" + uuid.toString() + "' in " +  chronometer.getMilliseconds().toString() + " ms");
 					            
 					            //EssentialsSubject.this.plugin.getManagerEvent().post(subject, PermUserEvent.Action.USER_ADDED);
 					            return subject;
@@ -74,26 +74,26 @@ public class EEssentialsService implements EssentialsService {
 	}
 
 	@Override
-	public ESubject get(String identifier) {
-		Preconditions.checkNotNull(identifier, "identifier");
+	public ESubject get(UUID uuid) {
+		Preconditions.checkNotNull(uuid, "uuid");
 		
 		try {
-			if(!this.subjects.containsKey(identifier)) {
-				return this.cache.get(identifier);
+			if(!this.subjects.containsKey(uuid)) {
+				return this.cache.get(uuid);
 	    	}
-	    	return this.subjects.get(identifier);
+	    	return this.subjects.get(uuid);
 		} catch (ExecutionException e) {
-			this.plugin.getLogger().warn("Error : Loading user (identifier='" + identifier + "';message='" + e.getMessage() + "')");
+			this.plugin.getLogger().warn("Error : Loading user (identifier='" + uuid + "';message='" + e.getMessage() + "')");
 			return null;
 		}
 	}
 	
 	@Override
-	public boolean hasRegistered(String identifier) {
-		Preconditions.checkNotNull(identifier, "identifier");
+	public boolean hasRegistered(UUID uuid) {
+		Preconditions.checkNotNull(uuid, "uuid");
 		
 		try {
-			return this.plugin.getGame().getServer().getPlayer(UUID.fromString(identifier)).isPresent();
+			return this.plugin.getGame().getServer().getPlayer(uuid).isPresent();
 		} catch (IllegalArgumentException e) {}
 		return false;
 	}
@@ -104,7 +104,7 @@ public class EEssentialsService implements EssentialsService {
 	public void reload() {
 		this.cache.cleanUp();
 		for(ESubject subject : this.subjects.values()) {
-			subject.reload();
+			subject.reloadData();
 		}
 	}
 	
@@ -112,20 +112,22 @@ public class EEssentialsService implements EssentialsService {
 	 * Ajoute un joueur à la liste
 	 * @param identifier L'UUID du joueur
 	 */
-	public void registerPlayer(String identifier) {
-		Preconditions.checkNotNull(identifier, "identifier");
+	public void registerPlayer(UUID uuid) {
+		Preconditions.checkNotNull(uuid, "uuid");
 		
-		ESubject player = this.cache.getIfPresent(identifier);
+		ESubject player = this.cache.getIfPresent(uuid);
 		// Si le joueur est dans le cache
 		if(player != null) {
-			this.subjects.putIfAbsent(identifier, player);
-			this.plugin.getLogger().debug("Loading player cache : " + identifier);
+			player.connect();
+			this.subjects.putIfAbsent(uuid, player);
+			this.plugin.getLogger().debug("Loading player cache : " + uuid.toString());
 		// Si le joueur n'est pas dans le cache
 		} else {
 			Chronometer chronometer = new Chronometer();
-			player = new ESubject(this.plugin, identifier);
-			this.subjects.putIfAbsent(identifier, player);
-			this.plugin.getLogger().debug("Loading player '" + identifier + "' in " +  chronometer.getMilliseconds().toString() + " ms");
+			player = new ESubject(this.plugin, uuid);
+			player.connect();
+			this.subjects.putIfAbsent(uuid, player);
+			this.plugin.getLogger().debug("Loading player '" + uuid.toString() + "' in " +  chronometer.getMilliseconds().toString() + " ms");
 		}
 		//this.plugin.getManagerEvent().post(player, PermUserEvent.Action.USER_ADDED);
 	}
@@ -134,15 +136,21 @@ public class EEssentialsService implements EssentialsService {
 	 * Supprime un joueur à la liste et l'ajoute au cache
 	 * @param identifier L'UUID du joueur
 	 */
-	public void removePlayer(String identifier) {
-		Preconditions.checkNotNull(identifier, "identifier");
+	public void removePlayer(UUID uuid) {
+		Preconditions.checkNotNull(uuid, "uuid");
 		
-		ESubject player = this.subjects.remove(identifier);
+		ESubject player = this.subjects.remove(uuid);
 		// Si le joueur existe
 		if(player != null) {
-			this.cache.put(identifier, player);
+			player.disconnect();
+			this.cache.put(uuid, player);
 			//this.plugin.getManagerEvent().post(player, PermUserEvent.Action.USER_REMOVED);
-			this.plugin.getLogger().debug("Unloading the player : " + identifier);
+			this.plugin.getLogger().debug("Unloading the player : " + uuid.toString());
 		}
+	}
+	
+	@Override
+	public String getPermissionVanishSee() {
+		return this.plugin.getPermissions().get("VANISH_SEE");
 	}
 }

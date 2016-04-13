@@ -102,7 +102,7 @@ public class EEHome extends ECommand<EverEssentials> {
 	}
 	
 	public boolean commandHomeList(final EPlayer player) throws CommandException {
-		ESubject subject = this.plugin.getManagerServices().getEssentials().get(player.getIdentifier());
+		ESubject subject = this.plugin.getManagerServices().getEssentials().get(player.getUniqueId());
 		if(subject != null) {
 			Map<String, LocationSQL> homes = subject.getAllHomes();
 			// Le joueur n'as pas de home
@@ -164,7 +164,7 @@ public class EEHome extends ECommand<EverEssentials> {
 		return this.plugin.getMessages().getText("HOME_LIST_TELEPORT").toBuilder()
 					.onHover(TextActions.showText(EChat.of(this.plugin.getMessages().getMessage("HOME_LIST_TELEPORT_HOVER")
 							.replaceAll("<home>", name))))
-					.onClick(TextActions.runCommand("/home " + name))
+					.onClick(TextActions.runCommand("/home \"" + name+ "\""))
 					.build();
 	}
 	
@@ -172,7 +172,7 @@ public class EEHome extends ECommand<EverEssentials> {
 		return this.plugin.getMessages().getText("HOME_LIST_DELETE").toBuilder()
 					.onHover(TextActions.showText(EChat.of(this.plugin.getMessages().getMessage("HOME_LIST_DELETE_HOVER")
 							.replaceAll("<home>", name))))
-					.onClick(TextActions.runCommand("/delhome " + name))
+					.onClick(TextActions.runCommand("/delhome \"" + name+ "\""))
 					.build();
 	}
 	

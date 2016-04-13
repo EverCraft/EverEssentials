@@ -33,6 +33,9 @@ public class EEPermission extends EPermission {
 		
 		add("RELOAD", "plugin.reload");
 		
+		add("AFK", "afk.command");
+		add("AFK_OTHERS", "afk.otherss");
+		
 		add("BACK", "back.command");
 		
 		add("BOOK", "book.command");
@@ -104,6 +107,7 @@ public class EEPermission extends EPermission {
 		add("KILL", "kill.command");
 		
 		add("LAG", "lag.command");
+		add("LIST", "list.command");
 		
 		add("REPAIR", "repair.command");
 		add("REPAIR_HAND", "repair.hand");
@@ -163,7 +167,11 @@ public class EEPermission extends EPermission {
 		add("UUID", "uuid.command");
 		add("UUID_OTHERS", "uuid.others");
 		
-		add("OPME", "opme.command");
+		add("VANISH", "vanish.command");
+		add("VANISH_OTHERS", "vanish.others");
+		add("VANISH_SEE", "vanish.see");
+		add("VANISH_PVP", "vanish.pvp");
+		add("VANISH_INTERACT", "vanish.interact");
 		
 		add("WARP", "warp.command");
 		add("DELWARP", "delwarp.command");

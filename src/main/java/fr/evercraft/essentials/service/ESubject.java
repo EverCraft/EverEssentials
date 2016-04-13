@@ -29,7 +29,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 
+import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.Transform;
+import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.world.World;
 
 import com.google.common.base.Preconditions;
@@ -61,21 +63,51 @@ public class ESubject implements EssentialsSubject {
 	
 	private boolean insert;
 
-	public ESubject(final EverEssentials plugin, final String identifier) {
+	public ESubject(final EverEssentials plugin, final UUID uuid) {
 		Preconditions.checkNotNull(plugin, "plugin");
-		Preconditions.checkNotNull(identifier, "identifier");
+		Preconditions.checkNotNull(uuid, "uuid");
 		
 		this.plugin = plugin;
-		this.identifier = identifier;
+		this.identifier = uuid.toString();
 		
 		this.homes = new ConcurrentHashMap<String, LocationSQL>();
 		this.ignores = new CopyOnWriteArraySet<UUID>();
 		this.back = Optional.empty();
 		
-		reload();
+		reloadData();
 	}
 	
 	public void reload() {
+		reloadData();
+		connect();
+	}
+	
+	public void connect() {
+		Optional<Player> player = this.getPlayer();
+		if(player.isPresent()) {
+			player.get().offer(Keys.INVISIBLE, vanish);
+		} else {
+			this.plugin.getLogger().warn("Player empty : connect");
+		}
+		
+		this.afk = false;
+	}
+	
+	public void disconnect() {
+		Optional<Player> player = this.getPlayer();
+		if(player.isPresent()) {
+			if(this.plugin.getConfigs().removeVanishOnDisconnect() && this.vanish) {
+				this.setVanish(false);
+			}
+			if(this.plugin.getConfigs().removeGodOnDisconnect() && this.god) {
+				this.setGod(false);
+			}
+		} else {
+			this.plugin.getLogger().warn("Player empty : disconnect");
+		}
+	}
+	
+	public void reloadData() {
 		Connection connection = null;
     	try {
     		connection = this.plugin.getDataBases().getConnection();
@@ -116,7 +148,7 @@ public class ESubject implements EssentialsSubject {
 				this.insert = false;
 			}
     	} catch (SQLException e) {
-    		this.plugin.getLogger().warn("Ignores error when loading : " + e.getMessage());
+    		this.plugin.getLogger().warn("Player error when loading : " + e.getMessage());
 		} finally {
 			try {if (preparedStatement != null) preparedStatement.close();} catch (SQLException e) {}
 	    }
@@ -217,7 +249,7 @@ public class ESubject implements EssentialsSubject {
 													+ "mute='" + this.mute + "';"
 													+ "ban='" + this.ban + "')");
 		} catch (SQLException e) {
-	    	this.plugin.getLogger().warn("Error during a change of ignore : " + e.getMessage());
+	    	this.plugin.getLogger().warn("Error during a change of player : " + e.getMessage());
 		} catch (ServerDisableException e) {
 			e.execute();
 		} finally {
@@ -239,8 +271,10 @@ public class ESubject implements EssentialsSubject {
 
 	@Override
 	public boolean setVanish(final boolean vanish) {
-		if(this.vanish != vanish) {
+		Optional<Player> player = this.getPlayer();
+		if(this.vanish != vanish && player.isPresent()) {
 			this.vanish = vanish;
+			player.get().offer(Keys.INVISIBLE, vanish);
 			if(this.insert) {
 				this.plugin.getGame().getScheduler().createTaskBuilder().async().execute(() -> this.plugin.getDataBases().setVanish(this.identifier, vanish))
 					.name("setVanish").submit(this.plugin);
@@ -570,5 +604,9 @@ public class ESubject implements EssentialsSubject {
 			return true;
 		}
 		return false;
+	}
+	
+	private Optional<Player> getPlayer() {
+		return this.plugin.getGame().getServer().getPlayer(UUID.fromString(this.identifier));
 	}
 }

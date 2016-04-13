@@ -228,7 +228,7 @@ public class EEWarp extends ECommand<EverEssentials> {
 		return this.plugin.getMessages().getText("WARP_LIST_TELEPORT").toBuilder()
 					.onHover(TextActions.showText(EChat.of(this.plugin.getMessages().getMessage("WARP_LIST_TELEPORT_HOVER")
 							.replaceAll("<warp>", name))))
-					.onClick(TextActions.runCommand("/warp " + name))
+					.onClick(TextActions.runCommand("/warp \"" + name + "\""))
 					.build();
 	}
 	
@@ -236,7 +236,7 @@ public class EEWarp extends ECommand<EverEssentials> {
 		return this.plugin.getMessages().getText("WARP_LIST_DELETE").toBuilder()
 					.onHover(TextActions.showText(EChat.of(this.plugin.getMessages().getMessage("WARP_LIST_DELETE_HOVER")
 							.replaceAll("<warp>", name))))
-					.onClick(TextActions.runCommand("/delwarp " + name))
+					.onClick(TextActions.runCommand("/delwarp \"" + name + "\""))
 					.build();
 	}
 	
