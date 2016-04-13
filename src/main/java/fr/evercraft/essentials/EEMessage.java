@@ -241,13 +241,13 @@ public class EEMessage extends EMessage {
 		addDefault("lag.worldsLineHover", "&6Chunks : &c<chunks>[RT]&6Entités : &c<entities>[RT]&6Tiles : &c<tiles>");
 		
 		addDefault("list.description", "Affiche la liste des joueurs connecté");
-		addDefault("list.title", "&aListe des joueurs connecté : &6<PLAYERS_NO_VANISH> &a/ &6<MAX_PLAYERS>");
-		addDefault("list.titleVanish", "&aListe des joueurs connecté : &6<PLAYERS_NO_VANISH> &a(+&6<vanish>&a) / &6<MAX_PLAYERS>");
-		addDefault("list.group", "&6<group> &f : <players>");
+		addDefault("list.title", "&aListe des joueurs connectés : &6<PLAYERS_NO_VANISH> &a/ &6<MAX_PLAYERS>");
+		addDefault("list.titleVanish", "&aListe des joueurs connectés : &6<PLAYERS_NO_VANISH> &a(+&6<vanish>&a) / &6<MAX_PLAYERS>");
+		addDefault("list.group", "&6<group>&f : <players>");
 		addDefault("list.separator", ", ");
-		addDefault("list.player", "<afk>&r<vanish>&r <DISPLAYNAME_FORMAT>");
-		addDefault("list.tagAFK", "&7[AFK]");
-		addDefault("list.tagVanish", "&7[HIDDEN]", "&7[VANISH]");
+		addDefault("list.player", "<afk>&r<vanish>&r<DISPLAYNAME_FORMAT>");
+		addDefault("list.tagAFK", "&7[AFK] ");
+		addDefault("list.tagVanish", "&7[HIDDEN]", "&7[VANISH] ");
 		addDefault("list.empty", "&7Aucun joueur");
 		
 		addDefault("me.description", "Envoie un texte d'action dans le tchat");

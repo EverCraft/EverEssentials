@@ -34,6 +34,7 @@ public class EEPermission extends EPermission {
 		add("RELOAD", "plugin.reload");
 		
 		add("AFK", "afk.command");
+		add("AFK_OTHERS", "afk.otherss");
 		
 		add("BACK", "back.command");
 		
