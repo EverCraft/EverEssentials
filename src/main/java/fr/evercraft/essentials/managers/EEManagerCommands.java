@@ -86,6 +86,7 @@ public class EEManagerCommands extends TreeMap<String, ECommand<EverEssentials>>
 		register(new EESpawner(this.plugin));
 		register(new EESpawnMob(this.plugin));
 		register(new EESpeed(this.plugin));
+		register(new EEStop(this.plugin));
 		register(new EESudo(this.plugin));
 		register(new EESuicide(this.plugin));
 		register(new EETeleportation(this.plugin));

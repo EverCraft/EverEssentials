@@ -304,6 +304,10 @@ public class EEMessage extends EMessage {
 		addDefault("speed.othersPlayerFly", "&7Votre vitesse de vol a été défini à &6<speed> &7par &6<staff>&7.");
 		addDefault("speed.othersStaffFly", "&7Vous avez défini la vitesse de &6vol &7de &6<player> &7à &6<speed>&7.");
 		
+		addDefault("stop.description", "Arrête le serveur");
+		addDefault("stop.message", "&cArrêt du serveur par &6<staff>");
+		addDefault("stop.messageReason", "&c<reason>");
+		
 		addDefault("sudo.description", "Fait exécuter une commande par un autre joueur");
 		addDefault("sudo.command", "&6commande");
 		addDefault("sudo.commandHover", "&c<command>");
@@ -765,6 +769,10 @@ public class EEMessage extends EMessage {
 		addMessage("SPEED_OTHERS_STAFF_WALK", "speed.othersStaffWalk");
 		addMessage("SPEED_OTHERS_PLAYER_FLY", "speed.othersPlayerFly");
 		addMessage("SPEED_OTHERS_STAFF_FLY", "speed.othersStaffFly");
+		
+		addMessage("STOP_DESCRIPTION", "stop.description");
+		addMessage("STOP_MESSAGE", "stop.message");
+		addMessage("STOP_MESSAGE_REASON", "stop.messageReason");
 		
 		addMessage("SUDO_DESCRIPTION", "sudo.description");
 		addMessage("SUDO_COMMAND", "sudo.command");

@@ -24,6 +24,8 @@ import org.spongepowered.api.block.BlockTypes;
 import org.spongepowered.api.block.tileentity.MobSpawner;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
+import org.spongepowered.api.data.key.Keys;
+import org.spongepowered.api.data.manipulator.mutable.MobSpawnerData;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
@@ -97,10 +99,25 @@ public class EESpawner extends ECommand<EverEssentials> {
 		Optional<Vector3i> optBlock = player.getViewBlock();
 		if(optBlock.isPresent()) {
 			Location<World> location = player.getWorld().getLocation(optBlock.get());
-			if(location.getBlock().getType().equals(BlockTypes.MOB_SPAWNER)) {
+			if(location.getBlock().getType().equals(BlockTypes.MOB_SPAWNER)) {				
 				if(location.getTileEntity().isPresent()) {
 					MobSpawner spawner = (MobSpawner) location.getTileEntity().get();
-					spawner.copy();
+					if(spawner.getOrCreate(MobSpawnerData.class).isPresent()) {
+						player.sendMessage("MobSpawner : present");
+					} else {
+						player.sendMessage("MobSpawner : no present");
+					}
+					if(spawner.offer(spawner.getMobSpawnerData().nextEntityToSpawn().set(entity.getType(), null)).isSuccessful()) {
+						player.sendMessage("MobSpawner : add");
+					} else {
+						player.sendMessage("MobSpawner : error");
+					}
+					
+					if(spawner.offer(Keys.SPAWNABLE_ENTITY_TYPE, entity.getType()).isSuccessful()) {
+						player.sendMessage("MobSpawner : add");
+					} else {
+						player.sendMessage("MobSpawner : error");
+					}
 				} else {
 					player.sendMessage("MobSpawner : no");
 				}

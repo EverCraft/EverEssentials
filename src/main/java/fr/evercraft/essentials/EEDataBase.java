@@ -30,6 +30,7 @@ import fr.evercraft.everapi.plugin.EDataBase;
 public class EEDataBase extends EDataBase<EverEssentials> {
 	private String table_players;
 	private String table_ignores;
+	private String table_mails;
 	private String table_homes;
 	private String table_backs;
 	
@@ -57,6 +58,17 @@ public class EEDataBase extends EDataBase<EverEssentials> {
 							"`ignore` varchar(36) NOT NULL," +
 							"PRIMARY KEY (`uuid`, `ignore`));";
 		initTable(this.getTableIgnores(), ignores);
+		
+		this.table_mails = "mails";
+		String mails = 	"CREATE TABLE IF NOT EXISTS <table> (" +
+							"`id` MEDIUMINT NOT NULL AUTO_INCREMENT," +
+							"`time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP," +
+							"`read` BOOLEAN DEFAULT FALSE," +
+							"`uuid` varchar(36) NOT NULL," +
+							"`to` varchar(36) NOT NULL," +
+							"`message` varchar(255) NOT NULL," +
+							"PRIMARY KEY (`id`));";
+		initTable(this.getTableMails(), mails);
 		
 		this.table_homes = "homes";
 		String homes = 		"CREATE TABLE IF NOT EXISTS <table> (" +
@@ -116,6 +128,10 @@ public class EEDataBase extends EDataBase<EverEssentials> {
 	
 	public String getTableIgnores() {
 		return this.getPrefix() + this.table_ignores;
+	}
+	
+	public String getTableMails() {
+		return this.getPrefix() + this.table_mails;
 	}
 	
 	public String getTableHomes() {

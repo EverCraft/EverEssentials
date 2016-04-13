@@ -114,6 +114,10 @@ public class EEPermission extends EPermission {
 		add("REPAIR_HOTBAR", "repair.hotbar");
 		add("REPAIR_ALL", "repair.all");
 		
+		add("MAIL", "mail.command");
+		add("MAIL_SEND", "mail.send");
+		add("MAIL_SENDALL", "mail.sendall");
+		
 		add("ME", "me.command");
 		
 		add("MORE", "more.command");
@@ -140,6 +144,8 @@ public class EEPermission extends EPermission {
 		add("SPEED_FLY", "speed.fly");
 		add("SPEED_WALK", "speed.walk");
 		add("SPEED_OTHERS", "speed.others");
+		
+		add("STOP", "stop.command");
 		
 		add("SUDO", "sudo.command");
 		add("SUDO_CONSOLE", "sudo.console");
