@@ -654,12 +654,6 @@ public class ESubject implements EssentialsSubject {
 		}
 		return noRead;
 	}
-	
-	public void addMail(Mail mail) {
-		Preconditions.checkNotNull(mail, "mail");
-		
-		this.mails.add(mail);
-	}
 
 	@Override
 	public boolean sendMail(String to, String message) {
@@ -699,6 +693,12 @@ public class ESubject implements EssentialsSubject {
 		return false;
 	}
 
+	public void addMail(Mail mail) {
+		Preconditions.checkNotNull(mail, "mail");
+		
+		this.mails.add(mail);
+	}
+	
 	public String getIdentifier() {
 		return this.identifier;
 	}
