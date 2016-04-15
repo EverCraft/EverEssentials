@@ -61,10 +61,8 @@ public class ESubject implements EssentialsSubject {
 	private final CopyOnWriteArraySet<Mail> mails;
 	private Optional<LocationSQL> back;
 	
-	
 	// Tempo
 	private boolean afk;
-	
 	private boolean insert;
 
 	public ESubject(final EverEssentials plugin, final UUID uuid) {
@@ -120,6 +118,7 @@ public class ESubject implements EssentialsSubject {
     		this.loadHomes(connection);
     		this.loadBack(connection);
     		this.loadIgnores(connection);
+    		this.loadMails(connection);
 		} catch (ServerDisableException e) {
 			e.execute();
 		} finally {
