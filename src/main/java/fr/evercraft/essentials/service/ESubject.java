@@ -20,6 +20,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
@@ -42,6 +43,7 @@ import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.essentials.service.warp.LocationSQL;
 import fr.evercraft.everapi.exception.ServerDisableException;
 import fr.evercraft.everapi.services.essentials.EssentialsSubject;
+import fr.evercraft.everapi.services.essentials.Mail;
 
 public class ESubject implements EssentialsSubject {
 	
@@ -56,7 +58,9 @@ public class ESubject implements EssentialsSubject {
 	
 	private final ConcurrentMap<String, LocationSQL> homes;
 	private final CopyOnWriteArraySet<UUID> ignores;
+	private final CopyOnWriteArraySet<Mail> mails;
 	private Optional<LocationSQL> back;
+	
 	
 	// Tempo
 	private boolean afk;
@@ -72,6 +76,7 @@ public class ESubject implements EssentialsSubject {
 		
 		this.homes = new ConcurrentHashMap<String, LocationSQL>();
 		this.ignores = new CopyOnWriteArraySet<UUID>();
+		this.mails = new CopyOnWriteArraySet<Mail>();
 		this.back = Optional.empty();
 		
 		reloadData();
@@ -219,6 +224,27 @@ public class ESubject implements EssentialsSubject {
 			ResultSet list = preparedStatement.executeQuery();
 			while (list.next()) {
 				this.ignores.add(UUID.fromString(list.getString("ignore")));
+				this.plugin.getLogger().debug("Loading : (identifier='" + this.identifier + "';ignore='" + list.getString("ignore") + "')");
+			}
+    	} catch (SQLException e) {
+    		this.plugin.getLogger().warn("Ignores error when loading : " + e.getMessage());
+		} finally {
+			try {if (preparedStatement != null) preparedStatement.close();} catch (SQLException e) {}
+	    }
+	}
+	
+	public void loadMails(Connection connection) {
+		this.mails.clear();
+		PreparedStatement preparedStatement = null;
+    	try {
+    		String query = 	  "SELECT *" 
+							+ "FROM `" + this.plugin.getDataBases().getTableMails() + "` "
+							+ "WHERE `player` = ? ;";
+			preparedStatement = connection.prepareStatement(query);
+			preparedStatement.setString(1, this.identifier);
+			ResultSet list = preparedStatement.executeQuery();
+			while (list.next()) {
+				this.mails.add(new EMail(this.plugin, list.getInt("id"), list.getLong("datetime"), list.getString("to"), list.getBoolean("read"), list.getString("message")));
 				this.plugin.getLogger().debug("Loading : (identifier='" + this.identifier + "';ignore='" + list.getString("ignore") + "')");
 			}
     	} catch (SQLException e) {
@@ -608,5 +634,72 @@ public class ESubject implements EssentialsSubject {
 	
 	private Optional<Player> getPlayer() {
 		return this.plugin.getGame().getServer().getPlayer(UUID.fromString(this.identifier));
+	}
+	
+	/*
+	 * Mails
+	 */
+
+	@Override
+	public Set<Mail> getMails() {
+		return ImmutableSet.copyOf(this.mails);
+	}
+
+	@Override
+	public boolean hasMail() {
+		boolean noRead = false;
+		Iterator<Mail> mails = this.mails.iterator();
+		while(mails.hasNext() && !noRead) {
+			noRead = !mails.next().isRead();
+		}
+		return noRead;
+	}
+	
+	public void addMail(Mail mail) {
+		Preconditions.checkNotNull(mail, "mail");
+		
+		this.mails.add(mail);
+	}
+
+	@Override
+	public boolean sendMail(String to, String message) {
+		Preconditions.checkNotNull(to, "to");
+		Preconditions.checkNotNull(message, "message");
+		
+		this.plugin.getGame().getScheduler().createTaskBuilder().async().execute(() -> this.plugin.getDataBases().sendMail(this, to, message))
+			.name("sendMail").submit(this.plugin);
+		return true;
+	}
+
+	@Override
+	public boolean removeMail(int id) {
+		Preconditions.checkNotNull(id, "id");
+		
+		boolean found = false;
+		Iterator<Mail> mails = this.mails.iterator();
+		while(!found && mails.hasNext()) {
+			final Mail mail = mails.next();
+			if(mail.getID() == id) {
+				this.mails.remove(mail);
+				this.plugin.getGame().getScheduler().createTaskBuilder().async().execute(() -> this.plugin.getDataBases().removeMails(this.identifier, mail.getID()))
+					.name("removeMail").submit(this.plugin);
+			}
+		}
+		return found;
+	}
+	
+	@Override
+	public boolean clearMails() {
+		if(!this.mails.isEmpty()) {
+			this.mails.clear();
+			this.plugin.getGame().getScheduler().createTaskBuilder().async().execute(() -> this.plugin.getDataBases().clearMails(this.identifier))
+				.name("clearMails").submit(this.plugin);
+			return true;
+		}
+		return false;
+	}
+
+	public String getIdentifier() {
+		return this.identifier;
 	}
 }
