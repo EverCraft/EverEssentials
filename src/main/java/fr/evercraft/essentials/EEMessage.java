@@ -30,7 +30,7 @@ public class EEMessage extends EMessage {
 		// Prefix
 		addDefault("prefix", "[&4Ever&6&lEssentials&f] ");
 		
-		addDefault("afk.description", "Permet de vous signalez AFK.");
+		addDefault("afk.description", "Permet de vous signaler AFK.");
 		addDefault("afk.allEnable", "&6" + EChat.DISPLAYNAME_FORMAT + " &7est désormais AFK.");
 		addDefault("afk.allDisable", "&6" + EChat.DISPLAYNAME_FORMAT + " &7n'est plus AFK.");
 		addDefault("afk.playerEnable", "&7Vous êtes désormais AFK.");
@@ -63,6 +63,8 @@ public class EEMessage extends EMessage {
 		addDefault("butcher.killAllRadius", "&7Suppression de &6<count> &7entitée(s) dans un rayon de &6<radius> bloc(s)&7.");
 		addDefault("butcher.killType", "&7Suppression de &6<count> &6<entity>&6(s)&7 dans ce monde.");
 		addDefault("butcher.killTypeRadius", "&7Suppression de &6<count> &6<entity>&6(s)&7 dans un rayon de &6<radius> bloc(s)&7.");
+		
+		addDefault("book.description", "Permet de modifier un livre");
 		
 		addDefault("clearinventory.description", "Supprime tous les objets de l'inventaire d'un joueur.");
 		addDefault("clearinventory.player", "&7Tous les objets de votre inventaire ont été supprimés.");
@@ -273,6 +275,8 @@ public class EEMessage extends EMessage {
 		
 		addDefault("invsee.description", "Regarde l'inventaire d'un autre joueur");
 		
+		addDefault("repair.description", "Répare les objets");
+		
 		addDefault("repairhand.description", "Répare l'objet dans votre main");
 		addDefault("repairhand.itemColor", "&6");
 		addDefault("repairhand.player", "&7Vous venez de réparer l'objet <item>&7.");
@@ -290,6 +294,8 @@ public class EEMessage extends EMessage {
 		addDefault("skull.description", "Donne la tête d'un joueur");
 		addDefault("skull.myHead", "&7Vous avez reçu votre tête.");
 		addDefault("skull.others", "&7Vous avez reçu la tête de &6<player>&7.");
+		
+		addDefault("spawner.description", "Permet de modifier le type d'un mob spawner");
 		
 		addDefault("spawnmob.description", "Fait apparaître une entité");
 		addDefault("spawnmob.errorMob", "&cErreur : nom invalide.");
@@ -517,6 +523,8 @@ public class EEMessage extends EMessage {
 		addMessage("BROADCAST_PREFIX_PLAYER", "broadcast.prefixPlayer");
 		addMessage("BROADCAST_PREFIX_CONSOLE", "broadcast.prefixConsole");
 		
+		addMessage("BOOK_DESCRIPTION", "book.description");
+		
 		addMessage("BUTCHER_DESCRIPTION", "butcher.description");
 		addMessage("BUTCHER_NOENTITY", "butcher.noEntity");
 		addMessage("BUTCHER_ENTITY_COLOR", "butcher.entityColor");
@@ -715,6 +723,8 @@ public class EEMessage extends EMessage {
 		addMessage("LIST_TAG_VANISH", "list.tagVanish");
 		addMessage("LIST_EMPTY", "list.empty");
 		
+		addMessage("MAIL_DESCRIPTION", "mail.description");
+		
 		addMessage("ME_DESCRIPTION", "me.description");
 		addMessage("ME_PREFIX", "me.prefix");
 		
@@ -738,6 +748,8 @@ public class EEMessage extends EMessage {
 		
 		addMessage("INVSEE_DESCRIPTION", "invsee.description");
 		
+		addMessage("REPAIR_DESCRIPTION", "repair.description");
+		
 		addMessage("REPAIR_ALL_DESCRIPTION", "repairall.description");
 		addMessage("REPAIR_ALL_PLAYER", "repairall.player");
 		
@@ -756,8 +768,9 @@ public class EEMessage extends EMessage {
 		addMessage("SKULL_MY_HEAD", "skull.myHead");
 		addMessage("SKULL_OTHERS", "skull.others");
 		
-		addMessage("SPAWNMOB_DESCRIPTION", "spawnmob.description");
+		addMessage("SPAWNER_DESCRIPTION", "spawner.description");
 		
+		addMessage("SPAWNMOB_DESCRIPTION", "spawnmob.description");
 		addMessage("SPAWNMOB_ERROR_MOB", "spawnmob.errorMob");
 		
 		addMessage("SPEED_DESCRIPTION", "speed.description");

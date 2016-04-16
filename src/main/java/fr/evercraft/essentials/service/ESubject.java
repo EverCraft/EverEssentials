@@ -655,7 +655,7 @@ public class ESubject implements EssentialsSubject {
 	}
 
 	@Override
-	public boolean sendMail(String to, String message) {
+	public boolean receiveMail(String to, String message) {
 		Preconditions.checkNotNull(to, "to");
 		Preconditions.checkNotNull(message, "message");
 		

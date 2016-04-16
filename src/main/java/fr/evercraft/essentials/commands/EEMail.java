@@ -25,6 +25,7 @@ import java.util.Optional;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
+import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.living.player.User;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.LiteralText.Builder;
@@ -32,6 +33,7 @@ import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
 
 import fr.evercraft.essentials.EverEssentials;
+import fr.evercraft.essentials.service.ESubject;
 import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.ECommand;
 import fr.evercraft.everapi.server.player.EPlayer;
@@ -58,16 +60,14 @@ public class EEMail extends ECommand<EverEssentials> {
 		build = build.append(Text.of("|"));
 		build = build.append(Text.builder("clear").onClick(TextActions.suggestCommand("/" + this.getName() + " clear")).build());
 		
-		if(source.hasPermission(this.plugin.getPermissions().get("MAIL_SEND"))){
-			build = build.append(Text.of("|"));
-			build = build.append(Text.builder("send <to> <message>").onClick(TextActions.suggestCommand("/" + this.getName() + " send ")).build());
-		}
-		
 		if(source.hasPermission(this.plugin.getPermissions().get("MAIL_SENDALL"))){
 			build = build.append(Text.of("|"));
-			build = build.append(Text.builder("sendall <message>").onClick(TextActions.suggestCommand("/" + this.getName() + " sendall ")).build());
+			build = build.append(Text.builder("send <*|player> <message>").onClick(TextActions.suggestCommand("/" + this.getName() + " send ")).build());
+		} else if(source.hasPermission(this.plugin.getPermissions().get("MAIL_SEND"))){
+			build = build.append(Text.of("|"));
+			build = build.append(Text.builder("send <player> <message>").onClick(TextActions.suggestCommand("/" + this.getName() + " send ")).build());
 		}
-		return build.color(TextColors.RED).build();
+		return build.append(Text.of(">")).color(TextColors.RED).build();
 	}
 	
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
@@ -78,14 +78,16 @@ public class EEMail extends ECommand<EverEssentials> {
 			if(source.hasPermission(this.plugin.getPermissions().get("MAIL_SEND"))){
 				suggests.add("send");
 			}
-			if(source.hasPermission(this.plugin.getPermissions().get("MAIL_SENDALL"))){
-				suggests.add("sendall");
-			}
 		} else if (args.size() == 2) {
-			if(args.get(0).equalsIgnoreCase("send") && source.hasPermission(this.plugin.getPermissions().get("MAIL_SEND"))){
-				suggests = null;
-			} else if(args.get(0).equalsIgnoreCase("send") && source.hasPermission(this.plugin.getPermissions().get("MAIL_SENDALL"))){
-				suggests.add("Hello world");
+			if(args.get(0).equalsIgnoreCase("send") && source.hasPermission(this.plugin.getPermissions().get("MAIL_SEND"))) {
+				if(source.hasPermission(this.plugin.getPermissions().get("MAIL_SENDALL"))){
+					suggests.add("*");
+					for(Player player : this.plugin.getGame().getServer().getOnlinePlayers()) {
+						suggests.add(player.getName());
+					}
+				} else {
+					suggests = null;
+				}
 			}
 		} else if (args.size() == 3) {
 			if(args.get(0).equalsIgnoreCase("send") && source.hasPermission(this.plugin.getPermissions().get("MAIL_SEND"))){
@@ -150,13 +152,23 @@ public class EEMail extends ECommand<EverEssentials> {
 			if(args.get(0).equalsIgnoreCase("send")) {
 				// Si il a la permission
 				if(source.hasPermission(this.plugin.getPermissions().get("MAIL_SEND"))) {
-					Optional<User> optUser = this.plugin.getEServer().getUser(args.get(1));
-					// Le joueur existe
-					if(optUser.isPresent()){
-						resultat = commandSend(source, optUser.get(), args.get(2));
-					// Le joueur est introuvable
+					if(args.get(1).equalsIgnoreCase("*")) {
+						// Si il a la permission
+						if(source.hasPermission(this.plugin.getPermissions().get("MAIL_SENDALL"))){
+							resultat = commandSendAll(source, args.get(1));
+						// Il n'a pas la permission
+						} else {
+							source.sendMessage(this.plugin.getPermissions().noPermission());
+						}
 					} else {
-						source.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getEverAPI().getMessages().getMessage("PLAYER_NOT_FOUND")));
+						Optional<User> optUser = this.plugin.getEServer().getUser(args.get(1));
+						// Le joueur existe
+						if(optUser.isPresent()){
+							resultat = commandSend(source, optUser.get(), args.get(2));
+						// Le joueur est introuvable
+						} else {
+							source.sendMessage(this.plugin.getMessages().getText("PREFIX").concat(this.plugin.getEverAPI().getMessages().getText("PLAYER_NOT_FOUND")));
+						}
 					}
 				// Il n'a pas la permission
 				} else {
@@ -189,6 +201,7 @@ public class EEMail extends ECommand<EverEssentials> {
 						.append(this.plugin.getMessages().getMessage("MAIL_DELETE_PLAYER"))
 						.replace("<mail>", getButtomDelete(mail.get()))
 						.build());
+				return true;
 			} else {
 				player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("MAIL_DELETE_ERROR")
 						.replaceAll("<id>", id_string));
@@ -204,23 +217,37 @@ public class EEMail extends ECommand<EverEssentials> {
 		return EChat.of(this.plugin.getMessages().getMessage("MAIL_DELETE_MAIL")).toBuilder()
 					.onHover(TextActions.showText(EChat.of(this.plugin.getMessages().getMessage("MAIL_DELETE_MAIL_HOVER")
 							.replaceAll("<id>", String.valueOf(mail.getID()))
-							.replaceAll("<to>", mail.getToName())
+							.replaceAll("<player>", mail.getToName())
 							.replaceAll("<datetime>", this.plugin.getEverAPI().getManagerUtils().getDate().parseDateTime(mail.getDateTime())))))
 					.build();
 	}
 
 	private boolean commandClear(EPlayer player) {
-		// TODO Auto-generated method stub
+		if(player.clearMails()) {
+			player.sendMessage(this.plugin.getMessages().getText("PREFIX").concat(this.plugin.getMessages().getText("MAIL_CLEAR_PLAYER")));
+			return true;
+		} else {
+			player.sendMessage(this.plugin.getMessages().getText("PREFIX").concat(this.plugin.getMessages().getText("MAIL_CLEAR_ERROR")));
+		}
 		return false;
 	}
 	
-	private boolean commandSend(CommandSource staff, User player, String string) {
-		// TODO Auto-generated method stub
+	private boolean commandSend(CommandSource staff, User player, String message) {
+		ESubject subject = this.plugin.getManagerServices().getEssentials().get(player.getUniqueId());
+		if(subject != null) {
+			if(subject.receiveMail(staff.getIdentifier(), message)) {
+				
+			} else {
+				staff.sendMessage(this.plugin.getMessages().getText("PREFIX").concat(this.plugin.getEverAPI().getMessages().getCommandError()));
+			}
+		} else {
+			staff.sendMessage(this.plugin.getMessages().getText("PREFIX").concat(this.plugin.getEverAPI().getMessages().getText("PLAYER_NOT_FOUND")));
+		}
 		return false;
 	}
 
 	private boolean commandSendAll(CommandSource player, String string) {
-		// TODO Auto-generated method stub
+
 		return false;
 	}
 }
