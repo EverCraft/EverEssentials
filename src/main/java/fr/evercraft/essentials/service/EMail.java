@@ -58,6 +58,15 @@ public class EMail implements Mail {
 	public Optional<User> getToPlayer() {
 		return this.plugin.getEServer().getUser(this.to);
 	}
+	
+	@Override
+	public String getToName() {
+		Optional<User> user = this.getToPlayer();
+		if(user.isPresent()) {
+			return user.get().getName();
+		}
+		return getTo();
+	}
 
 	@Override
 	public Text getText() {

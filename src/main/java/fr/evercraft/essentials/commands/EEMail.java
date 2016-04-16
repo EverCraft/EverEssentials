@@ -25,6 +25,7 @@ import java.util.Optional;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
+import org.spongepowered.api.entity.living.player.User;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.LiteralText.Builder;
 import org.spongepowered.api.text.action.TextActions;
@@ -34,6 +35,8 @@ import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.ECommand;
 import fr.evercraft.everapi.server.player.EPlayer;
+import fr.evercraft.everapi.services.essentials.Mail;
+import fr.evercraft.everapi.text.ETextBuilder;
 
 public class EEMail extends ECommand<EverEssentials> {
 	
@@ -81,7 +84,7 @@ public class EEMail extends ECommand<EverEssentials> {
 		} else if (args.size() == 2) {
 			if(args.get(0).equalsIgnoreCase("send") && source.hasPermission(this.plugin.getPermissions().get("MAIL_SEND"))){
 				suggests = null;
-			} else if(args.get(0).equalsIgnoreCase("send") && source.hasPermission(this.plugin.getPermissions().get("MAIL_SEND"))){
+			} else if(args.get(0).equalsIgnoreCase("send") && source.hasPermission(this.plugin.getPermissions().get("MAIL_SENDALL"))){
 				suggests.add("Hello world");
 			}
 		} else if (args.size() == 3) {
@@ -95,54 +98,129 @@ public class EEMail extends ECommand<EverEssentials> {
 	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Résultat de la commande :
 		boolean resultat = false;
-		// Si on ne connait pas le joueur
-		if(args.size() == 0) {
-			// Si la source est un joueur
-			if(source instanceof EPlayer) {
-				resultat = commandPing((EPlayer) source);
-			// La source n'est pas un joueur
-			} else {
-				source.sendMessage(this.plugin.getEverAPI().getMessages().getText("COMMAND_ERROR_FOR_PLAYER"));
-			}
-		// On connais le joueur
-		} else if(args.size() == 1) {
-			// Si il a la permission
-			if(source.hasPermission(this.plugin.getPermissions().get("PING_OTHERS"))){
-				Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(args.get(0));
-				// Le joueur existe
-				if(optPlayer.isPresent()){
-					resultat = commandPingOthers(source, optPlayer.get());
-				// Le joueur est introuvable
+		if(args.size() == 1) {
+			if(args.get(0).equalsIgnoreCase("read")) {
+				// Si la source est un joueur
+				if(source instanceof EPlayer) {
+					resultat = commandRead((EPlayer) source);
+				// La source n'est pas un joueur
 				} else {
-					source.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getEverAPI().getMessages().getMessage("PLAYER_NOT_FOUND")));
+					source.sendMessage(this.plugin.getEverAPI().getMessages().getText("COMMAND_ERROR_FOR_PLAYER"));
 				}
-			// Il n'a pas la permission
+			} else if(args.get(0).equalsIgnoreCase("clear")) {
+				// Si la source est un joueur
+				if(source instanceof EPlayer) {
+					resultat = commandClear((EPlayer) source);
+				// La source n'est pas un joueur
+				} else {
+					source.sendMessage(this.plugin.getEverAPI().getMessages().getText("COMMAND_ERROR_FOR_PLAYER"));
+				}
 			} else {
-				source.sendMessage(this.plugin.getPermissions().noPermission());
+				source.sendMessage(help(source));
 			}
-		// Nombre d'argument incorrect
+		} else if(args.size() == 2) {
+			if(args.get(0).equalsIgnoreCase("read")) {
+				// Si la source est un joueur
+				if(source instanceof EPlayer) {
+					resultat = commandRead((EPlayer) source, args.get(1));
+				// La source n'est pas un joueur
+				} else {
+					source.sendMessage(this.plugin.getEverAPI().getMessages().getText("COMMAND_ERROR_FOR_PLAYER"));
+				}
+			} else if(args.get(0).equalsIgnoreCase("delete")) {
+				// Si la source est un joueur
+				if(source instanceof EPlayer) {
+					resultat = commandDelete((EPlayer) source, args.get(1));
+				// La source n'est pas un joueur
+				} else {
+					source.sendMessage(this.plugin.getEverAPI().getMessages().getText("COMMAND_ERROR_FOR_PLAYER"));
+				}
+			} else if(args.get(0).equalsIgnoreCase("sendall")) {
+				// Si il a la permission
+				if(source.hasPermission(this.plugin.getPermissions().get("MAIL_SENDALL"))){
+					resultat = commandSendAll(source, args.get(1));
+				// Il n'a pas la permission
+				} else {
+					source.sendMessage(this.plugin.getPermissions().noPermission());
+				}
+			} else {
+				source.sendMessage(help(source));
+			}
+		} else if(args.size() == 3) {
+			if(args.get(0).equalsIgnoreCase("send")) {
+				// Si il a la permission
+				if(source.hasPermission(this.plugin.getPermissions().get("MAIL_SEND"))) {
+					Optional<User> optUser = this.plugin.getEServer().getUser(args.get(1));
+					// Le joueur existe
+					if(optUser.isPresent()){
+						resultat = commandSend(source, optUser.get(), args.get(2));
+					// Le joueur est introuvable
+					} else {
+						source.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getEverAPI().getMessages().getMessage("PLAYER_NOT_FOUND")));
+					}
+				// Il n'a pas la permission
+				} else {
+					source.sendMessage(this.plugin.getPermissions().noPermission());
+				}
+			} else {
+				source.sendMessage(help(source));
+			}
 		} else {
 			source.sendMessage(help(source));
 		}
 		return resultat;
 	}
-	
-	public boolean commandPing(final EPlayer player) {
-		player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("PING_PLAYER")
-				.replaceAll("<ping>", String.valueOf(player.getConnection().getLatency())));
-		return true;
+
+	private boolean commandRead(EPlayer player) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 	
-	public boolean commandPingOthers(final CommandSource staff, final EPlayer player) throws CommandException {
-		// La source et le joueur sont différent
-		if(!player.equals(staff)){
-			staff.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("PING_OTHERS")
-					.replaceAll("<player>", player.getName())
-					.replaceAll("<ping>", String.valueOf(player.getConnection().getLatency()))));
-			return true;
-		// La source et le joueur sont identique
-		} else {
-			return execute(staff, new ArrayList<String>());
+	private boolean commandRead(EPlayer player, String string) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+	
+	private boolean commandDelete(EPlayer player, String id_string) {
+		try {
+			Optional<Mail> mail = player.removeMail(Integer.parseInt(id_string));
+			if(mail.isPresent()) {	
+				player.sendMessage(ETextBuilder.toBuilder(this.plugin.getMessages().getText("PREFIX"))
+						.append(this.plugin.getMessages().getMessage("MAIL_DELETE_PLAYER"))
+						.replace("<mail>", getButtomDelete(mail.get()))
+						.build());
+			} else {
+				player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("MAIL_DELETE_ERROR")
+						.replaceAll("<id>", id_string));
+			}
+		} catch (NumberFormatException e){
+			player.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getEverAPI().getMessages().getMessage("IS_NOT_NUMBER")
+					.replaceAll("<number>", id_string)));
 		}
+		return false;
+	}
+	
+	private Text getButtomDelete(Mail mail) {
+		return EChat.of(this.plugin.getMessages().getMessage("MAIL_DELETE_MAIL")).toBuilder()
+					.onHover(TextActions.showText(EChat.of(this.plugin.getMessages().getMessage("MAIL_DELETE_MAIL_HOVER")
+							.replaceAll("<id>", String.valueOf(mail.getID()))
+							.replaceAll("<to>", mail.getToName())
+							.replaceAll("<datetime>", this.plugin.getEverAPI().getManagerUtils().getDate().parseDateTime(mail.getDateTime())))))
+					.build();
+	}
+
+	private boolean commandClear(EPlayer player) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+	
+	private boolean commandSend(CommandSource staff, User player, String string) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	private boolean commandSendAll(CommandSource player, String string) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

@@ -665,20 +665,26 @@ public class ESubject implements EssentialsSubject {
 	}
 
 	@Override
-	public boolean removeMail(int id) {
+	public Optional<Mail> removeMail(int id) {
 		Preconditions.checkNotNull(id, "id");
 		
 		boolean found = false;
 		Iterator<Mail> mails = this.mails.iterator();
+		Mail mail = null;
 		while(!found && mails.hasNext()) {
-			final Mail mail = mails.next();
+			mail = mails.next();
 			if(mail.getID() == id) {
+				final Mail email = mail;
 				this.mails.remove(mail);
-				this.plugin.getGame().getScheduler().createTaskBuilder().async().execute(() -> this.plugin.getDataBases().removeMails(this.identifier, mail.getID()))
+				this.plugin.getGame().getScheduler().createTaskBuilder().async().execute(() -> this.plugin.getDataBases().removeMails(this.identifier, email.getID()))
 					.name("removeMail").submit(this.plugin);
 			}
 		}
-		return found;
+		
+		if(found) {
+			return Optional.of(mail);
+		}
+		return Optional.empty();
 	}
 	
 	@Override

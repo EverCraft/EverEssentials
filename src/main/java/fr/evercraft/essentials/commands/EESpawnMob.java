@@ -87,9 +87,9 @@ public class EESpawnMob extends ECommand<EverEssentials> {
 				Optional<UtilsEntity> optEntity = UtilsEntity.get(args.get(0));
 				if (optEntity.isPresent()){
 					try {
-						int amount = Integer.valueOf(args.get(1));
+						int amount = Integer.parseInt(args.get(1));
 						resultat = commandSpawnMob((EPlayer) source, optEntity.get(), amount);
-					} catch (Exception e){
+					} catch (NumberFormatException e){
 						source.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getEverAPI().getMessages().getMessage("IS_NOT_NUMBER")
 								.replaceAll("<number>", args.get(1))));
 					}
