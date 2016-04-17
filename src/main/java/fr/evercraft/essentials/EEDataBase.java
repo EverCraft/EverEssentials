@@ -52,7 +52,6 @@ public class EEDataBase extends EDataBase<EverEssentials> {
 							"`god` boolean NOT NULL DEFAULT 0," +
 							"`mute` float NOT NULL DEFAULT 0," +
 							"`ban` float NOT NULL DEFAULT 0," +
-							"`jail` float NOT NULL DEFAULT 0," +
 							"PRIMARY KEY (`uuid`));";
 		initTable(this.getTablePlayers(), players);
 		
