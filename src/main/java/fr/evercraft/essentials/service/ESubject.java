@@ -291,8 +291,7 @@ public class ESubject implements EssentialsSubject {
 		if(this.vanish != vanish && player.isPresent()) {
 			this.vanish = vanish;
 			player.get().offer(Keys.INVISIBLE, vanish);
-			this.plugin.getGame().getScheduler().createTaskBuilder().async().execute(() -> this.plugin.getDataBases().setVanish(this.identifier, vanish))
-				.name("setVanish").submit(this.plugin);
+			this.plugin.getThreadAsync().execute(() -> this.plugin.getDataBases().setVanish(this.identifier, vanish));
 			return true;
 		}
 		return false;
@@ -311,13 +310,11 @@ public class ESubject implements EssentialsSubject {
 	public boolean setMute(final boolean mute) {
 		if(mute && this.mute != -1) {
 			this.mute = -1;
-			this.plugin.getGame().getScheduler().createTaskBuilder().async().execute(() -> this.plugin.getDataBases().setMute(this.identifier, -1))
-				.name("setMute").submit(this.plugin);
+			this.plugin.getThreadAsync().execute(() -> this.plugin.getDataBases().setMute(this.identifier, -1));
 			return true;
 		} else if(!mute && this.mute != 0) {
 			this.mute = 0;
-			this.plugin.getGame().getScheduler().createTaskBuilder().async().execute(() -> this.plugin.getDataBases().setMute(this.identifier, 0))
-				.name("setMute").submit(this.plugin);
+			this.plugin.getThreadAsync().execute(() -> this.plugin.getDataBases().setMute(this.identifier, 0));
 			return true;
 		}
 		return false;
@@ -327,8 +324,7 @@ public class ESubject implements EssentialsSubject {
 	public boolean setMute(final long time) {
 		if(this.mute != time) {
 			this.mute = time;
-			this.plugin.getGame().getScheduler().createTaskBuilder().async().execute(() -> this.plugin.getDataBases().setMute(this.identifier, time))
-				.name("setTempMute").submit(this.plugin);
+			this.plugin.getThreadAsync().execute(() -> this.plugin.getDataBases().setMute(this.identifier, time));
 			return true;
 		}
 		return false;
@@ -347,13 +343,11 @@ public class ESubject implements EssentialsSubject {
 	public boolean setBan(final boolean ban) {
 		if(ban && this.ban != -1) {
 			this.ban = -1;
-			this.plugin.getGame().getScheduler().createTaskBuilder().async().execute(() -> this.plugin.getDataBases().setMute(this.identifier, -1))
-				.name("setBan").submit(this.plugin);
+			this.plugin.getThreadAsync().execute(() -> this.plugin.getDataBases().setMute(this.identifier, -1));
 			return true;
 		} else if(!ban && this.ban != 0) {
 			this.ban = 0;
-			this.plugin.getGame().getScheduler().createTaskBuilder().async().execute(() -> this.plugin.getDataBases().setMute(this.identifier, 0))
-				.name("setBan").submit(this.plugin);
+			this.plugin.getThreadAsync().execute(() -> this.plugin.getDataBases().setMute(this.identifier, 0));
 			return true;
 		}
 		return false;
@@ -363,8 +357,7 @@ public class ESubject implements EssentialsSubject {
 	public boolean setBan(final long time) {
 		if(this.ban != time) {
 			this.ban = time;
-			this.plugin.getGame().getScheduler().createTaskBuilder().async().execute(() -> this.plugin.getDataBases().setMute(this.identifier, time))
-				.name("setTempBan").submit(this.plugin);
+			this.plugin.getThreadAsync().execute(() -> this.plugin.getDataBases().setMute(this.identifier, time));
 			return true;
 		}
 		return false;
@@ -401,8 +394,7 @@ public class ESubject implements EssentialsSubject {
 	public boolean setGod(final boolean god) {		
 		if(this.god != god) {
 			this.god = god;
-			this.plugin.getGame().getScheduler().createTaskBuilder().async().execute(() -> this.plugin.getDataBases().setGod(this.identifier, god))
-				.name("setGod").submit(this.plugin);
+			this.plugin.getThreadAsync().execute(() -> this.plugin.getDataBases().setGod(this.identifier, god));
 			return true;
 		}
 		return false;
@@ -462,8 +454,7 @@ public class ESubject implements EssentialsSubject {
 		if(!this.homes.containsKey(identifier)) {
 			final LocationSQL locationSQL = new LocationSQL(this.plugin, location);
 			this.homes.put(identifier, locationSQL);
-			this.plugin.getGame().getScheduler().createTaskBuilder().async().execute(() -> this.plugin.getDataBases().addHome(this.identifier, identifier, locationSQL))
-				.name("addHome").submit(this.plugin);
+			this.plugin.getThreadAsync().execute(() -> this.plugin.getDataBases().addHome(this.identifier, identifier, locationSQL));
 			return true;
 		}
 		return false;
@@ -475,8 +466,7 @@ public class ESubject implements EssentialsSubject {
 		
 		if(this.homes.containsKey(identifier)) {
 			this.homes.remove(identifier);
-			this.plugin.getGame().getScheduler().createTaskBuilder().async().execute(() -> this.plugin.getDataBases().removeHome(this.identifier, identifier))
-				.name("removeHome").submit(this.plugin);
+			this.plugin.getThreadAsync().execute(() -> this.plugin.getDataBases().removeHome(this.identifier, identifier));
 			return true;
 		}
 		return false;
@@ -486,8 +476,7 @@ public class ESubject implements EssentialsSubject {
 	public boolean clearHome() {
 		if(!this.homes.isEmpty()) {
 			this.homes.clear();
-			this.plugin.getGame().getScheduler().createTaskBuilder().async().execute(() -> this.plugin.getDataBases().clearHomes(this.identifier))
-				.name("clearHome").submit(this.plugin);
+			this.plugin.getThreadAsync().execute(() -> this.plugin.getDataBases().clearHomes(this.identifier));
 			return true;
 		}
 		return false;
@@ -512,14 +501,12 @@ public class ESubject implements EssentialsSubject {
 		if(!this.back.isPresent()) {
 			final LocationSQL locationSQL = new LocationSQL(this.plugin, location);
 			this.back = Optional.of(locationSQL);
-			this.plugin.getGame().getScheduler().createTaskBuilder().async().execute(() -> this.plugin.getDataBases().addBack(this.identifier, locationSQL))
-				.name("setBack").submit(this.plugin);
+			this.plugin.getThreadAsync().execute(() -> this.plugin.getDataBases().addBack(this.identifier, locationSQL));
 			return true;
 		} else if (!this.back.get().getTransform().equals(location)) {
 			final LocationSQL locationSQL = new LocationSQL(this.plugin, location);
 			this.back = Optional.of(locationSQL);
-			this.plugin.getGame().getScheduler().createTaskBuilder().async().execute(() -> this.plugin.getDataBases().setBack(this.identifier, locationSQL))
-				.name("setBack").submit(this.plugin);
+			this.plugin.getThreadAsync().execute(() -> this.plugin.getDataBases().setBack(this.identifier, locationSQL));
 			return true;
 		}
 		return false;
@@ -529,8 +516,7 @@ public class ESubject implements EssentialsSubject {
 	public boolean clearBack() {
 		if(this.back.isPresent()) {
 			this.back = Optional.empty();
-			this.plugin.getGame().getScheduler().createTaskBuilder().async().execute(() -> this.plugin.getDataBases().clearBack(this.identifier))
-				.name("clearBack").submit(this.plugin);
+			this.plugin.getThreadAsync().execute(() -> this.plugin.getDataBases().clearBack(this.identifier));
 			return true;
 		}
 		return false;
@@ -551,8 +537,7 @@ public class ESubject implements EssentialsSubject {
 		
 		if(!this.ignores.contains(uuid)) {
 			this.ignores.add(uuid);
-			this.plugin.getGame().getScheduler().createTaskBuilder().async().execute(() -> this.plugin.getDataBases().addIgnore(this.identifier, uuid.toString()))
-				.name("addIgnore").submit(this.plugin);
+			this.plugin.getThreadAsync().execute(() -> this.plugin.getDataBases().addIgnore(this.identifier, uuid.toString()));
 			return true;
 		}
 		return false;
@@ -564,8 +549,7 @@ public class ESubject implements EssentialsSubject {
 		
 		if(this.ignores.contains(uuid)) {
 			this.ignores.remove(uuid);
-			this.plugin.getGame().getScheduler().createTaskBuilder().async().execute(() -> this.plugin.getDataBases().removeIgnore(this.identifier, uuid.toString()))
-				.name("removeIgnore").submit(this.plugin);
+			this.plugin.getThreadAsync().execute(() -> this.plugin.getDataBases().removeIgnore(this.identifier, uuid.toString()));
 			return true;
 		}
 		return false;
@@ -575,8 +559,7 @@ public class ESubject implements EssentialsSubject {
 	public boolean clearIgnores() {		
 		if(!this.ignores.isEmpty()) {
 			this.ignores.clear();
-			this.plugin.getGame().getScheduler().createTaskBuilder().async().execute(() -> this.plugin.getDataBases().clearIgnores(this.identifier))
-				.name("clearIgnores").submit(this.plugin);
+			this.plugin.getThreadAsync().execute(() -> this.plugin.getDataBases().clearIgnores(this.identifier));
 			return true;
 		}
 		return false;
@@ -610,8 +593,7 @@ public class ESubject implements EssentialsSubject {
 		Preconditions.checkNotNull(to, "to");
 		Preconditions.checkNotNull(message, "message");
 		
-		this.plugin.getGame().getScheduler().createTaskBuilder().async().execute(() -> this.plugin.getDataBases().sendMail(this, to, message))
-			.name("sendMail").submit(this.plugin);
+		this.plugin.getThreadAsync().execute(() -> this.plugin.getDataBases().sendMail(this, to, message));
 		return true;
 	}
 
@@ -627,8 +609,7 @@ public class ESubject implements EssentialsSubject {
 			if(mail.getID() == id) {
 				final Mail email = mail;
 				this.mails.remove(mail);
-				this.plugin.getGame().getScheduler().createTaskBuilder().async().execute(() -> this.plugin.getDataBases().removeMails(this.identifier, email.getID()))
-					.name("removeMail").submit(this.plugin);
+				this.plugin.getThreadAsync().execute(() -> this.plugin.getDataBases().removeMails(this.identifier, email.getID()));
 			}
 		}
 		
@@ -642,8 +623,7 @@ public class ESubject implements EssentialsSubject {
 	public boolean clearMails() {
 		if(!this.mails.isEmpty()) {
 			this.mails.clear();
-			this.plugin.getGame().getScheduler().createTaskBuilder().async().execute(() -> this.plugin.getDataBases().clearMails(this.identifier))
-				.name("clearMails").submit(this.plugin);
+			this.plugin.getThreadAsync().execute(() -> this.plugin.getDataBases().clearMails(this.identifier));
 			return true;
 		}
 		return false;

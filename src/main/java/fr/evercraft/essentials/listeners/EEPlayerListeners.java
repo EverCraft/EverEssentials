@@ -24,11 +24,15 @@ import org.spongepowered.api.data.value.mutable.ListValue;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.block.tileentity.ChangeSignEvent;
+import org.spongepowered.api.event.data.ChangeDataHolderEvent;
+import org.spongepowered.api.event.entity.DamageEntityEvent;
+import org.spongepowered.api.event.entity.HealEntityEvent;
 import org.spongepowered.api.event.filter.cause.First;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
 import org.spongepowered.api.text.Text;
 
 import fr.evercraft.essentials.EverEssentials;
+import fr.evercraft.essentials.service.ESubject;
 import fr.evercraft.everapi.plugin.EChat;
 
 public class EEPlayerListeners {
@@ -79,4 +83,30 @@ public class EEPlayerListeners {
 		}
 	}
 
+    @Listener
+	public void onPlayerDamage(DamageEntityEvent event) {
+    	if(event.getTargetEntity() instanceof Player) {
+	    	ESubject subject = this.plugin.getManagerServices().getEssentials().get(event.getTargetEntity().getUniqueId());
+	    	if(subject != null && subject.isGod()) {
+	    		event.setBaseDamage(0);
+	    		event.setCancelled(true);
+	    	}
+    	}
+    }
+    
+    @Listener
+	public void onPlayerHeal(HealEntityEvent event) {
+    	if(event.getTargetEntity() instanceof Player && event.getBaseHealAmount() > event.getFinalHealAmount()) {
+	    	ESubject subject = this.plugin.getManagerServices().getEssentials().get(event.getTargetEntity().getUniqueId());
+	    	if(subject != null && subject.isGod()) {
+	    		event.setCancelled(true);
+	    		this.plugin.getEServer().broadcast("EverEssentials : Test HealEntityEvent");
+	    	}
+    	}
+    }
+    
+    @Listener
+	public void onPlayerFood(ChangeDataHolderEvent.ValueChange event, @First Player player) {
+    	this.plugin.getEServer().broadcast("EverEssentials : Test ChangeDataHolderEvent");
+    }
 }

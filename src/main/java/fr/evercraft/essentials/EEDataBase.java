@@ -189,8 +189,8 @@ public class EEDataBase extends EDataBase<EverEssentials> {
     	try {
     		connection = this.getConnection();
     		String query = 	  "UPDATE `" + this.getTablePlayers() + "` "
-							+ "SET `vanish` = ? "
-							+ "WHERE `god` = ? ;";
+							+ "SET `god` = ? "
+							+ "WHERE `uuid` = ? ;";
 			preparedStatement = connection.prepareStatement(query);
 			preparedStatement.setBoolean(1, god);
 			preparedStatement.setString(2, identifier);
