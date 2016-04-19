@@ -20,9 +20,12 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Map;
 
+import fr.evercraft.essentials.service.EMail;
+import fr.evercraft.essentials.service.ESubject;
 import fr.evercraft.essentials.service.warp.LocationSQL;
 import fr.evercraft.everapi.exception.ServerDisableException;
 import fr.evercraft.everapi.plugin.EDataBase;
@@ -30,6 +33,7 @@ import fr.evercraft.everapi.plugin.EDataBase;
 public class EEDataBase extends EDataBase<EverEssentials> {
 	private String table_players;
 	private String table_ignores;
+	private String table_mails;
 	private String table_homes;
 	private String table_backs;
 	
@@ -46,8 +50,8 @@ public class EEDataBase extends EDataBase<EverEssentials> {
 							"`uuid` varchar(36) NOT NULL," +
 							"`vanish` boolean NOT NULL DEFAULT 0," +
 							"`god` boolean NOT NULL DEFAULT 0," +
-							"`mute` long NOT NULL DEFAULT 0," +
-							"`ban` long NOT NULL DEFAULT 0," +
+							"`mute` float NOT NULL DEFAULT 0," +
+							"`ban` float NOT NULL DEFAULT 0," +
 							"PRIMARY KEY (`uuid`));";
 		initTable(this.getTablePlayers(), players);
 		
@@ -57,6 +61,17 @@ public class EEDataBase extends EDataBase<EverEssentials> {
 							"`ignore` varchar(36) NOT NULL," +
 							"PRIMARY KEY (`uuid`, `ignore`));";
 		initTable(this.getTableIgnores(), ignores);
+		
+		this.table_mails = "mails";
+		String mails = 	"CREATE TABLE IF NOT EXISTS <table> (" +
+							"`id` MEDIUMINT NOT NULL AUTO_INCREMENT," +
+							"`datetime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP," +
+							"`read` BOOLEAN DEFAULT FALSE," +
+							"`player` varchar(36) NOT NULL," +
+							"`to` varchar(36) NOT NULL," +
+							"`message` varchar(255) NOT NULL," +
+							"PRIMARY KEY (`id`));";
+		initTable(this.getTableMails(), mails);
 		
 		this.table_homes = "homes";
 		String homes = 		"CREATE TABLE IF NOT EXISTS <table> (" +
@@ -118,6 +133,10 @@ public class EEDataBase extends EDataBase<EverEssentials> {
 		return this.getPrefix() + this.table_ignores;
 	}
 	
+	public String getTableMails() {
+		return this.getPrefix() + this.table_mails;
+	}
+	
 	public String getTableHomes() {
 		return this.getPrefix() + this.table_homes;
 	}
@@ -170,8 +189,8 @@ public class EEDataBase extends EDataBase<EverEssentials> {
     	try {
     		connection = this.getConnection();
     		String query = 	  "UPDATE `" + this.getTablePlayers() + "` "
-							+ "SET `vanish` = ? "
-							+ "WHERE `god` = ? ;";
+							+ "SET `god` = ? "
+							+ "WHERE `uuid` = ? ;";
 			preparedStatement = connection.prepareStatement(query);
 			preparedStatement.setBoolean(1, god);
 			preparedStatement.setString(2, identifier);
@@ -617,12 +636,12 @@ public class EEDataBase extends EDataBase<EverEssentials> {
 			preparedStatement = connection.prepareStatement(query);
 			ResultSet list = preparedStatement.executeQuery();
 			if (list.next()) {
-				warps.put(list.getString("identifier"), new LocationSQL(this.plugin,	list.getString("world"), 
-																						list.getDouble("x"),
-																						list.getDouble("y"),
-																						list.getDouble("z"),
-																						list.getDouble("yaw"),
-																						list.getDouble("pitch")));
+			warps.put(list.getString("identifier"), new LocationSQL(this.plugin,	list.getString("world"), 
+																					list.getDouble("x"),
+																					list.getDouble("y"),
+																					list.getDouble("z"),
+																					list.getDouble("yaw"),
+																					list.getDouble("pitch")));
 				this.plugin.getLogger().debug("Loading : (spawn='" + list.getString("identifier") + "';location='" + warps.get(list.getString("identifier")) + "')");
 			}
     	} catch (SQLException e) {
@@ -705,7 +724,106 @@ public class EEDataBase extends EDataBase<EverEssentials> {
 			preparedStatement.execute();
 			this.plugin.getLogger().debug("Removes the database spawns");
     	} catch (SQLException e) {
-    		this.plugin.getLogger().warn("Error warps deletions : " + e.getMessage());
+    		this.plugin.getLogger().warn("Error spawns deletions : " + e.getMessage());
+		} catch (ServerDisableException e) {
+			e.execute();
+		} finally {
+			try {
+				if (preparedStatement != null) preparedStatement.close();
+				if (connection != null) connection.close();
+			} catch (SQLException e) {}
+	    }
+	}
+
+	public void sendMail(ESubject subject, String to, String message) {
+		Connection connection = null;
+		PreparedStatement preparedStatement = null;
+    	try {
+    		connection = this.getConnection();
+    		String query = 	  "INSERT INTO `" + this.getTableMails() + "` (`datetime`, `player`, `to`, `message`) "
+    						+ "VALUES (?, ?, ?, ?);";
+    		
+    		Timestamp datetime = new Timestamp(System.currentTimeMillis());
+    		
+			preparedStatement = connection.prepareStatement(query);
+			preparedStatement.setTimestamp(1, datetime);
+			preparedStatement.setString(2, subject.getIdentifier());
+			preparedStatement.setString(3, to);
+			preparedStatement.setString(4, message);
+			preparedStatement.executeUpdate();
+			
+			ResultSet tableKeys = preparedStatement.getGeneratedKeys();
+			if(tableKeys.next()) {
+				subject.addMail(new EMail(this.plugin, tableKeys.getInt(1), datetime.getTime(), to, false, message));
+				this.plugin.getLogger().debug("Adding to the database : ("
+								+ "id='" + tableKeys.getInt(1) + "';"
+								+ "time='" + datetime.getTime() + "';"
+								+ "player='" + subject.getIdentifier() + "';"
+								+ "to='" + to + "';"
+								+ "message='" + message + "';)");
+			} else {
+				this.plugin.getLogger().debug("Error while adding an email in the database : ("
+						+ "time='" + datetime.getTime() + "';"
+						+ "player='" + subject.getIdentifier() + "';"
+						+ "to='" + to + "';"
+						+ "message='" + message + "';)");
+			}
+    	} catch (SQLException e) {
+    		this.plugin.getLogger().debug("Error while adding an email in the database : ("
+						+ "player='" + subject.getIdentifier() + "';"
+						+ "to='" + to + "';"
+						+ "message='" + message + "';)");
+		} catch (ServerDisableException e) {
+			e.execute();
+		} finally {
+			try {
+				if (preparedStatement != null) preparedStatement.close();
+				if (connection != null) connection.close();
+			} catch (SQLException e) {}
+	    }
+	}
+	
+	public void removeMails(String identifier, int id) {
+		Connection connection = null;
+		PreparedStatement preparedStatement = null;
+    	try {
+    		connection = this.getConnection();
+    		String query = 	  "DELETE " 
+		    				+ "FROM `" + this.getTableMails() + "` "
+		    				+ "WHERE `player` = ?  AND `id` = ? ;";
+			preparedStatement = connection.prepareStatement(query);
+			preparedStatement.setString(1, identifier);
+			preparedStatement.setInt(2, id);
+			
+			preparedStatement.execute();
+			this.plugin.getLogger().debug("Deleting an email from the database : (id='" + id + "';player='" + identifier + "')");
+    	} catch (SQLException e) {
+        	this.plugin.getLogger().warn("Error while deleting an email (id='" + id + "';player='" + identifier + "') : " + e.getMessage());
+		} catch (ServerDisableException e) {
+			e.execute();
+		} finally {
+			try {
+				if (preparedStatement != null) preparedStatement.close();
+				if (connection != null) connection.close();
+			} catch (SQLException e) {}
+	    }
+	}
+
+	public void clearMails(String identifier) {
+		Connection connection = null;
+		PreparedStatement preparedStatement = null;
+    	try {
+    		connection = this.getConnection();
+    		String query = 	  "DELETE " 
+		    				+ "FROM `" + this.getTableSpawns() + "` "
+		    				+ "WHERE `player` = ? ;";
+			preparedStatement = connection.prepareStatement(query);
+			preparedStatement.setString(1, identifier);
+			
+			preparedStatement.execute();
+			this.plugin.getLogger().debug("Removes all mail from the database : (player='" + identifier + "')");
+    	} catch (SQLException e) {
+    		this.plugin.getLogger().warn("Error during the deletion of all mail database (player='" + identifier + "') : " + e.getMessage());
 		} catch (ServerDisableException e) {
 			e.execute();
 		} finally {

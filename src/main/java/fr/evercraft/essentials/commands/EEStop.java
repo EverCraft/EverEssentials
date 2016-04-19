@@ -29,24 +29,23 @@ import org.spongepowered.api.text.format.TextColors;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.ECommand;
-import fr.evercraft.everapi.server.player.EPlayer;
 
-public class EEBroadcast extends ECommand<EverEssentials> {
+public class EEStop extends ECommand<EverEssentials> {
 	
-	public EEBroadcast(final EverEssentials plugin) {
-        super(plugin ,"broadcast", "bcast");
+	public EEStop(final EverEssentials plugin) {
+        super(plugin ,"stop");
     }
 	
 	public boolean testPermission(final CommandSource source) {
-		return source.hasPermission(this.plugin.getPermissions().get("BROADCAST"));
+		return source.hasPermission(this.plugin.getPermissions().get("STOP"));
 	}
 
 	public Text description(final CommandSource source) {
-		return this.plugin.getMessages().getText("BROADCAST_DESCRIPTION");
+		return this.plugin.getMessages().getText("STOP_DESCRIPTION");
 	}
 
 	public Text help(final CommandSource source) {
-		Text help = Text.builder("/broadcast <message...>").onClick(TextActions.suggestCommand("/broadcast "))
+		Text help = Text.builder("/stop <raison...>").onClick(TextActions.suggestCommand("/stop "))
 					.color(TextColors.RED).build();
 		return help;
 	}
@@ -69,28 +68,31 @@ public class EEBroadcast extends ECommand<EverEssentials> {
 	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Résultat de la commande :
 		boolean resultat = false;
-		if(args.size() == 1) {
-			// Si la source est un joueur
-			if (source instanceof EPlayer) {
-				resultat = commandBroadcastPlayer((EPlayer) source, args.get(0));
-			// La source n'est pas un joueur
-			} else {
-				resultat = commandBroadcastConsole(source, args.get(0));
-			}
+		if(args.size() == 0) {
+			resultat = commandStop(source);
 		} else {
-			source.sendMessage(help(source));
+			resultat = commandStop(source, args.get(0));
 		}
 		return resultat;
 	}
-	
-	public boolean commandBroadcastPlayer(final EPlayer player, String message) {
-		
-		this.plugin.getEServer().getBroadcastChannel().send(EChat.of(this.plugin.getMessages().getMessage("BROADCAST_PREFIX_PLAYER").replaceAll("<player>", player.getName()) + message));
+
+	public boolean commandStop(final CommandSource player) {
+		this.plugin.getLogger().info("Server shutdown by '" + player.getName() + "'");
+		this.plugin.getGame().getServer().shutdown(
+				EChat.of(this.plugin.getChat().replaceGlobal(
+					this.plugin.getMessages().getMessage("STOP_MESSAGE")
+							.replaceAll("<staff>", player.getName()))));
 		return true;
 	}
 	
-	public boolean commandBroadcastConsole(final CommandSource player, String message) {
-		this.plugin.getEServer().getBroadcastChannel().send(EChat.of(this.plugin.getMessages().getMessage("BROADCAST_PREFIX_CONSOLE") + message));
+	public boolean commandStop(final CommandSource player, String message) {
+		this.plugin.getLogger().info("Server shutdown by '" + player.getName() + "' (reason='" + message + "')");
+		this.plugin.getGame().getServer().shutdown(
+				EChat.of(this.plugin.getChat().replaceGlobal(
+					this.plugin.getMessages().getMessage("STOP_MESSAGE_REASON")
+							.replaceAll("<staff>", player.getName())
+							.replaceAll("<reason>", this.plugin.getChat().replace(message)))));
+		
 		return true;
 	}
 }

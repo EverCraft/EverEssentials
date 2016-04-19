@@ -19,7 +19,7 @@ package fr.evercraft.essentials;
 import org.spongepowered.api.plugin.Dependency;
 import org.spongepowered.api.plugin.Plugin;
 
-import fr.evercraft.essentials.events.EEPlayerListeners;
+import fr.evercraft.essentials.listeners.EEPlayerListeners;
 import fr.evercraft.essentials.managers.EEManagerCommands;
 import fr.evercraft.essentials.managers.EEManagerServices;
 import fr.evercraft.everapi.exception.PluginDisableException;
