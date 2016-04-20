@@ -148,6 +148,7 @@ public class EEMessage extends EMessage {
 		addDefault("god.othersStaffEnableError", "&6<player> &7est déjà invulnérable.");
 		addDefault("god.othersStaffDisable", "&7Vous venez de rendre vulnérable &6<player>&7.");
 		addDefault("god.othersStaffDisableError", "&6<player> &7est déjà vulnérable.");
+		addDefault("god.teleport", "&7Vous avez été téléporté car vous étiez en train de tomber dans le vide.");
 		
 		addDefault("hat.description", "Place l'objet dans votre main sur votre tête");
 		addDefault("hat.itemColor", "&6");
@@ -621,6 +622,7 @@ public class EEMessage extends EMessage {
 		addMessage("GOD_OTHERS_STAFF_ENABLE_ERROR", "god.othersStaffEnableError");
 		addMessage("GOD_OTHERS_STAFF_DISABLE", "god.othersStaffDisable");
 		addMessage("GOD_OTHERS_STAFF_DISABLE_ERROR", "god.othersStaffDisableError");
+		addMessage("GOD_TELEPORT", "god.teleport");
 		
 		addMessage("HAT_DESCRIPTION", "hat.description");
 		addMessage("HAT_ITEM_COLOR", "hat.itemColor");

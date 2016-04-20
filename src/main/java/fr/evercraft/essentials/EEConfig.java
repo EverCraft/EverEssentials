@@ -57,6 +57,8 @@ public class EEConfig extends EConfig {
 		addDefault("remove-god-on-disconnect", false);
 		addDefault("remove-vanish-on-disconnect", true);
 		
+		addDefault("god-teleport-to-spawn", true);
+		
 		if(get("list").getValue() == null) {
 			addDefault("list.Admins", "owner admin", "To merge groups, list the groups you wish to merge", "Staff: owner admin moderator");
 			addDefault("list.builder", 20, "To limit groups, set a max user limit");
@@ -82,6 +84,10 @@ public class EEConfig extends EConfig {
 	}
 	
 	public boolean removeVanishOnDisconnect() {
+		return get("remove-vanish-on-disconnect").getBoolean(true);
+	}
+	
+	public boolean isGodTeleportToSpawn() {
 		return get("remove-vanish-on-disconnect").getBoolean(true);
 	}
 	

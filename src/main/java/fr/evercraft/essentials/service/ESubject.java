@@ -142,7 +142,7 @@ public class ESubject implements EssentialsSubject {
 				this.ban = list.getLong("ban");
 				
 				this.plugin.getLogger().debug("Loading : (identifier='" + this.identifier + "';"
-														+ "vanish='" + this.vanish + "'z;"
+														+ "vanish='" + this.vanish + "';"
 														+ "god='" + this.god + "';"
 														+ "mute='" + this.mute + "';"
 														+ "ban='" + this.ban + "')");

@@ -24,6 +24,8 @@ import org.spongepowered.api.data.value.mutable.ListValue;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.block.tileentity.ChangeSignEvent;
+import org.spongepowered.api.event.cause.entity.damage.source.DamageSource;
+import org.spongepowered.api.event.cause.entity.damage.source.DamageSources;
 import org.spongepowered.api.event.data.ChangeDataHolderEvent;
 import org.spongepowered.api.event.entity.DamageEntityEvent;
 import org.spongepowered.api.event.entity.HealEntityEvent;
@@ -34,6 +36,7 @@ import org.spongepowered.api.text.Text;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.essentials.service.ESubject;
 import fr.evercraft.everapi.plugin.EChat;
+import fr.evercraft.everapi.server.player.EPlayer;
 
 public class EEPlayerListeners {
 	private EverEssentials plugin;
@@ -85,11 +88,26 @@ public class EEPlayerListeners {
 
     @Listener
 	public void onPlayerDamage(DamageEntityEvent event) {
+    	// C'est un joueur
     	if(event.getTargetEntity() instanceof Player) {
-	    	ESubject subject = this.plugin.getManagerServices().getEssentials().get(event.getTargetEntity().getUniqueId());
-	    	if(subject != null && subject.isGod()) {
-	    		event.setBaseDamage(0);
-	    		event.setCancelled(true);
+	    	Optional<EPlayer> player = this.plugin.getEServer().getEPlayer(event.getTargetEntity().getUniqueId());
+	    	// Le joueur est en god
+	    	if(player.isPresent() && player.get().isGod()) {
+	    		Optional<DamageSource> damagesource = event.getCause().first(DamageSource.class);
+	    		// Le joueur tombe dans le vide
+	    		if(damagesource.isPresent() && damagesource.get().equals(DamageSources.VOID)) {
+	    			// L'option de téléportation au spwan est activé
+	    			if(this.plugin.getConfigs().isGodTeleportToSpawn()) {
+	    				player.get().sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("GOD_TELEPORT"));
+	    				player.get().teleportSpawn();
+	    				player.get().heal();
+			    		event.setCancelled(true);
+		    		}
+	    		// Domage normal
+	    		} else {
+	    			player.get().heal();
+		    		event.setCancelled(true);
+	    		}
 	    	}
     	}
     }
