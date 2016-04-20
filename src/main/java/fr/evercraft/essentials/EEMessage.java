@@ -48,6 +48,8 @@ public class EEMessage extends EMessage {
 		addDefault("back.teleport", "&7Vous avez été téléporté à votre dernière <back>&7.");
 		addDefault("back.inconnu", "&cVous n'avez aucune position sauvegardé.");
 		
+		addDefault("bed.description", "Retourne à la dernière position ou vous avez dormi.");
+		
 		addDefault("broadcast.description", "Envoye un message à tous les joueurs.");
 		addDefault("broadcast.prefixPlayer", "&7[&6<player>&7] : ");
 		addDefault("broadcast.prefixConsole", "&7[&6Console&7] : ");
@@ -519,6 +521,8 @@ public class EEMessage extends EMessage {
 		addMessage("BACK_NAME_HOVER", "back.nameHover");
 		addMessage("BACK_TELEPORT", "back.teleport");
 		addMessage("BACK_INCONNU", "back.inconnu");
+		
+		addMessage("BED_DESCRIPTION", "bed.description");
 		
 		addMessage("BROADCAST_DESCRIPTION", "broadcast.description");
 		addMessage("BROADCAST_PREFIX_PLAYER", "broadcast.prefixPlayer");
