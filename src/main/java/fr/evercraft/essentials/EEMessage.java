@@ -255,6 +255,28 @@ public class EEMessage extends EMessage {
 		addDefault("list.tagVanish", "&7[HIDDEN]", "&7[VANISH] ");
 		addDefault("list.empty", "&7Aucun joueur");
 		
+		addDefault("mail.description", "Gestion de vos messages");
+		addDefault("mail.readTitle", "&aLa liste des message");
+		addDefault("mail.readLineRead", "&a&l➤&7 Message de &6<player>&7 le &6<datetime> : <read> <delete>");
+		addDefault("mail.readLineNoRead", "&6&l➤&7 Message de &6<player>&7 le &6<datetime> : <read> <delete>");
+		addDefault("mail.readEmpty", "&7Vous n'avez aucun message");
+		addDefault("mail.readError", "&cVous n'avez pas de message qui correspond.");
+		addDefault("mail.delete", "&7Voulez-vous vraiment supprimer le <mail> : <confirmation>.");
+		addDefault("mail.deleteConfirmation", "&7Le <mail> &7a bien été supprimé.");
+		addDefault("mail.deleteConfirmationValid", "&2&nConfirmer");
+		addDefault("mail.deleteConfirmationValidHover", "&cCliquez ici pour supprimer le message.");
+		addDefault("mail.deleteMail", "&6mail");
+		addDefault("mail.deleteMailHover", "&7De &6<player>[RT]&7Le &6<date>");
+		addDefault("mail.deleteError", "&cVous n'avez pas de message qui correspond.");
+		addDefault("mail.clear", "&7Vous avez supprimé tous vos messages.");
+		addDefault("mail.send", "&7Votre message a bien été envoyé à &6<player>&7.");
+		addDefault("mail.sendEquals", "&7Votre message vous a bien été envoyé.");
+		addDefault("mail.sendAll", "&7Votre message a bien été envoyé à tous les joueurs.");
+		addDefault("mail.buttomRead", "&a&nLire");
+		addDefault("mail.buttomReadHover", "&cCliquez ici pour lire le message.");
+		addDefault("mail.buttonDelete", "&c&nSupprimer");
+		addDefault("mail.buttonDeleteHover", "&cCliquez ici pour supprimer le message.");
+		
 		addDefault("me.description", "Envoie un texte d'action dans le tchat");
 		addDefault("me.prefix", "&f* <player> &r");
 		
@@ -730,6 +752,26 @@ public class EEMessage extends EMessage {
 		addMessage("LIST_EMPTY", "list.empty");
 		
 		addMessage("MAIL_DESCRIPTION", "mail.description");
+		addMessage("MAIL_READ_TITLE", "mail.readTitle");
+		addMessage("MAIL_READ_LINE_READ", "mail.readLineRead");
+		addMessage("MAIL_READ_LINE_NO_READ", "mail.readLineNoRead");
+		addMessage("MAIL_READ_EMPTY", "mail.readEmpty");
+		addMessage("MAIL_READ_ERROR", "mail.readError");
+		addListMessages("MAIL_READ_BOOK", "mail.readBook");
+		addMessage("MAIL_DELETE", "mail.delete");
+		addMessage("MAIL_DELETE_CONFIRMATION", "mail.deleteConfirmation");
+		addMessage("MAIL_DELETE_CONFIRMATION_VALID", "mail.deleteConfirmationValid");
+		addMessage("MAIL_DELETE_CONFIRMATION_VALID_HOVER", "mail.deleteConfirmationValidHover");
+		addMessage("MAIL_DELETE_MAIL", "mail.deleteMail");
+		addMessage("MAIL_DELETE_MAIL_HOVER", "mail.deleteMailHover");
+		addMessage("MAIL_DELETE_ERROR", "mail.deleteError");
+		addMessage("MAIL_CLEAR", "mail.clear");
+		addMessage("MAIL_SEND", "mail.send");
+		addMessage("MAIL_SENDALL", "mail.sendAll");
+		addMessage("MAIL_BUTTOM_READ", "mail.buttomRead");
+		addMessage("MAIL_BUTTOM_READ_HOVER", "mail.buttomReadHover");
+		addMessage("MAIL_BUTTON_DELETE", "mail.buttonDelete");
+		addMessage("MAIL_BUTTON_DELETE_HOVER", "mail.buttonDeleteHover");
 		
 		addMessage("ME_DESCRIPTION", "me.description");
 		addMessage("ME_PREFIX", "me.prefix");

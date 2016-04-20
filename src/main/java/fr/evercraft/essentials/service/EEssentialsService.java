@@ -16,6 +16,9 @@
  */
 package fr.evercraft.essentials.service;
 
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -152,5 +155,12 @@ public class EEssentialsService implements EssentialsService {
 	@Override
 	public String getPermissionVanishSee() {
 		return this.plugin.getPermissions().get("VANISH_SEE");
+	}
+
+	public Collection<ESubject> getAll() {
+		Set<ESubject> list = new HashSet<ESubject>();
+		list.addAll(this.subjects.values());
+		list.addAll(this.cache.asMap().values());
+		return list;
 	}
 }

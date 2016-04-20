@@ -21,6 +21,8 @@ import java.util.Optional;
 import org.spongepowered.api.entity.living.player.User;
 import org.spongepowered.api.text.Text;
 
+import com.google.common.base.Preconditions;
+
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.services.essentials.Mail;
@@ -37,6 +39,9 @@ public class EMail implements Mail {
 	private String message;
 
 	public EMail(EverEssentials plugin, int id, long time, String to, boolean read, String message) {
+		Preconditions.checkNotNull(plugin, "plugin");
+		Preconditions.checkNotNull(message, "message");
+		
 		this.plugin = plugin;
 		this.id = id;
 		this.time = time;
@@ -89,7 +94,10 @@ public class EMail implements Mail {
 		return EChat.of(this.plugin.getChat().replace(this.message));
 	}
 
-	public String getMessage() {
-		return this.message;
+	@Override
+	public String toString() {
+		return "EMail [id=" + this.id + ", time=" + this.time + ", to=" + this.to + ", read=" + this.read + ", message=" + this.message + "]";
 	}
+	
+	
 }

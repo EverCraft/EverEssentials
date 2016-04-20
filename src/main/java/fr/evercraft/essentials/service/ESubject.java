@@ -241,11 +241,12 @@ public class ESubject implements EssentialsSubject {
 			preparedStatement.setString(1, this.identifier);
 			ResultSet list = preparedStatement.executeQuery();
 			while (list.next()) {
-				this.mails.add(new EMail(this.plugin, list.getInt("id"), list.getLong("datetime"), list.getString("to"), list.getBoolean("read"), list.getString("message")));
-				this.plugin.getLogger().debug("Loading : (identifier='" + this.identifier + "';ignore='" + list.getString("ignore") + "')");
+				Mail mail = new EMail(this.plugin, list.getInt("id"), list.getTimestamp("datetime").getTime(), list.getString("to"), list.getBoolean("read"), list.getString("message"));
+				this.mails.add(mail);
+				this.plugin.getLogger().debug("Loading : (identifier='" + this.identifier + "';mail='" + mail + "')");
 			}
     	} catch (SQLException e) {
-    		this.plugin.getLogger().warn("Ignores error when loading : " + e.getMessage());
+    		this.plugin.getLogger().warn("Mails error when loading : " + e.getMessage());
 		} finally {
 			try {if (preparedStatement != null) preparedStatement.close();} catch (SQLException e) {}
 	    }
@@ -577,6 +578,24 @@ public class ESubject implements EssentialsSubject {
 	public Set<Mail> getMails() {
 		return ImmutableSet.copyOf(this.mails);
 	}
+	
+	@Override
+	public Optional<Mail> getMail(int id) {
+		Preconditions.checkNotNull(id, "id");
+		
+		boolean found = false;
+		Iterator<Mail> mails = this.mails.iterator();
+		Mail mail = null;
+		while(!found && mails.hasNext()) {
+			mail = mails.next();
+			found = mail.getID() == id;
+		}
+		
+		if(found) {
+			return Optional.of(mail);
+		}
+		return Optional.empty();
+	}
 
 	@Override
 	public boolean hasMail() {
@@ -589,7 +608,7 @@ public class ESubject implements EssentialsSubject {
 	}
 
 	@Override
-	public boolean receiveMail(String to, String message) {
+	public boolean addMail(String to, String message) {
 		Preconditions.checkNotNull(to, "to");
 		Preconditions.checkNotNull(message, "message");
 		
@@ -599,22 +618,11 @@ public class ESubject implements EssentialsSubject {
 
 	@Override
 	public Optional<Mail> removeMail(int id) {
-		Preconditions.checkNotNull(id, "id");
-		
-		boolean found = false;
-		Iterator<Mail> mails = this.mails.iterator();
-		Mail mail = null;
-		while(!found && mails.hasNext()) {
-			mail = mails.next();
-			if(mail.getID() == id) {
-				final Mail email = mail;
-				this.mails.remove(mail);
-				this.plugin.getThreadAsync().execute(() -> this.plugin.getDataBases().removeMails(this.identifier, email.getID()));
-			}
-		}
-		
-		if(found) {
-			return Optional.of(mail);
+		final Optional<Mail> mail = this.getMail(id);
+		if(mail.isPresent()) {
+			this.mails.remove(mail.get());
+			this.plugin.getThreadAsync().execute(() -> this.plugin.getDataBases().removeMails(this.identifier, mail.get().getID()));
+			return mail;
 		}
 		return Optional.empty();
 	}
@@ -628,10 +636,22 @@ public class ESubject implements EssentialsSubject {
 		}
 		return false;
 	}
+	
+	@Override
+	public Optional<Mail> readMail(int id) {		
+		final Optional<Mail> mail = this.getMail(id);
+		if(mail.isPresent()) {
+			if(!mail.get().isRead()) {
+				mail.get().setRead(true);
+				this.plugin.getThreadAsync().execute(() -> this.plugin.getDataBases().updateMail(mail.get()));
+			}
+			return mail;
+		}
+		return Optional.empty();
+	}
 
 	public void addMail(Mail mail) {
 		Preconditions.checkNotNull(mail, "mail");
-		
 		this.mails.add(mail);
 	}
 	
