@@ -38,6 +38,9 @@ public class EEPermission extends EPermission {
 		
 		add("BACK", "back.command");
 		
+		add("BED", "back.command");
+		add("BED_OTHERS", "back.others");
+		
 		add("BOOK", "book.command");
 		
 		add("BROADCAST", "broadcast.command");
