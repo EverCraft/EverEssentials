@@ -39,7 +39,6 @@ import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.ECommand;
 import fr.evercraft.everapi.server.player.EPlayer;
 import fr.evercraft.everapi.services.essentials.Mail;
-import fr.evercraft.everapi.sponge.UtilsBook;
 import fr.evercraft.everapi.text.ETextBuilder;
 
 public class EEMail extends ECommand<EverEssentials> {
@@ -193,6 +192,14 @@ public class EEMail extends ECommand<EverEssentials> {
 				} else {
 					source.sendMessage(this.plugin.getPermissions().noPermission());
 				}
+			} else if(args.get(0).equalsIgnoreCase("delete") && args.get(2).equalsIgnoreCase("confirmation")) {
+				// Si la source est un joueur
+				if(source instanceof EPlayer) {
+					resultat = commandDeleteConfirmation((EPlayer) source, args.get(1));
+				// La source n'est pas un joueur
+				} else {
+					source.sendMessage(this.plugin.getEverAPI().getMessages().getText("COMMAND_ERROR_FOR_PLAYER"));
+				}
 			} else {
 				source.sendMessage(help(source));
 			}
@@ -201,6 +208,10 @@ public class EEMail extends ECommand<EverEssentials> {
 		}
 		return resultat;
 	}
+	
+	/*
+	 * Read
+	 */
 
 	private boolean commandRead(EPlayer player) {
 		Set<Mail> mails = player.getMails();
@@ -266,7 +277,6 @@ public class EEMail extends ECommand<EverEssentials> {
 			Optional<Mail> mail = player.readMail(Integer.parseInt(id_string));
 			if(mail.isPresent()) {
 				BookView.Builder book = BookView.builder();
-				book = book.addPage(Text.joinWith(Text.of("\n"), UtilsBook.verticalCenter(this.readReplace(this.plugin.getMessages().getListMessage("MAIL_READ_BOOK"), mail.get()))));
 				book = book.addPage(mail.get().getText());
 				player.sendBookView(book.build());
 				return true;
@@ -281,25 +291,47 @@ public class EEMail extends ECommand<EverEssentials> {
 		return false;
 	}
 	
-	private List<Text> readReplace(List<String> list, Mail mail) {
-		List<Text> texts = new ArrayList<Text>();
-		for(String line : list) {
-			line = line.replaceAll("<player>", mail.getToName());
-			line = line.replaceAll("<time>", this.plugin.getEverAPI().getManagerUtils().getDate().parseTime(mail.getDateTime()));
-			line = line.replaceAll("<date>", this.plugin.getEverAPI().getManagerUtils().getDate().parseDate(mail.getDateTime()));
-			line = line.replaceAll("<datetime>", this.plugin.getEverAPI().getManagerUtils().getDate().parseDateTime(mail.getDateTime()));
-			texts.add(EChat.of(line));
-		}
-		return texts;
-	}
+	/*
+	 * Delete
+	 */
 	
 	private boolean commandDelete(EPlayer player, String id_string) {
+		try {
+			Optional<Mail> mail = player.getMail(Integer.parseInt(id_string));
+			if(mail.isPresent()) {	
+				player.sendMessage(ETextBuilder.toBuilder(this.plugin.getMessages().getText("PREFIX"))
+						.append(this.plugin.getMessages().getMessage("MAIL_DELETE")
+							.replaceAll("<id>", String.valueOf(mail.get().getID()))
+							.replaceAll("<player>", mail.get().getToName())
+							.replaceAll("<time>", this.plugin.getEverAPI().getManagerUtils().getDate().parseTime(mail.get().getDateTime()))
+							.replaceAll("<date>", this.plugin.getEverAPI().getManagerUtils().getDate().parseDate(mail.get().getDateTime()))
+							.replaceAll("<datetime>", this.plugin.getEverAPI().getManagerUtils().getDate().parseDateTime(mail.get().getDateTime())))
+						.replace("<mail>", getButtomDeleteMail(mail.get()))
+						.replace("<confirmation>", getButtonDeleteConfirmation(mail.get()))
+						.build());
+			} else {
+				player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("MAIL_DELETE_ERROR")
+						.replaceAll("<id>", id_string));
+			}
+		} catch (NumberFormatException e){
+			player.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getEverAPI().getMessages().getMessage("IS_NOT_NUMBER")
+					.replaceAll("<number>", id_string)));
+		}
+		return false;
+	}
+	
+	private boolean commandDeleteConfirmation(EPlayer player, String id_string) {
 		try {
 			Optional<Mail> mail = player.removeMail(Integer.parseInt(id_string));
 			if(mail.isPresent()) {	
 				player.sendMessage(ETextBuilder.toBuilder(this.plugin.getMessages().getText("PREFIX"))
-						.append(this.plugin.getMessages().getMessage("MAIL_DELETE"))
-						.replace("<mail>", getButtomDelete(mail.get()))
+						.append(this.plugin.getMessages().getMessage("MAIL_DELETE_CONFIRMATION")
+							.replaceAll("<id>", String.valueOf(mail.get().getID()))
+							.replaceAll("<player>", mail.get().getToName())
+							.replaceAll("<time>", this.plugin.getEverAPI().getManagerUtils().getDate().parseTime(mail.get().getDateTime()))
+							.replaceAll("<date>", this.plugin.getEverAPI().getManagerUtils().getDate().parseDate(mail.get().getDateTime()))
+							.replaceAll("<datetime>", this.plugin.getEverAPI().getManagerUtils().getDate().parseDateTime(mail.get().getDateTime())))
+						.replace("<mail>", getButtomDeleteMail(mail.get()))
 						.build());
 				return true;
 			} else {
@@ -313,7 +345,14 @@ public class EEMail extends ECommand<EverEssentials> {
 		return false;
 	}
 	
-	private Text getButtomDelete(Mail mail) {
+	private Text getButtonDeleteConfirmation(final Mail mail){
+		return this.plugin.getMessages().getText("MAIL_DELETE_VALID").toBuilder()
+					.onHover(TextActions.showText(EChat.of(this.plugin.getMessages().getMessage("MAIL_DELETE_VALID_HOVER"))))
+					.onClick(TextActions.runCommand("/mail delete " + mail.getID() + " confirmation"))
+					.build();
+	}
+	
+	private Text getButtomDeleteMail(final Mail mail) {
 		return EChat.of(this.plugin.getMessages().getMessage("MAIL_DELETE_MAIL")).toBuilder()
 					.onHover(TextActions.showText(EChat.of(this.plugin.getMessages().getMessage("MAIL_DELETE_MAIL_HOVER")
 							.replaceAll("<id>", String.valueOf(mail.getID()))
@@ -324,9 +363,13 @@ public class EEMail extends ECommand<EverEssentials> {
 					.build();
 	}
 
+	/*
+	 * Clear
+	 */
+	
 	private boolean commandClear(EPlayer player) {
 		if(player.clearMails()) {
-			player.sendMessage(this.plugin.getMessages().getText("PREFIX").concat(this.plugin.getMessages().getText("MAIL_CLEAR_PLAYER")));
+			player.sendMessage(this.plugin.getMessages().getText("PREFIX").concat(this.plugin.getMessages().getText("MAIL_CLEAR")));
 			return true;
 		} else {
 			player.sendMessage(this.plugin.getMessages().getText("PREFIX").concat(this.plugin.getMessages().getText("MAIL_CLEAR_ERROR")));
@@ -334,12 +377,21 @@ public class EEMail extends ECommand<EverEssentials> {
 		return false;
 	}
 	
+	/*
+	 * Send
+	 */
+	
 	private boolean commandSend(CommandSource staff, User player, String message) {
 		ESubject subject = this.plugin.getManagerServices().getEssentials().get(player.getUniqueId());
 		if(subject != null) {
 			if(subject.addMail(staff.getIdentifier(), message)) {
-				staff.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("MAIL_SEND")
+				if(staff.getIdentifier().equals(player.getIdentifier())) {
+					staff.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("MAIL_SEND")
 						.replaceAll("<player>", player.getName())));
+				} else {
+					staff.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("MAIL_SEND_EQUALS")
+							.replaceAll("<player>", player.getName())));
+				}
 			} else {
 				staff.sendMessage(this.plugin.getMessages().getText("PREFIX").concat(this.plugin.getEverAPI().getMessages().getCommandError()));
 			}
@@ -349,6 +401,10 @@ public class EEMail extends ECommand<EverEssentials> {
 		return true;
 	}
 
+	/*
+	 * SendAll
+	 */
+	
 	private boolean commandSendAll(CommandSource player, String message) {
 		this.plugin.getThreadAsync().execute(() -> this.plugin.getDataBases().sendAllMail(player.getIdentifier(), message));
 		player.sendMessage(this.plugin.getMessages().getText("PREFIX").concat(this.plugin.getMessages().getText("MAIL_SENDALL")));
