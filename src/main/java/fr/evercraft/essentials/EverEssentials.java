@@ -27,12 +27,12 @@ import fr.evercraft.everapi.plugin.EPlugin;
 
 @Plugin(id = "fr.evercraft.everessentials", 
 		name = "EverEssentials", 
-		version = "0.1", 
+		version = "1.1", 
 		description = "Commande de base",
 		url = "http://evercraft.fr/",
 		authors = {"rexbut","lesbleu"},
 		dependencies = {
-		    @Dependency(id = "fr.evercraft.everapi", version = "1.0"),
+		    @Dependency(id = "fr.evercraft.everapi", version = "1.1"),
 		    @Dependency(id = "fr.evercraft.everchat", optional = true)
 		})
 public class EverEssentials extends EPlugin {
