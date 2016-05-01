@@ -32,7 +32,6 @@ import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.Transform;
-import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.world.World;
 
 import com.google.common.base.Preconditions;
@@ -42,6 +41,7 @@ import com.google.common.collect.ImmutableSet;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.essentials.service.warp.LocationSQL;
 import fr.evercraft.everapi.exception.ServerDisableException;
+import fr.evercraft.everapi.server.player.EPlayer;
 import fr.evercraft.everapi.services.essentials.EssentialsSubject;
 import fr.evercraft.everapi.services.essentials.Mail;
 import fr.evercraft.everapi.services.essentials.event.VanishEvent;
@@ -86,7 +86,7 @@ public class ESubject implements EssentialsSubject {
 	}
 	
 	public void connect() {
-		Optional<Player> player = this.getPlayer();
+		Optional<EPlayer> player = this.getEPlayer();
 		if(player.isPresent()) {
 			player.get().offer(Keys.INVISIBLE, vanish);
 		} else {
@@ -97,7 +97,7 @@ public class ESubject implements EssentialsSubject {
 	}
 	
 	public void disconnect() {
-		Optional<Player> player = this.getPlayer();
+		Optional<EPlayer> player = this.getEPlayer();
 		if(player.isPresent()) {
 			if(this.plugin.getConfigs().removeVanishOnDisconnect() && this.vanish) {
 				this.setVanish(false);
@@ -289,16 +289,16 @@ public class ESubject implements EssentialsSubject {
 
 	@Override
 	public boolean setVanish(final boolean vanish) {
-		Optional<Player> player = this.getPlayer();
+		Optional<EPlayer> player = this.getEPlayer();
 		if(this.vanish != vanish && player.isPresent()) {
 			this.vanish = vanish;
 			player.get().offer(Keys.INVISIBLE, vanish);
 			this.plugin.getThreadAsync().execute(() -> this.plugin.getDataBases().setVanish(this.getIdentifier(), vanish));
 			
 			if(vanish) {
-				this.plugin.getGame().getEventManager().post(new VanishEvent(this.plugin, this.getUniqueId(), VanishEvent.Action.ADD));
+				this.plugin.getGame().getEventManager().post(new VanishEvent(this.plugin, player.get(), VanishEvent.Action.ADD));
 			} else {
-				this.plugin.getGame().getEventManager().post(new VanishEvent(this.plugin, this.getUniqueId(), VanishEvent.Action.REMOVE));
+				this.plugin.getGame().getEventManager().post(new VanishEvent(this.plugin, player.get(), VanishEvent.Action.REMOVE));
 			}
 			return true;
 		}
@@ -573,8 +573,8 @@ public class ESubject implements EssentialsSubject {
 		return false;
 	}
 	
-	private Optional<Player> getPlayer() {
-		return this.plugin.getGame().getServer().getPlayer(this.getUniqueId());
+	private Optional<EPlayer> getEPlayer() {
+		return this.plugin.getEServer().getEPlayer(this.getUniqueId());
 	}
 	
 	/*
