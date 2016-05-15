@@ -111,8 +111,13 @@ public class EEHome extends ECommand<EverEssentials> {
 			// Le joueur a un home
 			} else if(homes.size() == 1) {
 				List<String> args = new ArrayList<String>();
-				args.add(homes.entrySet().iterator().next().getKey());
-				return execute(player, args);
+				Entry<String, LocationSQL> home = homes.entrySet().iterator().next();
+				if(home.getValue().getWorld().isPresent()) {
+					args.add(homes.entrySet().iterator().next().getKey());
+					return execute(player, args);
+				} else {
+					player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("HOME_EMPTY"));
+				}
 			// Le joueur a plusieurs home
 			} else {
 				List<Text> lists = new ArrayList<Text>();
