@@ -29,6 +29,7 @@ import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.world.DimensionTypes;
 import org.spongepowered.api.world.World;
+import org.spongepowered.api.world.storage.WorldProperties;
 
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.plugin.EChat;
@@ -147,7 +148,7 @@ public class EETime extends ECommand<EverEssentials> {
 	
 	private boolean commandTimeSet(final CommandSource player, final Optional<Long> time, final World world) {
 		if(time.isPresent()) {
-			world.getProperties().setWorldTime(time.get());
+			setWorldTime(world.getProperties(), time.get());
 			player.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("TIME_SET_WORLD")
 					.replaceAll("<world>", world.getName())
 					.replaceAll("<hours>", getTime(time.get()))
@@ -163,7 +164,7 @@ public class EETime extends ECommand<EverEssentials> {
 		if(time.isPresent()) {
 			for (World world : this.plugin.getEServer().getWorlds()) {
 				if(world.getProperties().getDimensionType().equals(DimensionTypes.OVERWORLD)) {
-					world.getProperties().setWorldTime(time.get());
+					setWorldTime(world.getProperties(), time.get());
 				}
 			}
 			player.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("TIME_SET_ALL_WORLD")
@@ -174,6 +175,10 @@ public class EETime extends ECommand<EverEssentials> {
 			player.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("TIME_ERROR")));
 		}
 		return false;
+	}
+	
+	public void setWorldTime(WorldProperties world, long time) {
+		world.setWorldTime(((long) (Math.ceil(world.getTotalTime()/(double)MAX_TIME)*MAX_TIME)) + time);
 	}
 	
 	public Optional<Long> parseTime(final String arg){
