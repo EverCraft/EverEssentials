@@ -121,7 +121,7 @@ public class EEPlayerListeners {
 				Optional<EntityDamageSource> optDamageSource = event.getCause().first(EntityDamageSource.class);
 				if (optDamageSource.isPresent() && optDamageSource.get().getSource() instanceof Player) {
 					Player killer = (Player) optDamageSource.get().getSource();
-					if (killer.get(Keys.GAME_MODE).orElse(GameModes.SURVIVAL).equals(GameModes.CREATIVE)) {
+					if (killer.get(Keys.IS_SNEAKING).orElse(false) && killer.get(Keys.GAME_MODE).orElse(GameModes.SURVIVAL).equals(GameModes.CREATIVE)) {
 						Entity entity = event.getTargetEntity();
 						event.setBaseDamage(entity.get(Keys.MAX_HEALTH).orElse(Double.MAX_VALUE));
 					}

@@ -102,9 +102,9 @@ public class EEHomeSet extends ECommand<EverEssentials> {
 		// Résultat de la commande :
 		boolean resultat = false;
 		
-		if(args.size() == 0 && 
-				!source.hasPermission(this.plugin.getPermissions().get("SETHOME_MULTIPLE")) && 
-				!source.hasPermission(this.plugin.getPermissions().get("SETHOME_MULTIPLE_UNLIMITED"))) {
+		if(args.size() == 0 || 
+				(!source.hasPermission(this.plugin.getPermissions().get("SETHOME_MULTIPLE")) && 
+				!source.hasPermission(this.plugin.getPermissions().get("SETHOME_MULTIPLE_UNLIMITED")))) {
 			// Si la source est un joueur
 			if(source instanceof EPlayer) {
 				resultat = commandSetHome((EPlayer) source);
@@ -130,8 +130,10 @@ public class EEHomeSet extends ECommand<EverEssentials> {
 	}
 	
 	public boolean commandSetHome(final EPlayer player) {
+		int max = getMaxHome(player);
+		int homes = player.getHomes().size();
 		// Si le joueur à un home qui porte déjà ce nom ou il peut encore avoir un home supplémentaire
-		if(player.hasHome(DEFAULT_HOME) || player.getHomes().size() == 0) {
+		if(player.hasHome(DEFAULT_HOME) || homes == 0 || homes < max) {
 			// Ajout d'un home
 			if(player.addHome(DEFAULT_HOME)) {
 				player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("SETHOME_SET"));
