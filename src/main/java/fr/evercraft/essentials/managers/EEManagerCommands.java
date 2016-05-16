@@ -111,6 +111,8 @@ public class EEManagerCommands extends TreeMap<String, ECommand<EverEssentials>>
 		register(new EEWeatherSun(this.plugin));
 		register(new EEWhois(this.plugin));
 		register(new EEWorlds(this.plugin));
+		register(new EEWorldsEnd(this.plugin));
+		register(new EEWorldsNether(this.plugin));
 	}
 	
 	public void reload(){

@@ -509,10 +509,12 @@ public class EEMessage extends EMessage {
 		addDefault("whois.lastDatePlayed", "    &6&l➤  &6Connecté depuis : &a<time>");
 		
 		addDefault("worlds.description", "Téléporte le joueur dans le monde de votre choix");
+		addDefault("worlds.endDescription", "Vous téléporte dans le monde du néant");
+		addDefault("worlds.netherDescription", "Vous téléporte dans le monde de l'enfer");
 		addDefault("worlds.listTitle", "&aListe des mondes");
 		addDefault("worlds.listLine", "    &6&l➤  <world> &7: <teleport>");
 		addDefault("worlds.listTeleport", "&2&nTéléporter");
-		addDefault("worlds.listTeleportHover", "&cCliquee ici pour vous téléporter dans le monde &6<world>&c.");
+		addDefault("worlds.listTeleportHover", "&cCliquez ici pour vous téléporter dans le monde &6<world>&c.");
 		addDefault("worlds.teleportWorld", "&6&l<world>");
 		addDefault("worlds.teleportWorldHover", "&cMonde : &6<world>[RT]&cX : &6<x>[RT]&cY : &6<y>[RT]&cZ : &6<z>");
 		addDefault("worlds.teleportPlayer", "&7Vous avez été téléporté dans le monde &6<world>&7.");
@@ -1008,6 +1010,8 @@ public class EEMessage extends EMessage {
 		addMessage("SETWARP_NEW", "setwarp.new");
 		
 		addMessage("WORLDS_DESCRIPTION", "worlds.description");
+		addMessage("WORLDS_END_DESCRIPTION", "worlds.endDescription");
+		addMessage("WORLDS_NETHER_DESCRIPTION", "worlds.netherDescription");
 		addMessage("WORLDS_LIST_TITLE", "worlds.listTitle");
 		addMessage("WORLDS_LIST_LINE", "worlds.listLine");
 		addMessage("WORLDS_LIST_TELEPORT", "worlds.listTeleport");
