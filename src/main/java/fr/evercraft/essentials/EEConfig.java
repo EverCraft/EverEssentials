@@ -92,6 +92,10 @@ public class EEConfig extends EConfig {
 		return get("remove-vanish-on-disconnect").getBoolean(true);
 	}
 	
+	public boolean isOneHitOnGm() {
+		return get("one-hit-on-gm").getBoolean(true);
+	}
+	
 	public ConfigurationNode getConfigList() {
 		return get("list");
 	}

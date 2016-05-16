@@ -33,6 +33,7 @@ import org.spongepowered.api.event.cause.entity.damage.source.EntityDamageSource
 import org.spongepowered.api.event.data.ChangeDataHolderEvent;
 import org.spongepowered.api.event.entity.DamageEntityEvent;
 import org.spongepowered.api.event.entity.HealEntityEvent;
+import org.spongepowered.api.event.entity.MountEntityEvent;
 import org.spongepowered.api.event.filter.cause.First;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
 import org.spongepowered.api.text.Text;
@@ -116,7 +117,7 @@ public class EEPlayerListeners {
 				}
 			}
 		} else if (event.getTargetEntity() instanceof Creature) {
-			if (this.plugin.getConfigs().get("one-hit-on-gm").getBoolean()) {
+			if (this.plugin.getConfigs().isOneHitOnGm()) {
 				Optional<EntityDamageSource> optDamageSource = event.getCause().first(EntityDamageSource.class);
 				if (optDamageSource.isPresent() && optDamageSource.get().getSource() instanceof Player) {
 					Player killer = (Player) optDamageSource.get().getSource();
@@ -143,5 +144,10 @@ public class EEPlayerListeners {
 	@Listener
 	public void onPlayerFood(ChangeDataHolderEvent.ValueChange event, @First Player player) {
 		this.plugin.getEServer().broadcast("EverEssentials : Test ChangeDataHolderEvent");
+	}
+	
+	@Listener
+	public void onMountEntityEvent(MountEntityEvent event) {
+		// TODO : Apprivoiser en GM
 	}
 }
