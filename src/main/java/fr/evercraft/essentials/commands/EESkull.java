@@ -18,6 +18,7 @@ package fr.evercraft.essentials.commands;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.concurrent.CompletableFuture;
 
 import org.spongepowered.api.command.CommandException;
@@ -27,6 +28,7 @@ import org.spongepowered.api.data.type.SkullTypes;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.profile.GameProfile;
+import org.spongepowered.api.profile.property.ProfileProperty;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
@@ -94,13 +96,25 @@ public class EESkull extends ECommand<EverEssentials> {
 		return true;
 	}
 
-	public boolean commandSkullOthers(final EPlayer player, String arg) throws CommandException {
-		CompletableFuture<GameProfile> future = this.plugin.getEServer().getGameProfileManager().get(arg, false);
+	public boolean commandSkullOthers(final EPlayer player, final String pseudo) throws CommandException {
+		CompletableFuture<GameProfile> future = this.plugin.getEServer().getGameProfileManager().get(pseudo);
 		future.thenApplyAsync((profile) -> {
 			if (player.isOnline()) {
 				if (profile!= null && profile.getName().isPresent()) {
-					player.giveItemAndDrop(createPlayerHead(profile));
-					player.sendMessage(plugin.getMessages().getMessage("PREFIX") + plugin.getMessages().getMessage("SKULL_OTHERS").replaceAll("<player>", profile.getName().get()));
+					try {
+						if(!profile.isFilled()) {
+							profile = this.plugin.getEServer().getGameProfileManager().fill(profile, true).get();
+							player.sendMessage("No fill");
+						}
+						GameProfile profile1 = this.plugin.getEServer().getGameProfileManager().fill(profile, true, false).get();
+						for(Entry<String, ProfileProperty> value : profile1.getPropertyMap().entries()) {
+							player.sendMessage(value.getKey() + " : " + value.getValue().getName() + " : " + value.getValue().getValue());
+						}
+						player.giveItemAndDrop(createPlayerHead(profile1));
+						player.sendMessage(plugin.getMessages().getMessage("PREFIX") + plugin.getMessages().getMessage("SKULL_OTHERS").replaceAll("<player>", profile1.getName().get()));
+					} catch (Exception e) {
+						player.sendMessage(plugin.getMessages().getMessage("PREFIX") + plugin.getEverAPI().getMessages().getMessage("PLAYER_NOT_FOUND"));
+					}
 				} else {
 					player.sendMessage(plugin.getMessages().getMessage("PREFIX") + plugin.getEverAPI().getMessages().getMessage("PLAYER_NOT_FOUND"));
 				}
