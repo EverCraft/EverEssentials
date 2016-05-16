@@ -56,6 +56,7 @@ public class EEConfig extends EConfig {
 		
 		addDefault("remove-god-on-disconnect", false);
 		addDefault("remove-vanish-on-disconnect", true);
+		addDefault("one-hit-on-gm", true);
 		
 		addDefault("god-teleport-to-spawn", true);
 		

@@ -47,7 +47,11 @@ public class EEWorldsNether extends ECommand<EverEssentials> {
 	}
 
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
-		return new ArrayList<String>();
+		List<String> suggests = null;
+		if(!(args.size() == 1 && source.hasPermission(this.plugin.getPermissions().get("WORLDS_OTHERS")))){
+			suggests = new ArrayList<String>();
+		}
+		return suggests;
 	}
 
 	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
