@@ -55,7 +55,9 @@ public class EEWorldsNether extends ECommand<EverEssentials> {
 		boolean resultat = false;
 		// Si on ne connait pas le joueur
 		if (args.size() == 0) {
-			resultat = commandTimeDay(source);
+			resultat = commandNether(source);
+		} else if (args.size() == 1){
+			resultat = commandNetherOthers(source, args.get(0));
 		// Nombre d'argument incorrect
 		} else {
 			source.sendMessage(help(source));
@@ -63,8 +65,13 @@ public class EEWorldsNether extends ECommand<EverEssentials> {
 		return resultat;
 	}
 
-	public boolean commandTimeDay(final CommandSource player) {
+	public boolean commandNether(final CommandSource player) {
 		this.plugin.getGame().getCommandManager().process(player, "worlds DIM-1");
+		return false;
+	}
+	
+	public boolean commandNetherOthers(final CommandSource player, final String arg) {
+		this.plugin.getGame().getCommandManager().process(player, "worlds DIM-1 "+ arg);
 		return false;
 	}
 }

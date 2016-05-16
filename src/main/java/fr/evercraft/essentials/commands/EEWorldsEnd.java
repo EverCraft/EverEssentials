@@ -55,7 +55,9 @@ public class EEWorldsEnd extends ECommand<EverEssentials> {
 		boolean resultat = false;
 		// Si on ne connait pas le joueur
 		if (args.size() == 0) {
-			resultat = commandTimeDay(source);
+			resultat = commandEnd(source);
+		} else if (args.size() == 1){
+			resultat = commandEndOthers(source, args.get(0));
 		// Nombre d'argument incorrect
 		} else {
 			source.sendMessage(help(source));
@@ -63,8 +65,13 @@ public class EEWorldsEnd extends ECommand<EverEssentials> {
 		return resultat;
 	}
 
-	public boolean commandTimeDay(final CommandSource player) {
+	public boolean commandEnd(final CommandSource player) {
 		this.plugin.getGame().getCommandManager().process(player, "worlds DIM1");
+		return false;
+	}
+	
+	public boolean commandEndOthers(final CommandSource player, final String arg) {
+		this.plugin.getGame().getCommandManager().process(player, "worlds DIM1 "+ arg);
 		return false;
 	}
 }
