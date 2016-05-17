@@ -56,7 +56,8 @@ public class EEConfig extends EConfig {
 		
 		addDefault("remove-god-on-disconnect", false);
 		addDefault("remove-vanish-on-disconnect", true);
-		addDefault("one-hit-on-gm", true);
+		addDefault("gamemode-kill", true);
+		addDefault("gamemode-paint", true);
 		
 		addDefault("god-teleport-to-spawn", true);
 		
@@ -92,8 +93,12 @@ public class EEConfig extends EConfig {
 		return get("remove-vanish-on-disconnect").getBoolean(true);
 	}
 	
-	public boolean isOneHitOnGm() {
-		return get("one-hit-on-gm").getBoolean(true);
+	public boolean isGameModeKill() {
+		return get("gamemode-kill").getBoolean(true);
+	}
+	
+	public boolean isGameModePaint() {
+		return get("gamemode-paint").getBoolean(true);
 	}
 	
 	public ConfigurationNode getConfigList() {

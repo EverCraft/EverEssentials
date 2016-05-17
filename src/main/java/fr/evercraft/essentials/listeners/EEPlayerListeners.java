@@ -27,6 +27,7 @@ import org.spongepowered.api.entity.living.Creature;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.living.player.gamemode.GameModes;
 import org.spongepowered.api.event.Listener;
+import org.spongepowered.api.event.Order;
 import org.spongepowered.api.event.block.tileentity.ChangeSignEvent;
 import org.spongepowered.api.event.cause.entity.damage.source.DamageSource;
 import org.spongepowered.api.event.cause.entity.damage.source.DamageSources;
@@ -120,7 +121,7 @@ public class EEPlayerListeners {
 				}
 			}
 		} else if (event.getTargetEntity() instanceof Creature) {
-			if (this.plugin.getConfigs().isOneHitOnGm()) {
+			if (this.plugin.getConfigs().isGameModeKill()) {
 				Optional<EntityDamageSource> optDamageSource = event.getCause().first(EntityDamageSource.class);
 				if (optDamageSource.isPresent() && optDamageSource.get().getSource() instanceof Player) {
 					Player killer = (Player) optDamageSource.get().getSource();
@@ -133,15 +134,18 @@ public class EEPlayerListeners {
 		}
 	}
 	
-	@Listener
-	public void onPlayerInteract(InteractEntityEvent.Secondary event) {
-		if (event.getTargetEntity() instanceof Painting){
-			Painting paint = (Painting) event.getTargetEntity();
-			if (paint.get(Keys.ART).isPresent()){
-				if (UtilsPainting.get(paint.get(Keys.ART).get()).isPresent()){
-					UtilsPainting painting = UtilsPainting.get(paint.get(Keys.ART).get()).get();
-					this.plugin.getEServer().broadcast(""+painting.getNumero());
-					paint.offer(Keys.ART, painting.next().getArt());
+	@Listener(order=Order.LAST)
+	public void onPlayerInteract(InteractEntityEvent.Secondary event, @First Player player) {
+		if (event.getTargetEntity() instanceof Painting) {
+			if (this.plugin.getConfigs().isGameModePaint() && 
+				player.get(Keys.IS_SNEAKING).orElse(false) && 
+				player.get(Keys.GAME_MODE).orElse(GameModes.SURVIVAL).equals(GameModes.CREATIVE)) {
+				Painting paint = (Painting) event.getTargetEntity();
+				if (paint.get(Keys.ART).isPresent()){
+					Optional<UtilsPainting> painting = UtilsPainting.get(paint.get(Keys.ART).get());
+					if (painting.isPresent()){
+						paint.offer(Keys.ART, painting.get().next().getArt());
+					}
 				}
 			}
 		}
