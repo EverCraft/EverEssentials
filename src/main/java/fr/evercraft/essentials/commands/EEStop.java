@@ -22,6 +22,7 @@ import java.util.List;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
+import org.spongepowered.api.command.source.ConsoleSource;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
@@ -78,21 +79,35 @@ public class EEStop extends ECommand<EverEssentials> {
 
 	public boolean commandStop(final CommandSource player) {
 		this.plugin.getLogger().info("Server shutdown by '" + player.getName() + "'");
-		this.plugin.getGame().getServer().shutdown(
+		if(player instanceof ConsoleSource) {
+			this.plugin.getGame().getServer().shutdown(
 				EChat.of(this.plugin.getChat().replaceGlobal(
-					this.plugin.getMessages().getMessage("STOP_MESSAGE")
+					this.plugin.getMessages().getMessage("STOP_CONSOLE_MESSAGE")
 							.replaceAll("<staff>", player.getName()))));
+		} else {
+			this.plugin.getGame().getServer().shutdown(
+					EChat.of(this.plugin.getChat().replaceGlobal(
+						this.plugin.getMessages().getMessage("STOP_MESSAGE")
+								.replaceAll("<staff>", player.getName()))));
+		}
 		return true;
 	}
 	
 	public boolean commandStop(final CommandSource player, String message) {
 		this.plugin.getLogger().info("Server shutdown by '" + player.getName() + "' (reason='" + message + "')");
-		this.plugin.getGame().getServer().shutdown(
+		if(player instanceof ConsoleSource) {
+			this.plugin.getGame().getServer().shutdown(
+				EChat.of(this.plugin.getChat().replaceGlobal(
+					this.plugin.getMessages().getMessage("STOP_CONSOLE_MESSAGE_REASON")
+							.replaceAll("<staff>", player.getName())
+							.replaceAll("<reason>", this.plugin.getChat().replace(message)))));
+		} else {
+			this.plugin.getGame().getServer().shutdown(
 				EChat.of(this.plugin.getChat().replaceGlobal(
 					this.plugin.getMessages().getMessage("STOP_MESSAGE_REASON")
 							.replaceAll("<staff>", player.getName())
 							.replaceAll("<reason>", this.plugin.getChat().replace(message)))));
-		
+		}		
 		return true;
 	}
 }

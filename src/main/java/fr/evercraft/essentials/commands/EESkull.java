@@ -18,7 +18,6 @@ package fr.evercraft.essentials.commands;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.concurrent.CompletableFuture;
 
 import org.spongepowered.api.command.CommandException;
@@ -28,7 +27,6 @@ import org.spongepowered.api.data.type.SkullTypes;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.profile.GameProfile;
-import org.spongepowered.api.profile.property.ProfileProperty;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
@@ -98,20 +96,13 @@ public class EESkull extends ECommand<EverEssentials> {
 
 	public boolean commandSkullOthers(final EPlayer player, final String pseudo) throws CommandException {
 		CompletableFuture<GameProfile> future = this.plugin.getEServer().getGameProfileManager().get(pseudo);
-		future.thenApplyAsync((profile) -> {
+		future.exceptionally(e -> null).thenApplyAsync((profile) -> {
 			if (player.isOnline()) {
 				if (profile!= null && profile.getName().isPresent()) {
 					try {
-						if(!profile.isFilled()) {
-							profile = this.plugin.getEServer().getGameProfileManager().fill(profile, true).get();
-							player.sendMessage("No fill");
-						}
-						GameProfile profile1 = this.plugin.getEServer().getGameProfileManager().fill(profile, true, false).get();
-						for(Entry<String, ProfileProperty> value : profile1.getPropertyMap().entries()) {
-							player.sendMessage(value.getKey() + " : " + value.getValue().getName() + " : " + value.getValue().getValue());
-						}
-						player.giveItemAndDrop(createPlayerHead(profile1));
-						player.sendMessage(plugin.getMessages().getMessage("PREFIX") + plugin.getMessages().getMessage("SKULL_OTHERS").replaceAll("<player>", profile1.getName().get()));
+						GameProfile profile_skin = this.plugin.getEServer().getGameProfileManager().fill(profile, true, false).get();
+						player.giveItemAndDrop(createPlayerHead(profile_skin));
+						player.sendMessage(plugin.getMessages().getMessage("PREFIX") + plugin.getMessages().getMessage("SKULL_OTHERS").replaceAll("<player>", profile_skin.getName().get()));
 					} catch (Exception e) {
 						player.sendMessage(plugin.getMessages().getMessage("PREFIX") + plugin.getEverAPI().getMessages().getMessage("PLAYER_NOT_FOUND"));
 					}
@@ -120,7 +111,7 @@ public class EESkull extends ECommand<EverEssentials> {
 				}
 			}
 			return profile;
-		}, this.plugin.getGame().getScheduler().createSyncExecutor(this.plugin));
+		}, this.plugin.getGame().getScheduler().createAsyncExecutor(this.plugin));
 		return false;
 	}
 	

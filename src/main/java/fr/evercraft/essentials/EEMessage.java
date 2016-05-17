@@ -339,6 +339,8 @@ public class EEMessage extends EMessage {
 		addDefault("stop.description", "Arrête le serveur");
 		addDefault("stop.message", "&cArrêt du serveur par &6<staff>");
 		addDefault("stop.messageReason", "&c<reason>");
+		addDefault("stop.consoleMessage", "&cArrêt du serveur");
+		addDefault("stop.consoleMessageReason", "&c<reason>");
 		
 		addDefault("sudo.description", "Fait exécuter une commande par un autre joueur");
 		addDefault("sudo.command", "&6commande");
@@ -839,6 +841,8 @@ public class EEMessage extends EMessage {
 		addMessage("STOP_DESCRIPTION", "stop.description");
 		addMessage("STOP_MESSAGE", "stop.message");
 		addMessage("STOP_MESSAGE_REASON", "stop.messageReason");
+		addMessage("STOP_CONSOLE_MESSAGE", "stop.consoleMessage");
+		addMessage("STOP_CONSOLE_MESSAGE_REASON", "stop.consoleMessageReason");
 		
 		addMessage("SUDO_DESCRIPTION", "sudo.description");
 		addMessage("SUDO_COMMAND", "sudo.command");
