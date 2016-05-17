@@ -22,6 +22,7 @@ import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.manipulator.mutable.tileentity.SignData;
 import org.spongepowered.api.data.value.mutable.ListValue;
 import org.spongepowered.api.entity.Entity;
+import org.spongepowered.api.entity.hanging.Painting;
 import org.spongepowered.api.entity.living.Creature;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.living.player.gamemode.GameModes;
@@ -33,6 +34,7 @@ import org.spongepowered.api.event.cause.entity.damage.source.EntityDamageSource
 import org.spongepowered.api.event.data.ChangeDataHolderEvent;
 import org.spongepowered.api.event.entity.DamageEntityEvent;
 import org.spongepowered.api.event.entity.HealEntityEvent;
+import org.spongepowered.api.event.entity.InteractEntityEvent;
 import org.spongepowered.api.event.entity.MountEntityEvent;
 import org.spongepowered.api.event.filter.cause.First;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
@@ -42,6 +44,7 @@ import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.essentials.service.ESubject;
 import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.server.player.EPlayer;
+import fr.evercraft.everapi.sponge.UtilsPainting;
 
 public class EEPlayerListeners {
 	private EverEssentials plugin;
@@ -125,6 +128,20 @@ public class EEPlayerListeners {
 						Entity entity = event.getTargetEntity();
 						event.setBaseDamage(entity.get(Keys.MAX_HEALTH).orElse(Double.MAX_VALUE));
 					}
+				}
+			}
+		}
+	}
+	
+	@Listener
+	public void onPlayerInteract(InteractEntityEvent.Secondary event) {
+		if (event.getTargetEntity() instanceof Painting){
+			Painting paint = (Painting) event.getTargetEntity();
+			if (paint.get(Keys.ART).isPresent()){
+				if (UtilsPainting.get(paint.get(Keys.ART).get()).isPresent()){
+					UtilsPainting painting = UtilsPainting.get(paint.get(Keys.ART).get()).get();
+					this.plugin.getEServer().broadcast(""+painting.getNumero());
+					paint.offer(Keys.ART, painting.next().getArt());
 				}
 			}
 		}
