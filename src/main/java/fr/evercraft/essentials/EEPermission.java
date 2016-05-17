@@ -124,6 +124,7 @@ public class EEPermission extends EPermission {
 		add("ME", "me.command");
 		
 		add("MORE", "more.command");
+		add("MORE_UNLIMITED", "more.unlimited");
 		
 		add("MOTD", "motd.command");
 		

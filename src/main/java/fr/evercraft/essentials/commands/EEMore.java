@@ -80,19 +80,27 @@ public class EEMore extends ECommand<EverEssentials> {
 		// Si le joueur a bien un item dans la main
 		if(player.getItemInHand().isPresent()) {
 			ItemStack item = player.getItemInHand().get();
-			if(item.getQuantity() < item.getMaxStackQuantity()) {
-				item.setQuantity(item.getMaxStackQuantity());
+			
+			Integer max = item.getMaxStackQuantity();
+			/*if(player.hasPermission(this.plugin.getPermissions().get("MORE_UNLIMITED"))) {
+				max = 64;
+			} else {
+				max = item.getMaxStackQuantity();
+			}*/
+			
+			if(item.getQuantity() < max) {
+				item.setQuantity(max);
 				player.setItemInHand(item);		
 				player.sendMessage(ETextBuilder.toBuilder(this.plugin.getMessages().getText("PREFIX"))
 						.append(this.plugin.getMessages().getMessage("MORE_PLAYER")
-								.replaceAll("<quantity>", String.valueOf(item.getMaxStackQuantity())))
+								.replaceAll("<quantity>", max.toString()))
 						.replace("<item>", EChat.getButtomItem(item, EChat.getTextColor(this.plugin.getMessages().getMessage("MORE_ITEM_COLOR"))))
 						.build());
 				return true;
 			} else {
 				player.sendMessage(ETextBuilder.toBuilder(this.plugin.getMessages().getText("PREFIX"))
 						.append(this.plugin.getMessages().getMessage("MORE_MAX_QUANTITY")
-								.replaceAll("<quantity>", String.valueOf(item.getMaxStackQuantity())))
+								.replaceAll("<quantity>", max.toString()))
 						.replace("<item>", EChat.getButtomItem(item, EChat.getTextColor(this.plugin.getMessages().getMessage("MORE_ITEM_COLOR"))))
 						.build());
 			}
