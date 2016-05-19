@@ -1,19 +1,3 @@
-/**
- * This file is part of EverEssentials.
- *
- * EverEssentials is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * EverEssentials is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with EverEssentials.  If not, see <http://www.gnu.org/licenses/>.
- */
 package fr.evercraft.essentials.commands;
 
 import java.util.ArrayList;
@@ -22,6 +6,8 @@ import java.util.Optional;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
+import org.spongepowered.api.effect.potion.PotionEffect;
+import org.spongepowered.api.effect.potion.PotionEffectType;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
@@ -79,6 +65,19 @@ public class EEEffect extends ECommand<EverEssentials> {
 					}
 				}
 			} else if (args.size() == 3){
+				if (source.hasPermission(this.plugin.getPermissions().get("EFFECT_OTHERS"))){
+					if (UtilsEffect.getEffect(args.get(0)).isPresent()){
+						UtilsEffect effect = UtilsEffect.getEffect(args.get(0)).get();
+						for(int cpt = effect.getMinAmplifier(); cpt <= effect.getMaxAmplifier(); cpt++){
+							list.add(String.valueOf(cpt));
+						}
+					} else {
+						// erreur nom effect
+					}
+				} else {
+					list = UtilsEffect.getEffects();
+				}
+			} else if (args.size() == 3 && source.hasPermission(this.plugin.getPermissions().get("EFFECT_OTHERS"))){
 				
 			}
 		}
@@ -88,54 +87,69 @@ public class EEEffect extends ECommand<EverEssentials> {
 	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Résultat de la commande :
 		boolean resultat = false;
-		// Si on ne connait pas le joueur
-		if(args.size() == 0) {
-			// Si la source est un joueur
-			if(source instanceof EPlayer) {
-				resultat = commandPing((EPlayer) source);
-			// La source n'est pas un joueur
-			} else {
-				source.sendMessage(this.plugin.getEverAPI().getMessages().getText("COMMAND_ERROR_FOR_PLAYER"));
-			}
-		// On connais le joueur
-		} else if(args.size() == 1) {
-			// Si il a la permission
-			if(source.hasPermission(this.plugin.getPermissions().get("PING_OTHERS"))){
-				Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(args.get(0));
-				// Le joueur existe
-				if(optPlayer.isPresent()){
-					resultat = commandPingOthers(source, optPlayer.get());
-				// Le joueur est introuvable
+		if(source instanceof EPlayer) {
+			EPlayer player = (EPlayer) source;
+			// Affichage de l'aide
+			if(args.size() == 0) {
+				source.sendMessage(help(source));
+			// Ajout de l'effect avec amplifier et durée par défaut
+			} else if(args.size() == 1) {
+				commandEffect(player, args.get(0));
+			} else if(args.size() == 2){
+				if (player.hasPermission(this.plugin.getPermissions().get("EFFECT_OTHERS"))){
+					Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(args.get(0));
+					if (optPlayer.isPresent()){
+						EPlayer target = optPlayer.get();
+						commandEffectOthers(player, target, args.get(0));
+					} else {
+						source.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") 
+								+ this.plugin.getEverAPI().getMessages().getMessage("PLAYER_NOT_FOUND")));
+					}
 				} else {
-					source.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getEverAPI().getMessages().getMessage("PLAYER_NOT_FOUND")));
+					
 				}
-			// Il n'a pas la permission
+			
 			} else {
-				source.sendMessage(this.plugin.getPermissions().noPermission());
+				source.sendMessage(help(source));
 			}
-		// Nombre d'argument incorrect
 		} else {
-			source.sendMessage(help(source));
+			source.sendMessage(this.plugin.getEverAPI().getMessages().getText("COMMAND_ERROR_FOR_PLAYER"));
 		}
 		return resultat;
 	}
 	
-	public boolean commandPing(final EPlayer player) {
-		player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("PING_PLAYER")
-				.replaceAll("<ping>", String.valueOf(player.getConnection().getLatency())));
-		return true;
+	public boolean commandEffect(final EPlayer player, final String effect) {
+		if (UtilsEffect.getEffect(effect).isPresent()){
+			player.addEffect(createPotionEffect(UtilsEffect.getEffect(effect).get().getType(), 30, 0));
+			return true;
+		} else {
+			player.sendMessage(this.plugin.getMessages().getMessage("PREFIX"));	
+			return false;
+		}
 	}
 	
-	public boolean commandPingOthers(final CommandSource staff, final EPlayer player) throws CommandException {
+	public boolean commandEffectOthers(final EPlayer player, final EPlayer target, final String arg) throws CommandException {
 		// La source et le joueur sont différent
-		if(!player.equals(staff)){
-			staff.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("PING_OTHERS")
-					.replaceAll("<player>", player.getName())
-					.replaceAll("<ping>", String.valueOf(player.getConnection().getLatency()))));
-			return true;
+		if(!player.equals(target)){
+			if (UtilsEffect.getEffect(arg).isPresent()){
+				target.addEffect(createPotionEffect(UtilsEffect.getEffect(arg).get().getType(), 30, 0));
+				return true;
+			} else {
+				player.sendMessage(this.plugin.getMessages().getText("PREFIX"));	
+				return false;
+			}
 		// La source et le joueur sont identique
 		} else {
-			return execute(staff, new ArrayList<String>());
+			return execute(player, new ArrayList<String>());
 		}
+	}
+	
+	private PotionEffect createPotionEffect(PotionEffectType type, int duration, int amplifier){
+		return PotionEffect
+				.builder()
+				.potionType(type)
+			    .duration(duration)
+			    .amplifier(amplifier)
+			    .build();
 	}
 }
