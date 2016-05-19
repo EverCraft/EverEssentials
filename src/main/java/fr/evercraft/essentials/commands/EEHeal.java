@@ -89,7 +89,8 @@ public class EEHeal extends ECommand<EverEssentials> {
 						resultat = commandHealOthers(source, optPlayer.get());
 					// Le joueur est introuvable
 					} else {
-						source.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getEverAPI().getMessages().getMessage("PLAYER_NOT_FOUND")));
+						source.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") 
+								+ this.plugin.getEverAPI().getMessages().getMessage("PLAYER_NOT_FOUND")));
 					}
 				}
 			// Il n'a pas la permission
