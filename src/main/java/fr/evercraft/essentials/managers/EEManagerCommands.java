@@ -76,6 +76,7 @@ public class EEManagerCommands extends TreeMap<String, ECommand<EverEssentials>>
 		register(new EEList(this.plugin));
 		register(new EEMail(this.plugin));
 		register(new EEMe(this.plugin));
+		register(new EEMojang(this.plugin));
 		register(new EEMore(this.plugin));
 		register(new EEMotd(this.plugin));
 		register(new EERepair(this.plugin));

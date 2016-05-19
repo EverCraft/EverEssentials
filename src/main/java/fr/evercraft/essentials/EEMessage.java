@@ -281,6 +281,23 @@ public class EEMessage extends EMessage {
 		addDefault("me.description", "Envoie un texte d'action dans le tchat");
 		addDefault("me.prefix", "&f* <player> &r");
 		
+		addDefault("mojang.description", "Afficher les informations sur les serveurs de mojang");
+		addDefault("mojang.title", "&aLes serveurs de Mojang");
+		addDefault("mojang.line", "&7<server> : <color>");
+		addDefault("mojang.serverAccount", "Account");
+		addDefault("mojang.serverAPI", "API");
+		addDefault("mojang.serverMojang", "Mojang");
+		addDefault("mojang.serverAuth", "Auth");
+		addDefault("mojang.serverAuthServer", "AuthServer");
+		addDefault("mojang.serverMinecraftNet", "Minecraft.net");
+		addDefault("mojang.serverSession", "Session");
+		addDefault("mojang.serverSessionServer", "SessionServer");
+		addDefault("mojang.serverSkins", "Skins");
+		addDefault("mojang.serverTextures", "Textures");
+		addDefault("mojang.colorGreen", "&aVert");
+		addDefault("mojang.colorYellow", "&6Jaune");
+		addDefault("mojang.colorRed", "&4Rouge");
+		
 		addDefault("more.description", "Donne la quantité maximum d'un objet");
 		addDefault("more.player", "&7Vous avez maintenant &6<quantity> &6<item>&7.");
 		addDefault("more.itemColor", "&6");
@@ -782,6 +799,23 @@ public class EEMessage extends EMessage {
 		
 		addMessage("ME_DESCRIPTION", "me.description");
 		addMessage("ME_PREFIX", "me.prefix");
+		
+		addMessage("MOJANG_DESCRIPTION", "mojang.description");
+		addMessage("MOJANG_TITLE", "mojang.title");
+		addMessage("MOJANG_LINE", "mojang.line");
+		addMessage("MOJANG_SERVER_ACCOUNT", "mojang.serverAccount");
+		addMessage("MOJANG_SERVER_API", "mojang.serverAPI");
+		addMessage("MOJANG_SERVER_MOJANG", "mojang.serverMojang");
+		addMessage("MOJANG_SERVER_AUTH", "mojang.serverAuth");
+		addMessage("MOJANG_SERVER_AUTHSERVER", "mojang.serverAuthServer");
+		addMessage("MOJANG_SERVER_MINECRAFT_NET", "mojang.serverMinecraftNet");
+		addMessage("MOJANG_SERVER_SESSION", "mojang.serverSession");
+		addMessage("MOJANG_SERVER_SESSIONSERVER", "mojang.serverSessionServer");
+		addMessage("MOJANG_SERVER_SKINS", "mojang.serverSkins");
+		addMessage("MOJANG_SERVER_TEXTURES", "mojang.serverTextures");
+		addMessage("MOJANG_COLOR_GREEN", "mojang.colorGreen");
+		addMessage("MOJANG_COLOR_YELLOW", "mojang.colorYellow");
+		addMessage("MOJANG_COLOR_RED", "mojang.colorRed");
 		
 		addMessage("MORE_DESCRIPTION", "more.description");
 		addMessage("MORE_PLAYER", "more.player");
