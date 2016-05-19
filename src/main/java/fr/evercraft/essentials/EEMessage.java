@@ -48,13 +48,13 @@ public class EEMessage extends EMessage {
 		addDefault("back.teleport", "&7Vous avez été téléporté à votre dernière <back>&7.");
 		addDefault("back.inconnu", "&cVous n'avez aucune position sauvegardé.");
 		
-		addDefault("bed.description", "Retourne à la dernière position ou vous avez dormi.");
+		addDefault("bed.description", "Retourne à la dernière position ou vous avez dormi");
 		
 		addDefault("broadcast.description", "Envoye un message à tous les joueurs.");
 		addDefault("broadcast.prefixPlayer", "&7[&6<player>&7] : ");
 		addDefault("broadcast.prefixConsole", "&7[&6Console&7] : ");
 		
-		addDefault("butcher.description", "Supprime les entitées dans un monde ou dans un rayon");
+		addDefault("butcher.description", "Supprime les entitées dans un monde ou dans un rayon.");
 		addDefault("butcher.noEntity", "&cIl y a aucune entité à supprimer.");
 		addDefault("butcher.entityColor", "&6");
 		addDefault("butcher.killAnimal", "&7Suppression de &6<count> &7animaux dans ce monde.");
@@ -66,7 +66,7 @@ public class EEMessage extends EMessage {
 		addDefault("butcher.killType", "&7Suppression de &6<count> &6<entity>&6(s)&7 dans ce monde.");
 		addDefault("butcher.killTypeRadius", "&7Suppression de &6<count> &6<entity>&6(s)&7 dans un rayon de &6<radius> bloc(s)&7.");
 		
-		addDefault("book.description", "Permet de modifier un livre");
+		addDefault("book.description", "Permet de modifier un livre.");
 		
 		addDefault("clearinventory.description", "Supprime tous les objets de l'inventaire d'un joueur.");
 		addDefault("clearinventory.player", "&7Tous les objets de votre inventaire ont été supprimés.");
@@ -76,6 +76,11 @@ public class EEMessage extends EMessage {
 		addDefault("color.description", "Affiche les différentes couleurs dans Minecraft.");
 		addDefault("color.list.title", "&l&7Liste des couleurs :"); 
 		addDefault("color.list.message", "<color>█ &0: <id>-<name>"); 
+		
+		addDefault("effect.description", "Ajoute un effet de potion sur un joueur.");
+		addDefault("effect.errorName", "&cErreur : nom de l'effet invalide.");
+		addDefault("effect.errorDuration", "&cErreur : la durée ne peut excéder <time> seconde(s)");
+		addDefault("effect.errorAmplifier", "&cErreur : l'amplification de l'effet doit être compris entre <min> et <max>.");
 		
 		addDefault("enchant.description", "Enchante l'objet dans votre main.");
 		addDefault("enchant.notFound", "&cErreur : cet enchantement n'existe pas.");
@@ -281,7 +286,7 @@ public class EEMessage extends EMessage {
 		addDefault("me.description", "Envoie un texte d'action dans le tchat");
 		addDefault("me.prefix", "&f* <player> &r");
 		
-		addDefault("mojang.description", "Afficher les informations sur les serveurs de mojang");
+		addDefault("mojang.description", "Affiche les informations sur les serveurs de mojang");
 		addDefault("mojang.title", "&aLes serveurs de Mojang");
 		addDefault("mojang.line", "&7<server> : <color>");
 		addDefault("mojang.serverAccount", "Account");
@@ -294,9 +299,9 @@ public class EEMessage extends EMessage {
 		addDefault("mojang.serverSessionServer", "SessionServer");
 		addDefault("mojang.serverSkins", "Skins");
 		addDefault("mojang.serverTextures", "Textures");
-		addDefault("mojang.colorGreen", "&aVert");
-		addDefault("mojang.colorYellow", "&6Jaune");
-		addDefault("mojang.colorRed", "&4Rouge");
+		addDefault("mojang.colorGreen", "&aEn ligne");
+		addDefault("mojang.colorYellow", "&6Problème de connexion");
+		addDefault("mojang.colorRed", "&4Hors ligne");
 		
 		addDefault("more.description", "Donne la quantité maximum d'un objet");
 		addDefault("more.player", "&7Vous avez maintenant &6<quantity> &6<item>&7.");
@@ -596,6 +601,11 @@ public class EEMessage extends EMessage {
 		addMessage("COLOR_LIST_TITLE", "color.list.title");
 		
 		addMessage("DAY_DESCRIPTION", "day.description");
+		
+		addMessage("EFFECT_DESCRIPTION", "effect.description");
+		addMessage("EFFECT_ERROR_NAME", "effect.errorName");
+		addMessage("EFFECT_ERROR_DURATION", "effect.errorDuration");
+		addMessage("EFFECT_ERROR_AMPLIFIER", "effect.errorAmplifier");
 		
 		addMessage("ENCHANT_DESCRIPTION", "enchant.description");
 		addMessage("ENCHANT_NOT_FOUND", "enchant.notFound");

@@ -54,6 +54,10 @@ public class EEConfig extends EConfig {
 		addDefault("warp-permission", true);
 		addDefault("world-teleport-permissions", false);
 		
+		addDefault("effect-default-duration", 60);
+		addDefault("effect-default-max-duration", 600);
+		addDefault("effect-default-amplifier", 0);
+		
 		addDefault("remove-god-on-disconnect", false);
 		addDefault("remove-vanish-on-disconnect", true);
 		addDefault("gamemode-kill", true);
