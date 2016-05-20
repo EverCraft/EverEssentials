@@ -52,10 +52,10 @@ public class EEEffect extends ECommand<EverEssentials> {
 
 	public Text help(final CommandSource source) {
 		if(source.hasPermission(this.plugin.getPermissions().get("EFFECT_OTHERS"))){
-			return Text.builder("/effect [joueur] <effet> [amplification] [durée]").onClick(TextActions.suggestCommand("/effect "))
+			return Text.builder("/effect <effet> [amplification] [durée] [joueur]").onClick(TextActions.suggestCommand("/effect "))
 					.color(TextColors.RED).build();
 		}
-		return Text.builder("/ping").onClick(TextActions.suggestCommand("/effect <effet> [niveau] [durée]"))
+		return Text.builder("/ping").onClick(TextActions.suggestCommand("/effect <effet> [amplification] [durée]"))
 					.color(TextColors.RED).build();
 	}
 	
@@ -101,7 +101,7 @@ public class EEEffect extends ECommand<EverEssentials> {
 			// Affichage de l'aide
 			if(args.size() == 0) {
 				//source.sendMessage(help(source));
-				this.plugin.getEServer().broadcast(PotionEffectTypes.ABSORPTION.getId() 
+				this.plugin.getEServer().broadcast(PotionEffectTypes.HEALTH_BOOST
 						+ " " + PotionEffectTypes.ABSORPTION.getName());
 			// Ajout de l'effect avec amplifier et durée par défaut
 			} else if(args.size() == 1) {
