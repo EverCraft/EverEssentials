@@ -34,6 +34,7 @@ import org.spongepowered.api.event.cause.entity.damage.source.DamageSources;
 import org.spongepowered.api.event.cause.entity.damage.source.EntityDamageSource;
 import org.spongepowered.api.event.data.ChangeDataHolderEvent;
 import org.spongepowered.api.event.entity.DamageEntityEvent;
+import org.spongepowered.api.event.entity.DestructEntityEvent;
 import org.spongepowered.api.event.entity.HealEntityEvent;
 import org.spongepowered.api.event.entity.InteractEntityEvent;
 import org.spongepowered.api.event.entity.MountEntityEvent;
@@ -133,6 +134,18 @@ public class EEPlayerListeners {
 			}
 		}
 	}
+	
+	@Listener
+	public void onPlayerDeath(DestructEntityEvent.Death event) {
+		if (event.getTargetEntity() instanceof Player) {
+			ESubject subject = this.plugin.getManagerServices().getEssentials().get(event.getTargetEntity().getUniqueId());
+			if (subject != null) {
+				// Save Back
+				subject.setBack(event.getTargetEntity().getTransform());
+			}
+		}
+	}
+	
 	
 	@Listener(order=Order.LAST)
 	public void onPlayerInteract(InteractEntityEvent.Secondary event, @First Player player) {
