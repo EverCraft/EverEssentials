@@ -312,11 +312,11 @@ public class EEMessage extends EMessage {
 		
 		addDefault("names.description", "Affiche l'historique des noms d'un joueur");
 		addDefault("names.playerTitle", "&aVotre historique de nom");
-		addDefault("names.playerLineNow", "&7Votre nom actuelle : &6<name>");
+		addDefault("names.playerLineOriginal", "    &6&l➤  &6<name> &7: &cAchat du compte");
 		addDefault("names.playerLineOthers", "    &6&l➤  &6<name> &7: &c<datetime>");
 		addDefault("names.playerEmpty", "&7Vous n'avez aucun historique de pseudo");
 		addDefault("names.othersTitle", "&aHistorique de &6<player>");
-		addDefault("names.othersLineNow", "&7Son nom actuelle : &6<name>");
+		addDefault("names.othersLineOriginal", "    &6&l➤  &6<name> &7: &cAchat du compte");
 		addDefault("names.othersLineOthers", "    &6&l➤  &6<name> &7: &c<datetime>");
 		addDefault("names.othersEmpty", "&6<player> &7n'a aucun historique de pseudo");
 		
@@ -846,11 +846,11 @@ public class EEMessage extends EMessage {
 		
 		addMessage("NAMES_DESCRIPTION", "names.description");
 		addMessage("NAMES_PLAYER_TITLE", "names.playerTitle");
-		addMessage("NAMES_PLAYER_LINE_NOW", "names.playerLineNow");
+		addMessage("NAMES_PLAYER_LINE_ORIGINAL", "names.playerLineOriginal");
 		addMessage("NAMES_PLAYER_LINE_OTHERS", "names.playerLineOthers");
 		addMessage("NAMES_PLAYER_EMPTY", "names.playerEmpty");
 		addMessage("NAMES_OTHERS_TITLE", "names.othersTitle");
-		addMessage("NAMES_OTHERS_LINE_NOW", "names.othersLineNow");
+		addMessage("NAMES_OTHERS_LINE_ORIGINAL", "names.othersLineOriginal");
 		addMessage("NAMES_OTHERS_LINE_OTHERS", "names.othersLineOthers");
 		addMessage("NAMES_OTHERS_EMPTY", "names.othersEmpty");
 		

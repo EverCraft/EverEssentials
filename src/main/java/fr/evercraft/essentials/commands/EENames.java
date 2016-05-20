@@ -111,10 +111,8 @@ public class EENames extends ECommand<EverEssentials> {
 		
 				for(NameHistory name : service.get().getNameHistory().get(player.getUniqueId())) {
 					if(!name.getDate().isPresent()) {
-						if(!this.plugin.getMessages().getMessage("NAMES_PLAYER_LINE_NOW").isEmpty()) {
-							lists.add(EChat.of(this.plugin.getMessages().getMessage("NAMES_LINE_NOW")
+						lists.add(EChat.of(this.plugin.getMessages().getMessage("NAMES_PLAYER_LINE_ORIGINAL")
 								.replaceAll("<name>", name.getName())));
-						}
 					} else {
 						lists.add(EChat.of(this.plugin.getMessages().getMessage("NAMES_PLAYER_LINE_OTHERS")
 								.replaceAll("<name>", name.getName())
@@ -124,7 +122,8 @@ public class EENames extends ECommand<EverEssentials> {
 					}
 				}
 				
-				if(lists.isEmpty()) {
+				if(lists.size() <= 1) {
+					lists.clear();
 					lists.add(EChat.of(this.plugin.getMessages().getMessage("NAMES_PLAYER_EMPTY")
 							.replaceAll("<player>", player.getName())));
 				}
@@ -135,7 +134,7 @@ public class EENames extends ECommand<EverEssentials> {
 							.onClick(TextActions.runCommand("/names ")).build(), 
 						lists, player);
 			} catch (ExecutionException e) {
-				player.sendMessage(this.plugin.getMessages().getText("PREFIX").concat(this.plugin.getEverAPI().getMessages().getCommandError()));
+				player.sendMessage(Text.of("erreur : " + e.getMessage()));
 			}
 		} else {
 			player.sendMessage(this.plugin.getMessages().getText("PREFIX").concat(this.plugin.getEverAPI().getMessages().getCommandError()));
@@ -171,10 +170,8 @@ public class EENames extends ECommand<EverEssentials> {
 		
 				for(NameHistory name : service.get().getNameHistory().get(gameprofile.getUniqueId())) {
 					if(!name.getDate().isPresent()) {
-						if(!this.plugin.getMessages().getMessage("NAMES_OTHERS_LINE_NOW").isEmpty()) {
-							lists.add(EChat.of(this.plugin.getMessages().getMessage("NAMES_LINE_NOW")
+						lists.add(EChat.of(this.plugin.getMessages().getMessage("NAMES_OTHERS_LINE_ORIGINAL")
 								.replaceAll("<name>", name.getName())));
-						}
 					} else {
 						lists.add(EChat.of(this.plugin.getMessages().getMessage("NAMES_OTHERS_LINE_OTHERS")
 								.replaceAll("<name>", name.getName())
@@ -184,7 +181,8 @@ public class EENames extends ECommand<EverEssentials> {
 					}
 				}
 				
-				if(lists.isEmpty()) {
+				if(lists.size() <= 1) {
+					lists.clear();
 					lists.add(EChat.of(this.plugin.getMessages().getMessage("NAMES_OTHERS_EMPTY")
 							.replaceAll("<player>", gameprofile.getName().get())));
 				}
