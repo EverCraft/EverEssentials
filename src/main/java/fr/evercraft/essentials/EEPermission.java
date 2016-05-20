@@ -133,6 +133,8 @@ public class EEPermission extends EPermission {
 		
 		add("MOTD", "motd.command");
 		
+		add("NAMES", "names.command");
+		
 		add("NEAR", "near.command");
 		
 		add("OPME", "opme.command");
