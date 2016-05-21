@@ -54,11 +54,13 @@ public class EEPermission extends EPermission {
 		
 		add("DAY", "day.command");
 		
+		add("CLEAREFFECT", "cleareffect.command");
+		add("CLEAREFFECT_OTHERS", "cleareffect.others");
+		
 		add("CLEARINVENTORY", "clearinventory.command");
 		add("CLEARINVENTORY_OTHERS", "clearinventory.others");
 		
 		add("EFFECT", "effect.command");
-		add("EFFECT_OTHERS", "effect.others");
 		
 		add("ENCHANT", "enchant.command");
 		

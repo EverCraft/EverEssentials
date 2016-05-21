@@ -52,6 +52,7 @@ public class EEManagerCommands extends TreeMap<String, ECommand<EverEssentials>>
 		register(new EEBroadcast(this.plugin));
 		register(new EEButcher(this.plugin));
 		register(new EEClearInventory(this.plugin));
+		register(new EEClearEffect(this.plugin));
 		register(new EEColor(this.plugin));
 		register(new EEEffect(this.plugin));
 		register(new EEEnchant(this.plugin));

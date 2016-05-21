@@ -68,6 +68,11 @@ public class EEMessage extends EMessage {
 		
 		addDefault("book.description", "Permet de modifier un livre.");
 		
+		addDefault("cleareffect.description", "Supprime tous les effets de potions d'un joueur.");
+		addDefault("cleareffect.player", "&7Tous vos effets de potions ont été supprimés.");
+		addDefault("cleareffect.othersPlayer", "&7Tous les effets de potions ont été supprimés par &6<staff>&7.");
+		addDefault("cleareffect.othersStaff", "&7Tous les effets de potions de &6<player> &7ont été supprimés.");
+		
 		addDefault("clearinventory.description", "Supprime tous les objets de l'inventaire d'un joueur.");
 		addDefault("clearinventory.player", "&7Tous les objets de votre inventaire ont été supprimés.");
 		addDefault("clearinventory.othersPlayer", "&7Tous les objets de votre inventaire ont été supprimés par &6<staff>&7.");
@@ -600,6 +605,11 @@ public class EEMessage extends EMessage {
 		addMessage("BUTCHER_ALL_RADIUS", "butcher.killAllRadius");
 		addMessage("BUTCHER_TYPE", "butcher.killType");
 		addMessage("BUTCHER_TYPE_RADIUS", "butcher.killTypeRadius");		
+		
+		addMessage("CLEAREFFECT_DESCRIPTION", "cleareffect.description");
+		addMessage("CLEAREFFECT_PLAYER", "cleareffect.player");
+		addMessage("CLEAREFFECT_OTHERS_PLAYER", "cleareffect.othersPlayer");
+		addMessage("CLEAREFFECT_OTHERS_STAFF", "cleareffect.othersStaff");
 		
 		addMessage("CLEARINVENTORY_DESCRIPTION", "clearinventory.description");
 		addMessage("CLEARINVENTORY_PLAYER", "clearinventory.player");
