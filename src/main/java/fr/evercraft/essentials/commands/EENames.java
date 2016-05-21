@@ -121,7 +121,6 @@ public class EENames extends ECommand<EverEssentials> {
 								.replaceAll("<datetime>", this.plugin.getEverAPI().getManagerUtils().getDate().parseDateTime(name.getDate().get()))));
 					}
 				}
-				
 				if(lists.size() <= 1) {
 					lists.clear();
 					lists.add(EChat.of(this.plugin.getMessages().getMessage("NAMES_PLAYER_EMPTY")
@@ -151,7 +150,11 @@ public class EENames extends ECommand<EverEssentials> {
 			}
 			future.exceptionally(e -> null).thenApplyAsync(profile -> {
 				if (profile != null && profile.isFilled() && profile.getName().isPresent()) {
-					this.commandNames(player, profile);
+					if(player instanceof EPlayer && ((EPlayer) player).getProfile().equals(profile)) {
+						this.commandNames((EPlayer) player);
+					} else {
+						this.commandNames(player, profile);
+					}
 				} else {
 					player.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + plugin.getEverAPI().getMessages().getMessage("PLAYER_NOT_FOUND")));
 				}
