@@ -18,29 +18,26 @@ package fr.evercraft.essentials.commands;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.effect.potion.PotionEffect;
 import org.spongepowered.api.effect.potion.PotionEffectType;
-import org.spongepowered.api.effect.potion.PotionEffectTypes;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
 
 import fr.evercraft.essentials.EverEssentials;
-import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.ECommand;
 import fr.evercraft.everapi.server.player.EPlayer;
 import fr.evercraft.everapi.sponge.UtilsEffect;
 
 public class EEEffect extends ECommand<EverEssentials> {
-	
+
 	public EEEffect(final EverEssentials plugin) {
-        super(plugin, "effect", "effects");
-    }
+		super(plugin, "effect", "effects");
+	}
 
 	public boolean testPermission(final CommandSource source) {
 		return source.hasPermission(this.plugin.getPermissions().get("EFFECT"));
@@ -51,82 +48,64 @@ public class EEEffect extends ECommand<EverEssentials> {
 	}
 
 	public Text help(final CommandSource source) {
-		if(source.hasPermission(this.plugin.getPermissions().get("EFFECT_OTHERS"))){
-			return Text.builder("/effect <effet> [amplification] [durée] [joueur]").onClick(TextActions.suggestCommand("/effect "))
-					.color(TextColors.RED).build();
-		}
-		return Text.builder("/ping").onClick(TextActions.suggestCommand("/effect <effet> [amplification] [durée]"))
-					.color(TextColors.RED).build();
+		return Text.builder("/effect")
+			.onClick(TextActions.suggestCommand("/effect <effet> [amplification] [durée]")).color(TextColors.RED).build();
 	}
-	
+
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
-		List<String> list = new ArrayList<String>();
-		if (source instanceof Player){
-			if(args.size() == 1){
-				list = UtilsEffect.getEffects();
-			} else if (args.size() == 2){
-				if (source.hasPermission(this.plugin.getPermissions().get("EFFECT_OTHERS"))){
-					list = UtilsEffect.getEffects();
-				} else {
-					if (UtilsEffect.getEffect(args.get(0)).isPresent()){
-						UtilsEffect effect = UtilsEffect.getEffect(args.get(0)).get();
-						for(int cpt = effect.getMinAmplifier(); cpt <= effect.getMaxAmplifier(); cpt++){
-							list.add(String.valueOf(cpt));
-						}
+		List<String> suggests = new ArrayList<String>();
+		if (source instanceof Player) {
+			if (args.size() == 1) {
+				// Effet
+				suggests = UtilsEffect.getEffects();
+			} else if (args.size() == 2) {
+				// Amplification
+				if (UtilsEffect.getEffect(args.get(0)).isPresent()) {
+					UtilsEffect effect = UtilsEffect.getEffect(args.get(0)).get();
+					for (int cpt = effect.getMinAmplifier(); cpt <= effect.getMaxAmplifier(); cpt++) {
+						suggests.add(String.valueOf(cpt));
 					}
 				}
-			} else if (args.size() == 3){
-				if (source.hasPermission(this.plugin.getPermissions().get("EFFECT_OTHERS"))){
-					if (UtilsEffect.getEffect(args.get(0)).isPresent()){
-						UtilsEffect effect = UtilsEffect.getEffect(args.get(0)).get();
-						for(int cpt = effect.getMinAmplifier(); cpt <= effect.getMaxAmplifier(); cpt++){
-							list.add(String.valueOf(cpt));
-						}
-					}
-				} else {
-					list = UtilsEffect.getEffects();
-				}
-			} else if (args.size() == 3 && source.hasPermission(this.plugin.getPermissions().get("EFFECT_OTHERS"))){
-				
+			} else if (args.size() == 3) {
+				suggests.add("30");
+				suggests.add("60");
+				suggests.add("600");
 			}
 		}
-		return list;
+		return suggests;
 	}
-	
+
 	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Résultat de la commande :
 		boolean resultat = false;
-		if(source instanceof EPlayer) {
+		if (source instanceof EPlayer) {
 			EPlayer player = (EPlayer) source;
 			// Affichage de l'aide
-			if(args.size() == 0) {
-				//source.sendMessage(help(source));
-				this.plugin.getEServer().broadcast(PotionEffectTypes.HEALTH_BOOST
-						+ " " + PotionEffectTypes.ABSORPTION.getName());
+			if (args.size() == 0) {
+				player.sendMessage(help(source));
 			// Ajout de l'effect avec amplifier et durée par défaut
-			} else if(args.size() == 1) {
+			} else if (args.size() == 1) {
 				commandEffect(player, args.get(0));
-			} else if(args.size() == 2){
-				if (player.hasPermission(this.plugin.getPermissions().get("EFFECT_OTHERS"))){
-					Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(args.get(0));
-					if (optPlayer.isPresent()){
-						EPlayer target = optPlayer.get();
-						commandEffectOthers(player, target, args.get(0));
-					} else {
-						source.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") 
-								+ this.plugin.getEverAPI().getMessages().getMessage("PLAYER_NOT_FOUND")));
-					}
-				} else {
-					try {
-						int amplification = Integer.valueOf(args.get(1));
-						commandEffect(player, args.get(0), amplification);
+			// Ajout de l'effect avec durée par défaut et amplifier personnalisé
+			} else if (args.size() == 2) {
+				try {
+					int amplification = Integer.valueOf(args.get(1));
+					commandEffect(player, args.get(0), amplification);
 					// Nombre invalide
-					} catch(NumberFormatException e) {
-						player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") 
-								+ this.plugin.getEverAPI().getMessages().getMessage("NUMBER_INVALID"));
-					}
+				} catch (NumberFormatException e) {
+					player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") 
+							+ this.plugin.getEverAPI().getMessages().getMessage("NUMBER_INVALID"));
 				}
-			
+			// Ajout de l'effect avec durée et amplifier personnalisé
+			} else if (args.size() == 3) {
+				try {
+					int amplification = Integer.valueOf(args.get(1));
+					int duration = Integer.valueOf(args.get(2)) * 20;
+					commandEffect(player, args.get(0), amplification, duration);
+				} catch (NumberFormatException e) {
+					player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") 
+							+ this.plugin.getEverAPI().getMessages().getMessage("NUMBER_INVALID"));
+				}
 			} else {
 				source.sendMessage(help(source));
 			}
@@ -135,89 +114,83 @@ public class EEEffect extends ECommand<EverEssentials> {
 		}
 		return resultat;
 	}
-	
+
 	public boolean commandEffect(final EPlayer player, final String effect) {
-		if (UtilsEffect.getEffect(effect).isPresent()){
-			player.addEffect(createPotionEffect(UtilsEffect.getEffect(effect).get().getType(), getDefaultAmplifier(), getDefaultDuration()));
+		if (UtilsEffect.getEffect(effect).isPresent()) {
+			this.plugin.getEServer().broadcast("test 1");
+			PotionEffect potion = createPotionEffect(UtilsEffect.getEffect(effect).get().getType(), getDefaultAmplifier(), getDefaultDuration());
+			this.plugin.getEServer().broadcast("" + potion);
+			player.addPotion(potion);
 			return true;
 		} else {
 			player.sendMessage(this.plugin.getMessages().getText("PREFIX") 
-					+ this.plugin.getMessages().getMessage("EFFECT_ERROR_NAME"));	
+				+ this.plugin.getMessages().getMessage("EFFECT_ERROR_NAME"));
 			return false;
 		}
 	}
-	
+
 	public boolean commandEffect(final EPlayer player, final String effect, final int amplifier) {
-		if (UtilsEffect.getEffect(effect).isPresent()){
+		if (UtilsEffect.getEffect(effect).isPresent()) {
 			UtilsEffect utils = UtilsEffect.getEffect(effect).get();
-			if (utils.getMinAmplifier() >= amplifier && amplifier >= utils.getMaxAmplifier()){
-				player.addEffect(createPotionEffect(utils.getType(), amplifier, getDefaultDuration()));
+			if (utils.getMinAmplifier() <= amplifier && amplifier <= utils.getMaxAmplifier()) {
+				player.addPotion(createPotionEffect(utils.getType(), amplifier - 1, getDefaultDuration()));
 			} else {
 				player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") 
-						+ this.plugin.getMessages().getMessage("EFFECT_ERROR_AMPLIFIER"));
+					+ this.plugin.getMessages().getMessage("EFFECT_ERROR_AMPLIFIER")
+						.replaceAll("<min>", String.valueOf(utils.getMinAmplifier()))
+						.replaceAll("<max>", String.valueOf(utils.getMaxAmplifier())));
 			}
 			return true;
 		} else {
 			player.sendMessage(this.plugin.getMessages().getText("PREFIX") 
-					+ this.plugin.getMessages().getMessage("EFFECT_ERROR_NAME"));	
+				+ this.plugin.getMessages().getMessage("EFFECT_ERROR_NAME"));
 			return false;
 		}
 	}
-	
-	public boolean commandEffectOthers(final EPlayer player, final EPlayer target, final String effect) throws CommandException {
-		// La source et le joueur sont différent
-		if(!player.equals(target)){
-			if (UtilsEffect.getEffect(effect).isPresent()){
-				target.addEffect(createPotionEffect(UtilsEffect.getEffect(effect).get().getType(), getDefaultAmplifier(), getDefaultDuration()));
-				return true;
+
+	public boolean commandEffect(final EPlayer player, final String effect, final int amplifier, final int duration) {
+		if (UtilsEffect.getEffect(effect).isPresent()) {
+			UtilsEffect utils = UtilsEffect.getEffect(effect).get();
+			if (utils.getMinAmplifier() <= amplifier && amplifier <= utils.getMaxAmplifier()) {
+				if (duration > 0 && duration <= getMaxDefaultDuration()) {
+					player.addPotion(createPotionEffect(utils.getType(), amplifier - 1, duration));
+				} else {
+					player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") 
+						+ this.plugin.getMessages().getMessage("EFFECT_ERROR_DURATION")
+							.replaceAll("<min>", String.valueOf(1))
+							.replaceAll("<max>", String.valueOf(getMaxDefaultDuration())));
+				}
 			} else {
-				player.sendMessage(this.plugin.getMessages().getText("PREFIX") 
-						+ this.plugin.getMessages().getMessage("EFFECT_ERROR_NAME"));	
-				return false;
+				player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") 
+						+ this.plugin.getMessages().getMessage("EFFECT_ERROR_AMPLIFIER")
+							.replaceAll("<min>", String.valueOf(utils.getMinAmplifier()))
+							.replaceAll("<max>", String.valueOf(utils.getMaxAmplifier() / 20)));
 			}
-		// La source et le joueur sont identique
+			return true;
 		} else {
-			return execute(player, new ArrayList<String>());
+			player.sendMessage(this.plugin.getMessages().getText("PREFIX") 
+					+ this.plugin.getMessages().getMessage("EFFECT_ERROR_NAME"));
+			return false;
 		}
 	}
-	
-	public boolean commandEffectOthers(final EPlayer player, final EPlayer target, final String effect, final int amplifier) throws CommandException {
-		// La source et le joueur sont différent
-		if(!player.equals(target)){
-			if (UtilsEffect.getEffect(effect).isPresent()){
-				target.addEffect(createPotionEffect(UtilsEffect.getEffect(effect).get().getType(), amplifier, getDefaultDuration()));
-				return true;
-			} else {
-				player.sendMessage(this.plugin.getMessages().getText("PREFIX") 
-						+ this.plugin.getMessages().getMessage("EFFECT_ERROR_NAME"));	
-				return false;
-			}
-		// La source et le joueur sont identique
-		} else {
-			return execute(player, new ArrayList<String>());
-		}
-	}
-	
-	private PotionEffect createPotionEffect(PotionEffectType type, int amplifier, int duration){
-		return PotionEffect
-				.builder()
+
+	private PotionEffect createPotionEffect(PotionEffectType type, int amplifier, int duration) {
+		return PotionEffect.builder()
 				.potionType(type)
-			    .amplifier(amplifier)
-			    .duration(duration)
-			    .build();
+				.amplifier(amplifier)
+				.particles(true)
+				.duration(duration).build();
+	}
+
+	private int getDefaultDuration() {
+		return this.plugin.getConfigs().get("effect-default-duration").getInt() * 20;
 	}
 	
-	private int getDefaultDuration(){
-		return this.plugin.getConfigs().get("effect-default-duration").getInt();
+	private int getMaxDefaultDuration() {
+		return this.plugin.getConfigs().get("effect-default-max-duration").getInt() * 20;
 	}
-	
-	private int getDefaultAmplifier(){
+
+	private int getDefaultAmplifier() {
 		return this.plugin.getConfigs().get("effect-default-amplifier").getInt();
 	}
-	
-	/*
-	private int getMaxDuration(){
-		return this.plugin.getConfigs().get("effect-default-max-duration").getInt();
-	}
-	*/
 }

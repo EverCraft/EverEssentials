@@ -79,7 +79,7 @@ public class EEMessage extends EMessage {
 		
 		addDefault("effect.description", "Ajoute un effet de potion sur un joueur.");
 		addDefault("effect.errorName", "&cErreur : nom de l'effet invalide.");
-		addDefault("effect.errorDuration", "&cErreur : la durée ne peut excéder <time> seconde(s)");
+		addDefault("effect.errorDuration", "&cErreur : la durée de l'effet doit être compris entre <min> et <max>.");
 		addDefault("effect.errorAmplifier", "&cErreur : l'amplification de l'effet doit être compris entre <min> et <max>.");
 		
 		addDefault("enchant.description", "Enchante l'objet dans votre main.");
