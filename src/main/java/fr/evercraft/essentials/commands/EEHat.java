@@ -27,6 +27,7 @@ import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
 
 import fr.evercraft.essentials.EverEssentials;
+import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.ECommand;
 import fr.evercraft.everapi.server.player.EPlayer;
@@ -129,7 +130,7 @@ public class EEHat extends ECommand<EverEssentials> {
 			}
 		// Le jouer n'a pas d'objet dans la main
 		} else {
-			player.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("HAT_NULL")));
+			player.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + EAMessages.EMPTY_ITEM_IN_HAND));
 		}
 		return false;
 	}

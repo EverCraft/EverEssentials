@@ -29,6 +29,7 @@ import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
+import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.ECommand;
@@ -84,7 +85,7 @@ public class EEBack extends ECommand<EverEssentials> {
 			player.setBack(player.getTransform());
 			// Le joueur a bien été téléporter
 			player.setTransform(back.get());
-			player.sendMessage(ETextBuilder.toBuilder(this.plugin.getMessages().getText("PREFIX"))
+			player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.getText())
 					.append(this.plugin.getMessages().getMessage("BACK_TELEPORT"))
 					.replace("<back>", getButtonLocation(back.get().getLocation()))
 					.build());

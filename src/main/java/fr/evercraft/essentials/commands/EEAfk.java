@@ -26,7 +26,9 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
 
+import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EverEssentials;
+import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.ECommand;
 import fr.evercraft.everapi.server.player.EPlayer;
@@ -42,7 +44,7 @@ public class EEAfk extends ECommand<EverEssentials> {
 	}
 
 	public Text description(final CommandSource source) {
-		return this.plugin.getMessages().getText("AFK_DESCRIPTION");
+		return EEMessages.AFK_DESCRIPTION.getText();
 	}
 
 	public Text help(final CommandSource source) {
@@ -79,7 +81,7 @@ public class EEAfk extends ECommand<EverEssentials> {
 				resultat = commandAfk((EPlayer) source);
 			// La source n'est pas un joueur
 			} else {
-				source.sendMessage(this.plugin.getEverAPI().getMessages().getText("COMMAND_ERROR_FOR_PLAYER"));
+				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
 			}
 		// On connais le joueur
 		} else if(args.size() == 1) {
@@ -91,7 +93,7 @@ public class EEAfk extends ECommand<EverEssentials> {
 					resultat = commandAfkOthers(source, optPlayer.get());
 				// Le joueur est introuvable
 				} else {
-					source.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getEverAPI().getMessages().getMessage("PLAYER_NOT_FOUND")));
+					source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
 				}
 			// Il n'a pas la permission
 			} else {
@@ -113,7 +115,7 @@ public class EEAfk extends ECommand<EverEssentials> {
 					}
 				// Le joueur est introuvable
 				} else {
-					source.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getEverAPI().getMessages().getMessage("PLAYER_NOT_FOUND")));
+					source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
 				}
 			// Il n'a pas la permission
 			} else {
@@ -131,21 +133,21 @@ public class EEAfk extends ECommand<EverEssentials> {
 		player.setAFK(!vanish);
 		// Si le Afk est déjà activé
 		if(vanish){
-			if(this.plugin.getMessages().hasMessage("AFK_ALL_DISABLE")) {
-				player.broadcast(this.plugin.getMessages().getText("PREFIX").concat(
+			if(EEMessages.AFK_ALL_DISABLE.has()) {
+				player.broadcast(EEMessages.PREFIX.getText().concat(
 						this.plugin.getChat().replaceFormat(player, 
-								this.plugin.getChat().replacePlayer(player, this.plugin.getMessages().getMessage("AFK_ALL_DISABLE")))));
+								this.plugin.getChat().replacePlayer(player, EEMessages.AFK_ALL_DISABLE.get()))));
 			} else {
-				player.sendMessage(this.plugin.getMessages().getText("PREFIX").concat(this.plugin.getMessages().getText("AFK_PLAYER_DISABLE")));
+				player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.AFK_PLAYER_DISABLE.getText()));
 			}
 		// Afk est déjà désactivé
 		} else {
-			if(this.plugin.getMessages().hasMessage("AFK_ALL_ENABLE")) {
-				player.broadcast(this.plugin.getMessages().getText("PREFIX").concat(
+			if(EEMessages.AFK_ALL_ENABLE.has()) {
+				player.broadcast(EEMessages.PREFIX.getText().concat(
 						this.plugin.getChat().replaceFormat(player, 
 								this.plugin.getChat().replacePlayer(player, this.plugin.getMessages().getMessage("AFK_ALL_ENABLE")))));
 			} else {
-				player.sendMessage(this.plugin.getMessages().getText("PREFIX").concat(this.plugin.getMessages().getText("AFK_PLAYER_ENABLE")));
+				player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.AFK_PLAYER_ENABLE.getText()));
 			}
 		}
 		return true;
@@ -159,22 +161,22 @@ public class EEAfk extends ECommand<EverEssentials> {
 			// Si le vanish est déjà activé
 			if(vanish){
 				if(this.plugin.getMessages().hasMessage("AFK_ALL_DISABLE")) {
-					player.broadcast(this.plugin.getMessages().getText("PREFIX").concat(
+					player.broadcast(EEMessages.PREFIX.getText().concat(
 							this.plugin.getChat().replaceFormat(player, 
 									this.plugin.getChat().replacePlayer(player, this.plugin.getMessages().getMessage("AFK_ALL_DISABLE")))));
 				} else {
-					player.sendMessage(this.plugin.getMessages().getText("PREFIX").concat(this.plugin.getMessages().getText("AFK_PLAYER_DISABLE")));
+					player.sendMessage(EEMessages.PREFIX.getText().concat(this.plugin.getMessages().getText("AFK_PLAYER_DISABLE")));
 					staff.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("AFK_STAFF_DISABLE")
 							.replaceAll("<player>", player.getName())));
 				}
 			// Afk est déjà désactivé
 			} else {
 				if(this.plugin.getMessages().hasMessage("AFK_ALL_ENABLE")) {
-					player.broadcast(this.plugin.getMessages().getText("PREFIX").concat(
+					player.broadcast(EEMessages.PREFIX.getText().concat(
 							this.plugin.getChat().replaceFormat(player, 
 									this.plugin.getChat().replacePlayer(player, this.plugin.getMessages().getMessage("AFK_ALL_ENABLE")))));
 				} else {
-					player.sendMessage(this.plugin.getMessages().getText("PREFIX").concat(this.plugin.getMessages().getText("AFK_PLAYER_ENABLE")));
+					player.sendMessage(EEMessages.PREFIX.getText().concat(this.plugin.getMessages().getText("AFK_PLAYER_ENABLE")));
 					staff.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("AFK_STAFF_ENABLE")
 							.replaceAll("<player>", player.getName())));
 				}
@@ -199,11 +201,11 @@ public class EEAfk extends ECommand<EverEssentials> {
 				} else {
 					player.setAFK(etat);
 					if(this.plugin.getMessages().hasMessage("AFK_ALL_ENABLE")) {
-						player.broadcast(this.plugin.getMessages().getText("PREFIX").concat(
+						player.broadcast(EEMessages.PREFIX.getText().concat(
 								this.plugin.getChat().replaceFormat(player, 
 										this.plugin.getChat().replacePlayer(player, this.plugin.getMessages().getMessage("AFK_ALL_ENABLE")))));
 					} else {
-						player.sendMessage(this.plugin.getMessages().getText("PREFIX").concat(this.plugin.getMessages().getText("AFK_PLAYER_ENABLE")));
+						player.sendMessage(EEMessages.PREFIX.getText().concat(this.plugin.getMessages().getText("AFK_PLAYER_ENABLE")));
 						staff.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("AFK_STAFF_ENABLE")
 								.replaceAll("<player>", player.getName())));
 					}
@@ -214,11 +216,11 @@ public class EEAfk extends ECommand<EverEssentials> {
 				if(vanish){
 					player.setAFK(etat);
 					if(this.plugin.getMessages().hasMessage("AFK_ALL_DISABLE")) {
-						player.broadcast(this.plugin.getMessages().getText("PREFIX").concat(
+						player.broadcast(EEMessages.PREFIX.getText().concat(
 								this.plugin.getChat().replaceFormat(player, 
 										this.plugin.getChat().replacePlayer(player, this.plugin.getMessages().getMessage("AFK_ALL_DISABLE")))));
 					} else {
-						player.sendMessage(this.plugin.getMessages().getText("PREFIX").concat(this.plugin.getMessages().getText("AFK_PLAYER_DISABLE")));
+						player.sendMessage(EEMessages.PREFIX.getText().concat(this.plugin.getMessages().getText("AFK_PLAYER_DISABLE")));
 						staff.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("AFK_STAFF_DISABLE")
 								.replaceAll("<player>", player.getName())));
 					}
@@ -239,11 +241,11 @@ public class EEAfk extends ECommand<EverEssentials> {
 				} else {
 					player.setAFK(etat);
 					if(this.plugin.getMessages().hasMessage("AFK_ALL_ENABLE")) {
-						player.broadcast(this.plugin.getMessages().getText("PREFIX").concat(
+						player.broadcast(EEMessages.PREFIX.getText().concat(
 								this.plugin.getChat().replaceFormat(player, 
 										this.plugin.getChat().replacePlayer(player, this.plugin.getMessages().getMessage("AFK_ALL_ENABLE")))));
 					} else {
-						player.sendMessage(this.plugin.getMessages().getText("PREFIX").concat(this.plugin.getMessages().getText("AFK_PLAYER_ENABLE")));
+						player.sendMessage(EEMessages.PREFIX.getText().concat(this.plugin.getMessages().getText("AFK_PLAYER_ENABLE")));
 					}
 					return true;
 				}
@@ -252,11 +254,11 @@ public class EEAfk extends ECommand<EverEssentials> {
 				if(vanish){
 					player.setAFK(etat);
 					if(this.plugin.getMessages().hasMessage("AFK_ALL_DISABLE")) {
-						player.broadcast(this.plugin.getMessages().getText("PREFIX").concat(
+						player.broadcast(EEMessages.PREFIX.getText().concat(
 								this.plugin.getChat().replaceFormat(player, 
 										this.plugin.getChat().replacePlayer(player, this.plugin.getMessages().getMessage("AFK_ALL_DISABLE")))));
 					} else {
-						player.sendMessage(this.plugin.getMessages().getText("PREFIX").concat(this.plugin.getMessages().getText("AFK_PLAYER_DISABLE")));
+						player.sendMessage(EEMessages.PREFIX.getText().concat(this.plugin.getMessages().getText("AFK_PLAYER_DISABLE")));
 					}
 					return true;
 				// Afk est désactivé

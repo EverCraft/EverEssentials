@@ -16,8 +16,17 @@
  */
 package fr.evercraft.essentials;
 
+import java.util.Arrays;
+import java.util.List;
+
+import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.format.TextColor;
+
+import com.google.common.base.Preconditions;
+
 import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.file.EMessage;
+import fr.evercraft.everapi.plugin.file.EnumMessage;
 
 public class EEMessage extends EMessage {
 
@@ -25,1081 +34,610 @@ public class EEMessage extends EMessage {
 		super(plugin);
 	}
 
+	public enum EEMessages implements EnumMessage {
+		PREFIX("prefix", 									"[&4Ever&6&lEssentials&f] "),
+		
+		AFK_DESCRIPTION("afk.description", 					"Permet de vous signaler AFK."),
+		AFK_ALL_ENABLE("afk.allEnable", 					"&6" + EChat.DISPLAYNAME_FORMAT + " &7est désormais AFK."),
+		AFK_ALL_DISABLE("afk.allDisable", 					"&6" + EChat.DISPLAYNAME_FORMAT + " &7n'est plus AFK."),
+		AFK_PLAYER_ENABLE("afk.playerEnable", 				"&7Vous êtes désormais AFK."),
+		AFK_PLAYER_DISABLE("afk.playerDisable", 			"&7Vous n'êtes plus AFK."),
+		AFK_PLAYER_ENABLE_ERROR("afk.playerEnableError", 	"&cVous êtes déjà AFK."),
+		AFK_PLAYER_DISABLE_ERROR("afk.playerDisableError", 	"&cVous n'êtes pas AFK."),
+		AFK_STAFF_ENABLE("afk.staffEnable",					"&6<player> &7est désormais AFK."),
+		AFK_STAFF_DISABLE("afk.staffDisable", 				"&6<player> &7n'est plus AFK."),
+		AFK_STAFF_ENABLE_ERROR("afk.staffEnableError", 		"&6<player> &cest déjà signalé AFK."),
+		AFK_STAFF_DISABLE_ERROR("afk.staffDisableError", 	"&6<player> &cn'est pas AFK."),
+		
+		BACK_DESCRIPTION("back.description",				"Retourne à la dernière position sauvegardé."),
+		BACK_NAME("back.name", 								"&6&lposition"),
+		BACK_NAME_HOVER("back.nameHover", 					"&cMonde : &6<world>[RT]&cX : &6<x>[RT]&cY : &6<y>[RT]&cZ : &6<z>"),
+		BACK_TELEPORT("back.teleport", 						"&7Vous avez été téléporté à votre dernière <back>&7."),
+		BACK_INCONNU("back.inconnu", 						"&cVous n'avez aucune position sauvegardé."),
+		
+		BED_DESCRIPTION("bed.description", 					"Retourne à la dernière position ou vous avez dormi"),
+		
+		BROADCAST_DESCRIPTION("broadcast.description", 		"Envoye un message à tous les joueurs."),
+		BROADCAST_PREFIX_PLAYER("broadcast.prefixPlayer", 	"&7[&6<player>&7] : "),
+		BROADCAST_PREFIX_CONSOLE("broadcast.prefixConsole", "&7[&6Console&7] : "),
+		
+		BOOK_DESCRIPTION("book.description", 				"Permet de modifier un livre."),
+		
+		BUTCHER_DESCRIPTION("butcher.description", 			"Supprime les entitées dans un monde ou dans un rayon."),
+		BUTCHER_NOENTITY("butcher.noEntity", 				"&cIl y a aucune entité à supprimer."),
+		BUTCHER_ENTITY_COLOR("butcher.entityColor", 		"&6"),
+		BUTCHER_ANIMAL("butcher.killAnimal", 				"&7Suppression de &6<count> &7animaux dans ce monde."),
+		BUTCHER_ANIMAL_RADIUS("butcher.killAnimalRadius", 	"&7Suppression de &6<count> &7animaux dans un rayon de &6<radius> bloc(s)&7."),
+		BUTCHER_MONSTER("butcher.killMonster", 				"&7Suppression de &6<count> &7monstre(s) dans ce monde."),
+		BUTCHER_MONSTER_RADIUS("butcher.killMonsterRadius", "&7Suppression de &6<count> &7monstre(s) dans un rayon de &6<radius> bloc(s)&7."),
+		BUTCHER_ALL("butcher.killAll",						"&7Suppression de &6<count> &7entitée(s) dans ce monde."),
+		BUTCHER_ALL_RADIUS("butcher.killAllRadius", 		"&7Suppression de &6<count> &7entitée(s) dans un rayon de &6<radius> bloc(s)&7."),
+		BUTCHER_TYPE("butcher.killType", 					"&7Suppression de &6<count> &6<entity>&6(s)&7 dans ce monde."),
+		BUTCHER_TYPE_RADIUS("butcher.killTypeRadius", 		"&7Suppression de &6<count> &6<entity>&6(s)&7 dans un rayon de &6<radius> bloc(s)&7."),
+		
+		CLEAREFFECT_DESCRIPTION("cleareffect.description", 		"Supprime tous les effets de potions d'un joueur."),
+		CLEAREFFECT_PLAYER("cleareffect.player", 				"&7Tous vos effets de potions ont été supprimés."),
+		CLEAREFFECT_OTHERS_PLAYER("cleareffect.othersPlayer", 	"&7Tous les effets de potions ont été supprimés par &6<staff>&7."),
+		CLEAREFFECT_OTHERS_STAFF("cleareffect.othersStaff", 	"&7Tous les effets de potions de &6<player> &7ont été supprimés."),
+		
+		CLEARINVENTORY_DESCRIPTION("clearinventory.description", 	"Supprime tous les objets de l'inventaire d'un joueur."),
+		CLEARINVENTORY_PLAYER("clearinventory.player", 				"&7Tous les objets de votre inventaire ont été supprimés."),
+		CLEARINVENTORY_OTHERS_PLAYER("clearinventory.othersPlayer", "&7Tous les objets de votre inventaire ont été supprimés par &6<staff>&7."),
+		CLEARINVENTORY_OTHERS_STAFF("clearinventory.othersStaff", 	"&7Tous les objets de l'inventaire de &6<player> &7ont été supprimés."),
+		
+		COLOR_DESCRIPTION("color.description", 				"Affiche les différentes couleurs dans Minecraft."),
+		COLOR_LIST_MESSAGE("color.listTitle", 				"&l&7Liste des couleurs :"), 
+		COLOR_LIST_TITLE("color.listMessage", 				"<color>█ &0: <id>-<name>"), 
+		
+		EFFECT_DESCRIPTION("effect.description", 			"Ajoute un effet de potion sur un joueur."),
+		EFFECT_ERROR_NAME("effect.errorName", 				"&cErreur : nom de l'effet invalide."),
+		EFFECT_ERROR_DURATION("effect.errorDuration", 		"&cErreur : la durée de l'effet doit être compris entre <min> et <max>."),
+		EFFECT_ERROR_AMPLIFIER("effect.errorAmplifier", 	"&cErreur : l'amplification de l'effet doit être compris entre <min> et <max>."),
+		
+		ENCHANT_DESCRIPTION("enchant.description", 			"Enchante l'objet dans votre main."),
+		ENCHANT_NOT_FOUND("enchant.notFound", 				"&cErreur : cet enchantement n'existe pas."),
+		ENCHANT_LEVEL_TOO_HIGHT("enchant.levelTooHight", 	"&cErreur : le niveau de cet enchantement est trop élevé."),
+		ENCHANT_INCOMPATIBLE("enchant.incompatible", 		"&cErreur : cet enchantement est incompatible avec &6<item>"),
+		ENCHANT_NAME("enchant.name", 						"&6<item>"),
+		ENCHANT_SUCCESSFULL("enchant.successfull", 			"&7L'enchantement a bien été appliqué sur l'objet."),
+				
+		EXP_DESCRIPTION("exp.description", 							"Modifie l'expérience d'un joueur."),
+		EXP_GIVE_LEVEL("exp.giveLevel",								"&7Vous vous êtes ajouté &6<level> &7niveau(x)."),
+		EXP_GIVE_EXP("exp.giveExp", 								"&7Vous vous êtes ajouté &6<experience> &7point(s) d'expérience."),
+		EXP_SET_LEVEL("exp.setLevel", 								"&7Vous avez défini votre niveau à &6<level>&7."),
+		EXP_SET_EXP("exp.setExp", 									"&7Vous avez défini votre expérience à &6<experience>&7."),
+		EXP_OTHERS_PLAYER_GIVE_LEVEL("exp.othersPlayerGiveLevel", 	"&7Vous avez reçu &6<level> &7niveau(x) par &6<staff>&7."),
+		EXP_OTHERS_STAFF_GIVE_LEVEL("exp.othersStaffGiveLevel", 	"&7Vous avez ajouté &6<level> &7niveau(x) à &6<player>&7."),
+		EXP_OTHERS_PLAYER_GIVE_EXP("exp.othersPlayerGiveExp", 		"&7Vous avez reçu &6<experience> &7point(s) d'expérience par &6<staff>&7."),
+		EXP_OTHERS_STAFF_GIVE_EXP("exp.othersStaffGiveExp", 		"&7Vous avez ajouté &6<experience> &7point(s) d'expérience à &6<player>&7."),
+		EXP_OTHERS_PLAYER_SET_LEVEL("exp.othersPlayerSetLevel", 	"&7Votre niveau a été modifié à &6<level> &7par &6<staff>&7."),
+		EXP_OTHERS_STAFF_SET_LEVEL("exp.othersStaffSetLevel", 		"&7Vous avez modifié le niveau de &6<player> &7à &6<level>&7."),
+		EXP_OTHERS_PLAYER_SET_EXP("exp.othersPlayerSetExp", 		"&7Votre expérience a été modifié à &6<experience> &7par &6<staff>&7."),
+		EXP_OTHERS_STAFF_SET_EXP("exp.othersStaffSetExp", 			"&7Vous avez modifié l'expérience de &6<player> &7à &6<experience>&7."),
+		
+		EXT_DESCRIPTION("ext.description", 					"Enleve le feu sur un joueur."),
+		EXT_PLAYER("ext.player", 							"&7Vous n'êtes plus en feu."),
+		EXT_PLAYER_ERROR("ext.playerError", 				"&7Vous n'êtes pas en feu."),
+		EXT_OTHERS_PLAYER("ext.othersPlayer", 				"&7Vous n'êtes plus en feu grâce à &6<staff>&7."),
+		EXT_OTHERS_STAFF("ext.othersStaff", 				"&7Vous avez enlevé le feu sur &6<player>&7."),
+		EXT_OTHERS_ERROR("ext.othersError", 				"&6<player> &7n'est pas en feu."),
+		
+		FEED_DESCRIPTION("feed.description", 				"Satisfait la faim d'un joueur."),
+		FEED_PLAYER("feed.player", 							"&7Vous vous êtes rassasié."),
+		FEED_OTHERS_STAFF("feed.othersStaff", 				"&7Vous avez rassasié &6<player>."),
+		FEED_OTHERS_PLAYER("feed.othersPlayer", 			"&7Vous avez été rassasié par &6<staff>&7."),
+		FEED_ALL_STAFF("feed.allStaff", 					"&7Vous avez rassasié tous les joueurs."),
+		
+		FLY_DESCRIPTION("fly.description", 								"Permet de vous envoler."),
+		FLY_PLAYER_ENABLE("fly.playerEnable",							"&7Vous pouvez désormais vous envoler."),
+		FLY_PLAYER_ENABLE_ERROR("fly.playerEnableError", 				"&7Vous possèdez déjà le droit de vous envoler."),
+		FLY_PLAYER_DISABLE("fly.playerDisable", 						"&7Vous ne pouvez plus vous envoler."),
+		FLY_PLAYER_DISABLE_ERROR("fly.playerDisableError", 				"&7Vous ne pouvez pas vous envoler."),
+		FLY_PLAYER_ERROR_CREATIVE("fly.playerErrorCreative", 			"&7Vous ne pouvez pas vous enlever le droit de vous envoler quand vous êtes en mode créative."),
+		FLY_OTHERS_PLAYER_ENABLE("fly.othersPlayerEnable", 				"&7Vous pouvez désormais vous envoler grâce à &6<staff>&7."),
+		FLY_OTHERS_PLAYER_DISABLE("fly.othersPlayerDisable", 			"&7Vous ne pouvez plus vous envoler à cause de &6<staff>&7."),
+		FLY_OTHERS_STAFF_ENABLE("fly.othersStaffEnable", 				"&7Vous venez d'accorder le droit de s'envoler à &6<player>&7."),
+		FLY_OTHERS_STAFF_ENABLE_ERROR("fly.othersStaffEnableError", 	"&6<player> &7possède déjà le droit de s'envoler."),
+		FLY_OTHERS_STAFF_DISABLE("fly.othersStaffDisable", 				"&7Vous venez de retirer le droit de s'envoler à &6<player>&7."),
+		FLY_OTHERS_STAFF_DISABLE_ERROR("fly.othersStaffDisableError", 	"&6<player> &7ne possède pas le droit de s'envoler."),
+		FLY_OTHERS_ERROR_CREATIVE("fly.othersErrorCreative", 			"&7Vous ne pouvez pas enlever le droit de s'envoler à &6<player> &7 car il est en mode créative."),
+		
+		GAMEMODE_DESCRIPTION("gamemode.description", 					"Change le mode de jeu d'un joueur."),
+		GAMEMODE_PLAYER_CHANGE("gamemode.playerChange", 				"&7Vous êtes désormais en mode de jeu &6<gamemode>&7."),
+		GAMEMODE_PLAYER_EQUAL("gamemode.playerEqual", 					"&7Vous êtes déjà en mode de jeu &6<gamemode>&7."),
+		GAMEMODE_OTHERS_STAFF_CHANGE("gamemode.othersStaffChange", 		"&7Mode de jeu &6<gamemode> &7pour &6<player>&7."),
+		GAMEMODE_OTHERS_PLAYER_CHANGE("gamemode.othersPlayerChange", 	"&7Votre mode de jeu a été changé en &6<gamemode> &7par &6<staff>&7."),
+		GAMEMODE_OTHERS_EQUAL("gamemode.othersEqual", 					"&6<player> &7possède déjà le mode de jeu &6<gamemode>&7."),
+		GAMEMODE_ERROR_NAME("gamemode.errorName", 						"&cMode de jeu inconnu."),
+		
+		GETPOS_DESCRIPTION("getpos.description", 		"Affiche les coordonnées d'un joueur."),
+		GETPOS_MESSAGE("getpos.message", 				"&7Voici votre &6<position>&7."),
+		GETPOS_MESSAGE_OTHERS("getpos.messageOthers", 	"&7Voici la <position> &7de &6<player>&7."),
+		GETPOS_POTISITON_NAME("getpos.positionName", 	"&6&lposition"),
+		GETPOS_POSITION_HOVER("getpos.positionHover", 	"&cMonde : &6<world>[RT]&cX : &6<x>[RT]&cY : &6<y>[RT]&cZ : &6<z>"),
+		
+		GOD_DESCRIPTION("god.description", 								"Permet de vous rendre invulnérable."),
+		GOD_PLAYER_ENABLE("god.playerEnable", 							"&7Vous êtes désormais invulnérable."),
+		GOD_PLAYER_ENABLE_ERROR("god.playerEnableError", 				"&7Vous êtes déjà invulnérable."),
+		GOD_PLAYER_DISABLE("god.playerDisable", 						"&7Vous êtes désormais vulnérable."),
+		GOD_PLAYER_DISABLE_ERROR("god.playerDisableError", 				"&7Vous êtes déjà vulnérable."),
+		GOD_OTHERS_PLAYER_ENABLE("god.othersPlayerEnable", 				"&7Vous êtes désormais invulnérable grâce à &6<staff>&7."),
+		GOD_OTHERS_PLAYER_DISABLE("god.othersPlayerDisable", 			"&7Vous n'êtes plus invulnérable à cause de &6<staff>&7."),
+		GOD_OTHERS_STAFF_ENABLE("god.othersStaffEnable", 				"&7Vous venez de rendre invulnérable &6<player>&7."),
+		GOD_OTHERS_STAFF_ENABLE_ERROR("god.othersStaffEnableError", 	"&6<player> &7est déjà invulnérable."),
+		GOD_OTHERS_STAFF_DISABLE("god.othersStaffDisable", 				"&7Vous venez de rendre vulnérable &6<player>&7."),
+		GOD_OTHERS_STAFF_DISABLE_ERROR("god.othersStaffDisableError", 	"&6<player> &7est déjà vulnérable."),
+		GOD_TELEPORT("god.teleport", 									"&7Vous avez été téléporté car vous étiez en train de tomber dans le vide."),
+		
+		HAT_DESCRIPTION("hat.description", 				"Place l'objet dans votre main sur votre tête"),
+		HAT_ITEM_COLOR("hat.itemColor", 				"&6"),
+		HAT_IS_NOT_HAT("hat.isNotHat", 					"<item> &7n'est pas un chapeau."),
+		HAT_NO_EMPTY("hat.noEmpty", 					"&7Vous ne pouvez pas mettre un objet sur votre tête quand vous avez un <item>&7."),
+		HAT_IS_HAT("hat.isHat", 						"&7Votre nouveau chapeau : &6<item>&7."),
+		HAT_REMOVE("hat.remove", 						"&7Vous avez enlevé l'objet sur votre chapeau."),
+		HAT_REMOVE_EMPTY("hat.removeEmpty", 			"&cVous n'avez actuellement aucun chapeau."),
+		
+		HEAL_DESCRIPTION("heal.description", 			"Soigne un joueur."),
+		HEAL_PLAYER("heal.player", 						"&7Vous vous êtes soigné."),
+		HEAL_PLAYER_DEAD("heal.playerDead", 			"&7Vous êtes déjà mort."),
+		HEAL_OTHERS_PLAYER("heal.othersPlayer", 		"&7Vous avez été soigné par &6<staff>&7."),
+		HEAL_OTHERS_STAFF("heal.othersStaff", 			"&7Vous avez soigné &6<player>&7."),
+		HEAL_OTHERS_DEAD_STAFF("heal.othersDeadStaff", 	"&6<player>&7 est déjà mort."),
+		HEAL_ALL_STAFF("heal.allStaff", 				"&7Vous avez soigné tous les joueurs."),
+		
+		HOME_NAME("home.name", 							"&6&l<name>"),
+		HOME_NAME_HOVER("home.nameHover", 				"&cMonde : &6<world>[RT]&cX : &6<x>[RT]&cY : &6<y>[RT]&cZ : &6<z>"),
+		
+		HOME_DESCRIPTION("home.description", 					"Téléporte le joueur à une résidence."),
+		HOME_LIST_TITLE("home.listTitle", 						"&aListe des résidences"),
+		HOME_LIST_LINE("home.listLine", 						"    &6&l➤  <home> &7: <teleport> <delete>"),
+		HOME_LIST_LINE_ERROR_WORLD("home.listLineErrorWorld", 	"    &6&l➤  <home> &7: <delete>"),
+		HOME_LIST_TELEPORT("home.listTeleport", 				"&a&nTéléporter"),
+		HOME_LIST_TELEPORT_HOVER("home.listTeleportHover",		"&cCliquez ici pour vous téléporter à la résidence &6<home>&c."),
+		HOME_LIST_DELETE("home.listDelete", 					"&c&nSupprimer"),
+		HOME_LIST_DELETE_HOVER("home.listDeleteHover", 			"&cCliquez ici pour supprimer la résidence &6<home>&c."),
+		HOME_EMPTY("home.empty", 								"&cVous n'avez aucune résidence."),
+		HOME_INCONNU("home.inconnu", 							"&cVous n'avez pas de résidence qui s'appelle &6<home>&c."),
+		HOME_TELEPORT("home.teleport", 							"&7Vous avez été téléporté à la résidence &6<home>&7."),
+		HOME_TELEPORT_ERROR("home.teleportError", 				"&cImpossible de vous téléporter à la résidence &6<home>&c."),
+
+		DELHOME_DESCRIPTION("delhome.description", 							"Supprime une résidence"),
+		DELHOME_CONFIRMATION("delhome.confirmation", 						"&7Souhaitez-vous vraiment supprimer la résidence &6<home> &7: <confirmation>"),
+		DELHOME_CONFIRMATION_VALID("delhome.confirmationValid", 			"&2&nConfirmer"),
+		DELHOME_CONFIRMATION_VALID_HOVER("delhome.confirmationValidHover", 	"&cCliquez ici pour supprimer la résidence &6<home>&c."),
+		DELHOME_DELETE("delhome.delete",									"&7Vous avez supprimé la résidence &6<home>&7."),
+		DELHOME_INCONNU("delhome.inconnu", 									"&cVous n'avez pas de résidence qui s'appelle &6<home>&c."),
+		
+		HOMEOTHERS_DESCRIPTION("homeOthers.description", 					"Gère les résidences d'un joueur"),
+		HOMEOTHERS_LIST_TITLE("homeOthers.listTitle", 						"&aListe des résidences de <player>"),
+		HOMEOTHERS_LIST_LINE("homeOthers.listLine", 						"    &6&l➤  <home> &7: <teleport> <delete>"),
+		HOMEOTHERS_LIST_TELEPORT("homeOthers.listTeleport", 				"&a&nTéléporter"),
+		HOMEOTHERS_LIST_TELEPORT_HOVER("homeOthers.listTeleportHover", 		"&cCliquez ici pour vous téléporter à la résidence &6<home> &cde &6<player>&c."),
+		HOMEOTHERS_LIST_DELETE("homeOthers.listDelete", 					"&c&nSupprimer"),
+		HOMEOTHERS_LIST_DELETE_HOVER("homeOthers.listDeleteHover", 			"&cCliquez ici pour supprimer la résidence &6<home> &cde &6<player>&c."),
+		HOMEOTHERS_EMPTY("homeOthers.empty", 								"&6<player> &cn'a aucune résidence."),
+		HOMEOTHERS_INCONNU("homeOthers.inconnu",							"&6<player> &cn'a pas de résidence qui s'appelle &6<home>&c."),
+		HOMEOTHERS_TELEPORT("homeOthers.teleport", 							"&7Vous avez été téléporté à la résidence &6<home> &7de &6<player>&7."),
+		HOMEOTHERS_TELEPORT_ERROR("homeOthers.teleportError", 				"&cImpossible de vous téléporter à la résidence &6<home> &cde &6<player>&c."),
+		HOMEOTHERS_DELETE_CONFIRMATION("homeOthers.deleteConfirmation", 	"&7Souhaitez-vous vraiment supprimer la résidence &6<home> &7de &6<player> &7: <confirmation>"),
+		HOMEOTHERS_DELETEE_CONFIRMATION_VALID("homeOthers.deleteConfirmationValid", 			"&2&nConfirmer"),
+		HOMEOTHERS_DELETE_CONFIRMATION_VALID_HOVER("homeOthers.deleteConfirmationValidHover", 	"&cCliquez ici pour supprimer la résidence &6<home> &cde &6<player>&c."),
+		HOMEOTHERS_DELETE("homeOthers.delete", 													"&7Vous avez supprimé la résidence &6<home> &7de &6<player>&7."),
+		
+		SETHOME_DESCRIPTION("sethome.description", 						"Défini une résidence"),
+		SETHOME_SET("sethome.set", 										"&7Vous avez défini votre résidence."),
+		SETHOME_MULTIPLE_SET("sethome.multipleSet", 					"&7Vous avez défini la résidence &6<home>&7."),
+		SETHOME_MULTIPLE_ERROR_MAX("sethome.multipleErrorMax", 			"&cVous ne pouvez pas créer plus de <nombre> résidence(s)."),
+		SETHOME_MULTIPLE_NO_PERMISSION("sethome.multipleNoPermission", 	"&cVous n'avez pas la permission d'avoir plusieurs résidences."),
+		
+		INFO_DESCRIPTION("info.description", "Connaître le type d'un item"),
+		INFO_PLAYER("info.player", "&7Le type de l'objet <item> &7est &6<type>&7."),
+		INFO_ITEM_COLOR("info.itemColor", "&6"),
+		
+		JUMP_DESCRIPTION("jump.description", "Vous téléporte à l'endroit de votre choix"),
+		JUMP_TELEPORT("jump.teleport", "&7Vous avez été téléporté à l'endroit de votre choix."),
+		JUMP_TELEPORT_ERROR("jump.teleportError", "&7Impossible de trouver une position pour vous téléporter."),
+		
+		KICK_DESCRIPTION("kick.description", "Expulse un joueur du serveur"),
+		KICK_MESSAGE("kick.message", "&c&lExpulsion du serveur[RT][RT]&cRaison : &7<message>[RT]"),
+		
+		KICKALL_DESCRIPTION("kickall.description", "Expulse tous les joueurs du serveur"),
+		KICKALL_MESSAGE("kickall.message", "&c&lExpulsion du serveur[RT][RT]&cRaison : &7<message>[RT]"),
+		
+		KILL_DESCRIPTION("kill.description", "Tue un joueur"),
+		KILL_PLAYER("kill.player", "&7Vous avez été tué par &6<staff>&7."),
+		KILL_STAFF("kill.staff", "&7Vous avez tué &6<player>&7."),
+		
+		LAG_DESCRIPTION("lag.description", "Connaître l'état du serveur"),
+		LAG_TITLE("lag.title", "&aInformations sur le serveur"),
+		LAG_TIME("lag.time", "    &6&l➤  &6Durée de fonctionnement : &c<time>"),
+		LAG_TPS("lag.tps", "    &6&l➤  &6TPS actuel : &c<tps>"),
+		LAG_HISTORY_TPS("lag.historyTps", "    &6&l➤  &6Historique TPS : <tps>"),
+		LAG_HISTORY_TPS_HOVER("lag.historyTpsHover", "&6Minute : &c<num>[RT]&6TPS : &c<tps>"),
+		LAG_MEMORY("lag.memory", "    &6&l➤  &6RAM : &c<usage>&6/&c<total> &6Mo"),
+		LAG_WORLDS("lag.worlds", "    &6&l➤  &6Liste des mondes :"),
+		LAG_WORLDS_LINE("lag.worldsLine", "        &6&l●  &6<world>"),
+		LAG_WORLDS_LINE_HOVER("lag.worldsLineHover", "&6Chunks : &c<chunks>[RT]&6Entités : &c<entities>[RT]&6Tiles : &c<tiles>"),
+		
+		LIST_DESCRIPTION("list.description", "Affiche la liste des joueurs connecté"),
+		LIST_TITLE("list.title", "&aListe des joueurs connectés : &6<" + EChat.ONLINE_PLAYERS_CANSEE + "> &a/ &6<" + EChat.MAX_PLAYERS + ">"),
+		LIST_TITLE_VANISH("list.titleVanish", "&aListe des joueurs connectés : &6<" + EChat.ONLINE_PLAYERS_CANSEE + "> &a(+&6<vanish>&a) / &6<" + EChat.MAX_PLAYERS + ">"),
+		LIST_GROUP("list.group", "&6<group>&f : <players>"),
+		LIST_SEPARATOR("list.separator", ", "),
+		LIST_PLAYER("list.player", "<afk>&r<vanish>&r<DISPLAYNAME_FORMAT>"),
+		LIST_TAG_AFK("list.tagAFK", "&7[AFK] "),
+		LIST_TAG_VANISH("list.tagVanish", "&7[VANISH]"),
+		LIST_EMPTY("list.empty", "&7Aucun joueur"),
+		
+		MAIL_DESCRIPTION("mail.description", "Gestion de vos messages"),
+		MAIL_READ_TITLE("mail.readTitle", "&aLa liste des messages"),
+		MAIL_READ_LINE_READ("mail.readLineRead", "  &a&l➤&7 De &6<player>&7 le &6<date> &7à &6<time> : <read> <delete>"),
+		MAIL_READ_LINE_NO_READ("mail.readLineNoRead", "  &6&l➤&7 De &6<player>&7 le &6<date> &7à &6<time> : <read> <delete>"),
+		MAIL_READ_EMPTY("mail.readEmpty", "&7Vous n'avez aucun message"),
+		MAIL_READ_ERROR("mail.readError", "&cVous n'avez pas de message qui correspond."),
+		MAIL_DELETE("mail.delete", "&7Voulez-vous vraiment supprimer le <mail> de &6<player>&7 le &6<date> &7à &6<time> : <confirmation>."),
+		MAIL_DELETE_VALID("mail.deleteValid", "&a&nConfirmer"),
+		MAIL_DELETE_VALID_HOVER("mail.deleteValidHover", "&cCliquez ici pour supprimer le message."),
+		MAIL_DELETE_CONFIRMATION("mail.deleteConfirmation", "&7Le <mail> &7a bien été supprimé."),
+		MAIL_DELETE_MAIL("mail.deleteMail", "&6message"),
+		MAIL_DELETE_MAIL_HOVER("mail.deleteMailHover", "&7De &6<player>[RT]&7Le &6<date>"),
+		MAIL_DELETE_ERROR("mail.deleteError", "&cVous n'avez pas de message qui correspond."),
+		MAIL_CLEAR("mail.clear", "&7Vous avez supprimé tous vos messages."),
+		MAIL_CLEAR_ERROR("mail.clearError", "&cVous n'avez pas de message à supprimer."),
+		MAIL_SEND("mail.send", "&7Votre message a bien été envoyé à &6<player>&7."),
+		MAIL_SEND_EQUALS("mail.sendEquals", "&7Votre message vous a bien été envoyé."),
+		MAIL_SENDALL("mail.sendAll", "&7Votre message a bien été envoyé à tous les joueurs."),
+		MAIL_BUTTOM_READ("mail.buttomRead", "&a&nLire"),
+		MAIL_BUTTOM_READ_HOVER("mail.buttomReadHover", "&cCliquez ici pour lire le message."),
+		MAIL_BUTTON_DELETE("mail.buttonDelete", "&c&nSupprimer"),
+		MAIL_BUTTON_DELETE_HOVER("mail.buttonDeleteHover", "&cCliquez ici pour supprimer le message."),
+		
+		ME_DESCRIPTION("me.description", "Envoie un texte d'action dans le tchat"),
+		ME_PREFIX("me.prefix", "&f* <player> &r"),
+		
+		MOJANG_DESCRIPTION("mojang.description", "Affiche les informations sur les serveurs de mojang"),
+		MOJANG_TITLE("mojang.title", "&aLes serveurs de Mojang"),
+		MOJANG_LINE("mojang.line", "&7<server> : <color>"),
+		MOJANG_SERVER_ACCOUNT("mojang.serverAccount", "Account"),
+		MOJANG_SERVER_API("mojang.serverAPI", "API"),
+		MOJANG_SERVER_MOJANG("mojang.serverMojang", "Mojang"),
+		MOJANG_SERVER_AUTH("mojang.serverAuth", "Auth"),
+		MOJANG_SERVER_AUTHSERVER("mojang.serverAuthServer", "AuthServer"),
+		MOJANG_SERVER_MINECRAFT_NET("mojang.serverMinecraftNet", "Minecraft.net"),
+		MOJANG_SERVER_SESSION("mojang.serverSession", "Session"),
+		MOJANG_SERVER_SESSIONSERVER("mojang.serverSessionServer", "SessionServer"),
+		MOJANG_SERVER_SKINS("mojang.serverSkins", "Skins"),
+		MOJANG_SERVER_TEXTURES("mojang.serverTextures", "Textures"),
+		MOJANG_COLOR_GREEN("mojang.colorGreen", "&aEn ligne"),
+		MOJANG_COLOR_YELLOW("mojang.colorYellow", "&6Problème de connexion"),
+		MOJANG_COLOR_RED("mojang.colorRed", "&4Hors ligne"),
+		
+		MORE_DESCRIPTION("more.description", "Donne la quantité maximum d'un objet"),
+		MORE_PLAYER("more.player", "&7Vous avez maintenant &6<quantity> &6<item>&7."),
+		MORE_ITEM_COLOR("more.itemColor", "&6"),
+		MORE_MAX_QUANTITY("more.maxQuantity", "&7Vous avez déjà la quantité maximum de cette objet."),
+		
+		MOTD_DESCRIPTION("motd.description", "Affiche le message du jour."),
+		
+		NAMES_DESCRIPTION("names.description", "Affiche l'historique des noms d'un joueur"),
+		NAMES_PLAYER_TITLE("names.playerTitle", "&aVotre historique de nom"),
+		NAMES_PLAYER_LINE_ORIGINAL("names.playerLineOriginal", "    &6&l➤  &6<name> &7: &cAchat du compte"),
+		NAMES_PLAYER_LINE_OTHERS("names.playerLineOthers", "    &6&l➤  &6<name> &7: &c<datetime>"),
+		NAMES_PLAYER_EMPTY("names.playerEmpty", "&7Vous n'avez aucun historique de pseudo"),
+		NAMES_OTHERS_TITLE("names.othersTitle", "&aHistorique de &6<player>"),
+		NAMES_OTHERS_LINE_ORIGINAL("names.othersLineOriginal", "    &6&l➤  &6<name> &7: &cAchat du compte"),
+		NAMES_OTHERS_LINE_OTHERS("names.othersLineOthers", "    &6&l➤  &6<name> &7: &c<datetime>"),
+		NAMES_OTHERS_EMPTY("names.othersEmpty", "&6<player> &7n'a aucun historique de pseudo"),
+		
+		NEAR_DESCRIPTION("near.description", "Donne la liste des joueurs dans les environs"),
+		NEAR_LIST_LINE("near.list.title", "&aListe des joueurs dans les environs"),
+		NEAR_LIST_TITLE("near.list.line", "    &6&l➤  &6<player> &7: &6<distance> bloc(s)"),
+		NEAR_NOPLAYER("near.noPlayer", "&cAucun joueur dans les environs."),
+		
+		PING_DESCRIPTION("ping.description", "Connaître la latence d'un joueur"),
+		PING_PLAYER("ping.player", "&7Votre ping : &6<ping> &7ms."),
+		PING_OTHERS("ping.others", "&7Le ping de &6<player> &7: &6<ping> &7ms."),
+		
+		INVSEE_DESCRIPTION("invsee.description", "Regarde l'inventaire d'un autre joueur"),
+		
+		REPAIR_DESCRIPTION("repair.description", "Répare les objets"),
+		
+		REPAIR_HAND_DESCRIPTION("repairhand.description", "Répare l'objet dans votre main"),
+		REPAIR_HAND_ITEM_COLOR("repairhand.itemColor", "&6"),
+		REPAIR_HAND_PLAYER("repairhand.player", "&7Vous venez de réparer l'objet <item>&7."),
+		REPAIR_HAND_ERROR("repairhand.error", "&7Vous ne pouvez pas réparer <item>&7."),
+		REPAIR_HAND_MAX_DURABILITY("repairhand.maxDurability", "&6<item> &7est déjà réparé."),
+		
+		REPAIR_HOTBAR_DESCRIPTION("repairhotbar.description", "Répare les objets dans votre barre d'action"),
+		REPAIR_HOTBAR_PLAYER("repairhotbar.player", "&7Vous venez de réparer tous les objets de votre barre d'action."),
+		
+		REPAIR_ALL_DESCRIPTION("repairall.description", "Répare tous vos objets"),
+		REPAIR_ALL_PLAYER("repairall.player", "&7Vous venez de réparer tous les objets de votre inventaire."),
+		
+		RULES_DESCRIPTION("rules.description", "&7Affiche les règles d'Evercraft."),
+		
+		SKULL_DESCRIPTION("skull.description", "Donne la tête d'un joueur"),
+		SKULL_MY_HEAD("skull.myHead", "&7Vous avez reçu votre tête."),
+		SKULL_OTHERS("skull.others", "&7Vous avez reçu la tête de &6<player>&7."),
+		
+		SPAWNER_DESCRIPTION("spawner.description", "Permet de modifier le type d'un mob spawner"),
+		
+		SPAWNMOB_DESCRIPTION("spawnmob.description", "Fait apparaître une entité"),
+		SPAWNMOB_ERROR_MOB("spawnmob.errorMob", "&cErreur : nom invalide."),
+		
+		SPEED_DESCRIPTION("speed.description", "Change la vitesse de déplacement"),
+		SPEED_INFO_WALK("speed.infoWalk", "&7Votre vitesse de &6marche &7est de &6<speed>&7."),
+		SPEED_INFO_FLY("speed.infoFly", "&7Votre vitesse de &6vol &7est de &6<speed>&7."),
+		SPEED_PLAYER_WALK("speed.playerWalk", "&7Vous avez défini votre vitesse de &6marche &7à &6<speed>&7."),
+		SPEED_PLAYER_FLY("speed.playerFly", "&7Vous avez défini votre vitesse de &6vol &7à &6<speed>&7."),
+		SPEED_OTHERS_PLAYER_WALK("speed.othersPlayerWalk", "&7Votre vitesse de marche a été défini à &6<speed> &7par &6<staff>&7."),
+		SPEED_OTHERS_STAFF_WALK("speed.othersStaffWalk", "&7Vous avez défini la vitesse de &6marche &7de &6<player> &7à &6<speed>&7."),
+		SPEED_OTHERS_PLAYER_FLY("speed.othersPlayerFly", "&7Votre vitesse de vol a été défini à &6<speed> &7par &6<staff>&7."),
+		SPEED_OTHERS_STAFF_FLY("speed.othersStaffFly", "&7Vous avez défini la vitesse de &6vol &7de &6<player> &7à &6<speed>&7."),
+		
+		STOP_DESCRIPTION("stop.description", "Arrête le serveur"),
+		STOP_MESSAGE("stop.message", "&cArrêt du serveur par &6<staff>"),
+		STOP_MESSAGE_REASON("stop.messageReason", "&c<reason>"),
+		STOP_CONSOLE_MESSAGE("stop.consoleMessage", "&cArrêt du serveur"),
+		STOP_CONSOLE_MESSAGE_REASON("stop.consoleMessageReason", "&c<reason>"),
+		
+		SUDO_DESCRIPTION("sudo.description", "Fait exécuter une commande par un autre joueur"),
+		SUDO_COMMAND("sudo.command", "&6commande"),
+		SUDO_COMMAND_HOVER("sudo.commandHover", "&c<command>"),
+		SUDO_PLAYER("sudo.player", "&7Votre <command> &7a bien était éxecutée par &6<player>&7."),
+		SUDO_BYPASS("sudo.bypass", "&cVous ne pouvez pas faire exécuter de commande à &6<player>&7."),
+		SUDO_CONSOLE("sudo.console", "&7Votre <command> &7à bien était éxecutée par la &6console&7."),
+		
+		SUICIDE_DESCRIPTION("suicide.description", "Permet de vous suicider"),
+		
+		TP_DESCRIPTION("tp.description", "Téléporte le joueur vers un autre joueur"),
+		TP_DESTINATION("tp.destination", "&6&l<player>"),
+		TP_DESTINATION_HOVER("tp.destinationHover", "&cMonde : &6<world>[RT]&cX : &6<x>[RT]&cY : &6<y>[RT]&cZ : &6<z>"),
+		TP_PLAYER("tp.player", "&7Vous avez été téléporté vers &6<destination>&7."),
+		TP_PLAYER_EQUALS("tp.playerEquals", "&7Vous avez été repositionné."),
+		TP_OTHERS_PLAYER("tp.othersPlayer", "&6<staff> &7vous a téléporté vers &6<destination>."),
+		TP_OTHERS_STAFF("tp.othersStaff", "&6<player> &7a été téléporté vers &6<destination>&7."),
+		TP_OTHERS_PLAYER_REPOSITION("tp.othersPlayerReposition", "&6<staff> &7vient de vous repositionner."),
+		TP_OTHERS_STAFF_REPOSITION("tp.othersStaffReposition", "&7Vous venez de repositionner &6<player>&7."),
+		TP_OTHERS_STAFF_EQUALS_DESTINATION_PLAYER("tp.othersStaffEqualsDestinationPlayer", "&6<destination> &7vous a téléporté."),
+		TP_OTHERS_STAFF_EQUALS_DESTINATION_STAFF("tp.othersStaffEqualsDestinationStaff", "&7Vous venez de téléporter &6<player>&7."),
+		TP_ERROR_LOCATION("tp.errorLocation", "&cImpossible de trouver une position pour réaliser une téléportation."),
+		
+		TPALL_DESCRIPTION("tpall.description", "Téléporte tous les joueurs vers un autre joueur"),
+		TPALL_DESTINATION("tpall.destination", "&6&l<player>"),
+		TPALL_DESTINATION_HOVER("tpall.destinationHover", "&cMonde : &6<world>[RT]&cX : &6<x>[RT]&cY : &6<y>[RT]&cZ : &6<z>"),
+		TPALL_PLAYER("tpall.player", "&6<destination> &7vous a téléporté."),
+		TPALL_STAFF("tpall.staff", "&7Vous venez de téléporter tous les joueurs."),
+		TPALL_ERROR("tpall.error", "&cImpossible de trouver une position pour téléporter les joueurs."),
+		TPALL_OTHERS_PLAYER("tpall.othersPlayer", "&6<staff> &7vous a téléporté vers &6<destination>."),
+		TPALL_OTHERS_STAFF("tpall.othersStaff", "&7Tous les joueurs ont été téléportés vers &6<destination>&7."),
+		
+		TPHERE_DESCRIPTION("tphere.description", "Téléporte le joueur vers vous"),
+		TPHERE_DESTINATION("tphere.destination", "&6&l<player>"),
+		TPHERE_DESTINATION_HOVER("tphere.destinationHover", "&cMonde : &6<world>[RT]&cX : &6<x>[RT]&cY : &6<y>[RT]&cZ : &6<z>"),
+		TPHERE_PLAYER("tphere.player", "&6<destination> &7vous a téléporté."),
+		TPHERE_STAFF("tphere.staff", "&7Vous venez de téléporter &6<player>&7."),
+		TPHERE_EQUALS("tphere.equals", "&7Vous avez été repositionné."),
+		TPHERE_ERROR("tphere.error", "&cImpossible de trouver une position pour téléporter le joueur."),
+		
+		TPPOS_DESCRIPTION("tppos.description", "Téléporte le joueur aux coordonnées choisis"),
+		TPPOS_POSITION("tppos.position", "&6&lposition"),
+		TPPOS_POSITION_HOVER("tppos.positionHover", "&cMonde : &6<world>[RT]&cX : &6<x>[RT]&cY : &6<y>[RT]&cZ : &6<z>"),
+		TPPOS_PLAYER("tppos.player", "&7Vous avez été téléporté à cette <position>&7."),
+		TPPOS_PLAYER_ERROR("tppos.playerError", "&7Impossible de vous téléporter à cette <position>&7."),
+		TPPOS_OTHERS_PLAYER("tppos.othersPlayer", "&7Vous avez été téléporté à cette <position> &7par &6<staff>&7."),
+		TPPOS_OTHERS_STAFF("tppos.othersStaff", "&7Vous téléportez &6<player> &7à cette <position>&7."),
+		TPPOS_OTHERS_ERROR("tppos.othersError", "&7Impossible de téléporter &6<player> &7à cette <position>&7."),
+		
+		TIME_DESCRIPTION("time.description", "Gère l'heure sur les mondes"),
+		TIME_FORMAT("time.format", "&6<hours>h<minutes>"),
+		TIME_INFORMATION("time.information", "&7Il est actuellement &6<hours> &7dans le monde &6<world>&7."),
+		TIME_SET_WORLD("time.setWorld", "&7Il est désormais &6<hours> &7dans le monde &6<world>&7."),
+		TIME_SET_ALL_WORLD("time.setAllWorld", "&7Il est désormais &6<hours> &7dans les mondes&7."),
+		TIME_ERROR("time.error", "&cErreur : Horaire incorrect."),
+		
+		TIME_DAY_DESCRIPTION("time.dayDescription", "Mettre le jour dans votre monde"),
+		TIME_NIGHT_DESCRIPTION("time.nightDescription", "Mettre la nuit dans votre monde"),
+		
+		TOP_DESCRIPTION("top.description", "Téléporte le joueur à la position la plus élevée"),
+		TOP_POSITION("top.position", "&6&lposition"),
+		TOP_POSITION_HOVER("top.positionHover", "&cMonde : &6<world>[RT]&cX : &6<x>[RT]&cY : &6<y>[RT]&cZ : &6<z>"),
+		TOP_TELEPORT("top.teleport", "&7Vous avez été téléporté à la <position> &7la plus élevée."),
+		TOP_TELEPORT_ERROR("top.teleportError", "&cImpossible de trouver une position où vous téléporter."),
+		
+		TREE_DESCRIPTION("tree.description", "Place un arbre"),
+		TREE_INCONNU("tree.inconnu", "&cType d'arbre inconnu : &6<type>"),
+		TREE_NO_CAN("tree.noCan", "&cImpossible de placer un arbre à cette endroit : Regarder plutot un bloc d'herbre ou de terre."),
+		
+		UUID_DESCRIPTION("uuid.description", "Affiche l'identifiant unique du joueur."),
+		UUID_NAME("uuid.name", "&6&l<uuid>"),
+		UUID_PLAYER("uuid.player", "&7Votre UUID est <uuid>"),
+		UUID_PLAYER_OTHERS("uuid.otherPlayer", "L'UUID de <player> est <uuid>"),
+		
+		VANISH_DESCRIPTION("vanish.description", "Permet de vous rendre invisible."),
+		VANISH_PLAYER_ENABLE("vanish.playerEnable", "&7Vous êtes désormais invisible."),
+		VANISH_PLAYER_ENABLE_ERROR("vanish.playerEnableError", "&7Vous êtes déjà invisible."),
+		VANISH_PLAYER_DISABLE("vanish.playerDisable", "&7Vous n'êtes plus invisible."),
+		VANISH_PLAYER_DISABLE_ERROR("vanish.playerDisableError", "&7Vous êtes déjà visible."),
+		VANISH_OTHERS_PLAYER_ENABLE("vanish.othersPlayerEnable", "&7Vous êtes désormais invisible grâce à &6<staff>&7."),
+		VANISH_OTHERS_PLAYER_DISABLE("vanish.othersPlayerDisable", "&7Vous n'êtes plus invisible à cause de &6<staff>&7."),
+		VANISH_OTHERS_STAFF_ENABLE("vanish.othersStaffEnable", "&7Vous venez de rendre invisible &6<player>&7."),
+		VANISH_OTHERS_STAFF_ENABLE_ERROR("vanish.othersStaffEnableError", "&6<player> &7est déjà invisible."),
+		VANISH_OTHERS_STAFF_DISABLE("vanish.othersStaffDisable", "&7Vous venez de rendre visible &6<player>&7."),
+		VANISH_OTHERS_STAFF_DISABLE_ERROR("vanish.othersStaffDisableError", "&6<player> &7est déjà visible."),
+		
+		WARP_NAME("warp.name", "&6&l<name>"),
+		WARP_NAME_HOVER("warp.nameHover", "&cMonde : &6<world>[RT]&cX : &6<x>[RT]&cY : &6<y>[RT]&cZ : &6<z>"),
+		WARP_INCONNU("warp.inconnu", "&cIl n'y pas de warp qui s'appelle &6<warp>&c."),
+		WARP_NO_PERMISSION("warp.noPermission", "&cVous n'avez pas la permission pour vous téléporter au warp &6<warp>&c."),
+		
+		WARP_DESCRIPTION("warp.description", "Se téléporte à un warp"),
+		WARP_EMPTY("warp.empty", "&cIl n'y a aucun warp sur le serveur."),
+		WARP_LIST_TITLE("warp.listTitle", "&aListe des warps"),
+		WARP_LIST_LINE_DELETE("warp.listLineDelete", "    &6&l➤  <warp> &7: <teleport> <delete>"),
+		WARP_LIST_LINE_DELETE_ERROR_WORLD("warp.listLineDeleteErrorWorld", "    &6&l➤  <warp> &7: <delete>"),
+		WARP_LIST_LINE("warp.listLine", "    &6&l➤  <warp> &7: <teleport>"),
+		WARP_LIST_TELEPORT("warp.listTeleport", "&a&nTéléporter"),
+		WARP_LIST_TELEPORT_HOVER("warp.listTeleportHover", "&cCliquez ici pour vous téléporter à le warp &6<warp>&c."),
+		WARP_LIST_DELETE("warp.listDelete", "&c&nSupprimer"),
+		WARP_LIST_DELETE_HOVER("warp.listDeleteHover", "&cCliquez ici pour supprimer le warp &6<warp>&c."),
+		WARP_TELEPORT_PLAYER("warp.teleportPlayer", "&7Vous avez été téléporté au warp &6<warp>&7."),
+		WARP_TELEPORT_PLAYER_ERROR("warp.teleportPlayerError", "&cImpossible de vous téléporter au warp &6<warp>&c."),
+		WARP_TELEPORT_OTHERS_PLAYER("warp.teleportOthersPlayer", "&7Vous avez été téléporté au warp &6<warp> &7par &6<player>&7."),
+		WARP_TELEPORT_OTHERS_STAFF("warp.teleportOthersStaff", "&7Vous avez téléporté &6<player> &7au warp &6<warp>&7."),
+		WARP_TELEPORT_OTHERS_ERROR("warp.teleportOthersError", "&cImpossible de téléporter &6<player> &7au warp &6<warp>&c."),
+		
+		DELWARP_DESCRIPTION("delwarp.description", "Supprime un warp"),
+		DELWARP_INCONNU("delwarp.inconnu", "&cIl n'y pas de warp qui s'appelle &6<warp>&c."),
+		DELWARP_NAME("delwarp.name", "&6&l<name>"),
+		DELWARP_NAME_HOVER("delwarp.nameHover", "&cMonde : &6<world>[RT]&cX : &6<x>[RT]&cY : &6<y>[RT]&cZ : &6<z>"),
+		DELWARP_CONFIRMATION("delwarp.confirmation", "&7Souhaitez-vous vraiment supprimer le warp &6<warp> &7: <confirmation>"),
+		DELWARP_CONFIRMATION_VALID("delwarp.confirmationValid", "&2&nConfirmer"),
+		DELWARP_CONFIRMATION_VALID_HOVER("delwarp.confirmationValidHover", "&cCliquez ici pour supprimer le warp &6<warp>&c."),
+		DELWARP_DELETE("delwarp.delete", "&7Vous avez supprimé le warp &6<warp>&7."),
+		
+		SETWARP_DESCRIPTION("setwarp.description", "Crée un warp"),
+		SETWARP_NAME("setwarp.name", "&6&l<name>"),
+		SETWARP_NAME_HOVER("setwarp.nameHover", "&cMonde : &6<world>[RT]&cX : &6<x>[RT]&cY : &6<y>[RT]&cZ : &6<z>"),
+		SETWARP_REPLACE("setwarp.replace", "&7Vous avez redéfini le warp &6<warp>&7."),
+		SETWARP_NEW("setwarp.new", "&7Vous avez défini le warp &6<warp>&7."),
+		
+		WEATHER_DESCRIPTION("weather.description", "Change la météo d'un monde"),
+		WEATHER_ERROR("weather.error", "&cVous ne pouvez pas changer la météo dans ce type de monde."),
+		WEATHER_SUN("weather.sun", "&7Vous avez mis &6le beau temps &7dans le monde &6<world>&7."),
+		WEATHER_RAIN("weather.rain", "&7Vous avez mis &6la pluie &7dans le monde &6<world>&7."),
+		WEATHER_STORM("weather.storm", "&7Vous avez mis &6la tempête &7dans le monde &6<world>&7."),
+		WEATHER_SUN_DURATION("weather.sunDuration", "&7Vous avez mis &6le beau temps &7dans le monde &6<world>&7 pendant &6<duration>&7 minute(s)."),
+		WEATHER_RAIN_DURATION("weather.rainDuration", "&7Vous avez mis &6la pluie &7dans le monde &6<world>&7 pendant &6<duration>&7 minute(s)."),
+		WEATHER_STORM_DURATION("weather.stormDuration", "&7Vous avez mis &6la tempête &7dans le monde &6<world>&7 pendant &6<duration>&7 minute(s)."),
+		
+		WEATHER_RAIN_DESCRIPTION("weather.rainDescription", "Met la pluie dans votre monde"),
+		WEATHER_STORM_DESCRIPTION("weather.stormDescription", "Met la tempête dans votre monde"),
+		WEATHER_SUN_DESCRIPTION("weather.sunDescription", "Met le beau dans temps dans votre monde"),
+		
+		WHOIS_DESCRIPTION("whois.description", "Affiche les informations d'un joueur"),
+		WHOIS_TITLE("whois.title", "&aInformations : &c<player>"),
+		WHOIS_UUID("whois.uuid", "    &6&l➤  &6UUID : <uuid>"),
+		WHOIS_UUID_STYLE("whois.uuidStyle", "&c<uuid>"),
+		WHOIS_IP("whois.ip", "    &6&l➤  &6IP : <ip>"),
+		WHOIS_IP_STYLE("whois.ipStyle", "&c<ip>"),
+		WHOIS_PING("whois.ping", "    &6&l➤  &6Ping : &c<ping> &6ms"),
+		WHOIS_HEAL("whois.heal", "    &6&l➤  &6Santé : &a<heal>&6/&c<max_heal>"),
+		WHOIS_FOOD("whois.food", "    &6&l➤  &6Faim : &a<food>&6/&c<max_food>"),
+		WHOIS_FOOD_SATURATION("whois.foodSaturation", "    &6&l➤  &6Faim : &a<food>&6/&c<max_food> &6(+&a<saturation> &6saturation)"),
+		WHOIS_EXP("whois.exp", "    &6&l➤  &6Expérience :"),
+		WHOIS_EXP_LEVEL("whois.expLevel", "        &6&l●  &a<level> &6niveau(x)"),
+		WHOIS_EXP_POINT("whois.expPoint", "        &6&l●  &a<point> &6point(s)"),
+		WHOIS_SPEED("whois.speed", "    &6&l➤  &6Vitesse :"),
+		WHOIS_SPEED_FLY("whois.speedFly", "        &6&l●  &6En volant : &a<speed>"),
+		WHOIS_SPEED_WALK("whois.speedWalk", "        &6&l●  &6En marchant : &a<speed>"),
+		WHOIS_LOCATION("whois.location", "    &6&l➤  &6Position : <position>"),
+		WHOIS_LOCATION_POSITION("whois.locationPosition", "&6(&c<x>&6, &c<y>&6, &c<z>&6, &c<world>&6)"),
+		WHOIS_LOCATION_POSITION_HOVER("whois.locationPositionHover", "&cMonde : &6<world>[RT]&cX : &6<x>[RT]&cY : &6<y>[RT]&cZ : &6<z>"),
+		WHOIS_BALANCE("whois.balance", "    &6&l➤  &6Solde : &c<money>"),
+		WHOIS_GAMEMODE("whois.gamemode", "    &6&l➤  &6Mode de jeu : &c<gamemode>"),
+		WHOIS_GOD_ENABLE("whois.godEnable", "    &6&l➤  &6Mode Dieu : &aActivé"),
+		WHOIS_GOD_DISABLE("whois.godDisable", "    &6&l➤  &6Mode Dieu : &cDésactivé"),
+		WHOIS_FLY_ENABLE_FLY("whois.flyEnableFly", "    &6&l➤  &6Fly Mode : &aActivé &6(&avol&6)"),
+		WHOIS_FLY_ENABLE_WALK("whois.flyEnableWalk", "    &6&l➤  &6Fly Mode : &aActivé &6(&cmarche&6)"),
+		WHOIS_FLY_DISABLE("whois.flyDisable", "    &6&l➤  &6Fly Mode : &cDésactivé"),
+		WHOIS_MUTE_ENABLE("whois.muteEnable", "    &6&l➤  &6Muet : &aActivé"),
+		WHOIS_MUTE_DISABLE("whois.muteDisable", "    &6&l➤  &6Muet : &cDésactivé"),
+		WHOIS_VANISH_ENABLE("whois.vanishEnable", "    &6&l➤  &6Vanish : &aActivé"),
+		WHOIS_VANISH_DISABLE("whois.vanishDisable", "    &6&l➤  &6Vanish : &cDésactivé"),
+		WHOIS_AFK_ENABLE("whois.afkEnable", "    &6&l➤  &6AFK : &aActivé"),
+		WHOIS_AFK_DISABLE("whois.afkDisable", "    &6&l➤  &6AFK : &cDésactivé"),
+		WHOIS_FIRST_DATE_PLAYED("whois.firstDatePlayed", "    &6&l➤  &6Première connexion : &a<time>"),
+		WHOIS_LAST_DATE_PLAYED("whois.lastDatePlayed", "    &6&l➤  &6Connecté depuis : &a<time>"),
+		
+		WORLDS_DESCRIPTION("worlds.description", "Téléporte le joueur dans le monde de votre choix"),
+		WORLDS_END_DESCRIPTION("worlds.endDescription", "Vous téléporte dans le monde du néant"),
+		WORLDS_NETHER_DESCRIPTION("worlds.netherDescription", "Vous téléporte dans le monde de l'enfer"),
+		WORLDS_LIST_TITLE("worlds.listTitle", "&aListe des mondes"),
+		WORLDS_LIST_LINE("worlds.listLine", "    &6&l➤  <world> &7: <teleport>"),
+		WORLDS_LIST_TELEPORT("worlds.listTeleport", "&2&nTéléporter"),
+		WORLDS_LIST_TELEPORT_HOVER("worlds.listTeleportHover", "&cCliquez ici pour vous téléporter dans le monde &6<world>&c."),
+		WORLDS_TELEPORT_WORLD("worlds.teleportWorld", "&6&l<world>"),
+		WORLDS_TELEPORT_WORLD_HOVER("worlds.teleportWorldHover", "&cMonde : &6<world>[RT]&cX : &6<x>[RT]&cY : &6<y>[RT]&cZ : &6<z>"),
+		WORLDS_TELEPORT_PLAYER("worlds.teleportPlayer", "&7Vous avez été téléporté dans le monde &6<world>&7."),
+		WORLDS_TELEPORT_PLAYER_ERROR("worlds.teleportPlayerError", "&7Impossible de vous téléporter dans le monde <world>&7."),
+		WORLDS_TELEPORT_OTHERS_PLAYER("worlds.teleportOthersPlayer", "&7Vous avez été téléporté dans le monde <world> &7par &6<staff>&7."),
+		WORLDS_TELEPORT_OTHERS_STAFF("worlds.teleportOthersStaff", "&7Vous téléportez &6<player> &7dans le monde <world>&7."),
+		WORLDS_TELEPORT_OTHERS_ERROR("worlds.teleportOthersError", "&7Impossible de téléporter &6<player> &7dans le monde&7.");
+		
+		private final String path;
+	    private final Object french;
+	    private final Object english;
+	    private Object message;
+	    
+	    private EEMessages(final String path, final Object french) {   	
+	    	this(path, french, french);
+	    }
+	    
+	    private EEMessages(final String path, final Object french, final Object english) {
+	    	Preconditions.checkNotNull(french, "Le message '" + this.name() + "' n'est pas définit");
+	    	
+	    	this.path = path;	    	
+	    	this.french = french;
+	    	this.english = english;
+	    	this.message = french;
+	    }
+
+	    public String getName() {
+			return this.name();
+		}
+	    
+		public String getPath() {
+			return this.path;
+		}
+
+		public Object getFrench() {
+			return this.french;
+		}
+
+		public Object getEnglish() {
+			return this.english;
+		}
+		
+		public String get() {
+			if(this.message instanceof String) {
+				return (String) this.message;
+			}
+			return this.message.toString();
+		}
+			
+		@SuppressWarnings("unchecked")
+		public List<String> getList() {
+			if(this.message instanceof List) {
+				return (List<String>) this.message;
+			}
+			return Arrays.asList(this.message.toString());
+		}
+		
+		public void set(Object message) {
+			this.message = message;
+		}
+
+		public Text getText() {
+			return EChat.of(this.get());
+		}
+		
+		public TextColor getColor() {
+			return EChat.getTextColor(this.get());
+		}
+		
+		public boolean has() {
+			return this.message != null;
+		}
+	}
+	
 	@Override
 	public void loadDefault() {
-		// Prefix
-		addDefault("prefix", "[&4Ever&6&lEssentials&f] ");
 		
-		addDefault("afk.description", "Permet de vous signaler AFK.");
-		addDefault("afk.allEnable", "&6" + EChat.DISPLAYNAME_FORMAT + " &7est désormais AFK.");
-		addDefault("afk.allDisable", "&6" + EChat.DISPLAYNAME_FORMAT + " &7n'est plus AFK.");
-		addDefault("afk.playerEnable", "&7Vous êtes désormais AFK.");
-		addDefault("afk.playerDisable", "&7Vous n'êtes plus AFK.");
-		addDefault("afk.playerEnableError", "&cVous êtes déjà AFK.");
-		addDefault("afk.playerDisableError", "&cVous n'êtes pas AFK.");
-		addDefault("afk.staffEnable", "&6<player> &7est désormais AFK.");
-		addDefault("afk.staffDisable", "&6<player> &7n'est plus AFK.");
-		addDefault("afk.staffEnableError", "&6<player> &cest déjà signalé AFK.");
-		addDefault("afk.staffDisableError", "&6<player> &cn'est pas AFK.");
-		
-		addDefault("back.description", "Retourne à la dernière position sauvegardé.");
-		addDefault("back.name", "&6&lposition");
-		addDefault("back.nameHover", "&cMonde : &6<world>[RT]&cX : &6<x>[RT]&cY : &6<y>[RT]&cZ : &6<z>");
-		addDefault("back.teleport", "&7Vous avez été téléporté à votre dernière <back>&7.");
-		addDefault("back.inconnu", "&cVous n'avez aucune position sauvegardé.");
-		
-		addDefault("bed.description", "Retourne à la dernière position ou vous avez dormi");
-		
-		addDefault("broadcast.description", "Envoye un message à tous les joueurs.");
-		addDefault("broadcast.prefixPlayer", "&7[&6<player>&7] : ");
-		addDefault("broadcast.prefixConsole", "&7[&6Console&7] : ");
-		
-		addDefault("butcher.description", "Supprime les entitées dans un monde ou dans un rayon.");
-		addDefault("butcher.noEntity", "&cIl y a aucune entité à supprimer.");
-		addDefault("butcher.entityColor", "&6");
-		addDefault("butcher.killAnimal", "&7Suppression de &6<count> &7animaux dans ce monde.");
-		addDefault("butcher.killAnimalRadius", "&7Suppression de &6<count> &7animaux dans un rayon de &6<radius> bloc(s)&7.");
-		addDefault("butcher.killMonster", "&7Suppression de &6<count> &7monstre(s) dans ce monde.");
-		addDefault("butcher.killMonsterRadius", "&7Suppression de &6<count> &7monstre(s) dans un rayon de &6<radius> bloc(s)&7.");
-		addDefault("butcher.killAll", "&7Suppression de &6<count> &7entitée(s) dans ce monde.");
-		addDefault("butcher.killAllRadius", "&7Suppression de &6<count> &7entitée(s) dans un rayon de &6<radius> bloc(s)&7.");
-		addDefault("butcher.killType", "&7Suppression de &6<count> &6<entity>&6(s)&7 dans ce monde.");
-		addDefault("butcher.killTypeRadius", "&7Suppression de &6<count> &6<entity>&6(s)&7 dans un rayon de &6<radius> bloc(s)&7.");
-		
-		addDefault("book.description", "Permet de modifier un livre.");
-		
-		addDefault("cleareffect.description", "Supprime tous les effets de potions d'un joueur.");
-		addDefault("cleareffect.player", "&7Tous vos effets de potions ont été supprimés.");
-		addDefault("cleareffect.othersPlayer", "&7Tous les effets de potions ont été supprimés par &6<staff>&7.");
-		addDefault("cleareffect.othersStaff", "&7Tous les effets de potions de &6<player> &7ont été supprimés.");
-		
-		addDefault("clearinventory.description", "Supprime tous les objets de l'inventaire d'un joueur.");
-		addDefault("clearinventory.player", "&7Tous les objets de votre inventaire ont été supprimés.");
-		addDefault("clearinventory.othersPlayer", "&7Tous les objets de votre inventaire ont été supprimés par &6<staff>&7.");
-		addDefault("clearinventory.othersStaff", "&7Tous les objets de l'inventaire de &6<player> &7ont été supprimés.");
-		
-		addDefault("color.description", "Affiche les différentes couleurs dans Minecraft.");
-		addDefault("color.list.title", "&l&7Liste des couleurs :"); 
-		addDefault("color.list.message", "<color>█ &0: <id>-<name>"); 
-		
-		addDefault("effect.description", "Ajoute un effet de potion sur un joueur.");
-		addDefault("effect.errorName", "&cErreur : nom de l'effet invalide.");
-		addDefault("effect.errorDuration", "&cErreur : la durée de l'effet doit être compris entre <min> et <max>.");
-		addDefault("effect.errorAmplifier", "&cErreur : l'amplification de l'effet doit être compris entre <min> et <max>.");
-		
-		addDefault("enchant.description", "Enchante l'objet dans votre main.");
-		addDefault("enchant.notFound", "&cErreur : cet enchantement n'existe pas.");
-		addDefault("enchant.levelTooHight", "&cErreur : le niveau de cet enchantement est trop élevé.");
-		addDefault("enchant.incompatible", "&cErreur : cet enchantement est incompatible avec &6<item>");
-		addDefault("enchant.name", "&6<item>");
-		addDefault("enchant.successfull", "&7L'enchantement a bien été appliqué sur l'objet.");
-				
-		addDefault("exp.description", "Modifie l'expérience d'un joueur.");
-		addDefault("exp.giveLevel", "&7Vous vous êtes ajouté &6<level> &7niveau(x).");
-		addDefault("exp.giveExp", "&7Vous vous êtes ajouté &6<experience> &7point(s) d'expérience.");
-		addDefault("exp.setLevel", "&7Vous avez défini votre niveau à &6<level>&7.");
-		addDefault("exp.setExp", "&7Vous avez défini votre expérience à &6<experience>&7.");
-		addDefault("exp.othersPlayerGiveLevel", "&7Vous avez reçu &6<level> &7niveau(x) par &6<staff>&7.");
-		addDefault("exp.othersStaffGiveLevel", "&7Vous avez ajouté &6<level> &7niveau(x) à &6<player>&7.");
-		addDefault("exp.othersPlayerGiveExp", "&7Vous avez reçu &6<experience> &7point(s) d'expérience par &6<staff>&7.");
-		addDefault("exp.othersStaffGiveExp", "&7Vous avez ajouté &6<experience> &7point(s) d'expérience à &6<player>&7.");
-		addDefault("exp.othersPlayerSetLevel", "&7Votre niveau a été modifié à &6<level> &7par &6<staff>&7.");
-		addDefault("exp.othersStaffSetLevel", "&7Vous avez modifié le niveau de &6<player> &7à &6<level>&7.");
-		addDefault("exp.othersPlayerSetExp", "&7Votre expérience a été modifié à &6<experience> &7par &6<staff>&7.");
-		addDefault("exp.othersStaffSetExp", "&7Vous avez modifié l'expérience de &6<player> &7à &6<experience>&7.");
-		
-		addDefault("ext.description", "Enleve le feu sur un joueur.");
-		addDefault("ext.player", "&7Vous n'êtes plus en feu.");
-		addDefault("ext.playerError", "&7Vous n'êtes pas en feu.");
-		addDefault("ext.othersPlayer", "&7Vous n'êtes plus en feu grâce à &6<staff>&7.");
-		addDefault("ext.othersStaff", "&7Vous avez enlevé le feu sur &6<player>&7.");
-		addDefault("ext.othersError", "&6<player> &7n'est pas en feu.");
-		
-		addDefault("feed.description", "Satisfait la faim d'un joueur.");
-		addDefault("feed.player", "&7Vous vous êtes rassasié.");
-		addDefault("feed.othersStaff", "&7Vous avez rassasié &6<player>.");
-		addDefault("feed.othersPlayer", "&7Vous avez été rassasié par &6<staff>&7.");
-		addDefault("feed.allStaff", "&7Vous avez rassasié tous les joueurs.");
-		
-		addDefault("fly.description", "Permet de vous envoler.");
-		addDefault("fly.playerEnable", "&7Vous pouvez désormais vous envoler.");
-		addDefault("fly.playerEnableError", "&7Vous possèdez déjà le droit de vous envoler.");
-		addDefault("fly.playerDisable", "&7Vous ne pouvez plus vous envoler.");
-		addDefault("fly.playerDisableError", "&7Vous ne pouvez pas vous envoler.");
-		addDefault("fly.playerErrorCreative", "&7Vous ne pouvez pas vous enlever le droit de vous envoler quand vous êtes en mode créative.");
-		addDefault("fly.othersPlayerEnable", "&7Vous pouvez désormais vous envoler grâce à &6<staff>&7.");
-		addDefault("fly.othersPlayerDisable", "&7Vous ne pouvez plus vous envoler à cause de &6<staff>&7.");
-		addDefault("fly.othersStaffEnable", "&7Vous venez d'accorder le droit de s'envoler à &6<player>&7.");
-		addDefault("fly.othersStaffEnableError", "&6<player> &7possède déjà le droit de s'envoler.");
-		addDefault("fly.othersStaffDisable", "&7Vous venez de retirer le droit de s'envoler à &6<player>&7.");
-		addDefault("fly.othersStaffDisableError", "&6<player> &7ne possède pas le droit de s'envoler.");
-		addDefault("fly.othersErrorCreative", "&7Vous ne pouvez pas enlever le droit de s'envoler à &6<player> &7 car il est en mode créative.");
-		
-		addDefault("gamemode.description", "Change le mode de jeu d'un joueur.");
-		addDefault("gamemode.playerChange", "&7Vous êtes désormais en mode de jeu &6<gamemode>&7.");
-		addDefault("gamemode.playerEqual", "&7Vous êtes déjà en mode de jeu &6<gamemode>&7.");
-		addDefault("gamemode.othersStaffChange", "&7Mode de jeu &6<gamemode> &7pour &6<player>&7.");
-		addDefault("gamemode.othersPlayerChange", "&7Votre mode de jeu a été changé en &6<gamemode> &7par &6<staff>&7.");
-		addDefault("gamemode.othersEqual", "&6<player> &7possède déjà le mode de jeu &6<gamemode>&7.");
-		addDefault("gamemode.errorName", "&cMode de jeu inconnu.");
-		
-		addDefault("getpos.description", "Affiche les coordonnées d'un joueur.");
-		addDefault("getpos.message", "&7Voici votre &6<position>&7.");
-		addDefault("getpos.messageOthers", "&7Voici la <position> &7de &6<player>&7.");
-		addDefault("getpos.positionName", "&6&lposition");
-		addDefault("getpos.positionHover", "&cMonde : &6<world>[RT]&cX : &6<x>[RT]&cY : &6<y>[RT]&cZ : &6<z>");
-		
-		addDefault("god.description", "Permet de vous rendre invulnérable.");
-		addDefault("god.playerEnable", "&7Vous êtes désormais invulnérable.");
-		addDefault("god.playerEnableError", "&7Vous êtes déjà invulnérable.");
-		addDefault("god.playerDisable", "&7Vous êtes désormais vulnérable.");
-		addDefault("god.playerDisableError", "&7Vous êtes déjà vulnérable.");
-		addDefault("god.othersPlayerEnable", "&7Vous êtes désormais invulnérable grâce à &6<staff>&7.");
-		addDefault("god.othersPlayerDisable", "&7Vous n'êtes plus invulnérable à cause de &6<staff>&7.");
-		addDefault("god.othersStaffEnable", "&7Vous venez de rendre invulnérable &6<player>&7.");
-		addDefault("god.othersStaffEnableError", "&6<player> &7est déjà invulnérable.");
-		addDefault("god.othersStaffDisable", "&7Vous venez de rendre vulnérable &6<player>&7.");
-		addDefault("god.othersStaffDisableError", "&6<player> &7est déjà vulnérable.");
-		addDefault("god.teleport", "&7Vous avez été téléporté car vous étiez en train de tomber dans le vide.");
-		
-		addDefault("hat.description", "Place l'objet dans votre main sur votre tête");
-		addDefault("hat.itemColor", "&6");
-		addDefault("hat.isNotHat", "<item> &7n'est pas un chapeau.");
-		addDefault("hat.noEmpty", "&7Vous ne pouvez pas mettre un objet sur votre tête quand vous avez un <item>&7.");
-		addDefault("hat.isHat", "&7Votre nouveau chapeau : &6<item>&7.");
-		addDefault("hat.null", "&7Vous n'avez pas d'objet dans votre main.");
-		addDefault("hat.remove", "&7Vous avez enlevé l'objet sur votre chapeau.");
-		addDefault("hat.removeEmpty", "&cVous n'avez actuellement aucun chapeau.");
-		
-		addDefault("heal.description", "Soigne un joueur.");
-		addDefault("heal.player", "&7Vous vous êtes soigné.");
-		addDefault("heal.playerDead", "&7Vous êtes déjà mort.");
-		addDefault("heal.othersPlayer", "&7Vous avez été soigné par &6<staff>&7.");
-		addDefault("heal.othersStaff", "&7Vous avez soigné &6<player>&7.");
-		addDefault("heal.othersDeadStaff", "&6<player>&7 est déjà mort.");
-		addDefault("heal.allStaff", "&7Vous avez soigné tous les joueurs.");
-		
-		addDefault("home.name", "&6&l<name>");
-		addDefault("home.nameHover", "&cMonde : &6<world>[RT]&cX : &6<x>[RT]&cY : &6<y>[RT]&cZ : &6<z>");
-		
-		addDefault("home.description", "Téléporte le joueur à une résidence.");
-		addDefault("home.listTitle", "&aListe des résidences");
-		addDefault("home.listLine", "    &6&l➤  <home> &7: <teleport> <delete>");
-		addDefault("home.listLineErrorWorld", "    &6&l➤  <home> &7: <delete>");
-		addDefault("home.listTeleport", "&a&nTéléporter");
-		addDefault("home.listTeleportHover", "&cCliquez ici pour vous téléporter à la résidence &6<home>&c.");
-		addDefault("home.listDelete", "&c&nSupprimer");
-		addDefault("home.listDeleteHover", "&cCliquez ici pour supprimer la résidence &6<home>&c.");
-		addDefault("home.empty", "&cVous n'avez aucune résidence.");
-		addDefault("home.inconnu", "&cVous n'avez pas de résidence qui s'appelle &6<home>&c.");
-		addDefault("home.teleport", "&7Vous avez été téléporté à la résidence &6<home>&7.");
-		addDefault("home.teleportError", "&cImpossible de vous téléporter à la résidence &6<home>&c.");
-		
-		addDefault("day.description", "Mettre le jour dans le monde");
-		
-		addDefault("delhome.description", "Supprime une résidence");
-		addDefault("delhome.confirmation", "&7Souhaitez-vous vraiment supprimer la résidence &6<home> &7: <confirmation>");
-		addDefault("delhome.confirmationValid", "&2&nConfirmer");
-		addDefault("delhome.confirmationValidHover", "&cCliquez ici pour supprimer la résidence &6<home>&c.");
-		addDefault("delhome.delete", "&7Vous avez supprimé la résidence &6<home>&7.");
-		addDefault("delhome.inconnu", "&cVous n'avez pas de résidence qui s'appelle &6<home>&c.");
-		
-		addDefault("homeOthers.description", "Gère les résidences d'un joueur");
-		addDefault("homeOthers.listTitle", "&aListe des résidences de <player>");
-		addDefault("homeOthers.listLine", "    &6&l➤  <home> &7: <teleport> <delete>");
-		addDefault("homeOthers.listTeleport", "&a&nTéléporter");
-		addDefault("homeOthers.listTeleportHover", "&cCliquez ici pour vous téléporter à la résidence &6<home> &cde &6<player>&c.");
-		addDefault("homeOthers.listDelete", "&c&nSupprimer");
-		addDefault("homeOthers.listDeleteHover", "&cCliquez ici pour supprimer la résidence &6<home> &cde &6<player>&c.");
-		addDefault("homeOthers.empty", "&6<player> &cn'a aucune résidence.");
-		addDefault("homeOthers.inconnu", "&6<player> &cn'a pas de résidence qui s'appelle &6<home>&c.");
-		addDefault("homeOthers.teleport", "&7Vous avez été téléporté à la résidence &6<home> &7de &6<player>&7.");
-		addDefault("homeOthers.teleportError", "&cImpossible de vous téléporter à la résidence &6<home> &cde &6<player>&c.");
-		addDefault("homeOthers.deleteConfirmation", "&7Souhaitez-vous vraiment supprimer la résidence &6<home> &7de &6<player> &7: <confirmation>");
-		addDefault("homeOthers.deleteConfirmationValid", "&2&nConfirmer");
-		addDefault("homeOthers.deleteConfirmationValidHover", "&cCliquez ici pour supprimer la résidence &6<home> &cde &6<player>&c.");
-		addDefault("homeOthers.delete", "&7Vous avez supprimé la résidence &6<home> &7de &6<player>&7.");
-		
-		addDefault("sethome.description", "Défini une résidence");
-		addDefault("sethome.set", "&7Vous avez défini votre résidence.");
-		addDefault("sethome.multipleSet", "&7Vous avez défini la résidence &6<home>&7.");
-		addDefault("sethome.multipleErrorMax", "&cVous ne pouvez pas créer plus de <nombre> résidence(s).");
-		addDefault("sethome.multipleNoPermission", "&cVous n'avez pas la permission d'avoir plusieurs résidences.");
-		
-		addDefault("info.description", "Connaître le type d'un item");
-		addDefault("info.player", "&7Le type de l'objet <item> &7est &6<type>&7.");
-		addDefault("info.itemColor", "&6");
-		
-		addDefault("jump.description", "Vous téléporte à l'endroit de votre choix");
-		addDefault("jump.teleport", "&7Vous avez été téléporté à l'endroit de votre choix.");
-		addDefault("jump.teleportError", "&7Impossible de trouver une position pour vous téléporter.");
-		
-		addDefault("kick.description", "Expulse un joueur du serveur");
-		addDefault("kick.message", "&c&lExpulsion du serveur[RT][RT]&cRaison : &7<message>[RT]");
-		
-		addDefault("kickall.description", "Expulse tous les joueurs du serveur");
-		addDefault("kickall.message", "&c&lExpulsion du serveur[RT][RT]&cRaison : &7<message>[RT]");
-		
-		addDefault("kill.description", "Tue un joueur");
-		addDefault("kill.player", "&7Vous avez été tué par &6<staff>&7.");
-		addDefault("kill.staff", "&7Vous avez tué &6<player>&7.");
-		
-		addDefault("lag.description", "Connaître l'état du serveur");
-		addDefault("lag.title", "&aInformations sur le serveur");
-		addDefault("lag.time", "    &6&l➤  &6Durée de fonctionnement : &c<time>");
-		addDefault("lag.tps", "    &6&l➤  &6TPS actuel : &c<tps>");
-		addDefault("lag.historyTps", "    &6&l➤  &6Historique TPS : <tps>");
-		addDefault("lag.historyTpsHover", "&6Minute : &c<num>[RT]&6TPS : &c<tps>");
-		addDefault("lag.memory", "    &6&l➤  &6RAM : &c<usage>&6/&c<total> &6Mo");
-		addDefault("lag.worlds", "    &6&l➤  &6Liste des mondes :");
-		addDefault("lag.worldsLine", "        &6&l●  &6<world>");
-		addDefault("lag.worldsLineHover", "&6Chunks : &c<chunks>[RT]&6Entités : &c<entities>[RT]&6Tiles : &c<tiles>");
-		
-		addDefault("list.description", "Affiche la liste des joueurs connecté");
-		addDefault("list.title", "&aListe des joueurs connectés : &6<PLAYERS_NO_VANISH> &a/ &6<MAX_PLAYERS>");
-		addDefault("list.titleVanish", "&aListe des joueurs connectés : &6<PLAYERS_NO_VANISH> &a(+&6<vanish>&a) / &6<MAX_PLAYERS>");
-		addDefault("list.group", "&6<group>&f : <players>");
-		addDefault("list.separator", ", ");
-		addDefault("list.player", "<afk>&r<vanish>&r<DISPLAYNAME_FORMAT>");
-		addDefault("list.tagAFK", "&7[AFK] ");
-		addDefault("list.tagVanish", "&7[HIDDEN]", "&7[VANISH] ");
-		addDefault("list.empty", "&7Aucun joueur");
-		
-		addDefault("mail.description", "Gestion de vos messages");
-		addDefault("mail.readTitle", "&aLa liste des messages");
-		addDefault("mail.readLineRead", "  &a&l➤&7 De &6<player>&7 le &6<date> &7à &6<time> : <read> <delete>");
-		addDefault("mail.readLineNoRead", "  &6&l➤&7 De &6<player>&7 le &6<date> &7à &6<time> : <read> <delete>");
-		addDefault("mail.readEmpty", "&7Vous n'avez aucun message");
-		addDefault("mail.readError", "&cVous n'avez pas de message qui correspond.");
-		addDefault("mail.delete", "&7Voulez-vous vraiment supprimer le <mail> de &6<player>&7 le &6<date> &7à &6<time> : <confirmation>.");
-		addDefault("mail.deleteValid", "&a&nConfirmer");
-		addDefault("mail.deleteValidHover", "&cCliquez ici pour supprimer le message.");
-		addDefault("mail.deleteConfirmation", "&7Le <mail> &7a bien été supprimé.");
-		addDefault("mail.deleteMail", "&6message");
-		addDefault("mail.deleteMailHover", "&7De &6<player>[RT]&7Le &6<date>");
-		addDefault("mail.deleteError", "&cVous n'avez pas de message qui correspond.");
-		addDefault("mail.clear", "&7Vous avez supprimé tous vos messages.");
-		addDefault("mail.clearError", "&cVous n'avez pas de message à supprimer.");
-		addDefault("mail.send", "&7Votre message a bien été envoyé à &6<player>&7.");
-		addDefault("mail.sendEquals", "&7Votre message vous a bien été envoyé.");
-		addDefault("mail.sendAll", "&7Votre message a bien été envoyé à tous les joueurs.");
-		addDefault("mail.buttomRead", "&a&nLire");
-		addDefault("mail.buttomReadHover", "&cCliquez ici pour lire le message.");
-		addDefault("mail.buttonDelete", "&c&nSupprimer");
-		addDefault("mail.buttonDeleteHover", "&cCliquez ici pour supprimer le message.");
-		
-		addDefault("me.description", "Envoie un texte d'action dans le tchat");
-		addDefault("me.prefix", "&f* <player> &r");
-		
-		addDefault("mojang.description", "Affiche les informations sur les serveurs de mojang");
-		addDefault("mojang.title", "&aLes serveurs de Mojang");
-		addDefault("mojang.line", "&7<server> : <color>");
-		addDefault("mojang.serverAccount", "Account");
-		addDefault("mojang.serverAPI", "API");
-		addDefault("mojang.serverMojang", "Mojang");
-		addDefault("mojang.serverAuth", "Auth");
-		addDefault("mojang.serverAuthServer", "AuthServer");
-		addDefault("mojang.serverMinecraftNet", "Minecraft.net");
-		addDefault("mojang.serverSession", "Session");
-		addDefault("mojang.serverSessionServer", "SessionServer");
-		addDefault("mojang.serverSkins", "Skins");
-		addDefault("mojang.serverTextures", "Textures");
-		addDefault("mojang.colorGreen", "&aEn ligne");
-		addDefault("mojang.colorYellow", "&6Problème de connexion");
-		addDefault("mojang.colorRed", "&4Hors ligne");
-		
-		addDefault("more.description", "Donne la quantité maximum d'un objet");
-		addDefault("more.player", "&7Vous avez maintenant &6<quantity> &6<item>&7.");
-		addDefault("more.itemColor", "&6");
-		addDefault("more.maxQuantity", "&7Vous avez déjà la quantité maximum de cette objet.");
-		
-		addDefault("motd.description", "Affiche le message du jour.");
-		
-		addDefault("names.description", "Affiche l'historique des noms d'un joueur");
-		addDefault("names.playerTitle", "&aVotre historique de nom");
-		addDefault("names.playerLineOriginal", "    &6&l➤  &6<name> &7: &cAchat du compte");
-		addDefault("names.playerLineOthers", "    &6&l➤  &6<name> &7: &c<datetime>");
-		addDefault("names.playerEmpty", "&7Vous n'avez aucun historique de pseudo");
-		addDefault("names.othersTitle", "&aHistorique de &6<player>");
-		addDefault("names.othersLineOriginal", "    &6&l➤  &6<name> &7: &cAchat du compte");
-		addDefault("names.othersLineOthers", "    &6&l➤  &6<name> &7: &c<datetime>");
-		addDefault("names.othersEmpty", "&6<player> &7n'a aucun historique de pseudo");
-		
-		addDefault("near.description", "Donne la liste des joueurs dans les environs");
-		addDefault("near.list.title", "&aListe des joueurs dans les environs");
-		addDefault("near.list.line", "    &6&l➤  &6<player> &7: &6<distance> bloc(s)");
-		addDefault("near.noPlayer", "&cAucun joueur dans les environs.");
-		
-		addDefault("opme.description", "Deviens opérateur");
-		
-		addDefault("ping.description", "Connaître la latence d'un joueur");
-		addDefault("ping.player", "&7Votre ping : &6<ping> &7ms.");
-		addDefault("ping.others", "&7Le ping de &6<player> &7: &6<ping> &7ms.");
-		
-		addDefault("invsee.description", "Regarde l'inventaire d'un autre joueur");
-		
-		addDefault("repair.description", "Répare les objets");
-		
-		addDefault("repairhand.description", "Répare l'objet dans votre main");
-		addDefault("repairhand.itemColor", "&6");
-		addDefault("repairhand.player", "&7Vous venez de réparer l'objet <item>&7.");
-		addDefault("repairhand.error", "&7Vous ne pouvez pas réparer <item>&7.");
-		addDefault("repairhand.maxDurability", "&6<item> &7est déjà réparé.");
-		
-		addDefault("repairhotbar.description", "Répare les objets dans votre barre d'action");
-		addDefault("repairhotbar.player", "&7Vous venez de réparer tous les objets de votre barre d'action.");
-		
-		addDefault("repairall.description", "Répare tous vos objets");
-		addDefault("repairall.player", "&7Vous venez de réparer tous les objets de votre inventaire.");
-		
-		addDefault("rules.description", "&7Affiche les règles d'Evercraft.");
-		
-		addDefault("skull.description", "Donne la tête d'un joueur");
-		addDefault("skull.myHead", "&7Vous avez reçu votre tête.");
-		addDefault("skull.others", "&7Vous avez reçu la tête de &6<player>&7.");
-		
-		addDefault("spawner.description", "Permet de modifier le type d'un mob spawner");
-		
-		addDefault("spawnmob.description", "Fait apparaître une entité");
-		addDefault("spawnmob.errorMob", "&cErreur : nom invalide.");
-		
-		addDefault("speed.description", "Change la vitesse de déplacement");
-		addDefault("speed.infoWalk", "&7Votre vitesse de &6marche &7est de &6<speed>&7.");
-		addDefault("speed.infoFly", "&7Votre vitesse de &6vol &7est de &6<speed>&7.");
-		addDefault("speed.playerWalk", "&7Vous avez défini votre vitesse de &6marche &7à &6<speed>&7.");
-		addDefault("speed.playerFly", "&7Vous avez défini votre vitesse de &6vol &7à &6<speed>&7.");
-		addDefault("speed.othersPlayerWalk", "&7Votre vitesse de marche a été défini à &6<speed> &7par &6<staff>&7.");
-		addDefault("speed.othersStaffWalk", "&7Vous avez défini la vitesse de &6marche &7de &6<player> &7à &6<speed>&7.");
-		addDefault("speed.othersPlayerFly", "&7Votre vitesse de vol a été défini à &6<speed> &7par &6<staff>&7.");
-		addDefault("speed.othersStaffFly", "&7Vous avez défini la vitesse de &6vol &7de &6<player> &7à &6<speed>&7.");
-		
-		addDefault("stop.description", "Arrête le serveur");
-		addDefault("stop.message", "&cArrêt du serveur par &6<staff>");
-		addDefault("stop.messageReason", "&c<reason>");
-		addDefault("stop.consoleMessage", "&cArrêt du serveur");
-		addDefault("stop.consoleMessageReason", "&c<reason>");
-		
-		addDefault("sudo.description", "Fait exécuter une commande par un autre joueur");
-		addDefault("sudo.command", "&6commande");
-		addDefault("sudo.commandHover", "&c<command>");
-		addDefault("sudo.player", "&7Votre <command> &7a bien était éxecutée par &6<player>&7.");
-		addDefault("sudo.bypass", "&cVous ne pouvez pas faire exécuter de commande à &6<player>&7.");
-		addDefault("sudo.console", "&7Votre <command> &7à bien était éxecutée par la &6console&7.");
-		
-		addDefault("suicide.description", "Permet de vous suicider");
-		
-		addDefault("tp.description", "Téléporte le joueur vers un autre joueur");
-		addDefault("tp.destination", "&6&l<player>");
-		addDefault("tp.destinationHover", "&cMonde : &6<world>[RT]&cX : &6<x>[RT]&cY : &6<y>[RT]&cZ : &6<z>");
-		addDefault("tp.player", "&7Vous avez été téléporté vers &6<destination>&7.");
-		addDefault("tp.playerEquals", "&7Vous avez été repositionné.");
-		addDefault("tp.othersPlayer", "&6<staff> &7vous a téléporté vers &6<destination>.");
-		addDefault("tp.othersStaff", "&6<player> &7a été téléporté vers &6<destination>&7.");
-		addDefault("tp.othersPlayerReposition", "&6<staff> &7vient de vous repositionner.");
-		addDefault("tp.othersStaffReposition", "&7Vous venez de repositionner &6<player>&7.");
-		addDefault("tp.othersStaffEqualsDestinationPlayer", "&6<destination> &7vous a téléporté.");
-		addDefault("tp.othersStaffEqualsDestinationStaff", "&7Vous venez de téléporter &6<player>&7.");
-		addDefault("tp.errorLocation", "&cImpossible de trouver une position pour réaliser une téléportation.");
-		
-		addDefault("tpall.description", "Téléporte tous les joueurs vers un autre joueur");
-		addDefault("tpall.destination", "&6&l<player>");
-		addDefault("tpall.destinationHover", "&cMonde : &6<world>[RT]&cX : &6<x>[RT]&cY : &6<y>[RT]&cZ : &6<z>");
-		addDefault("tpall.player", "&6<destination> &7vous a téléporté.");
-		addDefault("tpall.staff", "&7Vous venez de téléporter tous les joueurs.");
-		addDefault("tpall.error", "&cImpossible de trouver une position pour téléporter les joueurs.");
-		addDefault("tpall.othersPlayer", "&6<staff> &7vous a téléporté vers &6<destination>.");
-		addDefault("tpall.othersStaff", "&7Tous les joueurs ont été téléportés vers &6<destination>&7.");
-		
-		addDefault("tphere.description", "Téléporte le joueur vers vous");
-		addDefault("tphere.destination", "&6&l<player>");
-		addDefault("tphere.destinationHover", "&cMonde : &6<world>[RT]&cX : &6<x>[RT]&cY : &6<y>[RT]&cZ : &6<z>");
-		addDefault("tphere.player", "&6<destination> &7vous a téléporté.");
-		addDefault("tphere.staff", "&7Vous venez de téléporter &6<player>&7.");
-		addDefault("tphere.equals", "&7Vous avez été repositionné.");
-		addDefault("tphere.error", "&cImpossible de trouver une position pour téléporter le joueur.");
-		
-		addDefault("tppos.description", "Téléporte le joueur aux coordonnées choisis");
-		addDefault("tppos.position", "&6&lposition");
-		addDefault("tppos.positionHover", "&cMonde : &6<world>[RT]&cX : &6<x>[RT]&cY : &6<y>[RT]&cZ : &6<z>");
-		addDefault("tppos.player", "&7Vous avez été téléporté à cette <position>&7.");
-		addDefault("tppos.playerError", "&7Impossible de vous téléporter à cette <position>&7.");
-		addDefault("tppos.othersPlayer", "&7Vous avez été téléporté à cette <position> &7par &6<staff>&7.");
-		addDefault("tppos.othersStaff", "&7Vous téléportez &6<player> &7à cette <position>&7.");
-		addDefault("tppos.othersError", "&7Impossible de téléporter &6<player> &7à cette <position>&7.");
-		
-		addDefault("time.description", "Gère l'heure sur les mondes");
-		addDefault("time.format", "&6<hours>h<minutes>");
-		addDefault("time.information", "&7Il est actuellement &6<hours> &7dans le monde &6<world>&7.");
-		addDefault("time.setWorld", "&7Il est désormais &6<hours> &7dans le monde &6<world>&7.");
-		addDefault("time.setAllWorld", "&7Il est désormais &6<hours> &7dans les mondes&7.");
-		addDefault("time.error", "&cErreur : Horaire incorrect.");
-		
-		addDefault("time.dayDescription", "Mettre le jour dans votre monde");
-		addDefault("time.nightDescription", "Mettre la nuit dans votre monde");
-		
-		addDefault("top.description", "Téléporte le joueur à la position la plus élevée");
-		addDefault("top.position", "&6&lposition");
-		addDefault("top.positionHover", "&cMonde : &6<world>[RT]&cX : &6<x>[RT]&cY : &6<y>[RT]&cZ : &6<z>");
-		addDefault("top.teleport", "&7Vous avez été téléporté à la <position> &7la plus élevée.");
-		addDefault("top.teleportError", "&cImpossible de trouver une position où vous téléporter.");
-		
-		addDefault("tree.description", "Place un arbre");
-		addDefault("tree.inconnu", "&cType d'arbre inconnu : &6<type>");
-		addDefault("tree.noCan", "&cImpossible de placer un arbre à cette endroit : Regarder plutot un bloc d'herbre ou de terre.");
-		
-		addDefault("uuid.description", "Affiche l'identifiant unique du joueur.");
-		addDefault("uuid.name", "&6&l<uuid>");
-		addDefault("uuid.player", "&7Votre UUID est <uuid>");
-		addDefault("uuid.otherPlayer", "L'UUID de <player> est <uuid>");
-		
-		addDefault("vanish.description", "Permet de vous rendre invisible.");
-		addDefault("vanish.playerEnable", "&7Vous êtes désormais invisible.");
-		addDefault("vanish.playerEnableError", "&7Vous êtes déjà invisible.");
-		addDefault("vanish.playerDisable", "&7Vous n'êtes plus invisible.");
-		addDefault("vanish.playerDisableError", "&7Vous êtes déjà visible.");
-		addDefault("vanish.othersPlayerEnable", "&7Vous êtes désormais invisible grâce à &6<staff>&7.");
-		addDefault("vanish.othersPlayerDisable", "&7Vous n'êtes plus invisible à cause de &6<staff>&7.");
-		addDefault("vanish.othersStaffEnable", "&7Vous venez de rendre invisible &6<player>&7.");
-		addDefault("vanish.othersStaffEnableError", "&6<player> &7est déjà invisible.");
-		addDefault("vanish.othersStaffDisable", "&7Vous venez de rendre visible &6<player>&7.");
-		addDefault("vanish.othersStaffDisableError", "&6<player> &7est déjà visible.");
-		
-		addDefault("warp.description", "Se téléporte à un warp");
-		addDefault("warp.name", "&6&l<name>");
-		addDefault("warp.nameHover", "&cMonde : &6<world>[RT]&cX : &6<x>[RT]&cY : &6<y>[RT]&cZ : &6<z>");
-		addDefault("warp.inconnu", "&cIl n'y pas de warp qui s'appelle &6<warp>&c.");
-		addDefault("warp.noPermission", "&cVous n'avez pas la permission pour vous téléporter au warp &6<warp>&c.");
-		addDefault("warp.empty", "&cIl n'y a aucun warp sur le serveur.");
-		addDefault("warp.listTitle", "&aListe des warps");
-		addDefault("warp.listLineDelete", "    &6&l➤  <warp> &7: <teleport> <delete>");
-		addDefault("warp.listLineDeleteErrorWorld", "    &6&l➤  <warp> &7: <delete>");
-		addDefault("warp.listLine", "    &6&l➤  <warp> &7: <teleport>");
-		addDefault("warp.listTeleport", "&a&nTéléporter");
-		addDefault("warp.listTeleportHover", "&cCliquez ici pour vous téléporter à le warp &6<warp>&c.");
-		addDefault("warp.listDelete", "&c&nSupprimer");
-		addDefault("warp.listDeleteHover", "&cCliquez ici pour supprimer le warp &6<warp>&c.");
-		addDefault("warp.teleportPlayer", "&7Vous avez été téléporté au warp &6<warp>&7.");
-		addDefault("warp.teleportPlayerError", "&cImpossible de vous téléporter au warp &6<warp>&c.");
-		addDefault("warp.teleportOthersPlayer", "&7Vous avez été téléporté au warp &6<warp> &7par &6<player>&7.");
-		addDefault("warp.teleportOthersStaff", "&7Vous avez téléporté &6<player> &7au warp &6<warp>&7.");
-		addDefault("warp.teleportOthersError", "&cImpossible de téléporter &6<player> &7au warp &6<warp>&c.");
-		
-		addDefault("delwarp.description", "Supprime un warp");
-		addDefault("delwarp.inconnu", "&cIl n'y pas de warp qui s'appelle &6<warp>&c.");
-		addDefault("delwarp.name", "&6&l<name>");
-		addDefault("delwarp.nameHover", "&cMonde : &6<world>[RT]&cX : &6<x>[RT]&cY : &6<y>[RT]&cZ : &6<z>");
-		addDefault("delwarp.confirmation", "&7Souhaitez-vous vraiment supprimer le warp &6<warp> &7: <confirmation>");
-		addDefault("delwarp.confirmationValid", "&2&nConfirmer");
-		addDefault("delwarp.confirmationValidHover", "&cCliquez ici pour supprimer le warp &6<warp>&c.");
-		addDefault("delwarp.delete", "&7Vous avez supprimé le warp &6<warp>&7.");
-		
-		addDefault("setwarp.description", "Crée un warp");
-		addDefault("setwarp.name", "&6&l<name>");
-		addDefault("setwarp.nameHover", "&cMonde : &6<world>[RT]&cX : &6<x>[RT]&cY : &6<y>[RT]&cZ : &6<z>");
-		addDefault("setwarp.replace", "&7Vous avez redéfini le warp &6<warp>&7.");
-		addDefault("setwarp.new", "&7Vous avez défini le warp &6<warp>&7.");
-		
-		addDefault("weather.description", "Change la météo d'un monde");
-		addDefault("weather.error", "&cVous ne pouvez pas changer la météo dans ce type de monde.");
-		addDefault("weather.sun", "&7Vous avez mis &6le beau temps &7dans le monde &6<world>&7.");
-		addDefault("weather.rain", "&7Vous avez mis &6la pluie &7dans le monde &6<world>&7.");
-		addDefault("weather.storm", "&7Vous avez mis &6la tempête &7dans le monde &6<world>&7.");
-		addDefault("weather.sunDuration", "&7Vous avez mis &6le beau temps &7dans le monde &6<world>&7 pendant &6<duration>&7 minute(s).");
-		addDefault("weather.rainDuration", "&7Vous avez mis &6la pluie &7dans le monde &6<world>&7 pendant &6<duration>&7 minute(s).");
-		addDefault("weather.stormDuration", "&7Vous avez mis &6la tempête &7dans le monde &6<world>&7 pendant &6<duration>&7 minute(s).");
-		
-		addDefault("weather.rainDescription", "Met la pluie dans votre monde");
-		addDefault("weather.stormDescription", "Met la tempête dans votre monde");
-		addDefault("weather.sunDescription", "Met le beau dans temps dans votre monde");
-		
-		addDefault("whois.description", "Affiche les informations d'un joueur");
-		addDefault("whois.title", "&aInformations : &c<player>");
-		addDefault("whois.uuid", "    &6&l➤  &6UUID : <uuid>");
-		addDefault("whois.uuidStyle", "&c<uuid>");
-		addDefault("whois.ip", "    &6&l➤  &6IP : <ip>");
-		addDefault("whois.ipStyle", "&c<ip>");
-		addDefault("whois.ping", "    &6&l➤  &6Ping : &c<ping> &6ms");
-		addDefault("whois.heal", "    &6&l➤  &6Santé : &a<heal>&6/&c<max_heal>");
-		addDefault("whois.food", "    &6&l➤  &6Faim : &a<food>&6/&c<max_food>");
-		addDefault("whois.foodSaturation", "    &6&l➤  &6Faim : &a<food>&6/&c<max_food> &6(+&a<saturation> &6saturation)");
-		addDefault("whois.exp", "    &6&l➤  &6Expérience :");
-		addDefault("whois.expLevel", "        &6&l●  &a<level> &6niveau(x)");
-		addDefault("whois.expPoint", "        &6&l●  &a<point> &6point(s)");
-		addDefault("whois.speed", "    &6&l➤  &6Vitesse :");
-		addDefault("whois.speedFly", "        &6&l●  &6En volant : &a<speed>");
-		addDefault("whois.speedWalk", "        &6&l●  &6En marchant : &a<speed>");
-		addDefault("whois.location", "    &6&l➤  &6Position : <position>");
-		addDefault("whois.locationPosition", "&6(&c<x>&6, &c<y>&6, &c<z>&6, &c<world>&6)");
-		addDefault("whois.locationPositionHover", "&cMonde : &6<world>[RT]&cX : &6<x>[RT]&cY : &6<y>[RT]&cZ : &6<z>");
-		addDefault("whois.balance", "    &6&l➤  &6Solde : &c<money>");
-		addDefault("whois.gamemode", "    &6&l➤  &6Mode de jeu : &c<gamemode>");
-		addDefault("whois.godEnable", "    &6&l➤  &6Mode Dieu : &aActivé");
-		addDefault("whois.godDisable", "    &6&l➤  &6Mode Dieu : &cDésactivé");
-		addDefault("whois.flyEnableFly", "    &6&l➤  &6Fly Mode : &aActivé &6(&avol&6)");
-		addDefault("whois.flyEnableWalk", "    &6&l➤  &6Fly Mode : &aActivé &6(&cmarche&6)");
-		addDefault("whois.flyDisable", "    &6&l➤  &6Fly Mode : &cDésactivé");
-		addDefault("whois.muteEnable", "    &6&l➤  &6Muet : &aActivé");
-		addDefault("whois.muteDisable", "    &6&l➤  &6Muet : &cDésactivé");
-		addDefault("whois.vanishEnable", "    &6&l➤  &6Vanish : &aActivé");
-		addDefault("whois.vanishDisable", "    &6&l➤  &6Vanish : &cDésactivé");
-		addDefault("whois.afkEnable", "    &6&l➤  &6AFK : &aActivé");
-		addDefault("whois.afkDisable", "    &6&l➤  &6AFK : &cDésactivé");
-		addDefault("whois.firstDatePlayed", "    &6&l➤  &6Première connexion : &a<time>");
-		addDefault("whois.lastDatePlayed", "    &6&l➤  &6Connecté depuis : &a<time>");
-		
-		addDefault("worlds.description", "Téléporte le joueur dans le monde de votre choix");
-		addDefault("worlds.endDescription", "Vous téléporte dans le monde du néant");
-		addDefault("worlds.netherDescription", "Vous téléporte dans le monde de l'enfer");
-		addDefault("worlds.listTitle", "&aListe des mondes");
-		addDefault("worlds.listLine", "    &6&l➤  <world> &7: <teleport>");
-		addDefault("worlds.listTeleport", "&2&nTéléporter");
-		addDefault("worlds.listTeleportHover", "&cCliquez ici pour vous téléporter dans le monde &6<world>&c.");
-		addDefault("worlds.teleportWorld", "&6&l<world>");
-		addDefault("worlds.teleportWorldHover", "&cMonde : &6<world>[RT]&cX : &6<x>[RT]&cY : &6<y>[RT]&cZ : &6<z>");
-		addDefault("worlds.teleportPlayer", "&7Vous avez été téléporté dans le monde &6<world>&7.");
-		addDefault("worlds.teleportPlayerError", "&7Impossible de vous téléporter dans le monde <world>&7.");
-		addDefault("worlds.teleportOthersPlayer", "&7Vous avez été téléporté dans le monde <world> &7par &6<staff>&7.");
-		addDefault("worlds.teleportOthersStaff", "&7Vous téléportez &6<player> &7dans le monde <world>&7.");
-		addDefault("worlds.teleportOthersError", "&7Impossible de téléporter &6<player> &7dans le monde&7.");
 	}
 
 	@Override
 	public void loadConfig() {
-		// Prefix
-		addMessage("PREFIX", "prefix");
 		
-		addMessage("AFK_DESCRIPTION", "afk.description");
-		addMessage("AFK_ALL_ENABLE", "afk.allEnable");
-		addMessage("AFK_ALL_DISABLE", "afk.allDisable");
-		addMessage("AFK_PLAYER_ENABLE", "afk.playerEnable");
-		addMessage("AFK_PLAYER_DISABLE", "afk.playerDisable");
-		addMessage("AFK_PLAYER_ENABLE_ERROR", "afk.playerEnableError");
-		addMessage("AFK_PLAYER_DISABLE", "afk.playerDisableError");
-		addMessage("AFK_STAFF_ENABLE", "afk.staffEnable");
-		addMessage("AFK_STAFF_DISABLE", "afk.staffDisable");
-		addMessage("AFK_STAFF_ENABLE_ERROR", "afk.staffEnableError");
-		addMessage("AFK_STAFF_DISABLE_ERROR", "afk.staffDisableError");
-		
-		addMessage("BACK_DESCRIPTION", "back.description");
-		addMessage("BACK_NAME", "back.name");
-		addMessage("BACK_NAME_HOVER", "back.nameHover");
-		addMessage("BACK_TELEPORT", "back.teleport");
-		addMessage("BACK_INCONNU", "back.inconnu");
-		
-		addMessage("BED_DESCRIPTION", "bed.description");
-		
-		addMessage("BROADCAST_DESCRIPTION", "broadcast.description");
-		addMessage("BROADCAST_PREFIX_PLAYER", "broadcast.prefixPlayer");
-		addMessage("BROADCAST_PREFIX_CONSOLE", "broadcast.prefixConsole");
-		
-		addMessage("BOOK_DESCRIPTION", "book.description");
-		
-		addMessage("BUTCHER_DESCRIPTION", "butcher.description");
-		addMessage("BUTCHER_NOENTITY", "butcher.noEntity");
-		addMessage("BUTCHER_ENTITY_COLOR", "butcher.entityColor");
-		addMessage("BUTCHER_ANIMAL", "butcher.killAnimal");
-		addMessage("BUTCHER_ANIMAL_RADIUS", "butcher.killAnimalRadius");
-		addMessage("BUTCHER_MONSTER", "butcher.killMonster");
-		addMessage("BUTCHER_MONSTER_RADIUS", "butcher.killMonsterRadius");
-		addMessage("BUTCHER_ALL", "butcher.killAll");
-		addMessage("BUTCHER_ALL_RADIUS", "butcher.killAllRadius");
-		addMessage("BUTCHER_TYPE", "butcher.killType");
-		addMessage("BUTCHER_TYPE_RADIUS", "butcher.killTypeRadius");		
-		
-		addMessage("CLEAREFFECT_DESCRIPTION", "cleareffect.description");
-		addMessage("CLEAREFFECT_PLAYER", "cleareffect.player");
-		addMessage("CLEAREFFECT_OTHERS_PLAYER", "cleareffect.othersPlayer");
-		addMessage("CLEAREFFECT_OTHERS_STAFF", "cleareffect.othersStaff");
-		
-		addMessage("CLEARINVENTORY_DESCRIPTION", "clearinventory.description");
-		addMessage("CLEARINVENTORY_PLAYER", "clearinventory.player");
-		addMessage("CLEARINVENTORY_OTHERS_PLAYER", "clearinventory.othersPlayer");
-		addMessage("CLEARINVENTORY_OTHERS_STAFF", "clearinventory.othersStaff");
-		
-		addMessage("COLOR_DESCRIPTION", "color.description");
-		addMessage("COLOR_LIST_MESSAGE", "color.list.message");
-		addMessage("COLOR_LIST_TITLE", "color.list.title");
-		
-		addMessage("DAY_DESCRIPTION", "day.description");
-		
-		addMessage("EFFECT_DESCRIPTION", "effect.description");
-		addMessage("EFFECT_ERROR_NAME", "effect.errorName");
-		addMessage("EFFECT_ERROR_DURATION", "effect.errorDuration");
-		addMessage("EFFECT_ERROR_AMPLIFIER", "effect.errorAmplifier");
-		
-		addMessage("ENCHANT_DESCRIPTION", "enchant.description");
-		addMessage("ENCHANT_NOT_FOUND", "enchant.notFound");
-		addMessage("ENCHANT_LEVEL_TOO_HIGHT", "enchant.levelTooHight");
-		addMessage("ENCHANT_INCOMPATIBLE", "enchant.incompatible");
-		addMessage("ENCHANT_NAME", "enchant.name");
-		addMessage("ENCHANT_SUCCESSFULL", "enchant.successfull");
-		
-		addMessage("EXP_DESCRIPTION", "exp.description");
-		addMessage("EXP_GIVE_LEVEL", "exp.giveLevel");
-		addMessage("EXP_GIVE_EXP", "exp.giveExp");
-		addMessage("EXP_SET_LEVEL", "exp.setLevel");
-		addMessage("EXP_SET_EXP", "exp.setExp");
-		addMessage("EXP_OTHERS_PLAYER_GIVE_LEVEL", "exp.othersPlayerGiveLevel");
-		addMessage("EXP_OTHERS_STAFF_GIVE_LEVEL", "exp.othersStaffGiveLevel");
-		addMessage("EXP_OTHERS_PLAYER_GIVE_EXP", "exp.othersPlayerGiveExp");
-		addMessage("EXP_OTHERS_STAFF_GIVE_EXP", "exp.othersStaffGiveExp");
-		addMessage("EXP_OTHERS_PLAYER_SET_LEVEL", "exp.othersPlayerSetLevel");
-		addMessage("EXP_OTHERS_STAFF_SET_LEVEL", "exp.othersStaffSetLevel");
-		addMessage("EXP_OTHERS_PLAYER_SET_EXP", "exp.othersPlayerSetExp");
-		addMessage("EXP_OTHERS_STAFF_SET_EXP", "exp.othersStaffSetExp");
-		
-		addMessage("EXT_DESCRIPTION", "ext.description");
-		addMessage("EXT_PLAYER", "ext.player");
-		addMessage("EXT_PLAYER_ERROR", "ext.playerError");
-		addMessage("EXT_OTHERS_PLAYER", "ext.othersPlayer");
-		addMessage("EXT_OTHERS_STAFF", "ext.othersStaff");
-		addMessage("EXT_OTHERS_ERROR", "ext.othersError");
-		
-		addMessage("FEED_DESCRIPTION", "feed.description");
-		addMessage("FEED_PLAYER", "feed.player");
-		addMessage("FEED_OTHERS_STAFF", "feed.othersStaff");
-		addMessage("FEED_OTHERS_PLAYER", "feed.othersPlayer");
-		addMessage("FEED_ALL_STAFF", "feed.allStaff");
-		
-		addMessage("FLY_DESCRIPTION", "fly.description");
-		addMessage("FLY_PLAYER_ENABLE", "fly.playerEnable");
-		addMessage("FLY_PLAYER_ENABLE_ERROR", "fly.playerEnableError");
-		addMessage("FLY_PLAYER_DISABLE", "fly.playerDisable");
-		addMessage("FLY_PLAYER_DISABLE_ERROR", "fly.playerDisableError");
-		addMessage("FLY_PLAYER_ERROR_CREATIVE", "fly.playerErrorCreative");
-		addMessage("FLY_OTHERS_PLAYER_ENABLE", "fly.othersPlayerEnable");
-		addMessage("FLY_OTHERS_PLAYER_DISABLE", "fly.othersPlayerDisable");
-		addMessage("FLY_OTHERS_STAFF_ENABLE", "fly.othersStaffEnable");
-		addMessage("FLY_OTHERS_STAFF_ENABLE_ERROR", "fly.othersStaffEnableError");
-		addMessage("FLY_OTHERS_STAFF_DISABLE", "fly.othersStaffDisable");
-		addMessage("FLY_OTHERS_STAFF_DISABLE_ERROR", "fly.othersStaffDisableError");
-		addMessage("FLY_OTHERS_ERROR_CREATIVE", "fly.othersStaffErrorCreative");
-		
-		addMessage("GAMEMODE_DESCRIPTION", "gamemode.description");
-		addMessage("GAMEMODE_PLAYER_CHANGE", "gamemode.playerChange");
-		addMessage("GAMEMODE_PLAYER_EQUAL", "gamemode.playerEqual");
-		addMessage("GAMEMODE_OTHERS_STAFF_CHANGE", "gamemode.othersStaffChange");
-		addMessage("GAMEMODE_OTHERS_PLAYER_CHANGE", "gamemode.othersPlayerChange");
-		addMessage("GAMEMODE_OTHERS_EQUAL", "gamemode.othersEqual");
-		addMessage("GAMEMODE_ERROR_NAME", "gamemode.errorName");
-		
-		addMessage("GETPOS_DESCRIPTION", "getpos.description");
-		addMessage("GETPOS_MESSAGE", "getpos.message");
-		addMessage("GETPOS_MESSAGE_OTHERS", "getpos.messageOthers");
-		addMessage("GETPOS_POTISITON_NAME", "getpos.positionName");
-		addMessage("GETPOS_POSITION_HOVER", "getpos.positionHover");
-		
-		addMessage("GOD_DESCRIPTION", "god.description");
-		addMessage("GOD_PLAYER_ENABLE", "god.playerEnable");
-		addMessage("GOD_PLAYER_ENABLE_ERROR", "god.playerEnableError");
-		addMessage("GOD_PLAYER_DISABLE", "god.playerDisable");
-		addMessage("GOD_PLAYER_DISABLE_ERROR", "god.playerDisableError");
-		addMessage("GOD_OTHERS_PLAYER_ENABLE", "god.othersPlayerEnable");
-		addMessage("GOD_OTHERS_PLAYER_DISABLE", "god.othersPlayerDisable");
-		addMessage("GOD_OTHERS_STAFF_ENABLE", "god.othersStaffEnable");
-		addMessage("GOD_OTHERS_STAFF_ENABLE_ERROR", "god.othersStaffEnableError");
-		addMessage("GOD_OTHERS_STAFF_DISABLE", "god.othersStaffDisable");
-		addMessage("GOD_OTHERS_STAFF_DISABLE_ERROR", "god.othersStaffDisableError");
-		addMessage("GOD_TELEPORT", "god.teleport");
-		
-		addMessage("HAT_DESCRIPTION", "hat.description");
-		addMessage("HAT_ITEM_COLOR", "hat.itemColor");
-		addMessage("HAT_IS_NOT_HAT", "hat.isNotHat");
-		addMessage("HAT_NO_EMPTY", "hat.noEmpty");
-		addMessage("HAT_IS_HAT", "hat.isHat");
-		addMessage("HAT_NULL", "hat.null");
-		addMessage("HAT_REMOVE", "hat.remove");
-		addMessage("HAT_REMOVE_EMPTY", "hat.removeEmpty");
-		
-		addMessage("HEAL_DESCRIPTION", "heal.description");
-		addMessage("HEAL_PLAYER", "heal.player");
-		addMessage("HEAL_PLAYER_DEAD", "heal.playerDead");
-		addMessage("HEAL_OTHERS_PLAYER", "heal.othersPlayer");
-		addMessage("HEAL_OTHERS_STAFF", "heal.othersStaff");
-		addMessage("HEAL_OTHERS_DEAD_STAFF", "heal.othersDeadStaff");
-		addMessage("HEAL_ALL_STAFF", "heal.allStaff");
-
-		addMessage("HOME_NAME", "home.name");
-		addMessage("HOME_NAME_HOVER", "home.nameHover");
-		
-		addMessage("HOME_DESCRIPTION", "home.description");
-		addMessage("HOME_LIST_TITLE", "home.listTitle");
-		addMessage("HOME_LIST_LINE", "home.listLine");
-		addMessage("HOME_LIST_TELEPORT", "home.listTeleport");
-		addMessage("HOME_LIST_TELEPORT_HOVER", "home.listTeleportHover");
-		addMessage("HOME_LIST_DELETE", "home.listDelete");
-		addMessage("HOME_LIST_DELETE_HOVER", "home.listDeleteHover");
-		addMessage("HOME_EMPTY", "home.empty");
-		addMessage("HOME_INCONNU", "home.inconnu");
-		addMessage("HOME_TELEPORT", "home.teleport");
-		addMessage("HOME_TELEPORT_ERROR", "home.teleportError");
-		
-		addMessage("HOMEOTHERS_DESCRIPTION", "homeOthers.description");
-		addMessage("HOMEOTHERS_LIST_TITLE", "homeOthers.listTitle");
-		addMessage("HOMEOTHERS_LIST_LINE", "homeOthers.listLine");
-		addMessage("HOMEOTHERS_LIST_LINE_ERROR_WORLD", "homeOthers.listLineErrorWorld");
-		addMessage("HOMEOTHERS_LIST_TELEPORT", "homeOthers.listTeleport");
-		addMessage("HOMEOTHERS_LIST_TELEPORT_HOVER", "homeOthers.listTeleportHover");
-		addMessage("HOMEOTHERS_LIST_DELETE", "homeOthers.listDelete");
-		addMessage("HOMEOTHERS_LIST_DELETE_HOVER", "homeOthers.listDeleteHover");
-		addMessage("HOMEOTHERS_EMPTY", "homeOthers.empty");
-		addMessage("HOMEOTHERS_INCONNU", "homeOthers.inconnu");
-		addMessage("HOMEOTHERS_TELEPORT", "homeOthers.teleport");
-		addMessage("HOMEOTHERS_TELEPORT_ERROR", "homeOthers.teleportError");
-		addMessage("HOMEOTHERS_DELETE_CONFIRMATION", "homeOthers.deleteConfirmation");
-		addMessage("HOMEOTHERS_DELETEE_CONFIRMATION_VALID", "homeOthers.deleteConfirmationValid");
-		addMessage("HOMEOTHERS_DELETE_CONFIRMATION_VALID_HOVER", "homeOthers.deleteConfirmationValidHover");
-		addMessage("HOMEOTHERS_DELETE", "homeOthers.delete");
-		
-		addMessage("DELHOME_DESCRIPTION", "delhome.description");
-		addMessage("DELHOME_CONFIRMATION", "delhome.confirmation");
-		addMessage("DELHOME_CONFIRMATION_VALID", "delhome.confirmationValid");
-		addMessage("DELHOME_CONFIRMATION_VALID_HOVER", "delhome.confirmationValidHover");
-		addMessage("DELHOME_DELETE", "delhome.delete");
-		addMessage("DELHOME_INCONNU", "delhome.inconnu");
-		
-		addMessage("SETHOME_DESCRIPTION", "sethome.description");
-		addMessage("SETHOME_SET", "sethome.set");
-		addMessage("SETHOME_MULTIPLE_SET", "sethome.multipleSet");
-		addMessage("SETHOME_MULTIPLE_ERROR_MAX", "sethome.multipleErrorMax");
-		addMessage("SETHOME_MULTIPLE_NO_PERMISSION", "sethome.multipleNoPermission");
-		
-		addMessage("INFO_DESCRIPTION", "info.description");
-		addMessage("INFO_PLAYER", "info.player");
-		addMessage("INFO_ITEM_COLOR", "info.itemColor");
-		
-		addMessage("JUMP_DESCRIPTION", "jump.description");
-		addMessage("JUMP_TELEPORT", "jump.teleport");
-		addMessage("JUMP_TELEPORT_ERROR", "jump.teleportError");
-
-		addMessage("KICK_DESCRIPTION", "kick.description");
-		addMessage("KICK_MESSAGE", "kick.message");
-		
-		addMessage("KICKALL_DESCRIPTION", "kickall.description");
-		addMessage("KICKALL_MESSAGE", "kickall.message");
-		
-		addMessage("KILL_DESCRIPTION", "kill.description");
-		addMessage("KILL_PLAYER", "kill.player");
-		addMessage("KILL_STAFF", "kill.staff");
-		
-		addMessage("LAG_DESCRIPTION", "lag.description");
-		addMessage("LAG_TITLE", "lag.title");
-		addMessage("LAG_TIME", "lag.time");
-		addMessage("LAG_TPS", "lag.tps");
-		addMessage("LAG_HISTORY_TPS", "lag.historyTps");
-		addMessage("LAG_HISTORY_TPS_HOVER", "lag.historyTpsHover");
-		addMessage("LAG_MEMORY", "lag.memory");
-		addMessage("LAG_WORLDS", "lag.worlds");
-		addMessage("LAG_WORLDS_LINE", "lag.worldsLine");
-		addMessage("LAG_WORLDS_LINE_HOVER", "lag.worldsLineHover");
-		
-		addMessage("LIST_DESCRIPTION", "list.description");
-		addMessage("LIST_TITLE", "list.title");
-		addMessage("LIST_TITLE_VANISH", "list.titleVanish");
-		addMessage("LIST_GROUP", "list.group");
-		addMessage("LIST_SEPARATOR", "list.separator");
-		addMessage("LIST_PLAYER", "list.player");
-		addMessage("LIST_TAG_AFK", "list.tagAFK");
-		addMessage("LIST_TAG_VANISH", "list.tagVanish");
-		addMessage("LIST_EMPTY", "list.empty");
-		
-		addMessage("MAIL_DESCRIPTION", "mail.description");
-		addMessage("MAIL_READ_TITLE", "mail.readTitle");
-		addMessage("MAIL_READ_LINE_READ", "mail.readLineRead");
-		addMessage("MAIL_READ_LINE_NO_READ", "mail.readLineNoRead");
-		addMessage("MAIL_READ_EMPTY", "mail.readEmpty");
-		addMessage("MAIL_READ_ERROR", "mail.readError");
-		addListMessages("MAIL_READ_BOOK", "mail.readBook");
-		addMessage("MAIL_DELETE", "mail.delete");
-		addMessage("MAIL_DELETE_VALID", "mail.deleteValid");
-		addMessage("MAIL_DELETE_VALID_HOVER", "mail.deleteValidHover");
-		addMessage("MAIL_DELETE_CONFIRMATION", "mail.deleteConfirmation");
-		addMessage("MAIL_DELETE_MAIL", "mail.deleteMail");
-		addMessage("MAIL_DELETE_MAIL_HOVER", "mail.deleteMailHover");
-		addMessage("MAIL_DELETE_ERROR", "mail.deleteError");
-		addMessage("MAIL_CLEAR", "mail.clear");
-		addMessage("MAIL_CLEAR_ERROR", "mail.clearError");
-		addMessage("MAIL_SEND", "mail.send");
-		addMessage("MAIL_SEND_EQUALS", "mail.sendEquals");
-		addMessage("MAIL_SENDALL", "mail.sendAll");
-		addMessage("MAIL_BUTTOM_READ", "mail.buttomRead");
-		addMessage("MAIL_BUTTOM_READ_HOVER", "mail.buttomReadHover");
-		addMessage("MAIL_BUTTON_DELETE", "mail.buttonDelete");
-		addMessage("MAIL_BUTTON_DELETE_HOVER", "mail.buttonDeleteHover");
-		
-		addMessage("ME_DESCRIPTION", "me.description");
-		addMessage("ME_PREFIX", "me.prefix");
-		
-		addMessage("MOJANG_DESCRIPTION", "mojang.description");
-		addMessage("MOJANG_TITLE", "mojang.title");
-		addMessage("MOJANG_LINE", "mojang.line");
-		addMessage("MOJANG_SERVER_ACCOUNT", "mojang.serverAccount");
-		addMessage("MOJANG_SERVER_API", "mojang.serverAPI");
-		addMessage("MOJANG_SERVER_MOJANG", "mojang.serverMojang");
-		addMessage("MOJANG_SERVER_AUTH", "mojang.serverAuth");
-		addMessage("MOJANG_SERVER_AUTHSERVER", "mojang.serverAuthServer");
-		addMessage("MOJANG_SERVER_MINECRAFT_NET", "mojang.serverMinecraftNet");
-		addMessage("MOJANG_SERVER_SESSION", "mojang.serverSession");
-		addMessage("MOJANG_SERVER_SESSIONSERVER", "mojang.serverSessionServer");
-		addMessage("MOJANG_SERVER_SKINS", "mojang.serverSkins");
-		addMessage("MOJANG_SERVER_TEXTURES", "mojang.serverTextures");
-		addMessage("MOJANG_COLOR_GREEN", "mojang.colorGreen");
-		addMessage("MOJANG_COLOR_YELLOW", "mojang.colorYellow");
-		addMessage("MOJANG_COLOR_RED", "mojang.colorRed");
-		
-		addMessage("MORE_DESCRIPTION", "more.description");
-		addMessage("MORE_PLAYER", "more.player");
-		addMessage("MORE_ITEM_COLOR", "more.itemColor");
-		addMessage("MORE_MAX_QUANTITY", "more.maxQuantity");
-		
-		addMessage("MOTD_DESCRIPTION", "motd.description");
-		
-		addMessage("NAMES_DESCRIPTION", "names.description");
-		addMessage("NAMES_PLAYER_TITLE", "names.playerTitle");
-		addMessage("NAMES_PLAYER_LINE_ORIGINAL", "names.playerLineOriginal");
-		addMessage("NAMES_PLAYER_LINE_OTHERS", "names.playerLineOthers");
-		addMessage("NAMES_PLAYER_EMPTY", "names.playerEmpty");
-		addMessage("NAMES_OTHERS_TITLE", "names.othersTitle");
-		addMessage("NAMES_OTHERS_LINE_ORIGINAL", "names.othersLineOriginal");
-		addMessage("NAMES_OTHERS_LINE_OTHERS", "names.othersLineOthers");
-		addMessage("NAMES_OTHERS_EMPTY", "names.othersEmpty");
-		
-		addMessage("NEAR_DESCRIPTION", "near.description");
-		addMessage("NEAR_LIST_LINE", "near.list.line");
-		addMessage("NEAR_LIST_TITLE", "near.list.title");
-		addMessage("NEAR_NOPLAYER", "near.noPlayer");
-
-		addMessage("OPME_DESCRIPTION", "opme.description");
-		
-		addMessage("PING_DESCRIPTION", "ping.description");
-		addMessage("PING_PLAYER", "ping.player");
-		addMessage("PING_OTHERS", "ping.others");
-		
-		addMessage("INVSEE_DESCRIPTION", "invsee.description");
-		
-		addMessage("REPAIR_DESCRIPTION", "repair.description");
-		
-		addMessage("REPAIR_ALL_DESCRIPTION", "repairall.description");
-		addMessage("REPAIR_ALL_PLAYER", "repairall.player");
-		
-		addMessage("REPAIR_HAND_DESCRIPTION", "repairhand.description");
-		addMessage("REPAIR_HAND_ITEM_COLOR", "repairhand.itemColor");
-		addMessage("REPAIR_HAND_PLAYER", "repairhand.player");
-		addMessage("REPAIR_HAND_ERROR", "repairhand.error");
-		addMessage("REPAIR_HAND_MAX_DURABILITY", "repairhand.maxDurability");
-		
-		addMessage("REPAIR_HOTBAR_DESCRIPTION", "repairhotbar.description");
-		addMessage("REPAIR_HOTBAR_PLAYER", "repairhotbar.player");
-		
-		addMessage("RULES_DESCRIPTION", "rules.description");
-		
-		addMessage("SKULL_DESCRIPTION", "skull.description");
-		addMessage("SKULL_MY_HEAD", "skull.myHead");
-		addMessage("SKULL_OTHERS", "skull.others");
-		
-		addMessage("SPAWNER_DESCRIPTION", "spawner.description");
-		
-		addMessage("SPAWNMOB_DESCRIPTION", "spawnmob.description");
-		addMessage("SPAWNMOB_ERROR_MOB", "spawnmob.errorMob");
-		
-		addMessage("SPEED_DESCRIPTION", "speed.description");
-		addMessage("SPEED_INFO_WALK", "speed.infoWalk");
-		addMessage("SPEED_INFO_FLY", "speed.infoFly");
-		addMessage("SPEED_PLAYER_WALK", "speed.playerWalk");
-		addMessage("SPEED_PLAYER_FLY", "speed.playerFly");
-		addMessage("SPEED_OTHERS_PLAYER_WALK", "speed.othersPlayerWalk");
-		addMessage("SPEED_OTHERS_STAFF_WALK", "speed.othersStaffWalk");
-		addMessage("SPEED_OTHERS_PLAYER_FLY", "speed.othersPlayerFly");
-		addMessage("SPEED_OTHERS_STAFF_FLY", "speed.othersStaffFly");
-		
-		addMessage("STOP_DESCRIPTION", "stop.description");
-		addMessage("STOP_MESSAGE", "stop.message");
-		addMessage("STOP_MESSAGE_REASON", "stop.messageReason");
-		addMessage("STOP_CONSOLE_MESSAGE", "stop.consoleMessage");
-		addMessage("STOP_CONSOLE_MESSAGE_REASON", "stop.consoleMessageReason");
-		
-		addMessage("SUDO_DESCRIPTION", "sudo.description");
-		addMessage("SUDO_COMMAND", "sudo.command");
-		addMessage("SUDO_COMMAND_HOVER", "sudo.commandHover");
-		addMessage("SUDO_PLAYER", "sudo.player");
-		addMessage("SUDO_BYPASS", "sudo.bypass");
-		addMessage("SUDO_CONSOLE", "sudo.console");
-		
-		addMessage("SUICIDE_DESCRIPTION", "suicide.description");
-		
-		addMessage("TP_DESCRIPTION", "tp.description");
-		addMessage("TP_DESTINATION", "tp.destination");
-		addMessage("TP_DESTINATION_HOVER", "tp.destinationHover");
-		addMessage("TP_PLAYER", "tp.player");
-		addMessage("TP_PLAYER_EQUALS", "tp.playerEquals");
-		addMessage("TP_OTHERS_PLAYER", "tp.othersPlayer");
-		addMessage("TP_OTHERS_STAFF", "tp.othersStaff");
-		addMessage("TP_OTHERS_PLAYER_REPOSITION", "tp.othersPlayerReposition");
-		addMessage("TP_OTHERS_STAFF_REPOSITION", "tp.othersStaffReposition");
-		addMessage("TP_OTHERS_STAFF_EQUALS_DESTINATION_PLAYER", "tp.othersStaffEqualsDestinationPlayer");
-		addMessage("TP_OTHERS_STAFF_EQUALS_DESTINATION_STAFF", "tp.othersStaffEqualsDestinationStaff");
-		addMessage("TP_ERROR_LOCATION", "tp.errorLocation");
-		
-		addMessage("TPALL_DESCRIPTION", "tpall.description");
-		addMessage("TPALL_DESTINATION", "tpall.destination");
-		addMessage("TPALL_DESTINATION_HOVER", "tpall.destinationHover");
-		addMessage("TPALL_PLAYER", "tpall.player");
-		addMessage("TPALL_STAFF", "tpall.staff");
-		addMessage("TPALL_ERROR", "tpall.error");
-		addMessage("TPALL_OTHERS_PLAYER", "tpall.othersPlayer");
-		addMessage("TPALL_OTHERS_STAFF", "tpall.othersStaff");
-		
-		addMessage("TPHERE_DESCRIPTION", "tphere.description");
-		addMessage("TPHERE_DESTINATION", "tphere.destination");
-		addMessage("TPHERE_DESTINATION_HOVER", "tphere.destinationHover");
-		addMessage("TPHERE_PLAYER", "tphere.player");
-		addMessage("TPHERE_STAFF", "tphere.staff");
-		addMessage("TPHERE_EQUALS", "tphere.equals");
-		addMessage("TPHERE_ERROR", "tphere.error");
-
-		addMessage("TPPOS_DESCRIPTION", "tppos.description");
-		addMessage("TPPOS_POSITION", "tppos.position");
-		addMessage("TPPOS_POSITION_HOVER", "tppos.positionHover");
-		addMessage("TPPOS_PLAYER", "tppos.player");
-		addMessage("TPPOS_PLAYER_ERROR", "tppos.playerError");
-		addMessage("TPPOS_OTHERS_PLAYER", "tppos.othersPlayer");
-		addMessage("TPPOS_OTHERS_STAFF", "tppos.othersStaff");
-		addMessage("TPPOS_OTHERS_ERROR", "tppos.othersError");
-		
-		addMessage("TIME_DESCRIPTION", "time.description");
-		addMessage("TIME_FORMAT", "time.format");
-		addMessage("TIME_INFORMATION", "time.information");
-		addMessage("TIME_SET_WORLD", "time.setWorld");
-		addMessage("TIME_SET_ALL_WORLD", "time.setAllWorld");
-		addMessage("TIME_ERROR", "time.error");
-		
-		addMessage("TIME_DAY_DESCRIPTION", "time.dayDescription");
-		addMessage("TIME_NIGHT_DESCRIPTION", "time.nightDescription");
-		
-		addMessage("TOP_DESCRIPTION", "top.description");
-		addMessage("TOP_POSITION", "top.position");
-		addMessage("TOP_POSITION_HOVER", "top.positionHover");
-		addMessage("TOP_TELEPORT", "top.teleport");
-		addMessage("TOP_TELEPORT_ERROR", "top.teleportError");
-		
-		addMessage("TREE_DESCRIPTION", "tree.description");
-		addMessage("TREE_INCONNU", "tree.inconnu");
-		addMessage("TREE_NO_CAN", "tree.noCan");
-		
-		addMessage("UUID_DESCRIPTION", "uuid.description");
-		addMessage("UUID_NAME", "uuid.name");
-		addMessage("UUID_PLAYER", "uuid.player");
-		addMessage("UUID_PLAYER_OTHERS", "uuid.otherPlayer");
-		
-		addMessage("VANISH_DESCRIPTION", "vanish.description");
-		addMessage("VANISH_PLAYER_ENABLE", "vanish.playerEnable");
-		addMessage("VANISH_PLAYER_ENABLE_ERROR", "vanish.playerEnableError");
-		addMessage("VANISH_PLAYER_DISABLE", "vanish.playerDisable");
-		addMessage("VANISH_PLAYER_DISABLE_ERROR", "vanish.playerDisableError");
-		addMessage("VANISH_OTHERS_PLAYER_ENABLE", "vanish.othersPlayerEnable");
-		addMessage("VANISH_OTHERS_PLAYER_DISABLE", "vanish.othersPlayerDisable");
-		addMessage("VANISH_OTHERS_STAFF_ENABLE", "vanish.othersStaffEnable");
-		addMessage("VANISH_OTHERS_STAFF_ENABLE_ERROR", "vanish.othersStaffEnableError");
-		addMessage("VANISH_OTHERS_STAFF_DISABLE", "vanish.othersStaffDisable");
-		addMessage("VANISH_OTHERS_STAFF_DISABLE_ERROR", "vanish.othersStaffDisableError");
-		
-		addMessage("WARP_NAME", "warp.name");
-		addMessage("WARP_NAME_HOVER", "warp.nameHover");
-		addMessage("WARP_INCONNU", "warp.inconnu");
-		addMessage("WARP_NO_PERMISSION", "warp.noPermission");
-		
-		addMessage("WARP_DESCRIPTION", "warp.description");
-		addMessage("WARP_EMPTY", "warp.empty");
-		addMessage("WARP_LIST_TITLE", "warp.listTitle");
-		addMessage("WARP_LIST_LINE", "warp.listLine");
-		addMessage("WARP_LIST_LINE_DELETE", "warp.listLineDelete");
-		addMessage("WARP_LIST_LINE_DELETE_ERROR_WORLD", "warp.listLineDeleteErrorWorld");
-		addMessage("WARP_LIST_TELEPORT", "warp.listTeleport");
-		addMessage("WARP_LIST_TELEPORT_HOVER", "warp.listTeleportHover");
-		addMessage("WARP_LIST_DELETE", "warp.listDelete");
-		addMessage("WARP_LIST_DELETE_HOVER", "warp.listDeleteHover");
-		addMessage("WARP_TELEPORT_PLAYER", "warp.teleportPlayer");
-		addMessage("WARP_TELEPORT_PLAYER_ERROR", "warp.teleportPlayerError");
-		addMessage("WARP_TELEPORT_OTHERS_PLAYER", "warp.teleportOthersPlayer");
-		addMessage("WARP_TELEPORT_OTHERS_STAFF", "warp.teleportOthersStaff");
-		addMessage("WARP_TELEPORT_OTHERS_ERROR", "warp.teleportOthersError");
-		
-		addMessage("WEATHER_DESCRIPTION", "weather.description");
-		addMessage("WEATHER_ERROR", "weather.error");
-		addMessage("WEATHER_SUN", "weather.sun");
-		addMessage("WEATHER_RAIN", "weather.rain");
-		addMessage("WEATHER_STORM", "weather.storm");
-		addMessage("WEATHER_SUN_DURATION", "weather.sunDuration");
-		addMessage("WEATHER_RAIN_DURATION", "weather.rainDuration");
-		addMessage("WEATHER_STORM_DURATION", "weather.stormDuration");
-		
-		addMessage("WEATHER_RAIN_DESCRIPTION", "weather.rainDescription");
-		addMessage("WEATHER_STORM_DESCRIPTION", "weather.stormDescription");
-		addMessage("WEATHER_SUN_DESCRIPTION", "weather.sunDescription");
-		
-		addMessage("WHOIS_DESCRIPTION", "whois.description");
-		addMessage("WHOIS_TITLE", "whois.title");
-		addMessage("WHOIS_UUID", "whois.uuid");
-		addMessage("WHOIS_UUID_STYLE", "whois.uuidStyle");
-		addMessage("WHOIS_IP", "whois.ip");
-		addMessage("WHOIS_IP_STYLE", "whois.ipStyle");
-		addMessage("WHOIS_PING", "whois.ping");
-		addMessage("WHOIS_HEAL", "whois.heal");
-		addMessage("WHOIS_FOOD", "whois.food");
-		addMessage("WHOIS_FOOD_SATURATION", "whois.foodSaturation");
-		addMessage("WHOIS_EXP", "whois.exp");
-		addMessage("WHOIS_EXP_LEVEL", "whois.expLevel");
-		addMessage("WHOIS_EXP_POINT", "whois.expPoint");
-		addMessage("WHOIS_SPEED", "whois.speed");
-		addMessage("WHOIS_SPEED_FLY", "whois.speedFly");
-		addMessage("WHOIS_SPEED_WALK", "whois.speedWalk");
-		addMessage("WHOIS_LOCATION", "whois.location");
-		addMessage("WHOIS_LOCATION_POSITION", "whois.locationPosition");
-		addMessage("WHOIS_LOCATION_POSITION_HOVER", "whois.locationPositionHover");
-		addMessage("WHOIS_BALANCE", "whois.balance");
-		addMessage("WHOIS_GAMEMODE", "whois.gamemode");
-		addMessage("WHOIS_GOD_ENABLE", "whois.godEnable");
-		addMessage("WHOIS_GOD_DISABLE", "whois.godDisable");
-		addMessage("WHOIS_FLY_ENABLE_FLY", "whois.flyEnableFly");
-		addMessage("WHOIS_FLY_ENABLE_WALK", "whois.flyEnableWalk");
-		addMessage("WHOIS_FLY_DISABLE", "whois.flyDisable");
-		addMessage("WHOIS_MUTE_ENABLE", "whois.muteEnable");
-		addMessage("WHOIS_MUTE_DISABLE", "whois.muteDisable");
-		addMessage("WHOIS_VANISH_ENABLE", "whois.vanishEnable");
-		addMessage("WHOIS_VANISH_DISABLE", "whois.vanishDisable");
-		addMessage("WHOIS_AFK_ENABLE", "whois.afkEnable");
-		addMessage("WHOIS_AFK_DISABLE", "whois.afkDisable");
-		addMessage("WHOIS_FIRST_DATE_PLAYED", "whois.firstDatePlayed");
-		addMessage("WHOIS_LAST_DATE_PLAYED", "whois.lastDatePlayed");
-		
-		addMessage("DELWARP_DESCRIPTION", "delwarp.description");
-		addMessage("DELWARP_INCONNU", "delwarp.inconnu");
-		addMessage("DELWARP_NAME", "delwarp.name");
-		addMessage("DELWARP_NAME_HOVER", "delwarp.nameHover");
-		addMessage("DELWARP_CONFIRMATION", "delwarp.confirmation");
-		addMessage("DELWARP_DELETE", "delwarp.delete");
-		addMessage("DELWARP_CONFIRMATION_VALID", "delwarp.confirmationValid");
-		addMessage("DELWARP_CONFIRMATION_VALID_HOVER", "delwarp.confirmationValidHover");
-		
-		addMessage("SETWARP_DESCRIPTION", "setwarp.description");
-		addMessage("SETWARP_NAME", "setwarp.name");
-		addMessage("SETWARP_NAME_HOVER", "setwarp.nameHover");
-		addMessage("SETWARP_REPLACE", "setwarp.replace");
-		addMessage("SETWARP_NEW", "setwarp.new");
-		
-		addMessage("WORLDS_DESCRIPTION", "worlds.description");
-		addMessage("WORLDS_END_DESCRIPTION", "worlds.endDescription");
-		addMessage("WORLDS_NETHER_DESCRIPTION", "worlds.netherDescription");
-		addMessage("WORLDS_LIST_TITLE", "worlds.listTitle");
-		addMessage("WORLDS_LIST_LINE", "worlds.listLine");
-		addMessage("WORLDS_LIST_TELEPORT", "worlds.listTeleport");
-		addMessage("WORLDS_LIST_TELEPORT_HOVER", "worlds.listTeleportHover");
-		addMessage("WORLDS_TELEPORT_WORLD", "worlds.teleportWorld");
-		addMessage("WORLDS_TELEPORT_WORLD_HOVER", "worlds.teleportWorldHover");
-		addMessage("WORLDS_TELEPORT_PLAYER", "worlds.teleportPlayer");
-		addMessage("WORLDS_TELEPORT_PLAYER_ERROR", "worlds.teleportPlayerError");
-		addMessage("WORLDS_TELEPORT_OTHERS_PLAYER", "worlds.teleportOthersPlayer");
-		addMessage("WORLDS_TELEPORT_OTHERS_STAFF", "worlds.teleportOthersStaff");
-		addMessage("WORLDS_TELEPORT_OTHERS_ERROR", "worlds.teleportOthersError");
 	}
 }

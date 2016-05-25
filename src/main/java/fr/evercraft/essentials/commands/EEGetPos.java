@@ -110,7 +110,11 @@ public class EEGetPos extends ECommand<EverEssentials> {
 	public boolean commandGetPosOthers(final CommandSource staff, final EPlayer player) throws CommandException {
 		staff.sendMessage(ETextBuilder.toBuilder(this.plugin.getMessages().getMessage("PREFIX"))
 				.append(this.plugin.getMessages().getMessage("GETPOS_MESSAGE_OTHERS")
-						.replaceAll("<player>", player.getName()))
+						.replaceAll("<player>", player.getName())
+						.replaceAll("<world>", player.getWorld().getName())
+						.replaceAll("<x>", String.valueOf(player.getLocation().getBlockX()))
+						.replaceAll("<y>", String.valueOf(player.getLocation().getBlockY()))
+						.replaceAll("<z>", String.valueOf(player.getLocation().getBlockZ())))
 				.replace("<position>", getButtonPos(player.getLocation()))
 				.build());
 		return true;
