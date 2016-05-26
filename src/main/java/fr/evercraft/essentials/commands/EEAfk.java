@@ -97,7 +97,7 @@ public class EEAfk extends ECommand<EverEssentials> {
 				}
 			// Il n'a pas la permission
 			} else {
-				source.sendMessage(this.plugin.getPermissions().noPermission());
+				source.sendMessage(EAMessages.NO_PERMISSION.getText());
 			}
 		// On connais le joueur et si on doit lui activé ou lui désactivé le vanish
 		} else if(args.size() == 2) {
@@ -119,7 +119,7 @@ public class EEAfk extends ECommand<EverEssentials> {
 				}
 			// Il n'a pas la permission
 			} else {
-				source.sendMessage(this.plugin.getPermissions().noPermission());
+				source.sendMessage(EAMessages.NO_PERMISSION.getText());
 			}
 		// Nombre d'argument incorrect
 		} else {

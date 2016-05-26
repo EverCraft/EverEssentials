@@ -27,6 +27,7 @@ import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
 
 import fr.evercraft.essentials.EverEssentials;
+import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.java.UtilsDouble;
 import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.ECommand;
@@ -146,7 +147,7 @@ public class EESpeed extends ECommand<EverEssentials> {
 				}
 			// Il n'a pas la permission
 			} else {
-				source.sendMessage(this.plugin.getPermissions().noPermission());
+				source.sendMessage(EAMessages.NO_PERMISSION.getText());
 			}
 		// Nombre d'argument incorrect
 		} else {
@@ -181,7 +182,7 @@ public class EESpeed extends ECommand<EverEssentials> {
 					.replaceAll("<speed>", speed.toString()));
 			return true;
 		} else {
-			player.sendMessage(this.plugin.getPermissions().noPermission());
+			player.sendMessage(EAMessages.NO_PERMISSION.getText());
 		}
 		return false;
 	}
@@ -193,7 +194,7 @@ public class EESpeed extends ECommand<EverEssentials> {
 					.replaceAll("<speed>", speed.toString()));
 			return true;
 		} else {
-			player.sendMessage(this.plugin.getPermissions().noPermission());
+			player.sendMessage(EAMessages.NO_PERMISSION.getText());
 		}
 		return false;
 	}
@@ -209,7 +210,7 @@ public class EESpeed extends ECommand<EverEssentials> {
 					.replaceAll("<player>", player.getName())));
 			return true;
 		} else {
-			staff.sendMessage(this.plugin.getPermissions().noPermission());
+			staff.sendMessage(EAMessages.NO_PERMISSION.getText());
 		}
 		return false;
 	}
@@ -225,7 +226,7 @@ public class EESpeed extends ECommand<EverEssentials> {
 					.replaceAll("<player>", player.getName())));
 			return true;
 		} else {
-			staff.sendMessage(this.plugin.getPermissions().noPermission());
+			staff.sendMessage(EAMessages.NO_PERMISSION.getText());
 		}
 		return false;
 	}

@@ -32,6 +32,7 @@ import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
 
 import fr.evercraft.essentials.EverEssentials;
+import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.ECommand;
 import fr.evercraft.everapi.server.player.EPlayer;
 
@@ -79,7 +80,7 @@ public class EESkull extends ECommand<EverEssentials> {
 				resultat = commandSkullOthers((EPlayer) source, args.get(0));
 				// Il n'a pas la permission
 			} else {
-				source.sendMessage(this.plugin.getPermissions().noPermission());
+				source.sendMessage(EAMessages.NO_PERMISSION.getText());
 			}
 			// Nombre d'argument incorrect
 		} else {

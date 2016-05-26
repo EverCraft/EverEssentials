@@ -23,6 +23,7 @@ import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.text.Text;
 
+import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.exception.PluginDisableException;
 import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.ECommand;
@@ -39,14 +40,14 @@ public class EECommand extends ECommand<EverEssentials> {
 				if(source.hasPermission(this.plugin.getPermissions().get("HELP"))) {					
 					this.plugin.getEverAPI().getManagerService().getEPagination().helpCommand(this.plugin.getManagerCommands(), source, this.plugin);
 				} else {
-					source.sendMessage(this.plugin.getPermissions().noPermission());
+					source.sendMessage(EAMessages.NO_PERMISSION.getText());
 				}
 			} else if(args.get(0).equalsIgnoreCase("reload")) {
 				if(source.hasPermission(this.plugin.getPermissions().get("RELOAD"))) {
 					this.plugin.reload();
 					source.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getEverAPI().getMessages().getMessage("RELOAD_COMMAND")));
 				} else {
-					source.sendMessage(this.plugin.getPermissions().noPermission());
+					source.sendMessage(EAMessages.NO_PERMISSION.getText());
 				}
 			}
 		}

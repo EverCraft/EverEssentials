@@ -35,6 +35,7 @@ import org.spongepowered.api.text.format.TextColors;
 
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.essentials.service.ESubject;
+import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.ECommand;
 import fr.evercraft.everapi.server.player.EPlayer;
@@ -161,7 +162,7 @@ public class EEMail extends ECommand<EverEssentials> {
 					resultat = commandSendAll(source, args.get(1));
 				// Il n'a pas la permission
 				} else {
-					source.sendMessage(this.plugin.getPermissions().noPermission());
+					source.sendMessage(EAMessages.NO_PERMISSION.getText());
 				}
 			} else {
 				source.sendMessage(help(source));
@@ -176,7 +177,7 @@ public class EEMail extends ECommand<EverEssentials> {
 							resultat = commandSendAll(source, args.get(2));
 						// Il n'a pas la permission
 						} else {
-							source.sendMessage(this.plugin.getPermissions().noPermission());
+							source.sendMessage(EAMessages.NO_PERMISSION.getText());
 						}
 					} else {
 						Optional<User> optUser = this.plugin.getEServer().getUser(args.get(1));
@@ -190,7 +191,7 @@ public class EEMail extends ECommand<EverEssentials> {
 					}
 				// Il n'a pas la permission
 				} else {
-					source.sendMessage(this.plugin.getPermissions().noPermission());
+					source.sendMessage(EAMessages.NO_PERMISSION.getText());
 				}
 			} else if(args.get(0).equalsIgnoreCase("delete") && args.get(2).equalsIgnoreCase("confirmation")) {
 				// Si la source est un joueur

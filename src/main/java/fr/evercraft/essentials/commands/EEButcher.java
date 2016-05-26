@@ -34,6 +34,7 @@ import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
 
 import fr.evercraft.essentials.EverEssentials;
+import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.ECommand;
 import fr.evercraft.everapi.server.player.EPlayer;
@@ -156,7 +157,7 @@ public class EEButcher extends ECommand<EverEssentials> {
 								resultat = commandButcherAnimal(player);
 							// Il n'a pas la permission
 							} else {
-								player.sendMessage(this.plugin.getPermissions().noPermission());
+								player.sendMessage(EAMessages.NO_PERMISSION.getText());
 							}
 						} else {
 							try {
@@ -173,7 +174,7 @@ public class EEButcher extends ECommand<EverEssentials> {
 						}
 					// Il n'a pas la permission
 					} else {
-						player.sendMessage(this.plugin.getPermissions().noPermission());
+						player.sendMessage(EAMessages.NO_PERMISSION.getText());
 					}
 				} else if (args.get(0).equals("monster")){
 					// Si il a la permission
@@ -184,7 +185,7 @@ public class EEButcher extends ECommand<EverEssentials> {
 								resultat = commandButcherMonster(player);
 							// Il n'a pas la permission
 							} else {
-								player.sendMessage(this.plugin.getPermissions().noPermission());
+								player.sendMessage(EAMessages.NO_PERMISSION.getText());
 							}
 						} else {
 							try {
@@ -201,7 +202,7 @@ public class EEButcher extends ECommand<EverEssentials> {
 						}
 					// Il n'a pas la permission
 					} else {
-						player.sendMessage(this.plugin.getPermissions().noPermission());
+						player.sendMessage(EAMessages.NO_PERMISSION.getText());
 					}
 				} else if (args.get(0).equals("all")){
 					// Si il a la permission
@@ -212,7 +213,7 @@ public class EEButcher extends ECommand<EverEssentials> {
 								resultat = commandButcherAll(player);
 							// Il n'a pas la permission
 							} else {
-								player.sendMessage(this.plugin.getPermissions().noPermission());
+								player.sendMessage(EAMessages.NO_PERMISSION.getText());
 							}
 						} else {
 							try {
@@ -229,7 +230,7 @@ public class EEButcher extends ECommand<EverEssentials> {
 						}
 					// Il n'a pas la permission
 					} else {
-						player.sendMessage(this.plugin.getPermissions().noPermission());
+						player.sendMessage(EAMessages.NO_PERMISSION.getText());
 					}
 				}
 			} else if (args.size() == 3 && args.get(0).equals("type")){
@@ -243,7 +244,7 @@ public class EEButcher extends ECommand<EverEssentials> {
 								resultat = commandButcherType(player, type.get());
 							// Il n'a pas la permission
 							} else {
-								player.sendMessage(this.plugin.getPermissions().noPermission());
+								player.sendMessage(EAMessages.NO_PERMISSION.getText());
 							}
 						} else {
 							try {
@@ -264,7 +265,7 @@ public class EEButcher extends ECommand<EverEssentials> {
 					}
 				// Il n'a pas la permission
 				} else {
-					player.sendMessage(this.plugin.getPermissions().noPermission());
+					player.sendMessage(EAMessages.NO_PERMISSION.getText());
 				}
 			} else {
 				player.sendMessage(help(source));
