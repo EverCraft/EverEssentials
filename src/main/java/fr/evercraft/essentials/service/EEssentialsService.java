@@ -32,6 +32,7 @@ import com.google.common.cache.LoadingCache;
 import com.google.common.cache.RemovalListener;
 import com.google.common.cache.RemovalNotification;
 
+import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.java.Chronometer;
 import fr.evercraft.everapi.services.essentials.EssentialsService;
@@ -154,7 +155,7 @@ public class EEssentialsService implements EssentialsService {
 	
 	@Override
 	public String getPermissionVanishSee() {
-		return this.plugin.getPermissions().get("VANISH_SEE");
+		return EEPermissions.VANISH_SEE.get();
 	}
 
 	public Collection<ESubject> getAll() {

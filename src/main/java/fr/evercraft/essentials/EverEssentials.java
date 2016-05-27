@@ -23,7 +23,6 @@ import fr.evercraft.essentials.listeners.EEPlayerListeners;
 import fr.evercraft.essentials.managers.EEManagerCommands;
 import fr.evercraft.essentials.managers.EEManagerServices;
 import fr.evercraft.everapi.exception.PluginDisableException;
-import fr.evercraft.everapi.plugin.EPermission;
 import fr.evercraft.everapi.plugin.EPlugin;
 
 @Plugin(id = "fr.evercraft.everessentials", 
@@ -98,10 +97,6 @@ public class EverEssentials extends EPlugin {
 	
 	public EEMotd getMotd(){
 		return this.motd;
-	}
-	
-	public EPermission getPermissions(){
-		return null;
 	}
 
 	public EEConfigRules getRules() {

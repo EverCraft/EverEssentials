@@ -194,7 +194,6 @@ public enum EEPermissions implements EnumPermission {
 	WEATHER("weather.command"),
 	
 	WORLDS("worlds.command"),
-	WORLDS_NAME("worlds"),
 	WORLDS_OTHERS("worlds.others"),
 	
 	WHOIS("whois.command"),

@@ -32,6 +32,7 @@ import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
+import fr.evercraft.everapi.EAPermissions;
 import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.ECommand;
 import fr.evercraft.everapi.server.player.EPlayer;
@@ -121,7 +122,7 @@ public class EETeleportation extends ECommand<EverEssentials> {
 	private boolean commandTeleportation(EPlayer player, EPlayer destination) {
 		if(!player.equals(destination)) {
 			if(player.getWorld().equals(destination.getWorld()) || !this.plugin.getConfigs().isWorldTeleportPermissions() ||
-					player.hasPermission(this.plugin.getEverAPI().getPermissions().get("WORLDS") + "." + destination.getWorld().getName())) {
+					player.hasPermission(EAPermissions.WORLDS.get() + "." + destination.getWorld().getName())) {
 				if(teleport(player, destination)) {
 					player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
 							.append(EEMessages.TP_PLAYER.get())
@@ -143,7 +144,7 @@ public class EETeleportation extends ECommand<EverEssentials> {
 	
 	private boolean commandTeleportation(CommandSource staff, EPlayer player, EPlayer destination) {
 		if(player.getWorld().equals(destination.getWorld()) || !this.plugin.getConfigs().isWorldTeleportPermissions() ||
-				player.hasPermission(this.plugin.getEverAPI().getPermissions().get("WORLDS") + "." + destination.getWorld().getName())) {
+				player.hasPermission(EAPermissions.WORLDS.get() + "." + destination.getWorld().getName())) {
 			if(destination.equals(player)) {
 				if(destination.equals(staff)){
 					player.teleportSafe(player.getTransform());

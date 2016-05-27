@@ -31,6 +31,7 @@ import org.spongepowered.api.world.World;
 import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
+import fr.evercraft.everapi.EAPermissions;
 import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.ECommand;
@@ -93,7 +94,7 @@ public class EETeleportationHere extends ECommand<EverEssentials> {
 	private boolean commandTeleportationHere(EPlayer staff, EPlayer player) {
 		if(!player.equals(staff)) {
 			if(player.getWorld().equals(staff.getWorld()) || !this.plugin.getConfigs().isWorldTeleportPermissions() ||
-					player.hasPermission(this.plugin.getEverAPI().getPermissions().get("WORLDS") + "." + staff.getWorld().getName())) {
+					player.hasPermission(EAPermissions.WORLDS.get() + "." + staff.getWorld().getName())) {
 				if(teleport(player, staff)) {
 					player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
 							.append(EEMessages.TPHERE_PLAYER.get()

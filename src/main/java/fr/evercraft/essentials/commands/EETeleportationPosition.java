@@ -33,6 +33,7 @@ import com.flowpowered.math.vector.Vector3i;
 import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
+import fr.evercraft.everapi.EAPermissions;
 import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.ECommand;
@@ -147,7 +148,7 @@ public class EETeleportationPosition extends ECommand<EverEssentials> {
 			// Si le monde existe
 			if(optWorld.isPresent()) {
 				if(player.getWorld().equals(optWorld.get()) || !this.plugin.getConfigs().isWorldTeleportPermissions() ||
-						player.hasPermission(this.plugin.getEverAPI().getPermissions().get("WORLDS") + "." + optWorld.get().getName())) {
+						player.hasPermission(EAPermissions.WORLDS.get() + "." + optWorld.get().getName())) {
 					if(player.teleportSafe(optWorld.get().getLocation(optLocation.get()))) {
 						player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
 								.append(EEMessages.TPPOS_PLAYER.get())
@@ -179,7 +180,7 @@ public class EETeleportationPosition extends ECommand<EverEssentials> {
 			// Si le monde existe
 			if(optWorld.isPresent()) {
 				if(player.getWorld().equals(optWorld.get()) || !this.plugin.getConfigs().isWorldTeleportPermissions() ||
-						player.hasPermission(this.plugin.getEverAPI().getPermissions().get("WORLDS") + "." + optWorld.get().getName())) {
+						player.hasPermission(EAPermissions.WORLDS.get()+ "." + optWorld.get().getName())) {
 					if(player.teleportSafe(optWorld.get().getLocation(optLocation.get()))) {
 						player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
 								.append(EEMessages.TPPOS_OTHERS_PLAYER.get()
