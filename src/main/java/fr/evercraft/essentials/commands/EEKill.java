@@ -26,8 +26,10 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
 
+import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
+import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.ECommand;
 import fr.evercraft.everapi.server.player.EPlayer;
@@ -43,7 +45,7 @@ public class EEKill  extends ECommand<EverEssentials> {
 	}
 
 	public Text description(final CommandSource source) {
-		return this.plugin.getMessages().getText("KILL_DESCRIPTION");
+		return EEMessages.KILL_DESCRIPTION.getText();
 	}
 
 	public Text help(final CommandSource source) {
@@ -70,7 +72,7 @@ public class EEKill  extends ECommand<EverEssentials> {
 			if(optPlayer.isPresent()){
 				resultat = commandKill(source, optPlayer.get());
 			} else {
-				source.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getEverAPI().getMessages().getMessage("PLAYER_NOT_FOUND")));
+				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
 			}
 		} else {
 			source.sendMessage(help(source));
@@ -81,9 +83,9 @@ public class EEKill  extends ECommand<EverEssentials> {
 	public boolean commandKill(final CommandSource staff, final EPlayer player) {
 		if(!player.equals(staff)) {
 			player.setHealth(0);
-			player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("KILL_PLAYER")
+			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.KILL_PLAYER.get()
 					.replaceAll("<staff>", staff.getName()));
-			staff.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("KILL_STAFF")
+			staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.KILL_STAFF.get()
 					.replaceAll("<player>", player.getName())));
 		} else {
 			this.plugin.getGame().getCommandManager().process(staff, "suicide");

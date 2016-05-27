@@ -31,8 +31,10 @@ import org.spongepowered.api.world.gen.type.MushroomTypes;
 
 import com.flowpowered.math.vector.Vector3i;
 
+import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
+import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.ECommand;
 import fr.evercraft.everapi.server.player.EPlayer;
@@ -48,7 +50,7 @@ public class EETree extends ECommand<EverEssentials> {
 	}
 
 	public Text description(final CommandSource source) {
-		return this.plugin.getMessages().getText("TREE_DESCRIPTION");
+		return EEMessages.TREE_DESCRIPTION.getText();
 	}
 
 	public Text help(final CommandSource source) {
@@ -122,7 +124,7 @@ public class EETree extends ECommand<EverEssentials> {
 				resultat = commandTree((EPlayer) source, PopulatorObjects.OAK);
 			// La source n'est pas un joueur
 			} else {
-				source.sendMessage(this.plugin.getEverAPI().getMessages().getText("COMMAND_ERROR_FOR_PLAYER"));
+				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
 			}
 		// On connais le joueur
 		} else if(args.size() == 1) {
@@ -132,12 +134,12 @@ public class EETree extends ECommand<EverEssentials> {
 				if(optGenerator.isPresent()){
 					resultat = commandTree((EPlayer) source, optGenerator.get());
 				} else {
-					source.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("TREE_INCONNU")
+					source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.TREE_INCONNU.get()
 							.replaceAll("<type>", args.get(0))));
 				}
 			// La source n'est pas un joueur
 			} else {
-				source.sendMessage(this.plugin.getEverAPI().getMessages().getText("COMMAND_ERROR_FOR_PLAYER"));
+				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
 			}
 		// Nombre d'argument incorrect
 		} else {
@@ -154,10 +156,10 @@ public class EETree extends ECommand<EverEssentials> {
 				generator.placeObject(player.getWorld(), player.getRandom(), block.getX(), block.getY(), block.getZ());
 				return true;
 			} else {
-				player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("TREE_NO_CAN"));
+				player.sendMessage(EEMessages.PREFIX.get() + EEMessages.TREE_NO_CAN.get());
 			}
 		} else {
-			player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getEverAPI().getMessages().getMessage("PLAYER_NO_LOOK_BLOCK"));
+			player.sendMessage(EEMessages.PREFIX.get() + EAMessages.PLAYER_NO_LOOK_BLOCK.get());
 		}
 		return false;
 	}

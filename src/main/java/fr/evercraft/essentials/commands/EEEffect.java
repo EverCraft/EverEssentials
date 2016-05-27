@@ -28,8 +28,10 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
 
+import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
+import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.ECommand;
 import fr.evercraft.everapi.server.player.EPlayer;
 import fr.evercraft.everapi.sponge.UtilsEffect;
@@ -45,7 +47,7 @@ public class EEEffect extends ECommand<EverEssentials> {
 	}
 
 	public Text description(final CommandSource source) {
-		return this.plugin.getMessages().getText("EFFECT_DESCRIPTION");
+		return EEMessages.EFFECT_DESCRIPTION.getText();
 	}
 
 	public Text help(final CommandSource source) {
@@ -94,8 +96,7 @@ public class EEEffect extends ECommand<EverEssentials> {
 					commandEffect(player, args.get(0), amplification);
 					// Nombre invalide
 				} catch (NumberFormatException e) {
-					player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") 
-							+ this.plugin.getEverAPI().getMessages().getMessage("NUMBER_INVALID"));
+					player.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.NUMBER_INVALID.getText()));
 				}
 			// Ajout de l'effect avec durée et amplifier personnalisé
 			} else if (args.size() == 3) {
@@ -104,14 +105,13 @@ public class EEEffect extends ECommand<EverEssentials> {
 					int duration = Integer.valueOf(args.get(2)) * 20;
 					commandEffect(player, args.get(0), amplification, duration);
 				} catch (NumberFormatException e) {
-					player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") 
-							+ this.plugin.getEverAPI().getMessages().getMessage("NUMBER_INVALID"));
+					player.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.NUMBER_INVALID.getText()));
 				}
 			} else {
 				source.sendMessage(help(source));
 			}
 		} else {
-			source.sendMessage(this.plugin.getEverAPI().getMessages().getText("COMMAND_ERROR_FOR_PLAYER"));
+			source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
 		}
 		return resultat;
 	}
@@ -124,8 +124,7 @@ public class EEEffect extends ECommand<EverEssentials> {
 			player.addPotion(potion);
 			return true;
 		} else {
-			player.sendMessage(this.plugin.getMessages().getText("PREFIX") 
-				+ this.plugin.getMessages().getMessage("EFFECT_ERROR_NAME"));
+			player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.EFFECT_ERROR_NAME.getText()));
 			return false;
 		}
 	}
@@ -136,15 +135,15 @@ public class EEEffect extends ECommand<EverEssentials> {
 			if (utils.getMinAmplifier() <= amplifier && amplifier <= utils.getMaxAmplifier()) {
 				player.addPotion(createPotionEffect(utils.getType(), amplifier - 1, getDefaultDuration()));
 			} else {
-				player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") 
-					+ this.plugin.getMessages().getMessage("EFFECT_ERROR_AMPLIFIER")
+				player.sendMessage(EEMessages.PREFIX.get()
+					+ EEMessages.EFFECT_ERROR_AMPLIFIER.get()
 						.replaceAll("<min>", String.valueOf(utils.getMinAmplifier()))
 						.replaceAll("<max>", String.valueOf(utils.getMaxAmplifier())));
 			}
 			return true;
 		} else {
-			player.sendMessage(this.plugin.getMessages().getText("PREFIX") 
-				+ this.plugin.getMessages().getMessage("EFFECT_ERROR_NAME"));
+			player.sendMessage(EEMessages.PREFIX.get() 
+				+ EEMessages.EFFECT_ERROR_NAME.get());
 			return false;
 		}
 	}
@@ -156,21 +155,21 @@ public class EEEffect extends ECommand<EverEssentials> {
 				if (duration > 0 && duration <= getMaxDefaultDuration()) {
 					player.addPotion(createPotionEffect(utils.getType(), amplifier - 1, duration));
 				} else {
-					player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") 
-						+ this.plugin.getMessages().getMessage("EFFECT_ERROR_DURATION")
+					player.sendMessage(EEMessages.PREFIX.get() 
+						+ EEMessages.EFFECT_ERROR_DURATION.get()
 							.replaceAll("<min>", String.valueOf(1))
 							.replaceAll("<max>", String.valueOf(getMaxDefaultDuration())));
 				}
 			} else {
-				player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") 
-						+ this.plugin.getMessages().getMessage("EFFECT_ERROR_AMPLIFIER")
+				player.sendMessage(EEMessages.PREFIX.get()
+						+ EEMessages.EFFECT_ERROR_AMPLIFIER.get()
 							.replaceAll("<min>", String.valueOf(utils.getMinAmplifier()))
 							.replaceAll("<max>", String.valueOf(utils.getMaxAmplifier() / 20)));
 			}
 			return true;
 		} else {
-			player.sendMessage(this.plugin.getMessages().getText("PREFIX") 
-					+ this.plugin.getMessages().getMessage("EFFECT_ERROR_NAME"));
+			player.sendMessage(EEMessages.PREFIX.get() 
+					+ EEMessages.EFFECT_ERROR_NAME.get());
 			return false;
 		}
 	}

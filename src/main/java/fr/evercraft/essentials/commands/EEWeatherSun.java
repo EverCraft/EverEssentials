@@ -25,6 +25,7 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
 
+import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.plugin.ECommand;
@@ -40,7 +41,7 @@ public class EEWeatherSun extends ECommand<EverEssentials> {
 	}
 
 	public Text description(final CommandSource source) {
-		return this.plugin.getMessages().getText("WEATHER_SUN_DESCRIPTION");
+		return EEMessages.WEATHER_SUN_DESCRIPTION.getText();
 	}
 
 	public Text help(final CommandSource source) {

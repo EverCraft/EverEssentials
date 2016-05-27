@@ -29,9 +29,10 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
 
+import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
-import fr.evercraft.everapi.plugin.EChat;
+import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.ECommand;
 import fr.evercraft.everapi.server.player.EPlayer;
 
@@ -46,7 +47,7 @@ public class EEBook extends ECommand<EverEssentials> {
 	}
 
 	public Text description(final CommandSource source) {
-		return this.plugin.getMessages().getText("BOOK_DESCRIPTION");
+		return EEMessages.BOOK_DESCRIPTION.getText();
 	}
 
 	public Text help(final CommandSource source) {
@@ -78,7 +79,7 @@ public class EEBook extends ECommand<EverEssentials> {
 				resultat = commandBook((EPlayer) source);
 			// La source n'est pas un joueur
 			} else {
-				source.sendMessage(this.plugin.getEverAPI().getMessages().getText("COMMAND_ERROR_FOR_PLAYER"));
+				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
 			}
 		// On connais le joueur
 		} else if(args.size() == 1) {
@@ -96,7 +97,7 @@ public class EEBook extends ECommand<EverEssentials> {
 				}
 			// Le joueur est introuvable
 			} else {
-				source.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getEverAPI().getMessages().getMessage("PLAYER_NOT_FOUND")));
+				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
 			}
 		// Nombre d'argument incorrect
 		} else {
@@ -119,13 +120,13 @@ public class EEBook extends ECommand<EverEssentials> {
 				// Remplace le livre
 				player.setItemInHand(book);
 				
-				player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("BOOK_WRITABLE"));
+				player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.BOOK_WRITABLE.getText()));
 			} else {
-				player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("BOOK_NO_WRITTEN"));
+				player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.BOOK_NO_WRITTEN.getText()));
 			}
 		// Le joueur a aucun item dans la main
 		} else {
-			player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getEverAPI().getMessages().getMessage("EMPTY_ITEM_IN_HAND"));
+			player.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.EMPTY_ITEM_IN_HAND.getText()));
 		}
 		return false;
 	}
@@ -136,7 +137,7 @@ public class EEBook extends ECommand<EverEssentials> {
 			//ItemStack item = player.getItemInHand().get();
 		// Le joueur a aucun item dans la main
 		} else {
-			player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getEverAPI().getMessages().getMessage("EMPTY_ITEM_IN_HAND"));
+			player.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.EMPTY_ITEM_IN_HAND.getText()));
 		}
 		return false;
 	}
@@ -147,7 +148,7 @@ public class EEBook extends ECommand<EverEssentials> {
 			//ItemStack item = player.getItemInHand().get();
 		// Le joueur a aucun item dans la main
 		} else {
-			player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getEverAPI().getMessages().getMessage("EMPTY_ITEM_IN_HAND"));
+			player.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.EMPTY_ITEM_IN_HAND.getText()));
 		}
 		return false;
 	}

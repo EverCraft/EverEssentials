@@ -28,8 +28,10 @@ import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
+import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
+import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.ECommand;
 import fr.evercraft.everapi.server.player.EPlayer;
@@ -46,7 +48,7 @@ public class EETeleportationHere extends ECommand<EverEssentials> {
 	}
 
 	public Text description(final CommandSource source) {
-		return this.plugin.getMessages().getText("TPHERE_DESCRIPTION");
+		return EEMessages.TPHERE_DESCRIPTION.getText();
 	}
 
 	public Text help(final CommandSource source) {
@@ -75,11 +77,11 @@ public class EETeleportationHere extends ECommand<EverEssentials> {
 					resultat = commandTeleportationHere((EPlayer) source, optPlayer.get());
 				// Joueur introuvable
 				} else {
-					source.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getEverAPI().getMessages().getMessage("PLAYER_NOT_FOUND")));
+					source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
 				}
 			// Si la source est une console ou un commande block
 			} else {
-				source.sendMessage(this.plugin.getEverAPI().getMessages().getText("COMMAND_ERROR_FOR_PLAYER"));
+				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
 			}
 		// Nombre d'argument incorrect
 		} else {
@@ -93,26 +95,26 @@ public class EETeleportationHere extends ECommand<EverEssentials> {
 			if(player.getWorld().equals(staff.getWorld()) || !this.plugin.getConfigs().isWorldTeleportPermissions() ||
 					player.hasPermission(this.plugin.getEverAPI().getPermissions().get("WORLDS") + "." + staff.getWorld().getName())) {
 				if(teleport(player, staff)) {
-					player.sendMessage(ETextBuilder.toBuilder(this.plugin.getMessages().getText("PREFIX"))
-							.append(this.plugin.getMessages().getMessage("TPHERE_PLAYER")
+					player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
+							.append(EEMessages.TPHERE_PLAYER.get()
 									.replaceAll("<staff>", staff.getName()))
 							.replace("<destination>", getButtonPosition(staff.getName(), player.getLocation()))
 							.build());
-					staff.sendMessage(ETextBuilder.toBuilder(this.plugin.getMessages().getText("PREFIX"))
-							.append(this.plugin.getMessages().getMessage("TPHERE_STAFF")
+					staff.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
+							.append(EEMessages.TPHERE_STAFF.get()
 									.replaceAll("<player>", player.getName()))
 							.replace("<destination>", getButtonPosition(staff.getName(), player.getLocation()))
 							.build());
 					return true;
 				} else {
-					staff.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("TPHERE_ERROR")));
+					staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.TPHERE_ERROR.get()));
 				}
 			} else {
-				staff.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getEverAPI().getMessages().getMessage("NO_PERMISSION_WORLD_OTHERS"));
+				staff.sendMessage(EEMessages.PREFIX.get() + EAMessages.NO_PERMISSION_WORLD_OTHERS.get());
 			}
 		} else {
 			player.teleportSafe(player.getTransform());
-			player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("TPHERE_EQUALS"));
+			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.TPHERE_EQUALS.get());
 		}
 		return false;
 	}
@@ -127,8 +129,8 @@ public class EETeleportationHere extends ECommand<EverEssentials> {
 	}
 	
 	public Text getButtonPosition(final String player, final Location<World> location){
-		return EChat.of(this.plugin.getMessages().getMessage("TPHERE_DESTINATION").replaceAll("<player>", player)).toBuilder()
-					.onHover(TextActions.showText(EChat.of(this.plugin.getMessages().getMessage("TPHERE_DESTINATION_HOVER")
+		return EChat.of(EEMessages.TPHERE_DESTINATION.get().replaceAll("<player>", player)).toBuilder()
+					.onHover(TextActions.showText(EChat.of(EEMessages.TPHERE_DESTINATION_HOVER.get()
 							.replaceAll("<world>", location.getExtent().getName())
 							.replaceAll("<x>", String.valueOf(location.getBlockX()))
 							.replaceAll("<y>", String.valueOf(location.getBlockY()))

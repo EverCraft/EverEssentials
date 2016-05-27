@@ -28,6 +28,7 @@ import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
+import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
@@ -47,7 +48,7 @@ public class EEGetPos extends ECommand<EverEssentials> {
 	}
 
 	public Text description(final CommandSource source) {
-		return this.plugin.getMessages().getText("GETPOS_DESCRIPTION");
+		return EEMessages.GETPOS_DESCRIPTION.getText();
 	}
 
 	public Text help(final CommandSource source) {
@@ -76,7 +77,7 @@ public class EEGetPos extends ECommand<EverEssentials> {
 				resultat = commandGetPos((EPlayer) source);
 			// La source n'est pas un joueur
 			} else {
-				source.sendMessage(this.plugin.getEverAPI().getMessages().getText("COMMAND_ERROR_FOR_PLAYER"));
+				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
 			}
 		// On connais le joueur
 		} else if(args.size() == 1) {
@@ -88,7 +89,7 @@ public class EEGetPos extends ECommand<EverEssentials> {
 					resultat = commandGetPosOthers(source, optPlayer.get());
 				// Le joueur est introuvable
 				} else {
-					source.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getEverAPI().getMessages().getMessage("PLAYER_NOT_FOUND")));
+					source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
 				}
 			// Il n'a pas la permission
 			} else {
@@ -102,16 +103,16 @@ public class EEGetPos extends ECommand<EverEssentials> {
 	}
 	
 	public boolean commandGetPos(final EPlayer player) {
-		player.sendMessage(ETextBuilder.toBuilder(this.plugin.getMessages().getMessage("PREFIX"))
-				.append(this.plugin.getMessages().getMessage("GETPOS_MESSAGE"))
+		player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.getText())
+				.append(EEMessages.GETPOS_MESSAGE.get())
 				.replace("<position>", getButtonPos(player.getLocation()))
 				.build());
 		return true;
 	}
 	
 	public boolean commandGetPosOthers(final CommandSource staff, final EPlayer player) throws CommandException {
-		staff.sendMessage(ETextBuilder.toBuilder(this.plugin.getMessages().getMessage("PREFIX"))
-				.append(this.plugin.getMessages().getMessage("GETPOS_MESSAGE_OTHERS")
+		staff.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.getText())
+				.append(EEMessages.GETPOS_MESSAGE_OTHERS.get()
 						.replaceAll("<player>", player.getName())
 						.replaceAll("<world>", player.getWorld().getName())
 						.replaceAll("<x>", String.valueOf(player.getLocation().getBlockX()))
@@ -123,8 +124,8 @@ public class EEGetPos extends ECommand<EverEssentials> {
 	}
 	
 	public Text getButtonPos(final Location<World> location){
-		return EChat.of(this.plugin.getMessages().getMessage("GETPOS_POTISITON_NAME")).toBuilder()
-					.onHover(TextActions.showText(EChat.of(this.plugin.getMessages().getMessage("GETPOS_POSITION_HOVER")
+		return EEMessages.GETPOS_POTISITON_NAME.getText().toBuilder()
+					.onHover(TextActions.showText(EChat.of(EEMessages.GETPOS_POSITION_HOVER.get()
 							.replaceAll("<world>", location.getExtent().getName())
 							.replaceAll("<x>", String.valueOf(location.getBlockX()))
 							.replaceAll("<y>", String.valueOf(location.getBlockY()))

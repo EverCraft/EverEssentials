@@ -31,8 +31,10 @@ import org.spongepowered.api.world.DimensionTypes;
 import org.spongepowered.api.world.World;
 import org.spongepowered.api.world.storage.WorldProperties;
 
+import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
+import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.ECommand;
 import fr.evercraft.everapi.server.player.EPlayer;
@@ -58,7 +60,7 @@ public class EETime extends ECommand<EverEssentials> {
 	}
 
 	public Text description(final CommandSource source) {
-		return this.plugin.getMessages().getText("TIME_DESCRIPTION");
+		return EEMessages.TIME_DESCRIPTION.getText();
 	}
 
 	public Text help(final CommandSource source) {
@@ -106,7 +108,7 @@ public class EETime extends ECommand<EverEssentials> {
 				resultat = commandTime((EPlayer) source);
 			// La source n'est pas un joueur
 			} else {
-				source.sendMessage(this.plugin.getEverAPI().getMessages().getText("COMMAND_ERROR_FOR_PLAYER"));
+				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
 			}
 		// On connais le joueur
 		} else if (args.size() == 1) {
@@ -117,7 +119,7 @@ public class EETime extends ECommand<EverEssentials> {
 				resultat = commandTimeSet(source, parseTime(args.get(0)), ((CommandBlock) source).getWorld());
 			// La source n'est pas un joueur
 			} else {
-				source.sendMessage(this.plugin.getEverAPI().getMessages().getText("COMMAND_ERROR_FOR_PLAYER"));
+				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
 			}
 		// On connais le joueur
 		} else if (args.size() == 2) {
@@ -129,7 +131,7 @@ public class EETime extends ECommand<EverEssentials> {
 				if (optWorld.isPresent()) {
 					resultat = commandTimeSet(source, parseTime(args.get(0)), optWorld.get());
 				} else {
-					source.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getEverAPI().getMessages().getMessage("WORLD_NOT_FOUND")));
+					source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.WORLD_NOT_FOUND.get()));
 				}
 			}
 		// Nombre d'argument incorrect
@@ -140,7 +142,7 @@ public class EETime extends ECommand<EverEssentials> {
 	}
 
 	public boolean commandTime(final EPlayer player) {
-		player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("TIME_INFORMATION")
+		player.sendMessage(EEMessages.PREFIX.get() + EEMessages.TIME_INFORMATION.get()
 				.replaceAll("<world>", player.getWorld().getName())
 				.replaceAll("<hours>", getTime(player.getWorld().getProperties().getWorldTime()))
 				.replaceAll("<ticks>", String.valueOf(player.getWorld().getProperties().getWorldTime())));
@@ -150,13 +152,13 @@ public class EETime extends ECommand<EverEssentials> {
 	private boolean commandTimeSet(final CommandSource player, final Optional<Long> time, final World world) {
 		if(time.isPresent()) {
 			setWorldTime(world.getProperties(), time.get());
-			player.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("TIME_SET_WORLD")
+			player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.TIME_SET_WORLD.get()
 					.replaceAll("<world>", world.getName())
 					.replaceAll("<hours>", getTime(time.get()))
 					.replaceAll("<ticks>", String.valueOf(time))));
 			return true;
 		} else {
-			player.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("TIME_ERROR")));
+			player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.TIME_ERROR.get()));
 		}
 		return false;
 	}
@@ -168,12 +170,12 @@ public class EETime extends ECommand<EverEssentials> {
 					setWorldTime(world.getProperties(), time.get());
 				}
 			}
-			player.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("TIME_SET_ALL_WORLD")
+			player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.TIME_SET_ALL_WORLD.get()
 					.replaceAll("<hours>", getTime(time.get()))
 					.replaceAll("<ticks>", String.valueOf(time.get()))));
 			return true;
 		} else {
-			player.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("TIME_ERROR")));
+			player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.TIME_ERROR.get()));
 		}
 		return false;
 	}
@@ -233,7 +235,7 @@ public class EETime extends ECommand<EverEssentials> {
 		double hours = Math.floor((ticks - minutes) / DIFF_HOURS_TIME);
 		minutes = Math.floor(minutes / DIFF_MINUTES_TIME);
 		
-		return this.plugin.getMessages().getMessage("TIME_FORMAT")
+		return EEMessages.TIME_FORMAT.get()
 				.replaceAll("<hours>", FORMAT.format(hours))
 				.replaceAll("<minutes>", FORMAT.format(minutes));
 	}

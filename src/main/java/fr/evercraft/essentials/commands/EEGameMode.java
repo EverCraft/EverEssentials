@@ -27,6 +27,7 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
 
+import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
@@ -46,7 +47,7 @@ public class EEGameMode extends ECommand<EverEssentials> {
 	}
 
 	public Text description(final CommandSource source) {
-		return this.plugin.getMessages().getText("GAMEMODE_DESCRIPTION");
+		return EEMessages.GAMEMODE_DESCRIPTION.getText();
 	}
 	
 	public Text help(final CommandSource source) {
@@ -102,7 +103,7 @@ public class EEGameMode extends ECommand<EverEssentials> {
 				resultat = commandGameMode((EPlayer) source, args.get(0));
 				// Si la source est une console ou un commande block
 			} else {
-				source.sendMessage(this.plugin.getEverAPI().getMessages().getText("COMMAND_ERROR_FOR_PLAYER"));
+				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
 			}
 			
 			// Si on connait le gamemode et le joueur
@@ -115,7 +116,7 @@ public class EEGameMode extends ECommand<EverEssentials> {
 					resultat = commandGameModeOthers(source, optPlayer.get(), args.get(0));
 				// Le joueur est introuvable
 				} else {
-					source.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getEverAPI().getMessages().getMessage("PLAYER_NOT_FOUND")));
+					source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
 				}
 			// Il n'a pas la permission
 			} else {
@@ -136,17 +137,17 @@ public class EEGameMode extends ECommand<EverEssentials> {
 			// Si le nouveau gamemode est différent à celui du joueur
 			if(!gamemode.equals(player.getGameMode())) {
 				player.setGameMode(gamemode);
-				player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("GAMEMODE_PLAYER_CHANGE")
+				player.sendMessage(EEMessages.PREFIX.get() + EEMessages.GAMEMODE_PLAYER_CHANGE.get()
 						.replaceAll("<gamemode>", this.plugin.getEverAPI().getManagerUtils().getGameMode().getName(gamemode)));
 				return true;
 			// Gamemode identique à celui du joueur
 			} else {
-				player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("GAMEMODE_PLAYER_EQUAL")
+				player.sendMessage(EEMessages.PREFIX.get() + EEMessages.GAMEMODE_PLAYER_EQUAL.get()
 						.replaceAll("<gamemode>", this.plugin.getEverAPI().getManagerUtils().getGameMode().getName(gamemode)));
 			}
 		// Nom du gamemode inconnue
 		} else {
-			player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("GAMEMODE_ERROR_NAME"));
+			player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.GAMEMODE_ERROR_NAME.getText()));
 		}
 		return false;
 	}
@@ -161,22 +162,22 @@ public class EEGameMode extends ECommand<EverEssentials> {
 				// Si le nouveau gamemode est différent à celui du joueur
 				if(!gamemode.equals(player.getGameMode())) {
 					player.setGameMode(gamemode);
-					staff.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("GAMEMODE_OTHERS_STAFF_CHANGE")
+					staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.GAMEMODE_OTHERS_STAFF_CHANGE.get()
 							.replaceAll("<player>", player.getName())
 							.replaceAll("<gamemode>", this.plugin.getEverAPI().getManagerUtils().getGameMode().getName(gamemode))));
-					player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("GAMEMODE_OTHERS_PLAYER_CHANGE")
+					player.sendMessage(EEMessages.PREFIX.get() + EEMessages.GAMEMODE_OTHERS_PLAYER_CHANGE.get()
 							.replaceAll("<staff>", staff.getName())
 							.replaceAll("<gamemode>", this.plugin.getEverAPI().getManagerUtils().getGameMode().getName(gamemode)));
 					return true;
 					// Gamemode identique à celui du joueur
 				} else {
-					staff.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("GAMEMODE_OTHERS_EQUAL")
+					staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.GAMEMODE_OTHERS_EQUAL.get()
 							.replaceAll("<gamemode>", this.plugin.getEverAPI().getManagerUtils().getGameMode().getName(gamemode))
 							.replaceAll("<player>", player.getName())));
 				}
 			// Nom du gamemode inconnue
 			} else {
-				staff.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("GAMEMODE_ERROR_NAME")));
+				staff.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.GAMEMODE_ERROR_NAME.getText()));
 			}
 		// La source et le joueur sont identique
 		} else {

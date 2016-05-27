@@ -26,6 +26,7 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
 
+import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
@@ -45,7 +46,7 @@ public class EEHat extends ECommand<EverEssentials> {
 	}
 
 	public Text description(final CommandSource source) {
-		return this.plugin.getMessages().getText("HAT_DESCRIPTION");
+		return EEMessages.HAT_DESCRIPTION.getText();
 	}
 
 	public Text help(final CommandSource source) {
@@ -72,7 +73,7 @@ public class EEHat extends ECommand<EverEssentials> {
 				resultat = commandHat((EPlayer) source);
 			// La source n'est pas un joueur
 			} else {
-				source.sendMessage(this.plugin.getEverAPI().getMessages().getText("COMMAND_ERROR_FOR_PLAYER"));
+				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
 			}
 		} else if (args.size() == 1 && args.get(0).equalsIgnoreCase("remove")) {	
 			// Si la source est un joueur
@@ -80,7 +81,7 @@ public class EEHat extends ECommand<EverEssentials> {
 				resultat = commandHatRemove((EPlayer) source);
 			// La source n'est pas un joueur
 			} else {
-				source.sendMessage(this.plugin.getEverAPI().getMessages().getText("COMMAND_ERROR_FOR_PLAYER"));
+				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
 			}
 		// Nombre d'argument incorrect
 		} else {
@@ -97,9 +98,9 @@ public class EEHat extends ECommand<EverEssentials> {
 			if (item.getItem().getBlock().isPresent()){
 				// Si le joueur a un item sur la tête
 				if (player.getHelmet().isPresent() && !player.getHelmet().get().getItem().getBlock().isPresent()){
-					player.sendMessage(ETextBuilder.toBuilder(this.plugin.getMessages().getMessage("PREFIX"))
-							.append(this.plugin.getMessages().getMessage("HAT_NO_EMPTY"))
-							.replace("<item>", EChat.getButtomItem(player.getHelmet().get(), EChat.getTextColor(this.plugin.getMessages().getMessage("HAT_ITEM_COLOR"))))
+					player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
+							.append(EEMessages.HAT_NO_EMPTY.get())
+							.replace("<item>", EChat.getButtomItem(player.getHelmet().get(), EChat.getTextColor(EEMessages.HAT_ITEM_COLOR.get())))
 							.build());
 				// Le joueur peut avoir l'ojet sur la tête
 				} else {
@@ -116,22 +117,22 @@ public class EEHat extends ECommand<EverEssentials> {
 					}
 			        stack.setQuantity(1);
 			        player.setHelmet(stack);
-			        player.sendMessage(ETextBuilder.toBuilder(this.plugin.getMessages().getMessage("PREFIX"))
-							.append(this.plugin.getMessages().getMessage("HAT_IS_HAT"))
-							.replace("<item>", EChat.getButtomItem(item, EChat.getTextColor(this.plugin.getMessages().getMessage("HAT_ITEM_COLOR"))))
+			        player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
+							.append(EEMessages.HAT_IS_HAT.get())
+							.replace("<item>", EChat.getButtomItem(item, EChat.getTextColor(EEMessages.HAT_ITEM_COLOR.get())))
 							.build());
 			        return true;
 				}
 			// L'objet est un item
 			} else {
-				player.sendMessage(ETextBuilder.toBuilder(this.plugin.getMessages().getMessage("PREFIX"))
-						.append(this.plugin.getMessages().getMessage("HAT_IS_NOT_HAT"))
-						.replace("<item>", EChat.getButtomItem(item, EChat.getTextColor(this.plugin.getMessages().getMessage("HAT_ITEM_COLOR"))))
+				player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
+						.append(EEMessages.HAT_IS_NOT_HAT.get())
+						.replace("<item>", EChat.getButtomItem(item, EChat.getTextColor(EEMessages.HAT_ITEM_COLOR.get())))
 						.build());
 			}
 		// Le jouer n'a pas d'objet dans la main
 		} else {
-			player.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + EAMessages.EMPTY_ITEM_IN_HAND));
+			player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.EMPTY_ITEM_IN_HAND));
 		}
 		return false;
 	}
@@ -142,13 +143,13 @@ public class EEHat extends ECommand<EverEssentials> {
 			ItemStack item = player.getHelmet().get();
 			player.setHelmet(null);
 			player.giveItemAndDrop(item);
-			player.sendMessage(ETextBuilder.toBuilder(this.plugin.getMessages().getMessage("PREFIX"))
-					.append(this.plugin.getMessages().getMessage("HAT_REMOVE"))
-					.replace("<item>", EChat.getButtomItem(item, EChat.getTextColor(this.plugin.getMessages().getMessage("HAT_ITEM_COLOR"))))
+			player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
+					.append(EEMessages.HAT_REMOVE.get())
+					.replace("<item>", EChat.getButtomItem(item, EChat.getTextColor(EEMessages.HAT_ITEM_COLOR.get())))
 					.build());
 		// Le joueur n'a pas d'objet sur la tête
 		} else {
-			player.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("HAT_REMOVE_EMPTY")));
+			player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.HAT_REMOVE_EMPTY.get()));
 		}
 		return false;
 	}

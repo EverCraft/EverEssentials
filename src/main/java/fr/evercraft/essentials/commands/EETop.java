@@ -30,8 +30,10 @@ import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
+import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
+import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.ECommand;
 import fr.evercraft.everapi.server.player.EPlayer;
@@ -48,7 +50,7 @@ public class EETop extends ECommand<EverEssentials> {
 	}
 
 	public Text description(final CommandSource source) {
-		return this.plugin.getMessages().getText("TOP_DESCRIPTION");
+		return EEMessages.TOP_DESCRIPTION.getText();
 	}
 
 	public Text help(final CommandSource source) {
@@ -70,7 +72,7 @@ public class EETop extends ECommand<EverEssentials> {
 				resultat = commandTop((EPlayer) source);
 			// Si la source est une console ou un commande block
 			} else {
-				source.sendMessage(this.plugin.getEverAPI().getMessages().getText("COMMAND_ERROR_FOR_PLAYER"));
+				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
 			}
 		} else {
 			source.sendMessage(help(source));
@@ -80,13 +82,13 @@ public class EETop extends ECommand<EverEssentials> {
 	
 	public boolean commandTop(final EPlayer player) {
 		if(teleport(player)) {
-			player.sendMessage(ETextBuilder.toBuilder(this.plugin.getMessages().getText("PREFIX"))
-					.append(this.plugin.getMessages().getMessage("TOP_TELEPORT"))
+			player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
+					.append(EEMessages.TOP_TELEPORT.get())
 					.replace("<position>", getButtonPosition(player.getLocation()))
 					.build());
 			return true;
 		} else {
-			player.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("TOP_TELEPORT_ERROR")));
+			player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.TOP_TELEPORT_ERROR.get()));
 		}
 		return false;
 	}
@@ -103,8 +105,8 @@ public class EETop extends ECommand<EverEssentials> {
 	}
 	
 	public Text getButtonPosition(final Location<World> location){
-		return EChat.of(this.plugin.getMessages().getMessage("TOP_POSITION")).toBuilder()
-					.onHover(TextActions.showText(EChat.of(this.plugin.getMessages().getMessage("TOP_POSITION_HOVER")
+		return EEMessages.TOP_POSITION.getText().toBuilder()
+					.onHover(TextActions.showText(EChat.of(EEMessages.TOP_POSITION_HOVER.get()
 							.replaceAll("<world>", location.getExtent().getName())
 							.replaceAll("<x>", String.valueOf(location.getBlockX()))
 							.replaceAll("<y>", String.valueOf(location.getBlockY()))

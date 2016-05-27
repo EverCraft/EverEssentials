@@ -32,10 +32,12 @@ import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.world.World;
 
+import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.essentials.service.ESubject;
 import fr.evercraft.essentials.service.warp.LocationSQL;
+import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.ECommand;
 import fr.evercraft.everapi.server.player.EPlayer;
@@ -52,7 +54,7 @@ public class EEHome extends ECommand<EverEssentials> {
 	}
 
 	public Text description(final CommandSource source) {
-		return this.plugin.getMessages().getText("HOME_DESCRIPTION");
+		return EEMessages.HOME_DESCRIPTION.getText();
 	}
 
 	public Text help(final CommandSource source) {
@@ -84,7 +86,7 @@ public class EEHome extends ECommand<EverEssentials> {
 				resultat = commandHomeList((EPlayer) source);
 			// La source n'est pas un joueur
 			} else {
-				source.sendMessage(this.plugin.getEverAPI().getMessages().getText("COMMAND_ERROR_FOR_PLAYER"));
+				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
 			}
 		// Nom du home connu
 		} else if(args.size() == 1) {
@@ -93,7 +95,7 @@ public class EEHome extends ECommand<EverEssentials> {
 				resultat = commandHomeTeleport((EPlayer) source, args.get(0));
 			// La source n'est pas un joueur
 			} else {
-				source.sendMessage(this.plugin.getEverAPI().getMessages().getText("COMMAND_ERROR_FOR_PLAYER"));
+				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
 			}
 		// Nombre d'argument incorrect
 		} else {
@@ -108,7 +110,7 @@ public class EEHome extends ECommand<EverEssentials> {
 			Map<String, LocationSQL> homes = subject.getAllHomes();
 			// Le joueur n'as pas de home
 			if(homes.size() == 0) {
-				player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("HOME_EMPTY"));
+				player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.HOME_EMPTY.getText()));
 			// Le joueur a un home
 			} else if(homes.size() == 1) {
 				List<String> args = new ArrayList<String>();
@@ -117,7 +119,7 @@ public class EEHome extends ECommand<EverEssentials> {
 					args.add(homes.entrySet().iterator().next().getKey());
 					return execute(player, args);
 				} else {
-					player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("HOME_EMPTY"));
+					player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.HOME_EMPTY.getText()));
 				}
 			// Le joueur a plusieurs home
 			} else {
@@ -125,23 +127,23 @@ public class EEHome extends ECommand<EverEssentials> {
 				for (Entry<String, LocationSQL> home : (new TreeMap<String, LocationSQL>(homes)).entrySet()) {
 					Optional<World> world = home.getValue().getWorld();
 					if(world.isPresent()){
-						lists.add(ETextBuilder.toBuilder(this.plugin.getMessages().getMessage("HOMEOTHERS_LIST_LINE"))
+						lists.add(ETextBuilder.toBuilder(EEMessages.HOME_LIST_LINE.get())
 							.replace("<home>", getButtonHome(home.getKey(), home.getValue()))
 							.replace("<teleport>", getButtonTeleport(home.getKey(), home.getValue()))
 							.replace("<delete>", getButtonDelete(home.getKey(), home.getValue()))
 							.build());
 					} else {
-						lists.add(ETextBuilder.toBuilder(this.plugin.getMessages().getMessage("HOMEOTHERS_LIST_LINE_ERROR_WORLD"))
+						lists.add(ETextBuilder.toBuilder(EEMessages.HOME_LIST_LINE_ERROR_WORLD.getText())
 							.replace("<home>", getButtonHome(home.getKey(), home.getValue()))
 							.replace("<delete>", getButtonDelete(home.getKey(), home.getValue()))
 							.build());
 					}
 				}
-				this.plugin.getEverAPI().getManagerService().getEPagination().sendTo(this.plugin.getMessages().getText("HOME_LIST_TITLE").toBuilder()
+				this.plugin.getEverAPI().getManagerService().getEPagination().sendTo(EEMessages.HOME_LIST_TITLE.getText().toBuilder()
 						.onClick(TextActions.runCommand("/home")).build(), lists, player);
 			}
 		} else {
-			player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getEverAPI().getMessages().getMessage("PLAYER_NOT_FOUND"));
+			player.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
 		}
 		return false;
 	}
@@ -153,38 +155,38 @@ public class EEHome extends ECommand<EverEssentials> {
 		if(home.isPresent()){
 			player.setBack();
 			player.setTransform(home.get());
-			player.sendMessage(ETextBuilder.toBuilder(this.plugin.getMessages().getText("PREFIX"))
-					.append(this.plugin.getMessages().getMessage("HOME_TELEPORT"))
+			player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.getText())
+					.append(EEMessages.HOME_TELEPORT.get())
 					.replace("<home>", getButtonHome(name, home.get()))
 					.build());
 			return true;
 		// Le joueur n'a pas de home qui porte ce nom
 		} else {
-			player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("HOME_INCONNU")
+			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.HOME_INCONNU.get()
 					.replaceAll("<home>", name));
 		}
 		return false;
 	}
 	
 	public Text getButtonTeleport(final String name, final LocationSQL location){
-		return this.plugin.getMessages().getText("HOME_LIST_TELEPORT").toBuilder()
-					.onHover(TextActions.showText(EChat.of(this.plugin.getMessages().getMessage("HOME_LIST_TELEPORT_HOVER")
+		return EEMessages.HOME_LIST_TELEPORT.getText().toBuilder()
+					.onHover(TextActions.showText(EChat.of(EEMessages.HOME_LIST_TELEPORT_HOVER.get()
 							.replaceAll("<home>", name))))
 					.onClick(TextActions.runCommand("/home \"" + name+ "\""))
 					.build();
 	}
 	
 	public Text getButtonDelete(final String name, final LocationSQL location){
-		return this.plugin.getMessages().getText("HOME_LIST_DELETE").toBuilder()
-					.onHover(TextActions.showText(EChat.of(this.plugin.getMessages().getMessage("HOME_LIST_DELETE_HOVER")
+		return EEMessages.HOME_LIST_DELETE.getText().toBuilder()
+					.onHover(TextActions.showText(EChat.of(EEMessages.HOME_LIST_DELETE_HOVER.get()
 							.replaceAll("<home>", name))))
 					.onClick(TextActions.runCommand("/delhome \"" + name+ "\""))
 					.build();
 	}
 	
 	public Text getButtonHome(final String name, final LocationSQL location){
-		return EChat.of(this.plugin.getMessages().getMessage("HOME_NAME").replaceAll("<name>", name)).toBuilder()
-					.onHover(TextActions.showText(EChat.of(this.plugin.getMessages().getMessage("HOME_NAME_HOVER")
+		return EChat.of(EEMessages.HOME_NAME.get().replaceAll("<name>", name)).toBuilder()
+					.onHover(TextActions.showText(EChat.of(EEMessages.HOME_NAME_HOVER.get()
 							.replaceAll("<home>", name)
 							.replaceAll("<world>", location.getWorldName())
 							.replaceAll("<x>", location.getX().toString())
@@ -194,8 +196,8 @@ public class EEHome extends ECommand<EverEssentials> {
 	}
 	
 	public Text getButtonHome(final String name, final Transform<World> location){
-		return EChat.of(this.plugin.getMessages().getMessage("HOME_NAME").replaceAll("<name>", name)).toBuilder()
-					.onHover(TextActions.showText(EChat.of(this.plugin.getMessages().getMessage("HOME_NAME_HOVER")
+		return EChat.of(EEMessages.HOME_NAME.get().replaceAll("<name>", name)).toBuilder()
+					.onHover(TextActions.showText(EChat.of(EEMessages.HOME_NAME_HOVER.get()
 							.replaceAll("<home>", name)
 							.replaceAll("<world>", location.getExtent().getName())
 							.replaceAll("<x>", String.valueOf(location.getLocation().getBlockX()))

@@ -34,6 +34,7 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
 
+import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.java.UtilsMap;
@@ -56,7 +57,7 @@ public class EEList extends ECommand<EverEssentials> {
 	}
 
 	public Text description(final CommandSource source) {
-		return this.plugin.getMessages().getText("LIST_DESCRIPTION");
+		return EEMessages.LIST_DESCRIPTION.getText();
 	}
 
 	public Text help(final CommandSource source) {
@@ -153,12 +154,12 @@ public class EEList extends ECommand<EverEssentials> {
 			}
 		}
 		
-		String style_player = this.plugin.getMessages().getMessage("LIST_PLAYER");
-		String style_afk = this.plugin.getMessages().getMessage("LIST_TAG_AFK");
-		String style_vanish = this.plugin.getMessages().getMessage("LIST_TAG_VANISH");
+		String style_player = EEMessages.LIST_PLAYER.get();
+		String style_afk = EEMessages.LIST_TAG_AFK.get();
+		String style_vanish = EEMessages.LIST_TAG_VANISH.get();
 		
-		String style_group = this.plugin.getMessages().getMessage("LIST_GROUP");
-		Text style_separator = this.plugin.getMessages().getText("LIST_SEPARATOR");
+		String style_group = EEMessages.LIST_GROUP.get();
+		Text style_separator = EEMessages.LIST_SEPARATOR.getText();
 		
 		List<Text> group_texts = new ArrayList<Text>();
 		for(Entry<String, TreeMap<String, EPlayer>> group : groups_format.entrySet()) {
@@ -187,15 +188,15 @@ public class EEList extends ECommand<EverEssentials> {
 		}
 		
 		if(group_texts.isEmpty()) {
-			group_texts.add(this.plugin.getMessages().getText("LIST_EMPTY"));
+			group_texts.add(EEMessages.LIST_EMPTY.getText());
 		}
 		
 		String title;
 		Integer vanish = players.size() - this.plugin.getEServer().playerNotVanish();
 		if(vanish == 0) {
-			title = this.plugin.getMessages().getMessage("LIST_TITLE");
+			title = EEMessages.LIST_TITLE.get();
 		} else {
-			title = this.plugin.getMessages().getMessage("LIST_TITLE_VANISH");
+			title = EEMessages.LIST_TITLE_VANISH.get();
 			title = title.replaceAll("<vanish>", vanish.toString());
 		}
 		

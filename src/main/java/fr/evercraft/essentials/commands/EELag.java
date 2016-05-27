@@ -34,6 +34,7 @@ import org.spongepowered.api.world.World;
 
 import com.google.common.collect.Iterables;
 
+import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.java.UtilsDouble;
@@ -83,7 +84,7 @@ public class EELag extends ECommand<EverEssentials> {
 	}
 
 	public Text description(final CommandSource source) {
-		return this.plugin.getMessages().getText("LAG_DESCRIPTION");
+		return EEMessages.LAG_DESCRIPTION.getText();
 	}
 
 	public Text help(final CommandSource source) {
@@ -112,26 +113,26 @@ public class EELag extends ECommand<EverEssentials> {
 		
 		List<Text> list = new ArrayList<Text>();
 		
-		list.add(EChat.of(this.plugin.getMessages().getMessage("LAG_TIME")
+		list.add(EChat.of(EEMessages.LAG_TIME.get()
 				.replaceAll("<time>", this.plugin.getEverAPI().getManagerUtils().getDate().formatDateDiff(ManagementFactory.getRuntimeMXBean().getStartTime()))));
-		list.add(ETextBuilder.toBuilder(this.plugin.getMessages().getMessage("LAG_TPS"))
+		list.add(ETextBuilder.toBuilder(EEMessages.LAG_TPS.get())
 				.replace("<tps>", Text.builder(tps.toString()).color(getColorTPS(tps)).build())
 				.build());
-		list.add(ETextBuilder.toBuilder(this.plugin.getMessages().getMessage("LAG_HISTORY_TPS"))
+		list.add(ETextBuilder.toBuilder(EEMessages.LAG_HISTORY_TPS.get())
 					.replace("<tps>", getHistoryTPS()).build());
-		list.add(EChat.of(this.plugin.getMessages().getMessage("LAG_MEMORY")
+		list.add(EChat.of(EEMessages.LAG_MEMORY.get()
 				.replaceAll("<usage>", String.valueOf(Runtime.getRuntime().totalMemory()/1024/1024))
 				.replaceAll("<total>", String.valueOf(Runtime.getRuntime().maxMemory()/1024/1024))));
-		list.add(EChat.of(this.plugin.getMessages().getMessage("LAG_WORLDS")));
+		list.add(EChat.of(EEMessages.LAG_WORLDS.get()));
 		for(World world : this.plugin.getEServer().getWorlds()) {
-			list.add(EChat.of(this.plugin.getMessages().getMessage("LAG_WORLDS_LINE").replaceAll("<world>", world.getName())).toBuilder()
-					.onHover(TextActions.showText(EChat.of(this.plugin.getMessages().getMessage("LAG_WORLDS_LINE_HOVER")
+			list.add(EChat.of(EEMessages.LAG_WORLDS_LINE.get().replaceAll("<world>", world.getName())).toBuilder()
+					.onHover(TextActions.showText(EChat.of(EEMessages.LAG_WORLDS_LINE_HOVER.get()
 							.replaceAll("<entities>", String.valueOf(world.getEntities().size()))
 							.replaceAll("<tiles>", String.valueOf(world.getTileEntities().size()))
 							.replaceAll("<chunks>", String.valueOf(Iterables.size(world.getLoadedChunks()))))))
 					.build());
 		}
-		this.plugin.getEverAPI().getManagerService().getEPagination().sendTo(EChat.of(this.plugin.getMessages().getMessage("LAG_TITLE")).toBuilder()
+		this.plugin.getEverAPI().getManagerService().getEPagination().sendTo(EChat.of(EEMessages.LAG_TITLE.get()).toBuilder()
 				.onClick(TextActions.runCommand("/lag")).build(), list, player);
 		return true;
 	}
@@ -161,7 +162,7 @@ public class EELag extends ECommand<EverEssentials> {
 			resultat = Text.builder("▁").color(TextColors.RED);
 		}
 		return resultat.style(TextStyles.BOLD)
-				.onHover(TextActions.showText(ETextBuilder.toBuilder(this.plugin.getMessages().getMessage("LAG_HISTORY_TPS_HOVER")
+				.onHover(TextActions.showText(ETextBuilder.toBuilder(EEMessages.LAG_HISTORY_TPS_HOVER.get()
 						.replaceAll("<num>", String.valueOf(num)))
 							.replace("<tps>", Text.builder(String.valueOf(tps)).color(getColorTPS(tps)).build())
 							.build()))

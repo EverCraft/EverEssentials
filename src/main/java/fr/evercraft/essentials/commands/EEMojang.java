@@ -27,12 +27,15 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
 
+import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
+import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.ECommand;
 import fr.evercraft.everapi.services.mojang.MojangService;
 import fr.evercraft.everapi.services.mojang.check.MojangServer;
+import fr.evercraft.everapi.services.mojang.check.MojangServer.Color;
 
 public class EEMojang extends ECommand<EverEssentials> {
 	
@@ -45,7 +48,7 @@ public class EEMojang extends ECommand<EverEssentials> {
 	}
 
 	public Text description(final CommandSource source) {
-		return this.plugin.getMessages().getText("MOJANG_DESCRIPTION");
+		return EEMessages.MOJANG_DESCRIPTION.getText();
 	}
 
 	public Text help(final CommandSource source) {
@@ -94,20 +97,39 @@ public class EEMojang extends ECommand<EverEssentials> {
 				lists.add(server(MojangServer.TEXTURES));
 				
 				this.plugin.getEverAPI().getManagerService().getEPagination().sendTo(
-						EChat.of(this.plugin.getMessages().getMessage("MOJANG_TITLE")).toBuilder()
+						EEMessages.MOJANG_TITLE.getText().toBuilder()
 							.onClick(TextActions.runCommand("/mojang ")).build(), 
 						lists, player);
 			} catch (IOException e) {
-				player.sendMessage(this.plugin.getMessages().getText("PREFIX").concat(this.plugin.getEverAPI().getMessages().getCommandError()));
+				player.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR.getText()));
 			}
 		} else {
-			player.sendMessage(this.plugin.getMessages().getText("PREFIX").concat(this.plugin.getEverAPI().getMessages().getCommandError()));
+			player.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR.getText()));
 		}
 	}
 	
 	public Text server(final MojangServer server) {
-		return EChat.of(this.plugin.getMessages().getMessage("MOJANG_LINE")
-				.replaceAll("<server>", this.plugin.getMessages().getMessage("MOJANG_SERVER_" + server.name()))
-				.replaceAll("<color>", this.plugin.getMessages().getMessage("MOJANG_COLOR_" + server.getColor().name())));
+		Optional<EEMessages> server_name = EEMojang.getMojangServer(server);
+		Optional<EEMessages> color_name = EEMojang.getMojangColor(server.getColor());
+		if(server_name.isPresent() && color_name.isPresent()) {
+			return EChat.of(EEMessages.MOJANG_LINE.get()
+					.replaceAll("<server>", server_name.get().get())
+					.replaceAll("<color>", color_name.get().get()));
+		}
+		return Text.of();
+	}
+	
+	public static Optional<EEMessages> getMojangServer(MojangServer server) {
+		try {
+			return Optional.of(EEMessages.valueOf("MOJANG_SERVER_" + server.name()));
+		} catch (IllegalArgumentException e) {}
+		return Optional.empty();
+	}
+	
+	public static Optional<EEMessages> getMojangColor(Color color) {
+		try {
+			return Optional.of(EEMessages.valueOf("MOJANG_COLOR_" + color.name()));
+		} catch (IllegalArgumentException e) {}
+		return Optional.empty();
 	}
 }

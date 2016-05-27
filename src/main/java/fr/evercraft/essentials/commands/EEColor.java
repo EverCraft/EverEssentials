@@ -18,6 +18,7 @@ package fr.evercraft.essentials.commands;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
@@ -28,8 +29,10 @@ import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColor;
 import org.spongepowered.api.text.format.TextColors;
 
+import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
+import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.ECommand;
 import fr.evercraft.everapi.server.player.EPlayer;
 import fr.evercraft.everapi.text.ETextBuilder;
@@ -45,7 +48,7 @@ public class EEColor extends ECommand<EverEssentials> {
 	}
 
 	public Text description(final CommandSource source) {
-		return this.plugin.getMessages().getText("COLOR_DESCRIPTION");
+		return EEMessages.COLOR_DESCRIPTION.getText();
 	}
 
 	public Text help(final CommandSource source) {
@@ -67,7 +70,7 @@ public class EEColor extends ECommand<EverEssentials> {
 				resultat = commandColor((EPlayer) source);
 			// La source n'est pas un joueur
 			} else {
-				source.sendMessage(this.plugin.getEverAPI().getMessages().getText("COMMAND_ERROR_FOR_PLAYER"));
+				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
 			}
 		// Nombre d'argument incorrect
 		} else {
@@ -80,7 +83,7 @@ public class EEColor extends ECommand<EverEssentials> {
 		Builder book = BookView.builder();
 		
 		List<Text> page = new ArrayList<Text>();
-		page.add(this.plugin.getMessages().getText("COLOR_LIST_TITLE"));
+		page.add(EEMessages.COLOR_LIST_TITLE.getText());
 		page.add(this.getButtomColor("0", TextColors.BLACK));
 		page.add(this.getButtomColor("1", TextColors.DARK_BLUE));
 		page.add(this.getButtomColor("2", TextColors.DARK_GREEN));
@@ -108,10 +111,14 @@ public class EEColor extends ECommand<EverEssentials> {
 	}
 	
 	private Text getButtomColor(String id, TextColor text) {
-		return ETextBuilder.toBuilder(this.plugin.getMessages().getMessage("COLOR_LIST_MESSAGE")
-						.replaceAll("<color>", "&" + id)
-						.replaceAll("<name>", this.plugin.getEverAPI().getMessages().getColor(text)))
-				.replace("<id>", Text.of("&" + id))
-				.build();
+		Optional<EAMessages> color = EAMessages.getColor(text);
+		if(color.isPresent()) {
+			return ETextBuilder.toBuilder(EEMessages.COLOR_LIST_MESSAGE.get()
+					.replaceAll("<color>", "&" + id)
+					.replaceAll("<name>", color.get().get()))
+			.replace("<id>", Text.of("&" + id))
+			.build();
+		}
+		return Text.of();
 	}
 }

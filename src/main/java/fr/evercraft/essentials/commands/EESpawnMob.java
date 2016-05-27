@@ -30,8 +30,10 @@ import org.spongepowered.api.world.World;
 
 import com.flowpowered.math.vector.Vector3i;
 
+import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
+import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.ECommand;
 import fr.evercraft.everapi.server.player.EPlayer;
@@ -48,7 +50,7 @@ public class EESpawnMob extends ECommand<EverEssentials> {
 	}
 
 	public Text description(final CommandSource source) {
-		return this.plugin.getMessages().getText("SPAWNMOB_DESCRIPTION");
+		return EEMessages.SPAWNMOB_DESCRIPTION.getText();
 	}
 
 	public Text help(final CommandSource source) {
@@ -77,11 +79,11 @@ public class EESpawnMob extends ECommand<EverEssentials> {
 				if (optEntity.isPresent()){
 					resultat = commandSpawnMob((EPlayer) source, optEntity.get(), 1);
 				} else {
-					source.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("SPAWNMOB_ERROR_MOB")));
+					source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.SPAWNMOB_ERROR_MOB.get()));
 				}
 			// La source n'est pas un joueur
 			} else {
-				source.sendMessage(this.plugin.getEverAPI().getMessages().getText("COMMAND_ERROR_FOR_PLAYER"));
+				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
 			}
 		} else if(args.size() == 2){
 			if(source instanceof EPlayer) {
@@ -91,15 +93,15 @@ public class EESpawnMob extends ECommand<EverEssentials> {
 						int amount = Integer.parseInt(args.get(1));
 						resultat = commandSpawnMob((EPlayer) source, optEntity.get(), amount);
 					} catch (NumberFormatException e){
-						source.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getEverAPI().getMessages().getMessage("IS_NOT_NUMBER")
+						source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.IS_NOT_NUMBER.get()
 								.replaceAll("<number>", args.get(1))));
 					}
 				} else {
-					source.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("SPAWNMOB_ERROR_MOB")));
+					source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.SPAWNMOB_ERROR_MOB.get()));
 				}
 			// La source n'est pas un joueur
 			} else {
-				source.sendMessage(this.plugin.getEverAPI().getMessages().getText("COMMAND_ERROR_FOR_PLAYER"));
+				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
 			}
 		} else {
 			source.sendMessage(help(source));
@@ -115,7 +117,7 @@ public class EESpawnMob extends ECommand<EverEssentials> {
 				utilsEntity.spawnEntity(spawnLocation);
 	    	}
 		} else {
-			player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getEverAPI().getMessages().getMessage("PLAYER_NO_LOOK_BLOCK"));
+			player.sendMessage(EEMessages.PREFIX.get() + EAMessages.PLAYER_NO_LOOK_BLOCK.get());
 		}
 		return false;
 	}

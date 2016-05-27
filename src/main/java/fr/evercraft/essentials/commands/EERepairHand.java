@@ -28,8 +28,10 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
 
+import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
+import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.ECommand;
 import fr.evercraft.everapi.server.player.EPlayer;
@@ -46,7 +48,7 @@ public class EERepairHand extends ECommand<EverEssentials> {
 	}
 
 	public Text description(final CommandSource source) {
-		return this.plugin.getMessages().getText("REPAIR_HAND_DESCRIPTION");
+		return EEMessages.REPAIR_HAND_DESCRIPTION.getText();
 	}
 
 	public Text help(final CommandSource source) {
@@ -67,7 +69,7 @@ public class EERepairHand extends ECommand<EverEssentials> {
 				resultat = commandRepair((EPlayer) source);
 				// La source n'est pas un joueur
 			} else {
-				source.sendMessage(this.plugin.getEverAPI().getMessages().getText("COMMAND_ERROR_FOR_PLAYER"));
+				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
 			}
 			// On connais le joueur
 		} else {
@@ -85,27 +87,27 @@ public class EERepairHand extends ECommand<EverEssentials> {
 				item.offer(Keys.ITEM_DURABILITY, Integer.MAX_VALUE);
 				if(item.get(Keys.ITEM_DURABILITY).get() != value){
 		            player.setItemInHand(item);
-		            player.sendMessage(ETextBuilder.toBuilder(this.plugin.getMessages().getMessage("PREFIX"))
-		            		.append(this.plugin.getMessages().getMessage("REPAIR_HAND_PLAYER"))
-		            		.replace("<item>", EChat.getButtomItem(item, EChat.getTextColor(this.plugin.getMessages().getMessage("REPAIR_HAND_ITEM_COLOR"))))
+		            player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
+		            		.append(EEMessages.REPAIR_HAND_PLAYER.get())
+		            		.replace("<item>", EChat.getButtomItem(item, EChat.getTextColor(EEMessages.REPAIR_HAND_ITEM_COLOR.get())))
 		            		.build());
 		            return true;
 				} else {
-		            player.sendMessage(ETextBuilder.toBuilder(this.plugin.getMessages().getMessage("PREFIX"))
-		            		.append(this.plugin.getMessages().getMessage("REPAIR_HAND_MAX_DURABILITY"))
-		            		.replace("<item>", EChat.getButtomItem(item, EChat.getTextColor(this.plugin.getMessages().getMessage("REPAIR_HAND_ITEM_COLOR"))))
+		            player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
+		            		.append(EEMessages.REPAIR_HAND_MAX_DURABILITY.get())
+		            		.replace("<item>", EChat.getButtomItem(item, EChat.getTextColor(EEMessages.REPAIR_HAND_ITEM_COLOR.get())))
 		            		.build());
 					return false;
 				}
 			} else {
-	            player.sendMessage(ETextBuilder.toBuilder(this.plugin.getMessages().getMessage("PREFIX"))
-	            		.append(this.plugin.getMessages().getMessage("REPAIR_HAND_ERROR"))
-	            		.replace("<item>",  EChat.getButtomItem(item, EChat.getTextColor(this.plugin.getMessages().getMessage("REPAIR_HAND_ITEM_COLOR"))))
+	            player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
+	            		.append(EEMessages.REPAIR_HAND_ERROR.get())
+	            		.replace("<item>",  EChat.getButtomItem(item, EChat.getTextColor(EEMessages.REPAIR_HAND_ITEM_COLOR.get())))
 	            		.build());
 				return false;
 			}
 		} else {
-			player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getEverAPI().getMessages().getMessage("EMPTY_ITEM_IN_HAND"));
+			player.sendMessage(EEMessages.PREFIX.get() + EAMessages.EMPTY_ITEM_IN_HAND.get());
 			return false;
 		}
 	}

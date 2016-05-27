@@ -26,8 +26,10 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
 
+import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
+import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.ECommand;
 import fr.evercraft.everapi.server.player.EPlayer;
 import fr.evercraft.everapi.sponge.UtilsInventory;
@@ -43,7 +45,7 @@ public class EERepairHotBar extends ECommand<EverEssentials> {
 	}
 
 	public Text description(final CommandSource source) {
-		return this.plugin.getMessages().getText("REPAIR_HOTBAR_DESCRIPTION");
+		return EEMessages.REPAIR_HOTBAR_DESCRIPTION.getText();
 	}
 
 	public Text help(final CommandSource source) {
@@ -64,7 +66,7 @@ public class EERepairHotBar extends ECommand<EverEssentials> {
 				resultat = commandRepairHotBar((EPlayer) source);
 				// La source n'est pas un joueur
 			} else {
-				source.sendMessage(this.plugin.getEverAPI().getMessages().getText("COMMAND_ERROR_FOR_PLAYER"));
+				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
 			}
 			// On connais le joueur
 		} else {
@@ -75,7 +77,7 @@ public class EERepairHotBar extends ECommand<EverEssentials> {
 
 	public boolean commandRepairHotBar(final EPlayer player) {
 		UtilsInventory.repair(player.getInventory().query(Hotbar.class));
-		player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("REPAIR_HOTBAR_PLAYER"));
+		player.sendMessage(EEMessages.PREFIX.get() + EEMessages.REPAIR_HOTBAR_PLAYER.get());
 		return false;
 	}
 }

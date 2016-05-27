@@ -28,8 +28,10 @@ import org.spongepowered.api.text.format.TextColors;
 
 import com.flowpowered.math.vector.Vector3i;
 
+import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
+import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.ECommand;
 import fr.evercraft.everapi.server.player.EPlayer;
 
@@ -44,7 +46,7 @@ public class EEJump extends ECommand<EverEssentials> {
 	}
 
 	public Text description(final CommandSource source) {
-		return this.plugin.getMessages().getText("JUMP_DESCRIPTION");
+		return EEMessages.JUMP_DESCRIPTION.getText();
 	}
 
 	public Text help(final CommandSource source) {
@@ -66,7 +68,7 @@ public class EEJump extends ECommand<EverEssentials> {
 				resultat = commandJump((EPlayer) source);
 			// La source n'est pas un joueur
 			} else {
-				source.sendMessage(this.plugin.getEverAPI().getMessages().getText("COMMAND_ERROR_FOR_PLAYER"));
+				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
 			}
 		// Nombre d'argument incorrect
 		} else {
@@ -79,12 +81,12 @@ public class EEJump extends ECommand<EverEssentials> {
 		Optional<Vector3i> optBlock = player.getViewBlock();
 		if(optBlock.isPresent()) {
 			if(player.teleportSafe(player.getWorld().getLocation(optBlock.get().add(0, 1, 0)))) {
-				player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("JUMP_TELEPORT"));
+				player.sendMessage(EEMessages.PREFIX.get() + EEMessages.JUMP_TELEPORT.get());
 			} else {
-				player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("JUMP_TELEPORT_ERROR"));
+				player.sendMessage(EEMessages.PREFIX.get() + EEMessages.JUMP_TELEPORT_ERROR.get());
 			}
 		} else {
-			player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getEverAPI().getMessages().getMessage("PLAYER_NO_LOOK_BLOCK"));
+			player.sendMessage(EEMessages.PREFIX.get() + EAMessages.PLAYER_NO_LOOK_BLOCK.get());
 		}
 		return false;
 	}

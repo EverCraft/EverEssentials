@@ -26,6 +26,7 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
 
+import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.plugin.EChat;
@@ -43,7 +44,7 @@ public class EEBroadcast extends ECommand<EverEssentials> {
 	}
 
 	public Text description(final CommandSource source) {
-		return this.plugin.getMessages().getText("BROADCAST_DESCRIPTION");
+		return EEMessages.BROADCAST_DESCRIPTION.getText();
 	}
 
 	public Text help(final CommandSource source) {
@@ -86,12 +87,15 @@ public class EEBroadcast extends ECommand<EverEssentials> {
 	
 	public boolean commandBroadcastPlayer(final EPlayer player, String message) {
 		
-		this.plugin.getEServer().getBroadcastChannel().send(EChat.of(this.plugin.getMessages().getMessage("BROADCAST_PREFIX_PLAYER").replaceAll("<player>", player.getName()) + message));
+		this.plugin.getEServer().getBroadcastChannel().send(EChat.of(EEMessages.BROADCAST_PREFIX_PLAYER.get()
+				.replaceAll("<player>", player.getName())
+				.replaceAll("<message>", message)));
 		return true;
 	}
 	
 	public boolean commandBroadcastConsole(final CommandSource player, String message) {
-		this.plugin.getEServer().getBroadcastChannel().send(EChat.of(this.plugin.getMessages().getMessage("BROADCAST_PREFIX_CONSOLE") + message));
+		this.plugin.getEServer().getBroadcastChannel().send(EChat.of(EEMessages.BROADCAST_PREFIX_CONSOLE.get()
+				.replaceAll("<message>", message)));
 		return true;
 	}
 }

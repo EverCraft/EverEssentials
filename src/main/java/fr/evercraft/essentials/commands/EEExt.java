@@ -26,6 +26,7 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
 
+import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
@@ -44,7 +45,7 @@ public class EEExt extends ECommand<EverEssentials> {
 	}
 
 	public Text description(final CommandSource source) {
-		return this.plugin.getMessages().getText("EXT_DESCRIPTION");
+		return EEMessages.EXT_DESCRIPTION.getText();
 	}
 
 	public Text help(final CommandSource source) {
@@ -73,7 +74,7 @@ public class EEExt extends ECommand<EverEssentials> {
 				resultat = commandExt((EPlayer) source);
 			// La source n'est pas un joueur
 			} else {
-				source.sendMessage(this.plugin.getEverAPI().getMessages().getText("COMMAND_ERROR_FOR_PLAYER"));
+				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
 			}
 		// On connais le joueur
 		} else if(args.size() == 1) {
@@ -85,7 +86,7 @@ public class EEExt extends ECommand<EverEssentials> {
 					resultat = commandExtOthers(source, optPlayer.get());
 				// Le joueur est introuvable
 				} else {
-					source.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getEverAPI().getMessages().getMessage("PLAYER_NOT_FOUND")));
+					source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
 				}
 			// Il n'a pas la permission
 			} else {
@@ -101,10 +102,10 @@ public class EEExt extends ECommand<EverEssentials> {
 	public boolean commandExt(final EPlayer player) {
 		if(player.getFireTicks() > 0) {
 			player.setFireTicks(0);
-			player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("EXT_PLAYER"));
+			player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.EXT_PLAYER.getText()));
 			return true;
 		} else {
-			player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("EXT_PLAYER_ERROR"));
+			player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.EXT_PLAYER_ERROR.getText()));
 		}
 		return false;
 	}
@@ -114,13 +115,13 @@ public class EEExt extends ECommand<EverEssentials> {
 		if(!player.equals(staff)){
 			if(player.getFireTicks() > 0) {
 				player.setFireTicks(0);
-				player.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("EXT_OTHERS_PLAYER")
+				player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.EXT_OTHERS_PLAYER.get()
 						.replaceAll("<staff>", player.getName())));
-				staff.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("EXT_OTHERS_STAFF")
+				staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.EXT_OTHERS_STAFF.get()
 						.replaceAll("<player>", player.getName())));
 				return true;
 			} else {
-				staff.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("EXT_OTHERS_ERROR")
+				staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.EXT_OTHERS_ERROR.get()
 						.replaceAll("<player>", player.getName())));
 			}
 		// La source et le joueur sont identique

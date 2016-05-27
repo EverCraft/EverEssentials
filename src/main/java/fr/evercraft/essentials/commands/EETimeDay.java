@@ -25,6 +25,7 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
 
+import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.plugin.ECommand;
@@ -40,7 +41,7 @@ public class EETimeDay extends ECommand<EverEssentials> {
 	}
 
 	public Text description(final CommandSource source) {
-		return this.plugin.getMessages().getText("TIME_DAY_DESCRIPTION");
+		return EEMessages.TIME_DAY_DESCRIPTION.getText();
 	}
 
 	public Text help(final CommandSource source) {

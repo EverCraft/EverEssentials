@@ -26,6 +26,7 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
 
+import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
@@ -44,7 +45,7 @@ public class EEVanish extends ECommand<EverEssentials> {
 	}
 
 	public Text description(final CommandSource source) {
-		return this.plugin.getMessages().getText("VANISH_DESCRIPTION");
+		return EEMessages.VANISH_DESCRIPTION.getText();
 	}
 
 	public Text help(final CommandSource source) {
@@ -81,7 +82,7 @@ public class EEVanish extends ECommand<EverEssentials> {
 				resultat = commandVanish((EPlayer) source);
 			// La source n'est pas un joueur
 			} else {
-				source.sendMessage(this.plugin.getEverAPI().getMessages().getText("COMMAND_ERROR_FOR_PLAYER"));
+				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
 			}
 		// On connais le joueur
 		} else if(args.size() == 1) {
@@ -93,7 +94,7 @@ public class EEVanish extends ECommand<EverEssentials> {
 					resultat = commandVanishOthers(source, optPlayer.get());
 				// Le joueur est introuvable
 				} else {
-					source.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getEverAPI().getMessages().getMessage("PLAYER_NOT_FOUND")));
+					source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
 				}
 			// Il n'a pas la permission
 			} else {
@@ -115,7 +116,7 @@ public class EEVanish extends ECommand<EverEssentials> {
 					}
 				// Le joueur est introuvable
 				} else {
-					source.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getEverAPI().getMessages().getMessage("PLAYER_NOT_FOUND")));
+					source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
 				}
 			// Il n'a pas la permission
 			} else {
@@ -133,14 +134,14 @@ public class EEVanish extends ECommand<EverEssentials> {
 		if(player.setVanish(!vanish)) {
 			// Si le vanish est déjà activé
 			if(vanish){
-				player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("VANISH_PLAYER_DISABLE"));
+				player.sendMessage(EEMessages.PREFIX.get() + EEMessages.VANISH_PLAYER_DISABLE.get());
 			// Vanish est déjà désactivé
 			} else {
-				player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("VANISH_PLAYER_ENABLE"));
+				player.sendMessage(EEMessages.PREFIX.get() + EEMessages.VANISH_PLAYER_ENABLE.get());
 			}
 			return false;
 		} else {
-			player.sendMessage(this.plugin.getMessages().getText("PREFIX").concat(this.plugin.getEverAPI().getMessages().getCommandError()));
+			player.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR.getText()));
 		}
 		return true;
 	}
@@ -152,20 +153,20 @@ public class EEVanish extends ECommand<EverEssentials> {
 			if(player.setVanish(!vanish)) {
 				// Si le vanish est déjà activé
 				if(vanish){
-					player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("VANISH_OTHERS_PLAYER_DISABLE")
+					player.sendMessage(EEMessages.PREFIX.get() + EEMessages.VANISH_OTHERS_PLAYER_DISABLE.get()
 							.replaceAll("<staff>", staff.getName()));
-					staff.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("VANISH_OTHERS_STAFF_DISABLE")
+					staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.VANISH_OTHERS_STAFF_DISABLE.get()
 							.replaceAll("<player>", player.getName())));
 				// Vanish est déjà désactivé
 				} else {
-					player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("VANISH_OTHERS_PLAYER_ENABLE")
+					player.sendMessage(EEMessages.PREFIX.get() + EEMessages.VANISH_OTHERS_PLAYER_ENABLE.get()
 							.replaceAll("<staff>", staff.getName()));
-					staff.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("VANISH_OTHERS_STAFF_ENABLE")
+					staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.VANISH_OTHERS_STAFF_ENABLE.get()
 							.replaceAll("<player>", player.getName())));
 				}
 				return true;
 			} else {
-				player.sendMessage(this.plugin.getMessages().getText("PREFIX").concat(this.plugin.getEverAPI().getMessages().getCommandError()));
+				staff.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR.getText()));
 			}
 		// La source et le joueur sont identique
 		} else {
@@ -181,35 +182,35 @@ public class EEVanish extends ECommand<EverEssentials> {
 			if(etat) {
 				// Si le Vanish est déjà activé
 				if(vanish){
-					staff.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("VANISH_OTHERS_STAFF_ENABLE_ERROR")
+					staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.VANISH_OTHERS_STAFF_ENABLE_ERROR.get()
 							.replaceAll("<player>", player.getName())));
 				// Vanish est désactivé
 				} else {
 					if(player.setVanish(etat)) {
-						player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("VANISH_OTHERS_PLAYER_ENABLE")
+						player.sendMessage(EEMessages.PREFIX.get() + EEMessages.VANISH_OTHERS_PLAYER_ENABLE.get()
 								.replaceAll("<staff>", staff.getName()));
-						staff.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("VANISH_OTHERS_STAFF_ENABLE")
+						staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.VANISH_OTHERS_STAFF_ENABLE.get()
 								.replaceAll("<player>", player.getName())));
 						return true;
 					} else {
-						player.sendMessage(this.plugin.getMessages().getText("PREFIX").concat(this.plugin.getEverAPI().getMessages().getCommandError()));
+						player.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR.getText()));
 					}
 				}
 			} else {
 				// Si le Vanish est déjà activé
 				if(vanish){
 					if(player.setVanish(etat)) {
-						player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("VANISH_OTHERS_PLAYER_DISABLE")
+						player.sendMessage(EEMessages.PREFIX.get() + EEMessages.VANISH_OTHERS_PLAYER_DISABLE.get()
 								.replaceAll("<staff>", staff.getName()));
-						staff.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("VANISH_OTHERS_STAFF_DISABLE")
+						staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.VANISH_OTHERS_STAFF_DISABLE.get()
 								.replaceAll("<player>", player.getName())));
 						return true;
 					} else {
-						player.sendMessage(this.plugin.getMessages().getText("PREFIX").concat(this.plugin.getEverAPI().getMessages().getCommandError()));
+						player.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR.getText()));
 					}
 				// Vanish est désactivé
 				} else {
-					staff.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("VANISH_OTHERS_STAFF_DISABLE_ERROR")
+					staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.VANISH_OTHERS_STAFF_DISABLE_ERROR.get()
 							.replaceAll("<player>", player.getName())));
 				}
 			}
@@ -218,28 +219,28 @@ public class EEVanish extends ECommand<EverEssentials> {
 			if(etat) {
 				// Si le vanish est déjà activé
 				if(vanish){
-					player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("VANISH_PLAYER_ENABLE_ERROR"));
+					player.sendMessage(EEMessages.PREFIX.get() + EEMessages.VANISH_PLAYER_ENABLE_ERROR.get());
 				// Vanish est désactivé
 				} else {
 					if(player.setVanish(etat)) {
-						player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("VANISH_PLAYER_ENABLE"));
+						player.sendMessage(EEMessages.PREFIX.get() + EEMessages.VANISH_PLAYER_ENABLE.get());
 						return true;
 					} else {
-						player.sendMessage(this.plugin.getMessages().getText("PREFIX").concat(this.plugin.getEverAPI().getMessages().getCommandError()));
+						player.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR.getText()));
 					}
 				}
 			} else {
 				// Si le vanish est déjà activé
 				if(vanish){
 					if(player.setVanish(etat)) {
-						player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("VANISH_PLAYER_DISABLE"));
+						player.sendMessage(EEMessages.PREFIX.get() + EEMessages.VANISH_PLAYER_DISABLE.get());
 						return true;
 					} else {
-						player.sendMessage(this.plugin.getMessages().getText("PREFIX").concat(this.plugin.getEverAPI().getMessages().getCommandError()));
+						player.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR.getText()));
 					}
 				// Vanish est désactivé
 				} else {
-					player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("VANISH_PLAYER_DISABLE_ERROR"));
+					player.sendMessage(EEMessages.PREFIX.get() + EEMessages.VANISH_PLAYER_DISABLE_ERROR.get());
 				}
 			}
 		}

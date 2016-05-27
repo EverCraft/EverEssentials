@@ -30,6 +30,7 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
 
+import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
@@ -50,7 +51,7 @@ public class EENames extends ECommand<EverEssentials> {
 	}
 
 	public Text description(final CommandSource source) {
-		return this.plugin.getMessages().getText("NAMES_DESCRIPTION");
+		return EEMessages.NAMES_DESCRIPTION.getText();
 	}
 
 	public Text help(final CommandSource source) {
@@ -83,7 +84,7 @@ public class EENames extends ECommand<EverEssentials> {
 				resultat = true;
 			// La source n'est pas un joueur
 			} else {
-				source.sendMessage(this.plugin.getEverAPI().getMessages().getText("COMMAND_ERROR_FOR_PLAYER"));
+				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
 			}
 		// On connais le joueur
 		} else if(args.size() == 1) {
@@ -113,10 +114,10 @@ public class EENames extends ECommand<EverEssentials> {
 		
 				for(NameHistory name : service.get().getNameHistory().get(player.getUniqueId())) {
 					if(!name.getDate().isPresent()) {
-						lists.add(EChat.of(this.plugin.getMessages().getMessage("NAMES_PLAYER_LINE_ORIGINAL")
+						lists.add(EChat.of(EEMessages.NAMES_PLAYER_LINE_ORIGINAL.get()
 								.replaceAll("<name>", name.getName())));
 					} else {
-						lists.add(EChat.of(this.plugin.getMessages().getMessage("NAMES_PLAYER_LINE_OTHERS")
+						lists.add(EChat.of(EEMessages.NAMES_PLAYER_LINE_OTHERS.get()
 								.replaceAll("<name>", name.getName())
 								.replaceAll("<date>", this.plugin.getEverAPI().getManagerUtils().getDate().parseDate(name.getDate().get()))
 								.replaceAll("<time>", this.plugin.getEverAPI().getManagerUtils().getDate().parseTime(name.getDate().get()))
@@ -125,12 +126,12 @@ public class EENames extends ECommand<EverEssentials> {
 				}
 				if(lists.size() <= 1) {
 					lists.clear();
-					lists.add(EChat.of(this.plugin.getMessages().getMessage("NAMES_PLAYER_EMPTY")
+					lists.add(EChat.of(EEMessages.NAMES_PLAYER_EMPTY.get()
 							.replaceAll("<player>", player.getName())));
 				}
 				
 				this.plugin.getEverAPI().getManagerService().getEPagination().sendTo(
-						EChat.of(this.plugin.getMessages().getMessage("NAMES_PLAYER_TITLE")
+						EChat.of(EEMessages.NAMES_PLAYER_TITLE.get()
 								.replaceAll("<player>", player.getName())).toBuilder()
 							.onClick(TextActions.runCommand("/names ")).build(), 
 						lists, player);
@@ -138,7 +139,7 @@ public class EENames extends ECommand<EverEssentials> {
 				player.sendMessage(Text.of("erreur : " + e.getMessage()));
 			}
 		} else {
-			player.sendMessage(this.plugin.getMessages().getText("PREFIX").concat(this.plugin.getEverAPI().getMessages().getCommandError()));
+			player.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR.getText()));
 		}
 	}
 	
@@ -158,12 +159,12 @@ public class EENames extends ECommand<EverEssentials> {
 						this.commandNames(player, profile);
 					}
 				} else {
-					player.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + plugin.getEverAPI().getMessages().getMessage("PLAYER_NOT_FOUND")));
+					player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.PLAYER_NOT_FOUND.get()));
 				}
 				return profile;
 			}, this.plugin.getGame().getScheduler().createAsyncExecutor(this.plugin));
 		} catch (IllegalArgumentException e) {
-			player.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + plugin.getEverAPI().getMessages().getMessage("PLAYER_NOT_FOUND")));
+			player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.PLAYER_NOT_FOUND.get()));
 		}
 	}
 	
@@ -175,10 +176,10 @@ public class EENames extends ECommand<EverEssentials> {
 		
 				for(NameHistory name : service.get().getNameHistory().get(gameprofile.getUniqueId())) {
 					if(!name.getDate().isPresent()) {
-						lists.add(EChat.of(this.plugin.getMessages().getMessage("NAMES_OTHERS_LINE_ORIGINAL")
+						lists.add(EChat.of(EEMessages.NAMES_OTHERS_LINE_ORIGINAL.get()
 								.replaceAll("<name>", name.getName())));
 					} else {
-						lists.add(EChat.of(this.plugin.getMessages().getMessage("NAMES_OTHERS_LINE_OTHERS")
+						lists.add(EChat.of(EEMessages.NAMES_OTHERS_LINE_OTHERS.get()
 								.replaceAll("<name>", name.getName())
 								.replaceAll("<date>", this.plugin.getEverAPI().getManagerUtils().getDate().parseDate(name.getDate().get()))
 								.replaceAll("<time>", this.plugin.getEverAPI().getManagerUtils().getDate().parseTime(name.getDate().get()))
@@ -188,17 +189,17 @@ public class EENames extends ECommand<EverEssentials> {
 				
 				if(lists.size() <= 1) {
 					lists.clear();
-					lists.add(EChat.of(this.plugin.getMessages().getMessage("NAMES_OTHERS_EMPTY")
+					lists.add(EChat.of(EEMessages.NAMES_OTHERS_EMPTY.get()
 							.replaceAll("<player>", gameprofile.getName().get())));
 				}
 				
 				this.plugin.getEverAPI().getManagerService().getEPagination().sendTo(
-						EChat.of(this.plugin.getMessages().getMessage("NAMES_OTHERS_TITLE")
+						EChat.of(EEMessages.NAMES_OTHERS_TITLE.get()
 								.replaceAll("<player>", gameprofile.getName().get())).toBuilder()
 							.onClick(TextActions.runCommand("/names " + gameprofile.getUniqueId().toString())).build(), 
 						lists, staff);
 			} catch (ExecutionException e) {
-				staff.sendMessage(this.plugin.getMessages().getText("PREFIX").concat(this.plugin.getEverAPI().getMessages().getCommandError()));
+				staff.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR.getText()));
 			}
 		}
 	}

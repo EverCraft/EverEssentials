@@ -27,6 +27,7 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
 
+import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
@@ -45,7 +46,7 @@ public class EEFly extends ECommand<EverEssentials> {
 	}
 
 	public Text description(final CommandSource source) {
-		return this.plugin.getMessages().getText("FLY_DESCRIPTION");
+		return EEMessages.FLY_DESCRIPTION.getText();
 	}
 
 	public Text help(final CommandSource source) {
@@ -82,7 +83,7 @@ public class EEFly extends ECommand<EverEssentials> {
 				resultat = commandFly((EPlayer) source);
 			// La source n'est pas un joueur
 			} else {
-				source.sendMessage(this.plugin.getEverAPI().getMessages().getText("COMMAND_ERROR_FOR_PLAYER"));
+				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
 			}
 		// On connais le joueur
 		} else if(args.size() == 1) {
@@ -94,7 +95,7 @@ public class EEFly extends ECommand<EverEssentials> {
 					resultat = commandFlyOthers(source, optPlayer.get());
 				// Le joueur est introuvable
 				} else {
-					source.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getEverAPI().getMessages().getMessage("PLAYER_NOT_FOUND")));
+					source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
 				}
 			// Il n'a pas la permission
 			} else {
@@ -116,7 +117,7 @@ public class EEFly extends ECommand<EverEssentials> {
 					}
 				// Le joueur est introuvable
 				} else {
-					source.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getEverAPI().getMessages().getMessage("PLAYER_NOT_FOUND")));
+					source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
 				}
 			// Il n'a pas la permission
 			} else {
@@ -134,14 +135,14 @@ public class EEFly extends ECommand<EverEssentials> {
 		if(player.getAllowFlight()) {
 			if(!player.getGameMode().equals(GameModes.CREATIVE)) {
 				player.setAllowFlight(false);
-				player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("FLY_PLAYER_DISABLE"));
+				player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.FLY_PLAYER_DISABLE.getText()));
 			} else {
-				player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("FLY_PLAYER_ERROR_CREATIVE"));
+				player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.FLY_PLAYER_ERROR_CREATIVE.getText()));
 			}
 		// Fly est déjà désactivé
 		} else {
 			player.setAllowFlight(true);
-			player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("FLY_PLAYER_ENABLE"));
+			player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.FLY_PLAYER_ENABLE.getText()));
 		}
 		return true;
 	}
@@ -153,21 +154,21 @@ public class EEFly extends ECommand<EverEssentials> {
 			if(player.getAllowFlight()) {
 				if(!player.getGameMode().equals(GameModes.CREATIVE)) {
 					player.setAllowFlight(false);
-					player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("FLY_OTHERS_PLAYER_DISABLE")
+					player.sendMessage(EEMessages.PREFIX.get() + EEMessages.FLY_OTHERS_PLAYER_DISABLE.get()
 							.replaceAll("<staff>", staff.getName()));
-					staff.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("FLY_OTHERS_STAFF_DISABLE")
+					staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.FLY_OTHERS_STAFF_DISABLE.get()
 							.replaceAll("<player>", player.getName())));
 				} else {
 					player.setAllowFlight(false);
-					staff.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("FLY_OTHERS_ERROR_CREATIVE")
+					staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.FLY_OTHERS_ERROR_CREATIVE.get()
 							.replaceAll("<player>", player.getName())));
 				}
 			// Fly est déjà désactivé
 			} else {
 				player.setAllowFlight(true);
-				player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("FLY_OTHERS_PLAYER_ENABLE")
+				player.sendMessage(EEMessages.PREFIX.get() + EEMessages.FLY_OTHERS_PLAYER_ENABLE.get()
 						.replaceAll("<staff>", staff.getName()));
-				staff.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("FLY_OTHERS_STAFF_ENABLE")
+				staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.FLY_OTHERS_STAFF_ENABLE.get()
 						.replaceAll("<player>", player.getName())));
 			}
 			return true;
@@ -184,14 +185,14 @@ public class EEFly extends ECommand<EverEssentials> {
 			if(etat) {
 				// Si le fly est déjà activé
 				if(canfly){
-					staff.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("FLY_OTHERS_STAFF_ENABLE_ERROR")
+					staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.FLY_OTHERS_STAFF_ENABLE_ERROR.get()
 							.replaceAll("<player>", player.getName())));
 				// Fly est désactivé
 				} else {
 					player.setAllowFlight(etat);
-					player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("FLY_OTHERS_PLAYER_ENABLE")
+					player.sendMessage(EEMessages.PREFIX.get() + EEMessages.FLY_OTHERS_PLAYER_ENABLE.get()
 							.replaceAll("<staff>", staff.getName()));
-					staff.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("FLY_OTHERS_STAFF_ENABLE")
+					staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.FLY_OTHERS_STAFF_ENABLE.get()
 							.replaceAll("<player>", player.getName())));
 					return true;
 				}
@@ -199,18 +200,18 @@ public class EEFly extends ECommand<EverEssentials> {
 				if(canfly){
 					if(!player.getGameMode().equals(GameModes.CREATIVE)) {
 						player.setAllowFlight(etat);
-						player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("FLY_OTHERS_PLAYER_DISABLE")
+						player.sendMessage(EEMessages.PREFIX.get() + EEMessages.FLY_OTHERS_PLAYER_DISABLE.get()
 								.replaceAll("<staff>", staff.getName()));
-						staff.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("FLY_OTHERS_STAFF_DISABLE")
+						staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.FLY_OTHERS_STAFF_DISABLE.get()
 								.replaceAll("<player>", player.getName())));
 						return true;
 					} else {
-						staff.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("FLY_OTHERS_ERROR_CREATIVE")
+						staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.FLY_OTHERS_ERROR_CREATIVE.get()
 								.replaceAll("<player>", player.getName())));
 					}
 				// Fly est désactivé
 				} else {
-					staff.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("FLY_OTHERS_STAFF_DISABLE_ERROR")
+					staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.FLY_OTHERS_STAFF_DISABLE_ERROR.get()
 							.replaceAll("<player>", player.getName())));
 				}
 			}
@@ -220,25 +221,25 @@ public class EEFly extends ECommand<EverEssentials> {
 			if(etat) {
 				// Si le fly est déjà activé
 				if(canfly){
-					player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("FLY_PLAYER_ENABLE_ERROR"));
+					player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.FLY_PLAYER_ENABLE_ERROR.getText()));
 				// Fly est désactivé
 				} else {
 					player.setAllowFlight(etat);
-					player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("FLY_PLAYER_ENABLE"));
+					player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.FLY_PLAYER_ENABLE.getText()));
 					return true;
 				}
 			} else {
 				if(canfly){
 					if(!player.getGameMode().equals(GameModes.CREATIVE)) {
 						player.setAllowFlight(etat);
-						player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("FLY_PLAYER_DISABLE"));
+						player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.FLY_PLAYER_DISABLE.getText()));
 						return true;
 					} else {
-						player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("FLY_PLAYER_ERROR_CREATIVE"));
+						player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.FLY_PLAYER_ERROR_CREATIVE.getText()));
 					}
 				// Fly est désactivé
 				} else {
-					player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("FLY_PLAYER_DISABLE_ERROR"));
+					player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.FLY_PLAYER_DISABLE_ERROR.getText()));
 				}
 			}
 		}

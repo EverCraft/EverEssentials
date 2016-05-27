@@ -31,8 +31,10 @@ import org.spongepowered.api.world.World;
 import org.spongepowered.api.world.weather.Weather;
 import org.spongepowered.api.world.weather.Weathers;
 
+import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
+import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.ECommand;
 import fr.evercraft.everapi.server.player.EPlayer;
@@ -49,7 +51,7 @@ public class EEWeather extends ECommand<EverEssentials> {
 	}
 
 	public Text description(final CommandSource source) {
-		return this.plugin.getMessages().getText("WEATHER_DESCRIPTION");
+		return EEMessages.WEATHER_DESCRIPTION.getText();
 	}
 
 	public Text help(final CommandSource source) {
@@ -94,7 +96,7 @@ public class EEWeather extends ECommand<EverEssentials> {
 				resultat = commandWeather(source, getWeather(args.get(0)), ((CommandBlock) source).getWorld());
 			// La source n'est pas un joueur
 			} else {
-				source.sendMessage(this.plugin.getEverAPI().getMessages().getText("COMMAND_ERROR_FOR_PLAYER"));
+				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
 			}
 		// On connais le joueur
 		} else if (args.size() == 2) {
@@ -103,7 +105,7 @@ public class EEWeather extends ECommand<EverEssentials> {
 			if (optWorld.isPresent()) {
 				resultat = commandWeather(source, getWeather(args.get(0)), optWorld.get());
 			} else {
-				source.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getEverAPI().getMessages().getMessage("WORLD_NOT_FOUND")));
+				source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.WORLD_NOT_FOUND.get()));
 			}
 		// On connais le joueur
 		} else if (args.size() == 3) {
@@ -112,7 +114,7 @@ public class EEWeather extends ECommand<EverEssentials> {
 			if (optWorld.isPresent()) {
 				resultat = commandWeatherDuration(source, getWeather(args.get(0)), optWorld.get(), args.get(2));
 			} else {
-				source.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getEverAPI().getMessages().getMessage("WORLD_NOT_FOUND")));
+				source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.WORLD_NOT_FOUND.get()));
 			}
 		// Nombre d'argument incorrect
 		} else {
@@ -125,14 +127,14 @@ public class EEWeather extends ECommand<EverEssentials> {
 		if (world.getProperties().getDimensionType().equals(DimensionTypes.OVERWORLD)) {			
 			if(weather.isPresent()) {
 				world.setWeather(weather.get());
-				player.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + getMessage(weather.get())
+				player.sendMessage(EChat.of(EEMessages.PREFIX.get() + getMessage(weather.get())
 							.replaceAll("<world>", world.getName())
 							.replaceAll("<weather>", weather.get().getName())));
 			} else {
 				player.sendMessage(help(player));
 			}
 		} else {
-			player.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("WEATHER_ERROR")));
+			player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.WEATHER_ERROR.get()));
 		}
 		return false;
 	}
@@ -143,7 +145,7 @@ public class EEWeather extends ECommand<EverEssentials> {
 			if (world.getProperties().getDimensionType().equals(DimensionTypes.OVERWORLD)) {			
 				if(weather.isPresent()) {
 					world.setWeather(weather.get(), UtilsTick.parseMinutes(duration));
-					player.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + getMessageDuration(weather.get())
+					player.sendMessage(EChat.of(EEMessages.PREFIX.get() + getMessageDuration(weather.get())
 								.replaceAll("<world>", world.getName())
 								.replaceAll("<duration>", String.valueOf(duration))
 								.replaceAll("<weather>", weather.get().getName())));
@@ -151,10 +153,10 @@ public class EEWeather extends ECommand<EverEssentials> {
 					player.sendMessage(help(player));
 				}
 			} else {
-				player.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("WEATHER_ERROR")));
+				player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.WEATHER_ERROR.get()));
 			}
 		} catch (NumberFormatException e) {
-			player.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getEverAPI().getMessages().getMessage("IS_NOT_NUMBER")
+			player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.IS_NOT_NUMBER.get()
 					.replaceAll("<number>", name_duration)));
 		}
 		return false;
@@ -175,11 +177,11 @@ public class EEWeather extends ECommand<EverEssentials> {
 	public String getMessage(final Weather weather) {
 		String message = null;
 		if(weather.equals(Weathers.RAIN)) {
-			message = this.plugin.getMessages().getMessage("WEATHER_RAIN");
+			message = EEMessages.WEATHER_RAIN.get();
 		} else if(weather.equals(Weathers.THUNDER_STORM)) {
-			message = this.plugin.getMessages().getMessage("WEATHER_STORM");
+			message = EEMessages.WEATHER_STORM.get();
 		} else {
-			message = this.plugin.getMessages().getMessage("WEATHER_SUN");
+			message = EEMessages.WEATHER_SUN.get();
 		}
 		return message;
 	}
@@ -187,11 +189,11 @@ public class EEWeather extends ECommand<EverEssentials> {
 	public String getMessageDuration(final Weather weather) {
 		String message = null;
 		if(weather.equals(Weathers.RAIN)) {
-			message = this.plugin.getMessages().getMessage("WEATHER_RAIN_DURATION");
+			message = EEMessages.WEATHER_RAIN_DURATION.get();
 		} else if(weather.equals(Weathers.THUNDER_STORM)) {
-			message = this.plugin.getMessages().getMessage("WEATHER_STORM_DURATION");
+			message = EEMessages.WEATHER_STORM_DURATION.get();
 		} else {
-			message = this.plugin.getMessages().getMessage("WEATHER_SUN_DURATION");
+			message = EEMessages.WEATHER_SUN_DURATION.get();
 		}
 		return message;
 	}

@@ -58,10 +58,12 @@ public class EEMessage extends EMessage {
 		BED_DESCRIPTION("bed.description", 					"Retourne à la dernière position ou vous avez dormi"),
 		
 		BROADCAST_DESCRIPTION("broadcast.description", 		"Envoye un message à tous les joueurs."),
-		BROADCAST_PREFIX_PLAYER("broadcast.prefixPlayer", 	"&7[&6<player>&7] : "),
-		BROADCAST_PREFIX_CONSOLE("broadcast.prefixConsole", "&7[&6Console&7] : "),
+		BROADCAST_PREFIX_PLAYER("broadcast.prefixPlayer", 	"&7[&6<player>&7] : <message>"),
+		BROADCAST_PREFIX_CONSOLE("broadcast.prefixConsole", "&7[&6Console&7] : <message>"),
 		
 		BOOK_DESCRIPTION("book.description", 				"Permet de modifier un livre."),
+		BOOK_WRITABLE("book.writable", 						""),
+		BOOK_NO_WRITTEN("book.noWritten", 					""),
 		
 		BUTCHER_DESCRIPTION("butcher.description", 			"Supprime les entitées dans un monde ou dans un rayon."),
 		BUTCHER_NOENTITY("butcher.noEntity", 				"&cIl y a aucune entité à supprimer."),
@@ -629,15 +631,5 @@ public class EEMessage extends EMessage {
 		public boolean has() {
 			return this.message != null;
 		}
-	}
-	
-	@Override
-	public void loadDefault() {
-		
-	}
-
-	@Override
-	public void loadConfig() {
-		
 	}
 }

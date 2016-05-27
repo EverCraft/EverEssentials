@@ -26,6 +26,7 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
 
+import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
@@ -44,7 +45,7 @@ public class EEClearInventory extends ECommand<EverEssentials> {
 	}
 
 	public Text description(final CommandSource source) {
-		return this.plugin.getMessages().getText("CLEARINVENTORY_DESCRIPTION");
+		return EEMessages.CLEARINVENTORY_DESCRIPTION.getText();
 	}
 
 	public Text help(final CommandSource source) {
@@ -73,7 +74,7 @@ public class EEClearInventory extends ECommand<EverEssentials> {
 				resultat = commandClearInventory((EPlayer) source);
 			// La source n'est pas un joueur
 			} else {
-				source.sendMessage(this.plugin.getEverAPI().getMessages().getText("COMMAND_ERROR_FOR_PLAYER"));
+				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
 			}
 		// On connais le joueur
 		} else if(args.size() == 1) {
@@ -85,7 +86,7 @@ public class EEClearInventory extends ECommand<EverEssentials> {
 					resultat = commandClearInventory(source, optPlayer.get());
 				// Le joueur est introuvable
 				} else {
-					source.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getEverAPI().getMessages().getMessage("PLAYER_NOT_FOUND")));
+					source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
 				}
 			// Il n'a pas la permission
 			} else {
@@ -100,7 +101,7 @@ public class EEClearInventory extends ECommand<EverEssentials> {
 	
 	public boolean commandClearInventory(final EPlayer player){
 		player.getInventory().clear();
-		player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("CLEARINVENTORY_PLAYER"));
+		player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.CLEARINVENTORY_PLAYER.getText()));
 		return true;
 	}
 	
@@ -108,8 +109,10 @@ public class EEClearInventory extends ECommand<EverEssentials> {
 		// La source et le joueur sont différent
 		if(!player.equals(staff)){
 			player.getInventory().clear();
-			player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("CLEARINVENTORY_OTHERS_PLAYER").replaceAll("<staff>", staff.getName()));
-			staff.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("CLEARINVENTORY_OTHERS_STAFF").replaceAll("<player>", player.getName())));
+			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.CLEARINVENTORY_OTHERS_PLAYER.get()
+					.replaceAll("<staff>", staff.getName()));
+			staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.CLEARINVENTORY_OTHERS_STAFF.get()
+					.replaceAll("<player>", player.getName())));
 			return true;
 		// La source et le joueur sont identique
 		} else {

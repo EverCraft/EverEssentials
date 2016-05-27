@@ -29,6 +29,7 @@ import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
+import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
@@ -48,7 +49,7 @@ public class EETeleportationAll extends ECommand<EverEssentials> {
 	}
 
 	public Text description(final CommandSource source) {
-		return this.plugin.getMessages().getText("TPALL_DESCRIPTION");
+		return EEMessages.TPALL_DESCRIPTION.getText();
 	}
 
 	public Text help(final CommandSource source) {
@@ -78,7 +79,7 @@ public class EETeleportationAll extends ECommand<EverEssentials> {
 				resultat = commandTeleportationAll((EPlayer) source);
 			// Si la source est une console ou un commande block
 			} else {
-				source.sendMessage(this.plugin.getEverAPI().getMessages().getText("COMMAND_ERROR_FOR_PLAYER"));
+				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
 			}
 		} else if(args.size() == 1) {
 			// Si il a la permission
@@ -89,7 +90,7 @@ public class EETeleportationAll extends ECommand<EverEssentials> {
 					resultat = commandTeleportationAllOthers(source, optPlayer.get());
 				// Joueur introuvable
 				} else {
-					source.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getEverAPI().getMessages().getMessage("PLAYER_NOT_FOUND")));
+					source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
 				}
 			// Il n'a pas la permission
 			} else {
@@ -110,21 +111,21 @@ public class EETeleportationAll extends ECommand<EverEssentials> {
 					if(player.getWorld().equals(optTransform.get().getExtent()) || !this.plugin.getConfigs().isWorldTeleportPermissions() ||
 							player.hasPermission(this.plugin.getEverAPI().getPermissions().get("WORLDS") + "." + optTransform.get().getExtent().getName())) {
 						player.setTransform(optTransform.get());
-						player.sendMessage(ETextBuilder.toBuilder(this.plugin.getMessages().getText("PREFIX"))
-								.append(this.plugin.getMessages().getMessage("TPALL_PLAYER")
+						player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
+								.append(EEMessages.TPALL_PLAYER.get()
 										.replaceAll("<staff>", staff.getName()))
 								.replace("<destination>", getButtonPosition(staff.getName(), player.getLocation()))
 								.build());
 					}
 				}
 			}
-			staff.sendMessage(ETextBuilder.toBuilder(this.plugin.getMessages().getText("PREFIX"))
-					.append(this.plugin.getMessages().getMessage("TPALL_STAFF"))
+			staff.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
+					.append(EEMessages.TPALL_STAFF.get())
 					.replace("<destination>", getButtonPosition(staff.getName(), optTransform.get().getLocation()))
 					.build());
 			return true;
 		} else {
-			staff.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("TPALL_ERROR"));
+			staff.sendMessage(EEMessages.PREFIX.get() + EEMessages.TPALL_ERROR.get());
 		}
 		return false;
 	}
@@ -139,8 +140,8 @@ public class EETeleportationAll extends ECommand<EverEssentials> {
 								player.hasPermission(this.plugin.getEverAPI().getPermissions().get("WORLDS") + "." + optTransform.get().getExtent().getName())) {
 							player.setTransform(optTransform.get());
 							if(!player.equals(staff)) {
-								player.sendMessage(ETextBuilder.toBuilder(this.plugin.getMessages().getText("PREFIX"))
-										.append(this.plugin.getMessages().getMessage("TPALL_OTHERS_PLAYER")
+								player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
+										.append(EEMessages.TPALL_OTHERS_PLAYER.get()
 												.replaceAll("<staff>", staff.getName()))
 										.replace("<destination>", getButtonPosition(destination.getName(), optTransform.get().getLocation()))
 										.build());
@@ -148,14 +149,14 @@ public class EETeleportationAll extends ECommand<EverEssentials> {
 						}
 					}
 				}
-				staff.sendMessage(ETextBuilder.toBuilder(this.plugin.getMessages().getText("PREFIX"))
-						.append(this.plugin.getMessages().getMessage("TPALL_OTHERS_STAFF")
+				staff.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
+						.append(EEMessages.TPALL_OTHERS_STAFF.get()
 								.replaceAll("<staff>", staff.getName()))
 						.replace("<destination>", getButtonPosition(destination.getName(), optTransform.get().getLocation()))
 						.build());
 				return true;
 			} else {
-				staff.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("TPALL_ERROR")));
+				staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.TPALL_ERROR.get()));
 			}
 		} else {
 			return commandTeleportationAll(destination);
@@ -172,8 +173,8 @@ public class EETeleportationAll extends ECommand<EverEssentials> {
 	}
 	
 	public Text getButtonPosition(final String player, final Location<World> location){
-		return EChat.of(this.plugin.getMessages().getMessage("TPALL_DESTINATION").replaceAll("<player>", player)).toBuilder()
-					.onHover(TextActions.showText(EChat.of(this.plugin.getMessages().getMessage("TPALL_DESTINATION_HOVER")
+		return EChat.of(EEMessages.TPALL_DESTINATION.get().replaceAll("<player>", player)).toBuilder()
+					.onHover(TextActions.showText(EChat.of(EEMessages.TPALL_DESTINATION_HOVER.get()
 							.replaceAll("<world>", location.getExtent().getName())
 							.replaceAll("<x>", String.valueOf(location.getBlockX()))
 							.replaceAll("<y>", String.valueOf(location.getBlockY()))

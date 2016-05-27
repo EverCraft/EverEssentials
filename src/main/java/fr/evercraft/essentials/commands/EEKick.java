@@ -26,8 +26,10 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
 
+import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
+import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.ECommand;
 import fr.evercraft.everapi.server.player.EPlayer;
@@ -44,7 +46,7 @@ public class EEKick extends ECommand<EverEssentials> {
 	}
 
 	public Text description(final CommandSource source) {
-		return this.plugin.getMessages().getText("KICK_DESCRIPTION");
+		return EEMessages.KICK_DESCRIPTION.getText();
 	}
 
 	public Text help(final CommandSource source) {
@@ -70,7 +72,7 @@ public class EEKick extends ECommand<EverEssentials> {
 				resultat = commandKick(source, optPlayer.get(), EChat.of(getMessage(args)));
 			// Le joueur est introuvable
 			} else {
-				source.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getEverAPI().getMessages().getMessage("PLAYER_NOT_FOUND")));
+				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
 			}
 		// Nombre d'argument incorrect
 		} else {
@@ -80,7 +82,7 @@ public class EEKick extends ECommand<EverEssentials> {
 	}
 	
 	public boolean commandKick(final CommandSource staff, final EPlayer player, final Text message) throws CommandException {
-		player.kick(ETextBuilder.toBuilder(this.plugin.getMessages().getMessage("KICK_MESSAGE")
+		player.kick(ETextBuilder.toBuilder(EEMessages.KICK_MESSAGE.get()
 								.replaceAll("<staff>", staff.getName()))
 							.replace("<message>", message)
 							.build());

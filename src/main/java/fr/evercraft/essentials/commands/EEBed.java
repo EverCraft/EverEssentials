@@ -30,6 +30,7 @@ import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.util.RespawnLocation;
 
+import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
@@ -48,7 +49,7 @@ public class EEBed extends ECommand<EverEssentials> {
 	}
 
 	public Text description(final CommandSource source) {
-		return this.plugin.getMessages().getText("BED_DESCRIPTION");
+		return EEMessages.BED_DESCRIPTION.getText();
 	}
 
 	public Text help(final CommandSource source) {
@@ -77,7 +78,7 @@ public class EEBed extends ECommand<EverEssentials> {
 				resultat = commandBed((EPlayer) source);
 			// La source n'est pas un joueur
 			} else {
-				source.sendMessage(this.plugin.getEverAPI().getMessages().getText("COMMAND_ERROR_FOR_PLAYER"));
+				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
 			}
 		// On connais le joueur
 		} else if(args.size() == 1) {
@@ -89,7 +90,7 @@ public class EEBed extends ECommand<EverEssentials> {
 					resultat = commandBedOthers(source, optPlayer.get());
 				// Le joueur est introuvable
 				} else {
-					source.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getEverAPI().getMessages().getMessage("PLAYER_NOT_FOUND")));
+					source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
 				}
 			// Il n'a pas la permission
 			} else {
@@ -113,7 +114,7 @@ public class EEBed extends ECommand<EverEssentials> {
 	public boolean commandBedOthers(final CommandSource staff, final EPlayer player) throws CommandException {
 		// La source et le joueur sont différent
 		if(!player.equals(staff)){
-			staff.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("PING_OTHERS")
+			staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.PING_OTHERS.get()
 					.replaceAll("<player>", player.getName())
 					.replaceAll("<ping>", String.valueOf(player.getConnection().getLatency()))));
 			return true;

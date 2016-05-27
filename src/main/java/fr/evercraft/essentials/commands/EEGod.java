@@ -26,6 +26,7 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
 
+import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
@@ -44,7 +45,7 @@ public class EEGod extends ECommand<EverEssentials> {
 	}
 
 	public Text description(final CommandSource source) {
-		return this.plugin.getMessages().getText("GOD_DESCRIPTION");
+		return EEMessages.GOD_DESCRIPTION.getText();
 	}
 
 	public Text help(final CommandSource source) {
@@ -81,7 +82,7 @@ public class EEGod extends ECommand<EverEssentials> {
 				resultat = commandGod((EPlayer) source);
 			// La source n'est pas un joueur
 			} else {
-				source.sendMessage(this.plugin.getEverAPI().getMessages().getText("COMMAND_ERROR_FOR_PLAYER"));
+				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
 			}
 		// On connais le joueur
 		} else if(args.size() == 1) {
@@ -93,7 +94,7 @@ public class EEGod extends ECommand<EverEssentials> {
 					resultat = commandGodOthers(source, optPlayer.get());
 				// Le joueur est introuvable
 				} else {
-					source.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getEverAPI().getMessages().getMessage("PLAYER_NOT_FOUND")));
+					source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
 				}
 			// Il n'a pas la permission
 			} else {
@@ -115,7 +116,7 @@ public class EEGod extends ECommand<EverEssentials> {
 					}
 				// Le joueur est introuvable
 				} else {
-					source.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getEverAPI().getMessages().getMessage("PLAYER_NOT_FOUND")));
+					source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
 				}
 			// Il n'a pas la permission
 			} else {
@@ -133,11 +134,11 @@ public class EEGod extends ECommand<EverEssentials> {
 		player.setGod(!godMode);
 		// Si le god mode est déjà activé
 		if(godMode){
-			player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("GOD_PLAYER_DISABLE"));
+			player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.GOD_PLAYER_DISABLE.getText()));
 			// God mode est déjà désactivé
 		} else {
 			player.heal();
-			player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("GOD_PLAYER_ENABLE"));
+			player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.GOD_PLAYER_ENABLE.getText()));
 		}
 		return true;
 	}
@@ -149,16 +150,16 @@ public class EEGod extends ECommand<EverEssentials> {
 			player.setGod(!godMode);
 			// Si le god mode est déjà activé
 			if(godMode){
-				player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("GOD_OTHERS_PLAYER_DISABLE")
+				player.sendMessage(EEMessages.PREFIX.get() + EEMessages.GOD_OTHERS_PLAYER_DISABLE.get()
 						.replaceAll("<staff>", staff.getName()));
-				staff.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("GOD_OTHERS_STAFF_DISABLE")
+				staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.GOD_OTHERS_STAFF_DISABLE.get()
 						.replaceAll("<player>", player.getName())));
 			// God mode est déjà désactivé
 			} else {
 				player.heal();
-				player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("GOD_OTHERS_PLAYER_ENABLE")
+				player.sendMessage(EEMessages.PREFIX.get() + EEMessages.GOD_OTHERS_PLAYER_ENABLE.get()
 						.replaceAll("<staff>", staff.getName()));
-				staff.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("GOD_OTHERS_STAFF_ENABLE")
+				staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.GOD_OTHERS_STAFF_ENABLE.get()
 						.replaceAll("<player>", player.getName())));
 			}
 			return true;
@@ -175,15 +176,15 @@ public class EEGod extends ECommand<EverEssentials> {
 			if(etat) {
 				// Si le god mode est déjà activé
 				if(godMode){
-					staff.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("GOD_OTHERS_STAFF_ENABLE_ERROR")
+					staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.GOD_OTHERS_STAFF_ENABLE_ERROR.get()
 							.replaceAll("<player>", player.getName())));
 				// God mode est désactivé
 				} else {
 					player.setGod(etat);
 					player.heal();
-					player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("GOD_OTHERS_PLAYER_ENABLE")
+					player.sendMessage(EEMessages.PREFIX.get() + EEMessages.GOD_OTHERS_PLAYER_ENABLE.get()
 							.replaceAll("<staff>", staff.getName()));
-					staff.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("GOD_OTHERS_STAFF_ENABLE")
+					staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.GOD_OTHERS_STAFF_ENABLE.get()
 							.replaceAll("<player>", player.getName())));
 					return true;
 				}
@@ -191,14 +192,14 @@ public class EEGod extends ECommand<EverEssentials> {
 				// Si le god mode est déjà activé
 				if(godMode){
 					player.setGod(etat);
-					player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("GOD_OTHERS_PLAYER_DISABLE")
+					player.sendMessage(EEMessages.PREFIX.get() + EEMessages.GOD_OTHERS_PLAYER_DISABLE.get()
 							.replaceAll("<staff>", staff.getName()));
-					staff.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("GOD_OTHERS_STAFF_DISABLE")
+					staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.GOD_OTHERS_STAFF_DISABLE.get()
 							.replaceAll("<player>", player.getName())));
 					return true;
 				// God mode est désactivé
 				} else {
-					staff.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("GOD_OTHERS_STAFF_DISABLE_ERROR")
+					staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.GOD_OTHERS_STAFF_DISABLE_ERROR.get()
 							.replaceAll("<player>", player.getName())));
 				}
 			}
@@ -208,23 +209,23 @@ public class EEGod extends ECommand<EverEssentials> {
 			if(etat) {
 				// Si le god mode est déjà activé
 				if(godMode){
-					player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("GOD_PLAYER_ENABLE_ERROR"));
+					player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.GOD_PLAYER_ENABLE_ERROR.getText()));
 				// God mode est désactivé
 				} else {
 					player.setGod(etat);
 					player.heal();
-					player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("GOD_PLAYER_ENABLE"));
+					player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.GOD_PLAYER_ENABLE.getText()));
 					return true;
 				}
 			} else {
 				// Si le god mode est déjà activé
 				if(godMode){
 					player.setGod(etat);
-					player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("GOD_PLAYER_DISABLE"));
+					player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.GOD_PLAYER_DISABLE.getText()));
 					return true;
 				// God mode est désactivé
 				} else {
-					player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("GOD_PLAYER_DISABLE_ERROR"));
+					player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.GOD_PLAYER_DISABLE_ERROR.getText()));
 				}
 			}
 		}

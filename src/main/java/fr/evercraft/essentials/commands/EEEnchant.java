@@ -31,8 +31,10 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
 
+import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
+import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.ECommand;
 import fr.evercraft.everapi.server.player.EPlayer;
@@ -50,7 +52,7 @@ public class EEEnchant extends ECommand<EverEssentials> {
 	}
 
 	public Text description(final CommandSource source) {
-		return this.plugin.getMessages().getText("ENCHANT_DESCRIPTION");
+		return EEMessages.ENCHANT_DESCRIPTION.getText();
 	}
 
 	public Text help(final CommandSource source) {
@@ -103,7 +105,7 @@ public class EEEnchant extends ECommand<EverEssentials> {
 				resultat = commandEnchant((EPlayer) source, args.get(0));
 			// La source n'est pas un joueur
 			} else {
-				source.sendMessage(this.plugin.getEverAPI().getMessages().getText("COMMAND_ERROR_FOR_PLAYER"));
+				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
 			}
 		} else if(args.size() == 2) {
 			// Si la source est un joueur
@@ -111,7 +113,7 @@ public class EEEnchant extends ECommand<EverEssentials> {
 				resultat = commandEnchant((EPlayer) source, args.get(0), args.get(1));
 			// La source n'est pas un joueur
 			} else {
-				source.sendMessage(this.plugin.getEverAPI().getMessages().getText("COMMAND_ERROR_FOR_PLAYER"));
+				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
 			}
 		// Nombre d'argument incorrect
 		} else {
@@ -136,36 +138,35 @@ public class EEEnchant extends ECommand<EverEssentials> {
 								enchantmentData.set(enchantmentData.enchantments().add(itemEnchant));
 								item.offer(enchantmentData);
 								player.setItemInHand(item);
-								player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") 
-										+ this.plugin.getMessages().getMessage("ENCHANT_SUCCESSFULL"));
+								player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.ENCHANT_SUCCESSFULL.getText()));
 								return true;
 							} else {
-								player.sendMessage(ETextBuilder.toBuilder(this.plugin.getMessages().getText("PREFIX"))
-										.append(this.plugin.getMessages().getMessage("ENCHANT_INCOMPATIBLE"))
+								player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.getText())
+										.append(EEMessages.ENCHANT_INCOMPATIBLE.get())
 										.replace("<item>", EChat.getButtomItem(item, 
-												EChat.getTextColor(this.plugin.getMessages().getMessage("MORE_ITEM_COLOR"))))
+												EChat.getTextColor(EEMessages.MORE_ITEM_COLOR.get())))
 										.build());
 								return false;
 							}
 						} else {
-							player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("ENCHANT_LEVEL_TOO_HIGHT"));
+							player.sendMessage(EEMessages.PREFIX.get() + EEMessages.ENCHANT_LEVEL_TOO_HIGHT.get());
 							return false;
 						}
 					} else {
-						player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getEverAPI().getMessages().getMessage("NUMBER_INVALID"));
+						player.sendMessage(EEMessages.PREFIX.get() + EAMessages.NUMBER_INVALID.get());
 						return false;
 					}
 				} catch (NumberFormatException e) {
-					player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getEverAPI().getMessages().getMessage("IS_NOT_NUMBER")
+					player.sendMessage(EEMessages.PREFIX.get() + EAMessages.IS_NOT_NUMBER.get()
 							.replaceAll("<number>", lvl));
 					return false;
 				}
 			} else {
-				player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("ENCHANT_NOT_FOUND"));
+				player.sendMessage(EEMessages.PREFIX.get() + EEMessages.ENCHANT_NOT_FOUND.get());
 				return false;
 			}
 		} else {
-			player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getEverAPI().getMessages().getMessage("EMPTY_ITEM_IN_HAND"));
+			player.sendMessage(EEMessages.PREFIX.get() + EAMessages.EMPTY_ITEM_IN_HAND.get());
 			return false;
 		}
 	}
@@ -182,23 +183,23 @@ public class EEEnchant extends ECommand<EverEssentials> {
 					enchantmentData.set(enchantmentData.enchantments().add(itemEnchant));
 					item.offer(enchantmentData);
 					player.setItemInHand(item);
-					player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") 
-							+ this.plugin.getMessages().getMessage("ENCHANT_SUCCESSFULL"));
+					player.sendMessage(EEMessages.PREFIX.get() 
+							+ EEMessages.ENCHANT_SUCCESSFULL.get());
 					return true;
 				} else {
-					player.sendMessage(ETextBuilder.toBuilder(this.plugin.getMessages().getText("PREFIX"))
-							.append(this.plugin.getMessages().getMessage("ENCHANT_INCOMPATIBLE"))
+					player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
+							.append(EEMessages.ENCHANT_INCOMPATIBLE.get())
 							.replace("<item>", EChat.getButtomItem(item, 
-									EChat.getTextColor(this.plugin.getMessages().getMessage("MORE_ITEM_COLOR"))))
+									EChat.getTextColor(EEMessages.MORE_ITEM_COLOR.get())))
 							.build());
 					return false;
 				}
 			} else {
-				player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("ENCHANT_NOT_FOUND"));
+				player.sendMessage(EEMessages.PREFIX.get() + EEMessages.ENCHANT_NOT_FOUND.get());
 				return false;
 			}
 		} else {
-			player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getEverAPI().getMessages().getMessage("EMPTY_ITEM_IN_HAND"));
+			player.sendMessage(EEMessages.PREFIX.get() + EAMessages.EMPTY_ITEM_IN_HAND.get());
 			return false;
 		}
 	}

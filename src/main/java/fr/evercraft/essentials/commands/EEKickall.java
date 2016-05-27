@@ -25,6 +25,7 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
 
+import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.plugin.EChat;
@@ -43,7 +44,7 @@ public class EEKickall extends ECommand<EverEssentials> {
 	}
 
 	public Text description(final CommandSource source) {
-		return this.plugin.getMessages().getText("KICKALL_DESCRIPTION");
+		return EEMessages.KICKALL_DESCRIPTION.getText();
 	}
 
 	public Text help(final CommandSource source) {
@@ -71,7 +72,7 @@ public class EEKickall extends ECommand<EverEssentials> {
 	}
 	
 	public boolean commandKick(final CommandSource staff, final Text message) throws CommandException {
-		Text raison = ETextBuilder.toBuilder(this.plugin.getMessages().getMessage("KICKALL_MESSAGE")
+		Text raison = ETextBuilder.toBuilder(EEMessages.KICKALL_MESSAGE.get()
 							.replaceAll("<staff>", staff.getName()))
 						.replace("<message>", message)
 						.build();

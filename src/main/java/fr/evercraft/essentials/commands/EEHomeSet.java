@@ -32,8 +32,10 @@ import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
+import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
+import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.java.UtilsMap;
 import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.ECommand;
@@ -80,7 +82,7 @@ public class EEHomeSet extends ECommand<EverEssentials> {
 	}
 
 	public Text description(final CommandSource source) {
-		return this.plugin.getMessages().getText("SETHOME_DESCRIPTION");
+		return EEMessages.SETHOME_DESCRIPTION.getText();
 	}
 
 	public Text help(final CommandSource source) {
@@ -111,7 +113,7 @@ public class EEHomeSet extends ECommand<EverEssentials> {
 				resultat = commandSetHome((EPlayer) source);
 			// La source n'est pas un joueur
 			} else {
-				source.sendMessage(this.plugin.getEverAPI().getMessages().getText("COMMAND_ERROR_FOR_PLAYER"));
+				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
 			}
 		// Si on ne connait pas le joueur
 		} else if(args.size() == 1) {
@@ -121,7 +123,7 @@ public class EEHomeSet extends ECommand<EverEssentials> {
 				
 			// La source n'est pas un joueur
 			} else {
-				source.sendMessage(this.plugin.getEverAPI().getMessages().getText("COMMAND_ERROR_FOR_PLAYER"));
+				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
 			}
 		// Nombre d'argument incorrect
 		} else {
@@ -137,15 +139,15 @@ public class EEHomeSet extends ECommand<EverEssentials> {
 		if(player.hasHome(DEFAULT_HOME) || homes == 0 || homes < max) {
 			// Ajout d'un home
 			if(player.addHome(DEFAULT_HOME)) {
-				player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("SETHOME_SET"));
+				player.sendMessage(EEMessages.PREFIX.get() + EEMessages.SETHOME_SET.get());
 				return true;
 			// Impossible d'ajouter un home
 			} else {
-				player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getEverAPI().getMessages().getMessage("COMMAND_ERROR"));
+				player.sendMessage(EEMessages.PREFIX.get() + EAMessages.COMMAND_ERROR.get());
 			}
 		// Il a déjà le nombre maximum d'home
 		} else {
-			player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("SETHOME_MULTIPLE_ERROR_MAX")
+			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.SETHOME_MULTIPLE_ERROR_MAX.get()
 					.replaceAll("<nombre>", String.valueOf(getMaxHome(player))));
 		}
 		return false;
@@ -162,30 +164,30 @@ public class EEHomeSet extends ECommand<EverEssentials> {
 					player.getHomes().size() < max) {
 				// Ajout d'un home
 				if(player.addHome(name)) {
-					player.sendMessage(ETextBuilder.toBuilder(this.plugin.getMessages().getText("PREFIX"))
-							.append(this.plugin.getMessages().getMessage("SETHOME_MULTIPLE_SET"))
+					player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
+							.append(EEMessages.SETHOME_MULTIPLE_SET.get())
 							.replace("<home>", getButtonHome(name, player.getLocation()))
 							.build());
 					return true;
 					// Impossible d'ajouter un home
 				} else {
-					player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getEverAPI().getMessages().getMessage("COMMAND_ERROR"));
+					player.sendMessage(EEMessages.PREFIX.get() + EAMessages.COMMAND_ERROR.get());
 				}
 			// Il a déjà le nombre maximum d'home
 			} else {
-				player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("SETHOME_MULTIPLE_ERROR_MAX")
+				player.sendMessage(EEMessages.PREFIX.get() + EEMessages.SETHOME_MULTIPLE_ERROR_MAX.get()
 						.replaceAll("<nombre>", String.valueOf(max)));
 			}
 		// Il n'a pas la permission multiworld
 		} else {
-			player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("SETHOME_MULTIPLE_NO_PERMISSION"));
+			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.SETHOME_MULTIPLE_NO_PERMISSION.get());
 		}
 		return false;
 	}
 
 	public Text getButtonHome(final String name, final Location<World> location){
-		return EChat.of(this.plugin.getMessages().getMessage("HOME_NAME").replaceAll("<name>", name)).toBuilder()
-					.onHover(TextActions.showText(EChat.of(this.plugin.getMessages().getMessage("HOME_NAME_HOVER")
+		return EChat.of(EEMessages.HOME_NAME.get().replaceAll("<name>", name)).toBuilder()
+					.onHover(TextActions.showText(EChat.of(EEMessages.HOME_NAME_HOVER.get()
 							.replaceAll("<home>", name)
 							.replaceAll("<world>", location.getExtent().getName())
 							.replaceAll("<x>", String.valueOf(location.getBlockX()))

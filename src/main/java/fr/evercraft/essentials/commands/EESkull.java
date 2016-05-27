@@ -31,6 +31,7 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
 
+import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
@@ -48,7 +49,7 @@ public class EESkull extends ECommand<EverEssentials> {
 	}
 
 	public Text description(final CommandSource source) {
-		return this.plugin.getMessages().getText("SKULL_DESCRIPTION");
+		return EEMessages.SKULL_DESCRIPTION.getText();
 	}
 
 	public Text help(final CommandSource source) {
@@ -72,7 +73,7 @@ public class EESkull extends ECommand<EverEssentials> {
 				resultat = commandSkull((EPlayer) source);
 				// La source n'est pas un joueur
 			} else {
-				source.sendMessage(this.plugin.getEverAPI().getMessages().getText("COMMAND_ERROR_FOR_PLAYER"));
+				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
 			}
 			// On connais le joueur
 		} else if (args.size() == 1) {
@@ -92,7 +93,7 @@ public class EESkull extends ECommand<EverEssentials> {
 
 	public boolean commandSkull(final EPlayer player) {
 		player.giveItemAndDrop(createPlayerHead(player.getProfile()));
-		player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("SKULL_MY_HEAD"));
+		player.sendMessage(EEMessages.PREFIX.get() + EEMessages.SKULL_MY_HEAD.get());
 		return true;
 	}
 
@@ -104,12 +105,12 @@ public class EESkull extends ECommand<EverEssentials> {
 					try {
 						GameProfile profile_skin = this.plugin.getEServer().getGameProfileManager().fill(profile, true, false).get();
 						player.giveItemAndDrop(createPlayerHead(profile_skin));
-						player.sendMessage(plugin.getMessages().getMessage("PREFIX") + plugin.getMessages().getMessage("SKULL_OTHERS").replaceAll("<player>", profile_skin.getName().get()));
+						player.sendMessage(EEMessages.PREFIX.get() + EEMessages.SKULL_OTHERS.get().replaceAll("<player>", profile_skin.getName().get()));
 					} catch (Exception e) {
-						player.sendMessage(plugin.getMessages().getMessage("PREFIX") + plugin.getEverAPI().getMessages().getMessage("PLAYER_NOT_FOUND"));
+						player.sendMessage(EEMessages.PREFIX.get() + EAMessages.PLAYER_NOT_FOUND.get());
 					}
 				} else {
-					player.sendMessage(plugin.getMessages().getMessage("PREFIX") + plugin.getEverAPI().getMessages().getMessage("PLAYER_NOT_FOUND"));
+					player.sendMessage(EEMessages.PREFIX.get() + EAMessages.PLAYER_NOT_FOUND.get());
 				}
 			}
 			return profile;

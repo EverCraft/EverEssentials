@@ -26,6 +26,7 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
 
+import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
@@ -44,7 +45,7 @@ public class EEExp extends ECommand<EverEssentials> {
 	}
 
 	public Text description(final CommandSource source) {
-		return this.plugin.getMessages().getText("EXP_DESCRIPTION");
+		return EEMessages.EXP_DESCRIPTION.getText();
 	}
 
 	public Text help(final CommandSource source) {
@@ -99,7 +100,7 @@ public class EEExp extends ECommand<EverEssentials> {
 				}
 			// Si la source est une console ou un commande block
 			} else {
-				source.sendMessage(this.plugin.getEverAPI().getMessages().getText("COMMAND_ERROR_FOR_PLAYER"));
+				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
 			}
 		} else if (args.size() == 4) {
 			// Si il a la permission
@@ -135,7 +136,7 @@ public class EEExp extends ECommand<EverEssentials> {
 					}
 				// Le joueur est introuvable
 				} else {
-					source.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getEverAPI().getMessages().getMessage("PLAYER_NOT_FOUND")));
+					source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
 				}
 			// Il n'a pas la permission
 			} else {
@@ -151,11 +152,11 @@ public class EEExp extends ECommand<EverEssentials> {
 		try {
 			int lvl = Integer.parseInt(level);
 			player.addLevel(lvl);
-			player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("EXP_GIVE_LEVEL")
+			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.EXP_GIVE_LEVEL.get()
 					.replaceAll("<level>", String.valueOf(lvl)));
 			return true;
 		} catch (NumberFormatException e) {
-			player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getEverAPI().getMessages().getMessage("IS_NOT_NUMBER").replaceAll("<number>", level));
+			player.sendMessage(EEMessages.PREFIX.get() + EAMessages.IS_NOT_NUMBER.get().replaceAll("<number>", level));
 		}
 		return false;
 	}
@@ -164,11 +165,11 @@ public class EEExp extends ECommand<EverEssentials> {
 		try {
 			int exp = Integer.parseInt(experience);
 			player.addTotalExperience(exp);
-			player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("EXP_GIVE_EXP").
-					replaceAll("<experience>", String.valueOf(exp)));
+			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.EXP_GIVE_EXP.get()
+					.replaceAll("<experience>", String.valueOf(exp)));
 			return true;
 		} catch (NumberFormatException e) {
-			player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getEverAPI().getMessages().getMessage("IS_NOT_NUMBER").replaceAll("<number>", experience));
+			player.sendMessage(EEMessages.PREFIX.get() + EAMessages.IS_NOT_NUMBER.get().replaceAll("<number>", experience));
 		}
 		return false;
 	}
@@ -177,11 +178,11 @@ public class EEExp extends ECommand<EverEssentials> {
 		try {
 			int lvl = Integer.parseInt(level);
 			player.setLevel(lvl);
-			player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("EXP_SET_LEVEL")
+			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.EXP_SET_LEVEL.get()
 					.replaceAll("<level>", String.valueOf(level)));
 			return true;
 		} catch (NumberFormatException e) {
-			player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getEverAPI().getMessages().getMessage("IS_NOT_NUMBER").replaceAll("<number>", level));
+			player.sendMessage(EEMessages.PREFIX.get() + EAMessages.IS_NOT_NUMBER.get().replaceAll("<number>", level));
 		}
 		return false;
 	}
@@ -190,11 +191,11 @@ public class EEExp extends ECommand<EverEssentials> {
 		try {
 			int exp = Integer.parseInt(experience);
 			player.setTotalExperience(exp);
-			player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("EXP_SET_EXP")
+			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.EXP_SET_EXP.get()
 					.replaceAll("<experience>", String.valueOf(exp)));
 			return true;
 		} catch (NumberFormatException e) {
-			player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getEverAPI().getMessages().getMessage("IS_NOT_NUMBER").replaceAll("<number>", experience));
+			player.sendMessage(EEMessages.PREFIX.get() + EAMessages.IS_NOT_NUMBER.get().replaceAll("<number>", experience));
 		}
 		return false;
 	}
@@ -203,15 +204,15 @@ public class EEExp extends ECommand<EverEssentials> {
 		try {
 			int lvl = Integer.parseInt(level);
 			player.addLevel(lvl);
-			player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("EXP_OTHERS_PLAYER_GIVE_LEVEL")
+			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.EXP_OTHERS_PLAYER_GIVE_LEVEL.get()
 					.replaceAll("<staff>", staff.getName())
 					.replaceAll("<level>", String.valueOf(lvl)));
-			staff.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("EXP_OTHERS_STAFF_GIVE_LEVEL")
+			staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.EXP_OTHERS_STAFF_GIVE_LEVEL.get()
 						.replaceAll("<player>", player.getName())
 						.replaceAll("<level>", String.valueOf(lvl))));
 			return true;
 		} catch (NumberFormatException e) {
-			staff.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getEverAPI().getMessages().getMessage("IS_NOT_NUMBER")
+			staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.IS_NOT_NUMBER.get()
 					.replaceAll("<number>", level)));
 		}
 		return false;
@@ -221,15 +222,15 @@ public class EEExp extends ECommand<EverEssentials> {
 		try {
 			int exp = Integer.parseInt(experience);
 			player.addTotalExperience(exp);
-			player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("EXP_OTHERS_PLAYER_GIVE_EXP")
+			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.EXP_OTHERS_PLAYER_GIVE_EXP.get()
 					.replaceAll("<staff>", staff.getName())
 					.replaceAll("<experience>", String.valueOf(exp)));
-			staff.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("EXP_OTHERS_STAFF_GIVE_EXP")
+			staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.EXP_OTHERS_STAFF_GIVE_EXP.get()
 						.replaceAll("<player>", player.getName())
 						.replaceAll("<experience>", String.valueOf(exp))));
 			return true;
 		} catch (NumberFormatException e) {
-			staff.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getEverAPI().getMessages().getMessage("IS_NOT_NUMBER")
+			staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.IS_NOT_NUMBER.get()
 					.replaceAll("<number>", experience)));
 		}
 		return false;
@@ -239,15 +240,15 @@ public class EEExp extends ECommand<EverEssentials> {
 		try {
 			int lvl = Integer.parseInt(level);
 			player.setLevel(lvl);
-			player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("EXP_OTHERS_PLAYER_SET_LEVEL")
+			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.EXP_OTHERS_PLAYER_SET_LEVEL.get()
 					.replaceAll("<staff>", staff.getName())
 					.replaceAll("<level>", String.valueOf(lvl)));
-			staff.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("EXP_OTHERS_STAFF_SET_LEVEL")
+			staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.EXP_OTHERS_STAFF_SET_LEVEL.get()
 						.replaceAll("<player>", player.getName())
 						.replaceAll("<level>", String.valueOf(lvl))));
 			return true;
 		} catch (NumberFormatException e) {
-			staff.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getEverAPI().getMessages().getMessage("IS_NOT_NUMBER")
+			staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.IS_NOT_NUMBER.get()
 					.replaceAll("<number>", level)));
 		}
 		return false;
@@ -257,15 +258,15 @@ public class EEExp extends ECommand<EverEssentials> {
 		try {
 			int exp = Integer.parseInt(experience);
 			player.setTotalExperience(exp);
-			player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("EXP_OTHERS_PLAYER_SET_EXP")
+			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.EXP_OTHERS_PLAYER_SET_EXP.get()
 					.replaceAll("<staff>", staff.getName())
 					.replaceAll("<experience>", String.valueOf(exp)));
-			staff.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("EXP_OTHERS_STAFF_SET_EXP")
+			staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.EXP_OTHERS_STAFF_SET_EXP.get()
 						.replaceAll("<player>", player.getName())
 						.replaceAll("<experience>", String.valueOf(exp))));
 			return true;
 		} catch (NumberFormatException e) {
-			staff.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getEverAPI().getMessages().getMessage("IS_NOT_NUMBER")
+			staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.IS_NOT_NUMBER.get()
 					.replaceAll("<number>", experience)));
 		}
 		return false;

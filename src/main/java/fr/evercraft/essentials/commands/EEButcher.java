@@ -33,6 +33,7 @@ import org.spongepowered.api.text.LiteralText.Builder;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
 
+import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
@@ -53,7 +54,7 @@ public class EEButcher extends ECommand<EverEssentials> {
 	}
 
 	public Text description(final CommandSource source) {
-		return this.plugin.getMessages().getText("BUTCHER_DESCRIPTION");
+		return EEMessages.BUTCHER_DESCRIPTION.getText();
 	}
 
 	public Text help(CommandSource source) {
@@ -166,10 +167,10 @@ public class EEButcher extends ECommand<EverEssentials> {
 								if(radius > 0 && radius <= this.plugin.getConfigs().getButcherMaxRadius()) {
 									resultat = commandButcherAnimal(player, radius);
 								} else {
-									player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getEverAPI().getMessages().getMessage("NUMBER_INVALID"));
+									player.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.NUMBER_INVALID.getText()));
 								}
 							} catch (NumberFormatException e) {
-								player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getEverAPI().getMessages().getMessage("IS_NOT_NUMBER")
+								player.sendMessage(EEMessages.PREFIX.get() + EAMessages.IS_NOT_NUMBER.get()
 										.replaceAll("<number>", args.get(1)));
 							}
 						}
@@ -194,10 +195,10 @@ public class EEButcher extends ECommand<EverEssentials> {
 								if(radius > 0  && radius <= this.plugin.getConfigs().getButcherMaxRadius()) {
 									resultat = commandButcherMonster(player, radius);
 								} else {
-									player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getEverAPI().getMessages().getMessage("NUMBER_INVALID"));
+									player.sendMessage(EEMessages.PREFIX.get() + EAMessages.NUMBER_INVALID.get());
 								}
 							} catch (NumberFormatException e) {
-								player.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getEverAPI().getMessages().getMessage("IS_NOT_NUMBER")
+								player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.IS_NOT_NUMBER.get()
 										.replaceAll("<number>", args.get(1))));
 							}
 						}
@@ -222,10 +223,10 @@ public class EEButcher extends ECommand<EverEssentials> {
 								if(radius > 0  && radius <= this.plugin.getConfigs().getButcherMaxRadius()) {
 									resultat = commandButcherAll(player, radius);
 								} else {
-									player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getEverAPI().getMessages().getMessage("NUMBER_INVALID"));
+									player.sendMessage(EEMessages.PREFIX.get() + EAMessages.NUMBER_INVALID.get());
 								}
 							} catch (NumberFormatException e) {
-								player.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getEverAPI().getMessages().getMessage("IS_NOT_NUMBER")
+								player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.IS_NOT_NUMBER.get()
 										.replaceAll("<number>", args.get(1))));
 							}
 						}
@@ -253,15 +254,15 @@ public class EEButcher extends ECommand<EverEssentials> {
 								if(radius > 0  && radius <= this.plugin.getConfigs().getButcherMaxRadius()) {
 									resultat = commandButcherType(player, type.get(), radius);
 								} else {
-									player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getEverAPI().getMessages().getMessage("NUMBER_INVALID"));
+									player.sendMessage(EEMessages.PREFIX.get() + EAMessages.NUMBER_INVALID.getText());
 								}
 							} catch (NumberFormatException e) {
-								player.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getEverAPI().getMessages().getMessage("IS_NOT_NUMBER")
+								player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.IS_NOT_NUMBER.get()
 										.replaceAll("<number>", args.get(2))));
 							}
 						}
 					} else {
-						player.sendMessage(EChat.of(this.plugin.getEverAPI().getMessages().getMessage("IS_NOT_ENTITY_TYPE")
+						player.sendMessage(EChat.of(EAMessages.IS_NOT_ENTITY_TYPE.get()
 								.replaceAll("<entity>", args.get(1))));
 					}
 				// Il n'a pas la permission
@@ -272,7 +273,7 @@ public class EEButcher extends ECommand<EverEssentials> {
 				player.sendMessage(help(source));
 			}
 		} else {
-			source.sendMessage(this.plugin.getEverAPI().getMessages().getText("COMMAND_ERROR_FOR_PLAYER"));
+			source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
 		}
 		return resultat;
 	}
@@ -290,11 +291,11 @@ public class EEButcher extends ECommand<EverEssentials> {
 		Collection<Entity> list = player.getWorld().getEntities(predicate);
 		if (!list.isEmpty()){
 			list.forEach(entity -> entity.remove());
-			player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("BUTCHER_ANIMAL")
+			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.BUTCHER_ANIMAL.get()
 					.replaceAll("<count>", String.valueOf(list.size())));
 			return true;
 		} else {
-			player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("BUTCHER_NOENTITY"));
+			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.BUTCHER_NOENTITY.get());
 			return false;
 		}
 	}
@@ -315,12 +316,12 @@ public class EEButcher extends ECommand<EverEssentials> {
 		Collection<Entity> list = player.getWorld().getEntities(predicate);
 		if (!list.isEmpty()){
 			list.forEach(entity -> entity.remove());
-			player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("BUTCHER_ANIMAL_RADIUS")
+			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.BUTCHER_ANIMAL_RADIUS.get()
 					.replaceAll("<radius>", String.valueOf(radius))
 					.replaceAll("<count>", String.valueOf(list.size())));
 			return true;
 		} else {
-			player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("BUTCHER_NOENTITY"));
+			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.BUTCHER_NOENTITY.get());
 			return false;
 		}
 	}
@@ -338,11 +339,11 @@ public class EEButcher extends ECommand<EverEssentials> {
 		Collection<Entity> list = player.getWorld().getEntities(predicate);
 		if (!list.isEmpty()){
 			list.forEach(entity -> entity.remove());
-			player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("BUTCHER_MONSTER")
+			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.BUTCHER_MONSTER.get()
 					.replaceAll("<count>", String.valueOf(list.size())));
 			return true;
 		} else {
-			player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("BUTCHER_NOENTITY"));
+			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.BUTCHER_NOENTITY.get());
 			return false;
 		}
 	}
@@ -362,12 +363,12 @@ public class EEButcher extends ECommand<EverEssentials> {
 		Collection<Entity> list = player.getWorld().getEntities(predicate);
 		if (!list.isEmpty()){
 			list.forEach(entity -> entity.remove());
-			player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("BUTCHER_MONSTER_RADIUS")
+			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.BUTCHER_MONSTER_RADIUS.get()
 					.replaceAll("<radius>", String.valueOf(radius))
 					.replaceAll("<count>", String.valueOf(list.size())));
 			return true;
 		} else {
-			player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("BUTCHER_NOENTITY"));
+			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.BUTCHER_NOENTITY.get());
 			return false;
 		}
 	}
@@ -385,11 +386,11 @@ public class EEButcher extends ECommand<EverEssentials> {
 		Collection<Entity> list = player.getWorld().getEntities(predicate);
 		if (!list.isEmpty()){
 			list.forEach(entity -> entity.remove());
-			player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("BUTCHER_ALL")
+			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.BUTCHER_ALL.get()
 					.replaceAll("<count>", String.valueOf(list.size())));
 			return true;
 		} else {
-			player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("BUTCHER_NOENTITY"));
+			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.BUTCHER_NOENTITY.get());
 			return false;
 		}
 	}
@@ -409,12 +410,12 @@ public class EEButcher extends ECommand<EverEssentials> {
 		Collection<Entity> list = player.getWorld().getEntities(predicate);
 		if (!list.isEmpty()){
 			list.forEach(entity -> entity.remove());
-			player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("BUTCHER_ALL_RADIUS")
+			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.BUTCHER_ALL_RADIUS.get()
 					.replaceAll("<radius>", String.valueOf(radius))
 					.replaceAll("<count>", String.valueOf(list.size())));
 			return true;
 		} else {
-			player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("BUTCHER_NOENTITY"));
+			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.BUTCHER_NOENTITY.get());
 			return false;
 		}
 	}
@@ -432,14 +433,14 @@ public class EEButcher extends ECommand<EverEssentials> {
 		Collection<Entity> list = player.getWorld().getEntities(predicate);
 		if (!list.isEmpty()){
 			list.forEach(entity -> entity.remove());
-			player.sendMessage(ETextBuilder.toBuilder(this.plugin.getMessages().getMessage("PREFIX"))
-					.append(this.plugin.getMessages().getMessage("BUTCHER_TYPE")
+			player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
+					.append(EEMessages.BUTCHER_TYPE.get()
 							.replaceAll("<count>", String.valueOf(list.size())))
 					.replace("<entity>", getButtomEntity(type))
 					.build());
 			return true;
 		} else {
-			player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("BUTCHER_NOENTITY"));
+			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.BUTCHER_NOENTITY.get());
 			return false;
 		}
 	}
@@ -459,22 +460,22 @@ public class EEButcher extends ECommand<EverEssentials> {
 		Collection<Entity> list = player.getWorld().getEntities(predicate);
 		if (!list.isEmpty()){
 			list.forEach(entity -> entity.remove());
-			player.sendMessage(ETextBuilder.toBuilder(this.plugin.getMessages().getMessage("PREFIX"))
-					.append(this.plugin.getMessages().getMessage("BUTCHER_TYPE_RADIUS")
+			player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
+					.append(EEMessages.BUTCHER_TYPE_RADIUS.get()
 							.replaceAll("<radius>", String.valueOf(radius))
 							.replaceAll("<count>", String.valueOf(list.size())))
 					.replace("<entity>", getButtomEntity(type))
 					.build());
 			return true;
 		} else {
-			player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("BUTCHER_NOENTITY"));
+			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.BUTCHER_NOENTITY.get());
 			return false;
 		}
 	}
 	
 	public Text getButtomEntity(final EntityType type){
 		return Text.builder(type.getTranslation())
-				.color(EChat.getTextColor(this.plugin.getMessages().getMessage("BUTCHER_ENTITY_COLOR")))
+				.color(EChat.getTextColor(EEMessages.BUTCHER_ENTITY_COLOR.get()))
 				.build();
 	}
 	

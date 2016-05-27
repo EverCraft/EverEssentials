@@ -27,6 +27,7 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
 
+import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
@@ -46,7 +47,7 @@ public class EEUuid extends ECommand<EverEssentials> {
 	}
 
 	public Text description(final CommandSource source) {
-		return this.plugin.getMessages().getText("UUID_DESCRIPTION");
+		return EEMessages.UUID_DESCRIPTION.getText();
 	}
 
 	public Text help(final CommandSource source) {
@@ -75,7 +76,7 @@ public class EEUuid extends ECommand<EverEssentials> {
 				resultat = commandUUID((EPlayer) source);
 			// La source n'est pas un joueur
 			} else {
-				source.sendMessage(this.plugin.getEverAPI().getMessages().getText("COMMAND_ERROR_FOR_PLAYER"));
+				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
 			}
 		// On connais le joueur
 		} else if(args.size() == 1) {
@@ -87,7 +88,7 @@ public class EEUuid extends ECommand<EverEssentials> {
 					resultat = commandUUIDOthers(source, optPlayer.get());
 				// Le joueur est introuvable
 				} else {
-					source.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getEverAPI().getMessages().getMessage("PLAYER_NOT_FOUND")));
+					source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
 				}
 			// Il n'a pas la permission
 			} else {
@@ -101,8 +102,8 @@ public class EEUuid extends ECommand<EverEssentials> {
 	}
 	
 	public boolean commandUUID(final EPlayer player) {
-		player.sendMessage(ETextBuilder.toBuilder(this.plugin.getMessages().getText("PREFIX"))
-				.append(this.plugin.getMessages().getMessage("UUID_PLAYER"))
+		player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
+				.append(EEMessages.UUID_PLAYER.get())
 				.replace("<uuid>", getButtonUUID(player.getUniqueId()))
 				.build());
 		return true;
@@ -111,8 +112,8 @@ public class EEUuid extends ECommand<EverEssentials> {
 	public boolean commandUUIDOthers(final CommandSource staff, final EPlayer player) throws CommandException {
 		// La source et le joueur sont différent
 		if(!player.equals(staff)){				
-			staff.sendMessage(ETextBuilder.toBuilder(this.plugin.getMessages().getText("PREFIX"))
-					.append(this.plugin.getMessages().getMessage("UUID_PLAYER_OTHERS")
+			staff.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
+					.append(EEMessages.UUID_PLAYER_OTHERS.get()
 					.replaceAll("<player>", player.getName()))
 					.replace("<uuid>", getButtonUUID(player.getUniqueId()))
 					.build());				
@@ -124,8 +125,8 @@ public class EEUuid extends ECommand<EverEssentials> {
 	}
 	
 	public Text getButtonUUID(final UUID uuid){
-		return EChat.of(this.plugin.getMessages().getMessage("UUID_NAME").replace("<uuid>", uuid.toString())).toBuilder()
-				.onHover(TextActions.showText(this.plugin.getEverAPI().getMessages().getText("HOVER_COPY")))
+		return EChat.of(EEMessages.UUID_NAME.get().replace("<uuid>", uuid.toString())).toBuilder()
+				.onHover(TextActions.showText(EAMessages.HOVER_COPY.getText()))
 					.onClick(TextActions.suggestCommand(uuid.toString()))
 					.onShiftClick(TextActions.insertText(uuid.toString()))
 					.build();

@@ -26,6 +26,7 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
 
+import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
@@ -44,7 +45,7 @@ public class EEFeed extends ECommand<EverEssentials> {
 	}
 
 	public Text description(final CommandSource source) {
-		return this.plugin.getMessages().getText("FEED_DESCRIPTION");
+		return EEMessages.FEED_DESCRIPTION.getText();
 	}
 
 	public Text help(final CommandSource source) {
@@ -74,7 +75,7 @@ public class EEFeed extends ECommand<EverEssentials> {
 				resultat = commandFeed((EPlayer) source);
 			// La source n'est pas un joueur
 			} else {
-				source.sendMessage(this.plugin.getEverAPI().getMessages().getText("COMMAND_ERROR_FOR_PLAYER"));
+				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
 			}
 		// On connais le joueur
 		} else if(args.size() == 1) {
@@ -90,7 +91,7 @@ public class EEFeed extends ECommand<EverEssentials> {
 					if(optPlayer.isPresent()){
 						resultat = commandFeedOthers(source, optPlayer.get());
 					} else {
-						source.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getEverAPI().getMessages().getMessage("PLAYER_NOT_FOUND")));
+						source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
 					}
 				}
 			// Il n'a pas la permission
@@ -107,7 +108,7 @@ public class EEFeed extends ECommand<EverEssentials> {
 	public boolean commandFeed(final EPlayer player) {
 		player.setFood(20);
 		player.setSaturation(20);
-		player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("FEED_PLAYER"));
+		player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.FEED_PLAYER.getText()));
 		return true;
 	}
 	
@@ -118,11 +119,11 @@ public class EEFeed extends ECommand<EverEssentials> {
 			player.setSaturation(20);
 			// La source et le joueur sont différent
 			if(!staff.equals(player)){
-				player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("FEED_OTHERS_PLAYER")
-						.replaceAll("<staff>", staff.getName()));
+				player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.FEED_OTHERS_PLAYER.get()
+						.replaceAll("<staff>", staff.getName())));
 			}
 		}
-		staff.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("FEED_ALL_STAFF")));
+		staff.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.FEED_ALL_STAFF.getText()));
 		return true;
 	}
 	
@@ -131,9 +132,9 @@ public class EEFeed extends ECommand<EverEssentials> {
 		if(!player.equals(staff)){
 			player.setFood(20);
 			player.setSaturation(20);
-			player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("FEED_OTHERS_PLAYER")
-					.replaceAll("<staff>", staff.getName()));
-			staff.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("FEED_OTHERS_STAFF")
+			player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.FEED_OTHERS_PLAYER.get()
+					.replaceAll("<staff>", staff.getName())));
+			staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.FEED_OTHERS_STAFF.get()
 					.replaceAll("<player>", player.getName())));
 			return true;
 		// La source et le joueur sont identique

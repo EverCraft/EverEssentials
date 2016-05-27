@@ -42,6 +42,7 @@ import org.spongepowered.api.event.filter.cause.First;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
 import org.spongepowered.api.text.Text;
 
+import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.essentials.service.ESubject;
 import fr.evercraft.everapi.plugin.EChat;
@@ -110,7 +111,7 @@ public class EEPlayerListeners {
 				if (damagesource.isPresent() && damagesource.get().equals(DamageSources.VOID)) {
 					// L'option de téléportation au spwan est activé
 					if (this.plugin.getConfigs().isGodTeleportToSpawn()) {
-						player.get().sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("GOD_TELEPORT"));
+						player.get().sendMessage(EEMessages.PREFIX.get() + EEMessages.GOD_TELEPORT.get());
 						player.get().teleportSpawn();
 						player.get().heal();
 						event.setCancelled(true);

@@ -27,6 +27,7 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
 
+import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.plugin.EChat;
@@ -43,7 +44,7 @@ public class EEStop extends ECommand<EverEssentials> {
 	}
 
 	public Text description(final CommandSource source) {
-		return this.plugin.getMessages().getText("STOP_DESCRIPTION");
+		return EEMessages.STOP_DESCRIPTION.getText();
 	}
 
 	public Text help(final CommandSource source) {
@@ -83,12 +84,12 @@ public class EEStop extends ECommand<EverEssentials> {
 		if(player instanceof ConsoleSource) {
 			this.plugin.getGame().getServer().shutdown(
 				EChat.of(this.plugin.getChat().replaceGlobal(
-					this.plugin.getMessages().getMessage("STOP_CONSOLE_MESSAGE")
+					EEMessages.STOP_CONSOLE_MESSAGE.get()
 							.replaceAll("<staff>", player.getName()))));
 		} else {
 			this.plugin.getGame().getServer().shutdown(
 					EChat.of(this.plugin.getChat().replaceGlobal(
-						this.plugin.getMessages().getMessage("STOP_MESSAGE")
+						EEMessages.STOP_MESSAGE.get()
 								.replaceAll("<staff>", player.getName()))));
 		}
 		return true;
@@ -99,13 +100,13 @@ public class EEStop extends ECommand<EverEssentials> {
 		if(player instanceof ConsoleSource) {
 			this.plugin.getGame().getServer().shutdown(
 				EChat.of(this.plugin.getChat().replaceGlobal(
-					this.plugin.getMessages().getMessage("STOP_CONSOLE_MESSAGE_REASON")
+					EEMessages.STOP_CONSOLE_MESSAGE_REASON.get()
 							.replaceAll("<staff>", player.getName())
 							.replaceAll("<reason>", this.plugin.getChat().replace(message)))));
 		} else {
 			this.plugin.getGame().getServer().shutdown(
 				EChat.of(this.plugin.getChat().replaceGlobal(
-					this.plugin.getMessages().getMessage("STOP_MESSAGE_REASON")
+					EEMessages.STOP_MESSAGE_REASON.get()
 							.replaceAll("<staff>", player.getName())
 							.replaceAll("<reason>", this.plugin.getChat().replace(message)))));
 		}		

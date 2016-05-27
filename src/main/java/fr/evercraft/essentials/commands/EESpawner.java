@@ -34,9 +34,10 @@ import org.spongepowered.api.world.World;
 
 import com.flowpowered.math.vector.Vector3i;
 
+import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
-import fr.evercraft.everapi.plugin.EChat;
+import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.ECommand;
 import fr.evercraft.everapi.server.player.EPlayer;
 import fr.evercraft.everapi.sponge.UtilsEntity;
@@ -52,7 +53,7 @@ public class EESpawner extends ECommand<EverEssentials> {
 	}
 
 	public Text description(final CommandSource source) {
-		return this.plugin.getMessages().getText("SPAWNER_DESCRIPTION");
+		return EEMessages.SPAWNER_DESCRIPTION.getText();
 	}
 
 	public Text help(final CommandSource source) {
@@ -83,11 +84,11 @@ public class EESpawner extends ECommand<EverEssentials> {
 				if (optEntity.isPresent()){
 					resultat = commandSpawner((EPlayer) source, optEntity.get());
 				} else {
-					source.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("SPAWNER_ERROR_MOB")));
+					//source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.SPAWNER_ERROR_MOB.get()));
 				}
 			// La source n'est pas un joueur
 			} else {
-				source.sendMessage(this.plugin.getEverAPI().getMessages().getText("COMMAND_ERROR_FOR_PLAYER"));
+				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
 			}
 		// Nombre d'argument incorrect
 		} else {
@@ -126,7 +127,7 @@ public class EESpawner extends ECommand<EverEssentials> {
 				player.sendMessage("is not mobspawner");
 			}
 		} else {
-			player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getEverAPI().getMessages().getMessage("PLAYER_NO_LOOK_BLOCK"));
+			player.sendMessage(EEMessages.PREFIX.get() + EAMessages.PLAYER_NO_LOOK_BLOCK.get());
 		}
 		return false;
 	}

@@ -32,6 +32,7 @@ import org.spongepowered.api.world.World;
 import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
+import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.ECommand;
 import fr.evercraft.everapi.server.player.EPlayer;
@@ -48,7 +49,7 @@ public class EEBack extends ECommand<EverEssentials> {
 	}
 
 	public Text description(final CommandSource source) {
-		return this.plugin.getMessages().getText("BACK_DESCRIPTION");
+		return EEMessages.BACK_DESCRIPTION.getText();
 	}
 
 	public Text help(final CommandSource source) {
@@ -70,7 +71,7 @@ public class EEBack extends ECommand<EverEssentials> {
 				resultat = commandBack((EPlayer) source);
 			// La source n'est pas un joueur
 			} else {
-				source.sendMessage(this.plugin.getEverAPI().getMessages().getText("COMMAND_ERROR_FOR_PLAYER"));
+				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
 			}
 		// Nombre d'argument incorrect
 		} else {
@@ -87,20 +88,20 @@ public class EEBack extends ECommand<EverEssentials> {
 			// Le joueur a bien été téléporter
 			player.setTransform(back.get());
 			player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.getText())
-					.append(this.plugin.getMessages().getMessage("BACK_TELEPORT"))
+					.append(EEMessages.BACK_TELEPORT.get())
 					.replace("<back>", getButtonLocation(back.get().getLocation()))
 					.build());
 			return true;
 		// Le joueur n'a pas de position de retour
 		} else {
-			player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("BACK_INCONNU"));
+			player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.BACK_INCONNU.getText()));
 		}
 		return false;
 	}
 	
 	public Text getButtonLocation(final Location<World> location){
-		return EChat.of(this.plugin.getMessages().getMessage("BACK_NAME")).toBuilder()
-					.onHover(TextActions.showText(EChat.of(this.plugin.getMessages().getMessage("BACK_NAME_HOVER")
+		return EEMessages.BACK_NAME.getText().toBuilder()
+					.onHover(TextActions.showText(EChat.of(EEMessages.BACK_NAME_HOVER.get()
 							.replaceAll("<world>", location.getExtent().getName())
 							.replaceAll("<x>", String.valueOf(location.getX()))
 							.replaceAll("<y>", String.valueOf(location.getY()))

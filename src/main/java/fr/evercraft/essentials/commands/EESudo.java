@@ -26,6 +26,7 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
 
+import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
@@ -45,7 +46,7 @@ public class EESudo extends ECommand<EverEssentials> {
 	}
 
 	public Text description(final CommandSource source) {
-		return this.plugin.getMessages().getText("SUDO_DESCRIPTION");
+		return EEMessages.SUDO_DESCRIPTION.getText();
 	}
 
 	public Text help(final CommandSource source) {
@@ -80,7 +81,7 @@ public class EESudo extends ECommand<EverEssentials> {
 					resultat = commandSudo(source, optPlayer.get(), getCommand(args));
 				// Le joueur est introuvable
 				} else {
-					source.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getEverAPI().getMessages().getMessage("PLAYER_NOT_FOUND")));
+					source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
 				} 
 			} else {
 				// Si il a la permission
@@ -103,18 +104,18 @@ public class EESudo extends ECommand<EverEssentials> {
 		if(!player.hasPermission(EEPermissions.SUDO_BYPASS.get())) {
 			if(player.getCommandSource().isPresent()) {
 				this.plugin.getGame().getCommandManager().process(player.getCommandSource().get(), command);
-				staff.sendMessage(ETextBuilder.toBuilder(this.plugin.getMessages().getText("PREFIX"))
-						.append(this.plugin.getMessages().getMessage("SUDO_PLAYER")
+				staff.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
+						.append(EEMessages.SUDO_PLAYER.get()
 								.replaceAll("<player>", player.getName()))
 						.replace("<command>", getButtonCommand(command))
 						.build());
 				return true;
 			} else {
-				staff.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getEverAPI().getMessages().getMessage("COMMAND_ERROR")));
+				staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.COMMAND_ERROR.get()));
 			}
 		// Le joueur a la permission bypass
 		} else {
-			staff.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("SUDO_BYPASS")
+			staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.SUDO_BYPASS.get()
 					.replaceAll("<player>", player.getName())));
 		}
 		return true;
@@ -123,12 +124,12 @@ public class EESudo extends ECommand<EverEssentials> {
 	public boolean commandSudoConsole(final CommandSource staff, final String command) {
 		if(this.plugin.getGame().getServer().getConsole().getCommandSource().isPresent()) {
 			this.plugin.getGame().getCommandManager().process(this.plugin.getGame().getServer().getConsole().getCommandSource().get(), command);
-			staff.sendMessage(ETextBuilder.toBuilder(this.plugin.getMessages().getText("PREFIX"))
-					.append(this.plugin.getMessages().getMessage("SUDO_CONSOLE"))
+			staff.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
+					.append(EEMessages.SUDO_CONSOLE.get())
 					.replace("<command>", getButtonCommand(command))
 					.build());
 		} else {
-			staff.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getEverAPI().getMessages().getMessage("COMMAND_ERROR")));
+			staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.COMMAND_ERROR.get()));
 		}
 		return true;
 	}
@@ -144,8 +145,8 @@ public class EESudo extends ECommand<EverEssentials> {
 	}
 	
 	public Text getButtonCommand(final String command){
-		return EChat.of(this.plugin.getMessages().getMessage("SUDO_COMMAND")).toBuilder()
-					.onHover(TextActions.showText(EChat.of(this.plugin.getMessages().getMessage("SUDO_COMMAND_HOVER")
+		return EChat.of(EEMessages.SUDO_COMMAND.get()).toBuilder()
+					.onHover(TextActions.showText(EChat.of(EEMessages.SUDO_COMMAND_HOVER.get()
 							.replaceAll("<command>", "/" + command))))
 					.build();
 	}

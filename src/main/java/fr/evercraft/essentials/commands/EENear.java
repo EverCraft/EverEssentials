@@ -30,8 +30,10 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
 
+import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
+import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.java.UtilsMap;
 import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.ECommand;
@@ -75,7 +77,7 @@ public class EENear extends ECommand<EverEssentials> {
 	}
 
 	public Text description(final CommandSource source) {
-		return this.plugin.getMessages().getText("NEAR_DESCRIPTION");
+		return EEMessages.NEAR_DESCRIPTION.getText();
 	}
 
 	public Text help(final CommandSource source) {
@@ -96,7 +98,7 @@ public class EENear extends ECommand<EverEssentials> {
 				resultat = commandNear((EPlayer) source);
 			// La source n'est pas un joueur
 			} else {
-				source.sendMessage(this.plugin.getEverAPI().getMessages().getText("COMMAND_ERROR_FOR_PLAYER"));
+				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
 			}
 		// Si on ne connait pas le joueur
 		} else {
@@ -108,15 +110,15 @@ public class EENear extends ECommand<EverEssentials> {
 	public boolean commandNear(final EPlayer player) {
 		Map <EPlayer, Integer> list = player.getEPlayers(getValue(player));		
 		if(list.isEmpty()) {
-			player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("NEAR_NOPLAYER"));
+			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.NEAR_NOPLAYER.get());
 		} else {
 			List<Text> lists = new ArrayList<Text>();
 			for(Entry<EPlayer, Integer> position : UtilsMap.valueASC(list)){
-				lists.add(EChat.of(this.plugin.getMessages().getMessage("NEAR_LIST_LINE")
+				lists.add(EChat.of(EEMessages.NEAR_LIST_LINE.get()
 						.replaceAll("<player>", position.getKey().getName())
 						.replaceAll("<distance>", position.getValue().toString())));
 			}
-			this.plugin.getEverAPI().getManagerService().getEPagination().sendTo(this.plugin.getMessages().getText("NEAR_LIST_TITLE").toBuilder()
+			this.plugin.getEverAPI().getManagerService().getEPagination().sendTo(EEMessages.NEAR_LIST_TITLE.getText().toBuilder()
 					.onClick(TextActions.runCommand("/near")).build(), lists, player);
 			return true;
 		}
