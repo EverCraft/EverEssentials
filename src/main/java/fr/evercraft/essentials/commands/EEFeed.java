@@ -26,6 +26,7 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
 
+import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.EChat;
@@ -39,7 +40,7 @@ public class EEFeed extends ECommand<EverEssentials> {
     }
 
 	public boolean testPermission(final CommandSource source) {
-		return source.hasPermission(this.plugin.getPermissions().get("FEED"));
+		return source.hasPermission(EEPermissions.FEED.get());
 	}
 
 	public Text description(final CommandSource source) {
@@ -47,7 +48,7 @@ public class EEFeed extends ECommand<EverEssentials> {
 	}
 
 	public Text help(final CommandSource source) {
-		if(source.hasPermission(this.plugin.getPermissions().get("FEED_OTHERS"))){
+		if(source.hasPermission(EEPermissions.FEED_OTHERS.get())){
 			return Text.builder("/feed").onClick(TextActions.suggestCommand("/feed "))
 					.append(Text.builder(" [joueur|*]").build())
 					.color(TextColors.RED).build();
@@ -57,7 +58,7 @@ public class EEFeed extends ECommand<EverEssentials> {
 	}
 	
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
-		if(args.size() == 1 && source.hasPermission(this.plugin.getPermissions().get("FEED_OTHERS"))){
+		if(args.size() == 1 && source.hasPermission(EEPermissions.FEED_OTHERS.get())){
 			return null;
 		}
 		return new ArrayList<String>();
@@ -78,7 +79,7 @@ public class EEFeed extends ECommand<EverEssentials> {
 		// On connais le joueur
 		} else if(args.size() == 1) {
 			// Si il a la permission
-			if(source.hasPermission(this.plugin.getPermissions().get("FEED_OTHERS"))){
+			if(source.hasPermission(EEPermissions.FEED_OTHERS.get())){
 				// Pour tous les joueurs
 				if(args.get(0).equals("*")) {
 					resultat = commandFeedAll(source);

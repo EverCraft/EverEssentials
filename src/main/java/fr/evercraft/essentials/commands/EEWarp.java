@@ -31,6 +31,7 @@ import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.world.World;
 
+import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.essentials.service.warp.LocationSQL;
 import fr.evercraft.everapi.EAMessage.EAMessages;
@@ -54,7 +55,7 @@ public class EEWarp extends ECommand<EverEssentials> {
 	}
 
 	public boolean testPermission(final CommandSource source) {
-		return source.hasPermission(this.plugin.getPermissions().get("WARP"));
+		return source.hasPermission(EEPermissions.WARP.get());
 	}
 
 	public Text description(final CommandSource source) {
@@ -72,7 +73,7 @@ public class EEWarp extends ECommand<EverEssentials> {
 			for(String warp : this.plugin.getManagerServices().getWarp().getWarps().keySet()){
 				suggests.add(warp);
 			}
-		} else if(args.size() == 2 && source.hasPermission(this.plugin.getPermissions().get("WARP_OTHERS"))) {
+		} else if(args.size() == 2 && source.hasPermission(EEPermissions.WARP_OTHERS.get())) {
 			suggests = null;
 		}
 		return suggests;
@@ -95,7 +96,7 @@ public class EEWarp extends ECommand<EverEssentials> {
 			}
 		} else if(args.size() == 2) {
 			// Si il a la permission
-			if(source.hasPermission(this.plugin.getPermissions().get("WARP_OTHERS"))){
+			if(source.hasPermission(EEPermissions.WARP_OTHERS.get())){
 				Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(args.get(0));
 				// Le joueur existe
 				if(optPlayer.isPresent()){
@@ -119,7 +120,7 @@ public class EEWarp extends ECommand<EverEssentials> {
 		TreeMap<String, LocationSQL> warps = new TreeMap<String, LocationSQL>(this.plugin.getManagerServices().getWarp().getAllWarps());
 		
 		List<Text> lists = new ArrayList<Text>();
-		if(player.hasPermission(this.plugin.getPermissions().get("DELWARP"))) {
+		if(player.hasPermission(EEPermissions.DELWARP.get())) {
 			for (Entry<String, LocationSQL> warp : warps.entrySet()) {
 				if(hasPermission(player, warp.getKey())) {
 					Optional<World> world = warp.getValue().getWorld();
@@ -264,6 +265,6 @@ public class EEWarp extends ECommand<EverEssentials> {
 	}
 	
 	private boolean hasPermission(CommandSource player, String warp) {
-		return (!this.permission || player.hasPermission(this.plugin.getPermissions().get("DELWARP") + "." + warp));
+		return (!this.permission || player.hasPermission(EEPermissions.WARP_NAME.get() + "." + warp));
 	}
 }

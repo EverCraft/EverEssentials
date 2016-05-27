@@ -31,6 +31,7 @@ import org.spongepowered.api.world.DimensionTypes;
 import org.spongepowered.api.world.World;
 import org.spongepowered.api.world.storage.WorldProperties;
 
+import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.ECommand;
@@ -53,7 +54,7 @@ public class EETime extends ECommand<EverEssentials> {
 	}
 
 	public boolean testPermission(final CommandSource source) {
-		return source.hasPermission(this.plugin.getPermissions().get("TIME"));
+		return source.hasPermission(EEPermissions.TIME.get());
 	}
 
 	public Text description(final CommandSource source) {

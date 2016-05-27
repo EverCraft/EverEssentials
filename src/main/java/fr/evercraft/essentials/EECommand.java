@@ -37,13 +37,13 @@ public class EECommand extends ECommand<EverEssentials> {
 	public boolean execute(CommandSource source, List<String> args) throws CommandException, PluginDisableException {
 		if(args.size() == 1){
 			if(args.get(0).equalsIgnoreCase("help")) {
-				if(source.hasPermission(this.plugin.getPermissions().get("HELP"))) {					
+				if(source.hasPermission(EEPermissions.HELP.get())) {					
 					this.plugin.getEverAPI().getManagerService().getEPagination().helpCommand(this.plugin.getManagerCommands(), source, this.plugin);
 				} else {
 					source.sendMessage(EAMessages.NO_PERMISSION.getText());
 				}
 			} else if(args.get(0).equalsIgnoreCase("reload")) {
-				if(source.hasPermission(this.plugin.getPermissions().get("RELOAD"))) {
+				if(source.hasPermission(EEPermissions.RELOAD.get())) {
 					this.plugin.reload();
 					source.sendMessage(EChat.of(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getEverAPI().getMessages().getMessage("RELOAD_COMMAND")));
 				} else {
@@ -71,6 +71,6 @@ public class EECommand extends ECommand<EverEssentials> {
 	}
 	
 	public boolean testPermission(CommandSource source) {
-		return source.hasPermission(this.plugin.getPermissions().get("EVERESSENTIALS"));
+		return source.hasPermission(EEPermissions.EVERESSENTIALS.get());
 	}
 }

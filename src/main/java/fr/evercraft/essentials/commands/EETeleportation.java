@@ -28,6 +28,7 @@ import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
+import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.EChat;
@@ -42,7 +43,7 @@ public class EETeleportation extends ECommand<EverEssentials> {
     }
 	
 	public boolean testPermission(final CommandSource source) {
-		return source.hasPermission(this.plugin.getPermissions().get("TP"));
+		return source.hasPermission(EEPermissions.TP.get());
 	}
 
 	public Text description(final CommandSource source) {
@@ -50,7 +51,7 @@ public class EETeleportation extends ECommand<EverEssentials> {
 	}
 
 	public Text help(final CommandSource source) {
-		if(source.hasPermission(this.plugin.getPermissions().get("TP_OTHERS"))){
+		if(source.hasPermission(EEPermissions.TP_OTHERS.get())){
 			return Text.builder("/tp [joueur|destination <joueur>]").onClick(TextActions.suggestCommand("/tp "))
 					.color(TextColors.RED).build();
 		} 
@@ -62,7 +63,7 @@ public class EETeleportation extends ECommand<EverEssentials> {
 		List<String> suggests = new ArrayList<String>();
 		if(args.size() == 1){
 			suggests = null;
-		} else if (args.size() == 2 && source.hasPermission(this.plugin.getPermissions().get("TP_OTHERS"))){
+		} else if (args.size() == 2 && source.hasPermission(EEPermissions.TP_OTHERS.get())){
 			suggests = null;
 		}
 		return suggests;
@@ -89,7 +90,7 @@ public class EETeleportation extends ECommand<EverEssentials> {
 			}
 		} else if(args.size() == 2) {
 			// Si il a la permission
-			if(source.hasPermission(this.plugin.getPermissions().get("TP_OTHERS"))) {
+			if(source.hasPermission(EEPermissions.TP_OTHERS.get())) {
 				Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(args.get(0));
 				// Le joueur existe
 				if(optPlayer.isPresent()){

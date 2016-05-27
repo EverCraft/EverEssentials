@@ -31,6 +31,7 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
 
+import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.ECommand;
@@ -43,7 +44,7 @@ public class EESkull extends ECommand<EverEssentials> {
 	}
 
 	public boolean testPermission(final CommandSource source) {
-		return source.hasPermission(this.plugin.getPermissions().get("SKULL"));
+		return source.hasPermission(EEPermissions.SKULL.get());
 	}
 
 	public Text description(final CommandSource source) {
@@ -55,7 +56,7 @@ public class EESkull extends ECommand<EverEssentials> {
 	}
 
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
-		if (args.size() == 1 && source.hasPermission(this.plugin.getPermissions().get("PING_OTHERS"))) {
+		if (args.size() == 1 && source.hasPermission(EEPermissions.PING_OTHERS.get())) {
 			return null;
 		}
 		return new ArrayList<String>();
@@ -76,7 +77,7 @@ public class EESkull extends ECommand<EverEssentials> {
 			// On connais le joueur
 		} else if (args.size() == 1) {
 			// Si il a la permission
-			if (source.hasPermission(this.plugin.getPermissions().get("SKULL_OTHERS"))) {
+			if (source.hasPermission(EEPermissions.SKULL_OTHERS.get())) {
 				resultat = commandSkullOthers((EPlayer) source, args.get(0));
 				// Il n'a pas la permission
 			} else {

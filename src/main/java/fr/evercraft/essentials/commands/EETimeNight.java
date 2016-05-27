@@ -25,6 +25,7 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
 
+import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.plugin.ECommand;
 
@@ -35,7 +36,7 @@ public class EETimeNight extends ECommand<EverEssentials> {
 	}
 
 	public boolean testPermission(final CommandSource source) {
-		return source.hasPermission(this.plugin.getPermissions().get("TIME"));
+		return source.hasPermission(EEPermissions.TIME.get());
 	}
 
 	public Text description(final CommandSource source) {

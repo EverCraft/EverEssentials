@@ -26,6 +26,7 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
 
+import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.EChat;
@@ -39,7 +40,7 @@ public class EEClearInventory extends ECommand<EverEssentials> {
     }
 
 	public boolean testPermission(final CommandSource source) {
-		return source.hasPermission(this.plugin.getPermissions().get("CLEARINVENTORY"));
+		return source.hasPermission(EEPermissions.CLEARINVENTORY.get());
 	}
 
 	public Text description(final CommandSource source) {
@@ -47,7 +48,7 @@ public class EEClearInventory extends ECommand<EverEssentials> {
 	}
 
 	public Text help(final CommandSource source) {
-		if(source.hasPermission(this.plugin.getPermissions().get("CLEARINVENTORY_OTHERS"))){
+		if(source.hasPermission(EEPermissions.CLEARINVENTORY_OTHERS.get())){
 			return Text.builder("/clearinventory [joueur]").onClick(TextActions.suggestCommand("/clearinventory "))
 					.color(TextColors.RED).build();
 		}
@@ -56,7 +57,7 @@ public class EEClearInventory extends ECommand<EverEssentials> {
 	}
 	
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
-		if(args.size() == 1 && source.hasPermission(this.plugin.getPermissions().get("CLEARINVENTORY_OTHERS"))){
+		if(args.size() == 1 && source.hasPermission(EEPermissions.CLEARINVENTORY_OTHERS.get())){
 			return null;
 		}
 		return new ArrayList<String>();
@@ -77,7 +78,7 @@ public class EEClearInventory extends ECommand<EverEssentials> {
 		// On connais le joueur
 		} else if(args.size() == 1) {
 			// Si il a la permission
-			if(source.hasPermission(this.plugin.getPermissions().get("CLEARINVENTORY_OTHERS"))){
+			if(source.hasPermission(EEPermissions.CLEARINVENTORY_OTHERS.get())){
 				Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(args.get(0));
 				// Le joueur existe
 				if(optPlayer.isPresent()){

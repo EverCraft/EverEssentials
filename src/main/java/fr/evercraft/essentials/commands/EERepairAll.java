@@ -27,6 +27,7 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
 
+import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.plugin.ECommand;
 import fr.evercraft.everapi.server.player.EPlayer;
@@ -40,7 +41,7 @@ public class EERepairAll extends ECommand<EverEssentials> {
 	}
 
 	public boolean testPermission(final CommandSource source) {
-		return source.hasPermission(this.plugin.getPermissions().get("REPAIR_ALL"));
+		return source.hasPermission(EEPermissions.REPAIR_ALL.get());
 	}
 
 	public Text description(final CommandSource source) {

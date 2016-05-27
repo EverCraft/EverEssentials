@@ -28,6 +28,7 @@ import org.spongepowered.api.text.format.TextColors;
 
 import com.flowpowered.math.vector.Vector3i;
 
+import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.plugin.ECommand;
 import fr.evercraft.everapi.server.player.EPlayer;
@@ -39,7 +40,7 @@ public class EEJump extends ECommand<EverEssentials> {
     }
 
 	public boolean testPermission(final CommandSource source) {
-		return source.hasPermission(this.plugin.getPermissions().get("JUMP"));
+		return source.hasPermission(EEPermissions.JUMP.get());
 	}
 
 	public Text description(final CommandSource source) {

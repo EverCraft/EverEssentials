@@ -29,6 +29,7 @@ import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
+import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.exception.ServerDisableException;
 import fr.evercraft.everapi.plugin.EChat;
@@ -43,7 +44,7 @@ public class EEWarpSet extends ECommand<EverEssentials> {
     }
 	
 	public boolean testPermission(final CommandSource source) {
-		return source.hasPermission(this.plugin.getPermissions().get("SETWARP"));
+		return source.hasPermission(EEPermissions.SETWARP.get());
 	}
 
 	public Text description(final CommandSource source) {

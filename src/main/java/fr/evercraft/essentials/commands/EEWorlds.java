@@ -28,6 +28,7 @@ import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
+import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.EChat;
@@ -42,7 +43,7 @@ public class EEWorlds extends ECommand<EverEssentials> {
 	}
 
 	public boolean testPermission(final CommandSource source) {
-		return source.hasPermission(this.plugin.getPermissions().get("WORLDS"));
+		return source.hasPermission(EEPermissions.WORLDS.get());
 	}
 
 	public Text description(final CommandSource source) {
@@ -50,7 +51,7 @@ public class EEWorlds extends ECommand<EverEssentials> {
 	}
 
 	public Text help(final CommandSource source) {
-		if(source.hasPermission(this.plugin.getPermissions().get("WORLDS_OTHERS"))){
+		if(source.hasPermission(EEPermissions.WORLDS_OTHERS.get())){
 			return Text.builder("/worlds [monde [joueur]]").onClick(TextActions.suggestCommand("/worlds "))
 					.color(TextColors.RED).build();
 		} 
@@ -62,11 +63,11 @@ public class EEWorlds extends ECommand<EverEssentials> {
 		List<String> suggests = new ArrayList<String>();
 		if (args.size() == 1) {
 			for (World world : this.plugin.getEServer().getWorlds()) {
-				if (source.hasPermission(this.plugin.getPermissions().get("WORLDS") + "." + world.getName())) {
+				if (source.hasPermission(EEPermissions.WORLDS_NAME.get() + "." + world.getName())) {
 					suggests.add(world.getProperties().getWorldName());
 				}
 			}
-		} else if(args.size() == 2 && source.hasPermission(this.plugin.getPermissions().get("WORLDS_OTHERS"))) {
+		} else if(args.size() == 2 && source.hasPermission(EEPermissions.WORLDS_OTHERS.get())) {
 			suggests = null;
 		}
 		return suggests;
@@ -87,7 +88,7 @@ public class EEWorlds extends ECommand<EverEssentials> {
 			}
 		} else if (args.size() == 2) {
 			// Si il a la permission
-			if (source.hasPermission(this.plugin.getPermissions().get("WORLDS_OTHERS"))){
+			if (source.hasPermission(EEPermissions.WORLDS_OTHERS.get())){
 				// Si la source est bien un joueur
 				if(source instanceof EPlayer) {
 					Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(args.get(1));
@@ -115,7 +116,7 @@ public class EEWorlds extends ECommand<EverEssentials> {
 	public boolean commandWorldList(final CommandSource player) {
 		List<Text> lists = new ArrayList<Text>();
 		for (World world : this.plugin.getEServer().getWorlds()) {
-			if(player.hasPermission(this.plugin.getPermissions().get("WORLDS") + "." + world.getName())){
+			if(player.hasPermission(EEPermissions.WORLDS_NAME.get() + "." + world.getName())){
 				lists.add(ETextBuilder.toBuilder(this.plugin.getMessages().getMessage("WORLDS_LIST_LINE")
 						.replaceAll("<world>", world.getName()))
 					.replace("<teleport>", getButtonTeleport(world.getName()))
@@ -130,17 +131,21 @@ public class EEWorlds extends ECommand<EverEssentials> {
 	public boolean commandWorldTeleport(final EPlayer player, final String world_name) {
 		Optional<World> optWorld = this.plugin.getEServer().getWorld(world_name);
 		if(optWorld.isPresent()) {
-			if(player.teleportSafe(optWorld.get().getSpawnLocation())) {
-				player.sendMessage(ETextBuilder.toBuilder(this.plugin.getMessages().getText("PREFIX"))
-						.append(this.plugin.getMessages().getMessage("WORLDS_TELEPORT_PLAYER"))
-						.replace("<world>", getButtonPosition(player.getLocation()))
-						.build());
-				return true;
+			if(player.hasPermission(EEPermissions.WORLDS_NAME.get() + "." + optWorld.get().getName())) {
+				if(player.teleportSafe(optWorld.get().getSpawnLocation())) {
+					player.sendMessage(ETextBuilder.toBuilder(this.plugin.getMessages().getText("PREFIX"))
+							.append(this.plugin.getMessages().getMessage("WORLDS_TELEPORT_PLAYER"))
+							.replace("<world>", getButtonPosition(player.getLocation()))
+							.build());
+					return true;
+				} else {
+					player.sendMessage(ETextBuilder.toBuilder(this.plugin.getMessages().getText("PREFIX"))
+							.append(this.plugin.getMessages().getMessage("WORLDS_TELEPORT_PLAYER_ERROR"))
+							.replace("<world>", getButtonPosition(optWorld.get().getSpawnLocation()))
+							.build());
+				}
 			} else {
-				player.sendMessage(ETextBuilder.toBuilder(this.plugin.getMessages().getText("PREFIX"))
-						.append(this.plugin.getMessages().getMessage("WORLDS_TELEPORT_PLAYER_ERROR"))
-						.replace("<world>", getButtonPosition(optWorld.get().getSpawnLocation()))
-						.build());
+				player.sendMessage(EAMessages.NO_PERMISSION_WORLD.getText());
 			}
 		// Monde introuvable
 		} else {
@@ -152,23 +157,27 @@ public class EEWorlds extends ECommand<EverEssentials> {
 	public boolean commandWorldTeleportOthers(final CommandSource staff, final EPlayer player, String world_name) {
 		Optional<World> optWorld = this.plugin.getEServer().getWorld(world_name);
 		if(optWorld.isPresent()) {
-			if(player.teleportSafe(optWorld.get().getSpawnLocation())) {
-				player.sendMessage(ETextBuilder.toBuilder(this.plugin.getMessages().getText("PREFIX"))
-						.append(this.plugin.getMessages().getMessage("WORLDS_TELEPORT_OTHERS_PLAYER")
-								.replaceAll("<staff>", staff.getName()))
-						.replace("<world>", getButtonPosition(player.getLocation()))
-						.build());
-				staff.sendMessage(ETextBuilder.toBuilder(this.plugin.getMessages().getText("PREFIX"))
-						.append(this.plugin.getMessages().getMessage("WORLDS_TELEPORT_OTHERS_STAFF")
-								.replaceAll("<player>", player.getName()))
-						.replace("<world>", getButtonPosition(player.getLocation()))
-						.build());
-				return true;
+			if(player.hasPermission(EEPermissions.WORLDS_NAME.get() + "." + optWorld.get().getName())) {
+				if(player.teleportSafe(optWorld.get().getSpawnLocation())) {
+					player.sendMessage(ETextBuilder.toBuilder(this.plugin.getMessages().getText("PREFIX"))
+							.append(this.plugin.getMessages().getMessage("WORLDS_TELEPORT_OTHERS_PLAYER")
+									.replaceAll("<staff>", staff.getName()))
+							.replace("<world>", getButtonPosition(player.getLocation()))
+							.build());
+					staff.sendMessage(ETextBuilder.toBuilder(this.plugin.getMessages().getText("PREFIX"))
+							.append(this.plugin.getMessages().getMessage("WORLDS_TELEPORT_OTHERS_STAFF")
+									.replaceAll("<player>", player.getName()))
+							.replace("<world>", getButtonPosition(player.getLocation()))
+							.build());
+					return true;
+				} else {
+					staff.sendMessage(ETextBuilder.toBuilder(this.plugin.getMessages().getText("PREFIX"))
+							.append(this.plugin.getMessages().getMessage("WORLDS_TELEPORT_OTHERS_ERROR"))
+							.replace("<world>", getButtonPosition(optWorld.get().getSpawnLocation()))
+							.build());
+				}
 			} else {
-				staff.sendMessage(ETextBuilder.toBuilder(this.plugin.getMessages().getText("PREFIX"))
-						.append(this.plugin.getMessages().getMessage("WORLDS_TELEPORT_OTHERS_ERROR"))
-						.replace("<world>", getButtonPosition(optWorld.get().getSpawnLocation()))
-						.build());
+				staff.sendMessage(EAMessages.NO_PERMISSION_WORLD_OTHERS.getText());
 			}
 		// Monde introuvable
 		} else {

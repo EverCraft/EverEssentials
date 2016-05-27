@@ -32,6 +32,7 @@ import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.world.World;
 
+import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.essentials.service.ESubject;
 import fr.evercraft.essentials.service.warp.LocationSQL;
@@ -47,7 +48,7 @@ public class EEHome extends ECommand<EverEssentials> {
     }
 
 	public boolean testPermission(final CommandSource source) {
-		return source.hasPermission(this.plugin.getPermissions().get("HOME"));
+		return source.hasPermission(EEPermissions.HOME.get());
 	}
 
 	public Text description(final CommandSource source) {

@@ -31,6 +31,7 @@ import org.spongepowered.api.world.World;
 import org.spongepowered.api.world.weather.Weather;
 import org.spongepowered.api.world.weather.Weathers;
 
+import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.ECommand;
@@ -44,7 +45,7 @@ public class EEWeather extends ECommand<EverEssentials> {
 	}
 
 	public boolean testPermission(final CommandSource source) {
-		return source.hasPermission(this.plugin.getPermissions().get("WEATHER"));
+		return source.hasPermission(EEPermissions.WEATHER.get());
 	}
 
 	public Text description(final CommandSource source) {

@@ -23,6 +23,7 @@ import fr.evercraft.essentials.listeners.EEPlayerListeners;
 import fr.evercraft.essentials.managers.EEManagerCommands;
 import fr.evercraft.essentials.managers.EEManagerServices;
 import fr.evercraft.everapi.exception.PluginDisableException;
+import fr.evercraft.everapi.plugin.EPermission;
 import fr.evercraft.everapi.plugin.EPlugin;
 
 @Plugin(id = "fr.evercraft.everessentials", 
@@ -41,7 +42,6 @@ public class EverEssentials extends EPlugin {
 	
 	private EEConfig config;
 	private EEMessage messages;
-	private EEPermission permissions;
 	
 	private EEManagerServices managerServices;
 	private EEManagerCommands managerCommands;
@@ -62,7 +62,6 @@ public class EverEssentials extends EPlugin {
 		this.managerServices = new EEManagerServices(this);
 		
 		this.messages = new EEMessage(this, "messages");
-		this.permissions = new EEPermission(this);
 		this.motd = new EEMotd(this, "motd");
 		this.rules = new EEConfigRules(this, "rules");
 	}
@@ -101,8 +100,8 @@ public class EverEssentials extends EPlugin {
 		return this.motd;
 	}
 	
-	public EEPermission getPermissions(){
-		return this.permissions;
+	public EPermission getPermissions(){
+		return null;
 	}
 
 	public EEConfigRules getRules() {

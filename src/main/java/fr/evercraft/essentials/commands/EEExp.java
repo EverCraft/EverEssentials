@@ -26,6 +26,7 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
 
+import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.EChat;
@@ -39,7 +40,7 @@ public class EEExp extends ECommand<EverEssentials> {
     }
 
 	public boolean testPermission(final CommandSource source) {
-		return source.hasPermission(this.plugin.getPermissions().get("EXP"));
+		return source.hasPermission(EEPermissions.EXP.get());
 	}
 
 	public Text description(final CommandSource source) {
@@ -47,7 +48,7 @@ public class EEExp extends ECommand<EverEssentials> {
 	}
 
 	public Text help(final CommandSource source) {
-		if(source.hasPermission(this.plugin.getPermissions().get("EXP_OTHERS"))){
+		if(source.hasPermission(EEPermissions.EXP_OTHERS.get())){
 			return Text.builder("/xp <give|set> <lvl|exp> <quantité> [joueur]").onClick(TextActions.suggestCommand("/xp "))
 				.color(TextColors.RED).build();
 		}
@@ -65,7 +66,7 @@ public class EEExp extends ECommand<EverEssentials> {
 			suggests.add("exp");
 		} else if (args.size() == 3) {
 			suggests.add("1");
-		} else if (args.size() == 4 && source.hasPermission(this.plugin.getPermissions().get("EXP_OTHERS"))) {
+		} else if (args.size() == 4 && source.hasPermission(EEPermissions.EXP_OTHERS.get())) {
 			suggests = null;
 		}
 		return suggests;
@@ -102,7 +103,7 @@ public class EEExp extends ECommand<EverEssentials> {
 			}
 		} else if (args.size() == 4) {
 			// Si il a la permission
-			if(source.hasPermission(this.plugin.getPermissions().get("EXP_OTHERS"))){
+			if(source.hasPermission(EEPermissions.EXP_OTHERS.get())){
 				// Si la source est bien un joueur
 				Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(args.get(3));
 				// Le joueur existe

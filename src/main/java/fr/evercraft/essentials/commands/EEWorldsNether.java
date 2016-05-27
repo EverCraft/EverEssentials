@@ -25,6 +25,7 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
 
+import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.plugin.ECommand;
 
@@ -35,7 +36,7 @@ public class EEWorldsNether extends ECommand<EverEssentials> {
 	}
 
 	public boolean testPermission(final CommandSource source) {
-		return source.hasPermission(this.plugin.getPermissions().get("WORLDS"));
+		return source.hasPermission(EEPermissions.WORLDS.get());
 	}
 
 	public Text description(final CommandSource source) {
@@ -48,7 +49,7 @@ public class EEWorldsNether extends ECommand<EverEssentials> {
 
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		List<String> suggests = null;
-		if(!(args.size() == 1 && source.hasPermission(this.plugin.getPermissions().get("WORLDS_OTHERS")))){
+		if(!(args.size() == 1 && source.hasPermission(EEPermissions.WORLDS_OTHERS.get()))){
 			suggests = new ArrayList<String>();
 		}
 		return suggests;

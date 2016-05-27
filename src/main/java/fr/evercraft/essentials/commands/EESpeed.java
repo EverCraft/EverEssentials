@@ -26,6 +26,7 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
 
+import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.java.UtilsDouble;
@@ -43,7 +44,7 @@ public class EESpeed extends ECommand<EverEssentials> {
 	}
 
 	public boolean testPermission(final CommandSource source) {
-		return source.hasPermission(this.plugin.getPermissions().get("SPEED"));
+		return source.hasPermission(EEPermissions.SPEED.get());
 	}
 
 	public Text description(final CommandSource source) {
@@ -51,14 +52,14 @@ public class EESpeed extends ECommand<EverEssentials> {
 	}
 
 	public Text help(final CommandSource source) {
-		if(source.hasPermission(this.plugin.getPermissions().get("SPEED_WALK")) && 
-			source.hasPermission(this.plugin.getPermissions().get("SPEED_FLY"))) {
+		if(source.hasPermission(EEPermissions.SPEED_WALK.get()) && 
+			source.hasPermission(EEPermissions.SPEED_FLY.get())) {
 			return Text.builder("/speed [vitesse] [walk|fly] [joueur]").onClick(TextActions.suggestCommand("/speed "))
 					.color(TextColors.RED).build();
-		} else if(source.hasPermission(this.plugin.getPermissions().get("SPEED_WALK"))) {
+		} else if(source.hasPermission(EEPermissions.SPEED_WALK.get())) {
 				return Text.builder("/speed [vitesse] [fly] [joueur]").onClick(TextActions.suggestCommand("/speed "))
 						.color(TextColors.RED).build();
-		} else if(source.hasPermission(this.plugin.getPermissions().get("SPEED_WALK"))) {
+		} else if(source.hasPermission(EEPermissions.SPEED_WALK.get())) {
 			return Text.builder("/speed [vitesse] [walk] [joueur]").onClick(TextActions.suggestCommand("/speed "))
 					.color(TextColors.RED).build();
 		}
@@ -71,13 +72,13 @@ public class EESpeed extends ECommand<EverEssentials> {
 		if (args.size() == 1) {
 			suggests.add("1");
 		} else if (args.size() == 2) {
-			if(source.hasPermission(this.plugin.getPermissions().get("SPEED_WALK"))) {
+			if(source.hasPermission(EEPermissions.SPEED_WALK.get())) {
 				suggests.add("walk");
 			}
-			if(source.hasPermission(this.plugin.getPermissions().get("SPEED_FLY"))) {
+			if(source.hasPermission(EEPermissions.SPEED_FLY.get())) {
 				suggests.add("fly");
 			}
-		} else if (args.size() == 3 && source.hasPermission(this.plugin.getPermissions().get("SPEED_OTHERS"))) {
+		} else if (args.size() == 3 && source.hasPermission(EEPermissions.SPEED_OTHERS.get())) {
 			suggests = null;
 		}
 		return suggests;
@@ -127,7 +128,7 @@ public class EESpeed extends ECommand<EverEssentials> {
 			}
 		// On connais le joueur
 		} else if (args.size() == 3) {
-			if(source.hasPermission(this.plugin.getPermissions().get("SPEED_OTHERS"))) {
+			if(source.hasPermission(EEPermissions.SPEED_OTHERS.get())) {
 				Optional<Double> optSpeed = getSpeed(args.get(0));
 				if(optSpeed.isPresent()) {
 					Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(args.get(2));
@@ -176,7 +177,7 @@ public class EESpeed extends ECommand<EverEssentials> {
 	}
 
 	private boolean commandSpeedWalk(EPlayer player, Double speed) {
-		if(player.hasPermission(this.plugin.getPermissions().get("SPEED_WALK"))) {
+		if(player.hasPermission(EEPermissions.SPEED_WALK.get())) {
 			player.setWalkSpeed(speed * EPlayer.CONVERSION_WALF);
 			player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("SPEED_PLAYER_WALK")
 					.replaceAll("<speed>", speed.toString()));
@@ -188,7 +189,7 @@ public class EESpeed extends ECommand<EverEssentials> {
 	}
 
 	private boolean commandSpeedFly(EPlayer player, Double speed) {
-		if(player.hasPermission(this.plugin.getPermissions().get("SPEED_FLY"))) {
+		if(player.hasPermission(EEPermissions.SPEED_FLY.get())) {
 			player.setFlySpeed(speed * EPlayer.CONVERSION_FLY);
 			player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("SPEED_PLAYER_FLY")
 					.replaceAll("<speed>", speed.toString()));
@@ -200,7 +201,7 @@ public class EESpeed extends ECommand<EverEssentials> {
 	}
 
 	private boolean commandSpeedWalkOthers(CommandSource staff, EPlayer player, Double speed) {
-		if(staff.hasPermission(this.plugin.getPermissions().get("SPEED_WALK"))) {
+		if(staff.hasPermission(EEPermissions.SPEED_WALK.get())) {
 			player.setWalkSpeed(speed * EPlayer.CONVERSION_WALF);
 			player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("SPEED_OTHERS_PLAYER_WALK")
 					.replaceAll("<speed>", speed.toString())
@@ -216,7 +217,7 @@ public class EESpeed extends ECommand<EverEssentials> {
 	}
 
 	private boolean commandSpeedFlyOthers(CommandSource staff, EPlayer player, Double speed) {
-		if(staff.hasPermission(this.plugin.getPermissions().get("SPEED_FLY"))) {
+		if(staff.hasPermission(EEPermissions.SPEED_FLY.get())) {
 			player.setFlySpeed(speed * EPlayer.CONVERSION_FLY);
 			player.sendMessage(this.plugin.getMessages().getMessage("PREFIX") + this.plugin.getMessages().getMessage("SPEED_OTHERS_PLAYER_FLY")
 					.replaceAll("<speed>", speed.toString())

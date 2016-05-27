@@ -30,6 +30,7 @@ import org.spongepowered.api.world.World;
 
 import com.flowpowered.math.vector.Vector3i;
 
+import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.ECommand;
@@ -43,7 +44,7 @@ public class EESpawnMob extends ECommand<EverEssentials> {
     }
 
 	public boolean testPermission(final CommandSource source) {
-		return source.hasPermission(this.plugin.getPermissions().get("SPAWNMOB"));
+		return source.hasPermission(EEPermissions.SPAWNMOB.get());
 	}
 
 	public Text description(final CommandSource source) {

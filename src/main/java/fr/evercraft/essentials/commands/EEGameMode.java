@@ -27,6 +27,7 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
 
+import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.EChat;
@@ -41,7 +42,7 @@ public class EEGameMode extends ECommand<EverEssentials> {
     }
 
 	public boolean testPermission(final CommandSource source) {
-		return source.hasPermission(this.plugin.getPermissions().get("GAMEMODE"));
+		return source.hasPermission(EEPermissions.GAMEMODE.get());
 	}
 
 	public Text description(final CommandSource source) {
@@ -49,7 +50,7 @@ public class EEGameMode extends ECommand<EverEssentials> {
 	}
 	
 	public Text help(final CommandSource source) {
-		if(source.hasPermission(this.plugin.getPermissions().get("PING_OTHERS"))){
+		if(source.hasPermission(EEPermissions.PING_OTHERS.get())){
 			return Text.builder("/gm <")
 					.append(Text.builder("survival").onClick(TextActions.suggestCommand("/gm survival ")).build())
 					.append(Text.builder("|").build())
@@ -85,7 +86,7 @@ public class EEGameMode extends ECommand<EverEssentials> {
 			suggests.add("adventure");
 			suggests.add("spectator");
 			suggests.add("empty");
-		} else if(args.size() == 2 && source.hasPermission(this.plugin.getPermissions().get("GAMEMODE_OTHERS"))){
+		} else if(args.size() == 2 && source.hasPermission(EEPermissions.GAMEMODE_OTHERS.get())){
 			suggests = null;
 		}
 		return suggests;
@@ -107,7 +108,7 @@ public class EEGameMode extends ECommand<EverEssentials> {
 			// Si on connait le gamemode et le joueur
 		} else if(args.size() == 2) {
 			// Si il a la permission
-			if(source.hasPermission(this.plugin.getPermissions().get("GAMEMODE_OTHERS"))){
+			if(source.hasPermission(EEPermissions.GAMEMODE_OTHERS.get())){
 				Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(args.get(1));
 				// Le joueur existe
 				if(optPlayer.isPresent()){

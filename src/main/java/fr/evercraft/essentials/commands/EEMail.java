@@ -33,6 +33,7 @@ import org.spongepowered.api.text.LiteralText.Builder;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
 
+import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.essentials.service.ESubject;
 import fr.evercraft.everapi.EAMessage.EAMessages;
@@ -49,7 +50,7 @@ public class EEMail extends ECommand<EverEssentials> {
     }
 
 	public boolean testPermission(final CommandSource source) {
-		return source.hasPermission(this.plugin.getPermissions().get("MAIL"));
+		return source.hasPermission(EEPermissions.MAIL.get());
 	}
 
 	public Text description(final CommandSource source) {
@@ -62,10 +63,10 @@ public class EEMail extends ECommand<EverEssentials> {
 		build = build.append(Text.of("|"));
 		build = build.append(Text.builder("clear").onClick(TextActions.suggestCommand("/" + this.getName() + " clear")).build());
 		
-		if(source.hasPermission(this.plugin.getPermissions().get("MAIL_SENDALL"))){
+		if(source.hasPermission(EEPermissions.MAIL_SENDALL.get())){
 			build = build.append(Text.of("|"));
 			build = build.append(Text.builder("send <*|player> <message>").onClick(TextActions.suggestCommand("/" + this.getName() + " send ")).build());
-		} else if(source.hasPermission(this.plugin.getPermissions().get("MAIL_SEND"))){
+		} else if(source.hasPermission(EEPermissions.MAIL_SEND.get())){
 			build = build.append(Text.of("|"));
 			build = build.append(Text.builder("send <player> <message>").onClick(TextActions.suggestCommand("/" + this.getName() + " send ")).build());
 		}
@@ -77,12 +78,12 @@ public class EEMail extends ECommand<EverEssentials> {
 		if (args.size() == 1) {
 			suggests.add("read");
 			suggests.add("clear");
-			if(source.hasPermission(this.plugin.getPermissions().get("MAIL_SEND"))){
+			if(source.hasPermission(EEPermissions.MAIL_SEND.get())){
 				suggests.add("send");
 			}
 		} else if (args.size() == 2) {
-			if(args.get(0).equalsIgnoreCase("send") && source.hasPermission(this.plugin.getPermissions().get("MAIL_SEND"))) {
-				if(source.hasPermission(this.plugin.getPermissions().get("MAIL_SENDALL"))){
+			if(args.get(0).equalsIgnoreCase("send") && source.hasPermission(EEPermissions.MAIL_SEND.get())) {
+				if(source.hasPermission(EEPermissions.MAIL_SENDALL.get())){
 					suggests.add("*");
 					for(Player player : this.plugin.getGame().getServer().getOnlinePlayers()) {
 						suggests.add(player.getName());
@@ -92,7 +93,7 @@ public class EEMail extends ECommand<EverEssentials> {
 				}
 			}
 		} else if (args.size() == 3) {
-			if(args.get(0).equalsIgnoreCase("send") && source.hasPermission(this.plugin.getPermissions().get("MAIL_SEND"))){
+			if(args.get(0).equalsIgnoreCase("send") && source.hasPermission(EEPermissions.MAIL_SEND.get())){
 				suggests.add("Hello world");
 			}
 		}
@@ -158,7 +159,7 @@ public class EEMail extends ECommand<EverEssentials> {
 				}
 			} else if(args.get(0).equalsIgnoreCase("sendall")) {
 				// Si il a la permission
-				if(source.hasPermission(this.plugin.getPermissions().get("MAIL_SENDALL"))){
+				if(source.hasPermission(EEPermissions.MAIL_SENDALL.get())){
 					resultat = commandSendAll(source, args.get(1));
 				// Il n'a pas la permission
 				} else {
@@ -170,10 +171,10 @@ public class EEMail extends ECommand<EverEssentials> {
 		} else if(args.size() == 3) {
 			if(args.get(0).equalsIgnoreCase("send")) {
 				// Si il a la permission
-				if(source.hasPermission(this.plugin.getPermissions().get("MAIL_SEND"))) {
+				if(source.hasPermission(EEPermissions.MAIL_SEND.get())) {
 					if(args.get(1).equalsIgnoreCase("*")) {
 						// Si il a la permission
-						if(source.hasPermission(this.plugin.getPermissions().get("MAIL_SENDALL"))){
+						if(source.hasPermission(EEPermissions.MAIL_SENDALL.get())){
 							resultat = commandSendAll(source, args.get(2));
 						// Il n'a pas la permission
 						} else {

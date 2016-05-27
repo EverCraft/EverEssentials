@@ -34,6 +34,7 @@ import org.spongepowered.api.world.World;
 
 import com.flowpowered.math.vector.Vector3i;
 
+import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.ECommand;
@@ -47,7 +48,7 @@ public class EESpawner extends ECommand<EverEssentials> {
     }
 
 	public boolean testPermission(final CommandSource source) {
-		return source.hasPermission(this.plugin.getPermissions().get("SPAWNER"));
+		return source.hasPermission(EEPermissions.SPAWNER.get());
 	}
 
 	public Text description(final CommandSource source) {

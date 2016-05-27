@@ -30,6 +30,7 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
 
+import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.EChat;
@@ -45,7 +46,7 @@ public class EENames extends ECommand<EverEssentials> {
     }
 
 	public boolean testPermission(final CommandSource source) {
-		return source.hasPermission(this.plugin.getPermissions().get("NAMES"));
+		return source.hasPermission(EEPermissions.NAMES.get());
 	}
 
 	public Text description(final CommandSource source) {
@@ -53,7 +54,7 @@ public class EENames extends ECommand<EverEssentials> {
 	}
 
 	public Text help(final CommandSource source) {
-		if(source.hasPermission(this.plugin.getPermissions().get("NAMES_OTHERS"))){
+		if(source.hasPermission(EEPermissions.NAMES_OTHERS.get())){
 			return Text.builder("/names [joueur]").onClick(TextActions.suggestCommand("/names "))
 					.color(TextColors.RED).build();
 		}
@@ -62,7 +63,7 @@ public class EENames extends ECommand<EverEssentials> {
 	}
 	
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
-		if(args.size() == 1 && source.hasPermission(this.plugin.getPermissions().get("NAMES_OTHERS"))){
+		if(args.size() == 1 && source.hasPermission(EEPermissions.NAMES_OTHERS.get())){
 			return null;
 		}
 		return new ArrayList<String>();
@@ -87,7 +88,7 @@ public class EENames extends ECommand<EverEssentials> {
 		// On connais le joueur
 		} else if(args.size() == 1) {
 			// Si il a la permission
-			if(source.hasPermission(this.plugin.getPermissions().get("NAMES_OTHERS"))){
+			if(source.hasPermission(EEPermissions.NAMES_OTHERS.get())){
 				this.plugin.getGame().getScheduler().createTaskBuilder()
 							.async()
 							.execute(() -> commandNames(source, args.get(0)))

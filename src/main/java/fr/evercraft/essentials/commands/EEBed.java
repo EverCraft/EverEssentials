@@ -30,6 +30,7 @@ import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.util.RespawnLocation;
 
+import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.EChat;
@@ -43,7 +44,7 @@ public class EEBed extends ECommand<EverEssentials> {
     }
 
 	public boolean testPermission(final CommandSource source) {
-		return source.hasPermission(this.plugin.getPermissions().get("BED"));
+		return source.hasPermission(EEPermissions.BED.get());
 	}
 
 	public Text description(final CommandSource source) {
@@ -51,7 +52,7 @@ public class EEBed extends ECommand<EverEssentials> {
 	}
 
 	public Text help(final CommandSource source) {
-		if(source.hasPermission(this.plugin.getPermissions().get("BED_OTHERS"))){
+		if(source.hasPermission(EEPermissions.BED_OTHERS.get())){
 			return Text.builder("/bed [joueur]").onClick(TextActions.suggestCommand("/bed "))
 					.color(TextColors.RED).build();
 		}
@@ -60,7 +61,7 @@ public class EEBed extends ECommand<EverEssentials> {
 	}
 	
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
-		if(args.size() == 1 && source.hasPermission(this.plugin.getPermissions().get("BED_OTHERS"))){
+		if(args.size() == 1 && source.hasPermission(EEPermissions.BED_OTHERS.get())){
 			return null;
 		}
 		return new ArrayList<String>();
@@ -81,7 +82,7 @@ public class EEBed extends ECommand<EverEssentials> {
 		// On connais le joueur
 		} else if(args.size() == 1) {
 			// Si il a la permission
-			if(source.hasPermission(this.plugin.getPermissions().get("PING_OTHERS"))){
+			if(source.hasPermission(EEPermissions.PING_OTHERS.get())){
 				Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(args.get(0));
 				// Le joueur existe
 				if(optPlayer.isPresent()){

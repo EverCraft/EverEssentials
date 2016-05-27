@@ -32,6 +32,7 @@ import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
+import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.java.UtilsMap;
 import fr.evercraft.everapi.plugin.EChat;
@@ -66,7 +67,7 @@ public class EESpawnSet extends ECommand<EverEssentials> {
 		int max = this.permission_default;
 		int cpt = 0;
 		while (cpt < this.permissions.size() && max == this.permission_default) {
-			if (player.hasPermission(this.plugin.getPermissions().get("SETHOME_MULTIPLE") + "." + this.permissions.get(cpt).getKey())) {
+			if (player.hasPermission(EEPermissions.SETHOME_MULTIPLE.get() + "." + this.permissions.get(cpt).getKey())) {
 				max = this.permissions.get(cpt).getValue();
 			}
 			cpt++;
@@ -75,7 +76,7 @@ public class EESpawnSet extends ECommand<EverEssentials> {
 	}
 	
 	public boolean testPermission(final CommandSource source) {
-		return source.hasPermission(this.plugin.getPermissions().get("SETHOME"));
+		return source.hasPermission(EEPermissions.SETHOME.get());
 	}
 
 	public Text description(final CommandSource source) {
@@ -84,7 +85,7 @@ public class EESpawnSet extends ECommand<EverEssentials> {
 
 	public Text help(final CommandSource source) {
 		Text help;
-		if(source.hasPermission(this.plugin.getPermissions().get("SETHOME_MULTIPLE"))) {
+		if(source.hasPermission(EEPermissions.SETHOME_MULTIPLE.get())) {
 			help = Text.builder("/sethome <name>").onClick(TextActions.suggestCommand("/sethome "))
 					.color(TextColors.RED).build();
 		} else {
@@ -103,8 +104,8 @@ public class EESpawnSet extends ECommand<EverEssentials> {
 		boolean resultat = false;
 		
 		if(args.size() == 0 && 
-				!source.hasPermission(this.plugin.getPermissions().get("SETHOME_MULTIPLE")) && 
-				!source.hasPermission(this.plugin.getPermissions().get("SETHOME_MULTIPLE_UNLIMITED"))) {
+				!source.hasPermission(EEPermissions.SETHOME_MULTIPLE.get()) && 
+				!source.hasPermission(EEPermissions.SETHOME_MULTIPLE_UNLIMITED.get())) {
 			// Si la source est un joueur
 			if(source instanceof EPlayer) {
 				resultat = commandSetHome((EPlayer) source);
@@ -151,10 +152,10 @@ public class EESpawnSet extends ECommand<EverEssentials> {
 	public boolean commandSetHome(final EPlayer player, final String home_name) {
 		String name = EChat.fixLength(home_name, this.plugin.getEverAPI().getConfigs().get("maxCaractere").getInt(16));
 		// Si il a la permission multihome
-		if(player.hasPermission(this.plugin.getPermissions().get("SETHOME_MULTIPLE"))){
+		if(player.hasPermission(EEPermissions.SETHOME_MULTIPLE.get())){
 			int max = getMaxHome(player);
 			// Si le joueur à la permissions un unlimited ou un home qui porte déjà ce nom ou il peut encore avoir un home supplémentaire
-			if(player.hasPermission(this.plugin.getPermissions().get("SETHOME_MULTIPLE_UNLIMITED")) || 
+			if(player.hasPermission(EEPermissions.SETHOME_MULTIPLE_UNLIMITED.get()) || 
 					player.hasHome(name) || 
 					player.getHomes().size() < max) {
 				// Ajout d'un home

@@ -30,6 +30,7 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
 
+import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.java.UtilsMap;
 import fr.evercraft.everapi.plugin.EChat;
@@ -61,7 +62,7 @@ public class EENear extends ECommand<EverEssentials> {
 		int max = this.permission_default;
 		int cpt = 0;
 		while (cpt < this.permissions.size() && max == this.permission_default) {
-			if (player.hasPermission(this.plugin.getPermissions().get("NEAR") + "." + this.permissions.get(cpt).getKey())) {
+			if (player.hasPermission(EEPermissions.NEAR.get() + "." + this.permissions.get(cpt).getKey())) {
 				max = this.permissions.get(cpt).getValue();
 			}
 			cpt++;
@@ -70,7 +71,7 @@ public class EENear extends ECommand<EverEssentials> {
 	}
 	
 	public boolean testPermission(final CommandSource source) {
-		return source.hasPermission(this.plugin.getPermissions().get("NEAR"));
+		return source.hasPermission(EEPermissions.NEAR.get());
 	}
 
 	public Text description(final CommandSource source) {

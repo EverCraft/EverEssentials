@@ -28,6 +28,7 @@ import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
+import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.ECommand;
@@ -41,7 +42,7 @@ public class EETeleportationHere extends ECommand<EverEssentials> {
     }
 	
 	public boolean testPermission(final CommandSource source) {
-		return source.hasPermission(this.plugin.getPermissions().get("TPHERE"));
+		return source.hasPermission(EEPermissions.TPHERE.get());
 	}
 
 	public Text description(final CommandSource source) {

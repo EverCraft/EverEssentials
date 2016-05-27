@@ -33,6 +33,7 @@ import org.spongepowered.api.text.LiteralText.Builder;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
 
+import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.EChat;
@@ -48,7 +49,7 @@ public class EEButcher extends ECommand<EverEssentials> {
     }
 
 	public boolean testPermission(final CommandSource source) {
-		return source.hasPermission(this.plugin.getPermissions().get("BUTCHER"));
+		return source.hasPermission(EEPermissions.BUTCHER.get());
 	}
 
 	public Text description(final CommandSource source) {
@@ -57,38 +58,38 @@ public class EEButcher extends ECommand<EverEssentials> {
 
 	public Text help(CommandSource source) {
 		Text help;
-		if(	source.hasPermission(this.plugin.getPermissions().get("BUTCHER_ANIMAL")) ||  
-			source.hasPermission(this.plugin.getPermissions().get("BUTCHER_MONSTER")) ||  
-			source.hasPermission(this.plugin.getPermissions().get("BUTCHER_ALL")) ||  
-			source.hasPermission(this.plugin.getPermissions().get("BUTCHER_TYPE"))){
+		if(	source.hasPermission(EEPermissions.BUTCHER_ANIMAL.get()) ||  
+			source.hasPermission(EEPermissions.BUTCHER_MONSTER.get()) ||  
+			source.hasPermission(EEPermissions.BUTCHER_ALL.get()) ||  
+			source.hasPermission(EEPermissions.BUTCHER_TYPE.get())){
 			Builder build = Text.builder("/butcher").onClick(TextActions.suggestCommand("/butcher"))
 					.append(Text.of(" <"));
-			if(source.hasPermission(this.plugin.getPermissions().get("BUTCHER_ANIMAL"))){
+			if(source.hasPermission(EEPermissions.BUTCHER_ANIMAL.get())){
 				build = build.append(Text.builder("animal").onClick(TextActions.suggestCommand("/butcher animal")).build());
-				if(source.hasPermission(this.plugin.getPermissions().get("BUTCHER_MONSTER")) ||
-						source.hasPermission(this.plugin.getPermissions().get("BUTCHER_ALL")) ||
-						source.hasPermission(this.plugin.getPermissions().get("BUTCHER_TYPE"))){
+				if(source.hasPermission(EEPermissions.BUTCHER_MONSTER.get()) ||
+						source.hasPermission(EEPermissions.BUTCHER_ALL.get()) ||
+						source.hasPermission(EEPermissions.BUTCHER_TYPE.get())){
 					build = build.append(Text.builder("|").build());
 				}
 			}
-			if(source.hasPermission(this.plugin.getPermissions().get("BUTCHER_MONSTER"))){
+			if(source.hasPermission(EEPermissions.BUTCHER_MONSTER.get())){
 				build = build.append(Text.builder("monster").onClick(TextActions.suggestCommand("/butcher monster")).build());
-				if(source.hasPermission(this.plugin.getPermissions().get("BUTCHER_ALL")) ||
-						source.hasPermission(this.plugin.getPermissions().get("BUTCHER_TYPE"))){
+				if(source.hasPermission(EEPermissions.BUTCHER_ALL.get()) ||
+						source.hasPermission(EEPermissions.BUTCHER_TYPE.get())){
 					build = build.append(Text.builder("|").build());
 				}
 			}
-			if(source.hasPermission(this.plugin.getPermissions().get("BUTCHER_ALL"))){
+			if(source.hasPermission(EEPermissions.BUTCHER_ALL.get())){
 				build = build.append(Text.builder("all").onClick(TextActions.suggestCommand("/butcher all ")).build());
-				if(source.hasPermission(this.plugin.getPermissions().get("BUTCHER_TYPE"))){
+				if(source.hasPermission(EEPermissions.BUTCHER_TYPE.get())){
 					build = build.append(Text.builder("|").build());
 				}
 			}
-			if(source.hasPermission(this.plugin.getPermissions().get("BUTCHER_TYPE"))){
+			if(source.hasPermission(EEPermissions.BUTCHER_TYPE.get())){
 				build = build.append(Text.builder("type <créature>").onClick(TextActions.suggestCommand("/butcher type ")).build());
 			}
 			
-			if(source.hasPermission(this.plugin.getPermissions().get("BUTCHER_WORLD"))){
+			if(source.hasPermission(EEPermissions.BUTCHER_WORLD.get())){
 				build = build.append(Text.builder("> <rayon|all>").build());
 			} else {
 				build = build.append(Text.builder("> <rayon>").build());
@@ -105,20 +106,20 @@ public class EEButcher extends ECommand<EverEssentials> {
 		List<String> suggests = new ArrayList<String>();
 		if (source instanceof Player){
 			if (args.size() == 1) {
-				if (source.hasPermission(this.plugin.getPermissions().get("BUTCHER_ALL"))) {
+				if (source.hasPermission(EEPermissions.BUTCHER_ALL.get())) {
 					suggests.add("all");
 				}
-				if (source.hasPermission(this.plugin.getPermissions().get("BUTCHER_ANIMAL"))) {
+				if (source.hasPermission(EEPermissions.BUTCHER_ANIMAL.get())) {
 					suggests.add("animal");
 				}
-				if (source.hasPermission(this.plugin.getPermissions().get("BUTCHER_MONSTER"))) {
+				if (source.hasPermission(EEPermissions.BUTCHER_MONSTER.get())) {
 					suggests.add("monster");
 				}
-				if (source.hasPermission(this.plugin.getPermissions().get("BUTCHER_TYPE"))) {
+				if (source.hasPermission(EEPermissions.BUTCHER_TYPE.get())) {
 					suggests.add("type");
 				}
 			} else if (args.size() == 2) {
-				if(args.get(0).equalsIgnoreCase("type") && source.hasPermission(this.plugin.getPermissions().get("BUTCHER_TYPE"))) {
+				if(args.get(0).equalsIgnoreCase("type") && source.hasPermission(EEPermissions.BUTCHER_TYPE.get())) {
 					for(EntityType entity : UtilsEntityType.ANIMALS){
 						suggests.add(entity.getName().toUpperCase());
 					}
@@ -127,13 +128,13 @@ public class EEButcher extends ECommand<EverEssentials> {
 					}
 				} else {
 					suggests.add("1");
-					if(source.hasPermission(this.plugin.getPermissions().get("BUTCHER_WORLD"))){
+					if(source.hasPermission(EEPermissions.BUTCHER_WORLD.get())){
 						suggests.add("all");
 					}
 				}
-			} else if (args.size() == 3 && args.get(0).equalsIgnoreCase("type") && source.hasPermission(this.plugin.getPermissions().get("BUTCHER_TYPE"))){
+			} else if (args.size() == 3 && args.get(0).equalsIgnoreCase("type") && source.hasPermission(EEPermissions.BUTCHER_TYPE.get())){
 				suggests.add("1");
-				if(source.hasPermission(this.plugin.getPermissions().get("BUTCHER_WORLD"))){
+				if(source.hasPermission(EEPermissions.BUTCHER_WORLD.get())){
 					suggests.add("all");
 				}
 			}
@@ -150,10 +151,10 @@ public class EEButcher extends ECommand<EverEssentials> {
 			if (args.size() == 2) {
 				if (args.get(0).equals("animal")){
 					// Si il a la permission
-					if(player.hasPermission(this.plugin.getPermissions().get("BUTCHER_ANIMAL"))){
+					if(player.hasPermission(EEPermissions.BUTCHER_ANIMAL.get())){
 						if (args.get(1).equals("all")){
 							// Si il a la permission
-							if(player.hasPermission(this.plugin.getPermissions().get("BUTCHER_WORLD"))){
+							if(player.hasPermission(EEPermissions.BUTCHER_WORLD.get())){
 								resultat = commandButcherAnimal(player);
 							// Il n'a pas la permission
 							} else {
@@ -178,10 +179,10 @@ public class EEButcher extends ECommand<EverEssentials> {
 					}
 				} else if (args.get(0).equals("monster")){
 					// Si il a la permission
-					if(player.hasPermission(this.plugin.getPermissions().get("BUTCHER_MONSTER"))){
+					if(player.hasPermission(EEPermissions.BUTCHER_MONSTER.get())){
 						if (args.get(1).equals("all")){
 							// Si il a la permission
-							if(player.hasPermission(this.plugin.getPermissions().get("BUTCHER_WORLD"))){
+							if(player.hasPermission(EEPermissions.BUTCHER_WORLD.get())){
 								resultat = commandButcherMonster(player);
 							// Il n'a pas la permission
 							} else {
@@ -206,10 +207,10 @@ public class EEButcher extends ECommand<EverEssentials> {
 					}
 				} else if (args.get(0).equals("all")){
 					// Si il a la permission
-					if(player.hasPermission(this.plugin.getPermissions().get("BUTCHER_ALL"))){
+					if(player.hasPermission(EEPermissions.BUTCHER_ALL.get())){
 						if (args.get(1).equals("all")){
 							// Si il a la permission
-							if(player.hasPermission(this.plugin.getPermissions().get("BUTCHER_WORLD"))){
+							if(player.hasPermission(EEPermissions.BUTCHER_WORLD.get())){
 								resultat = commandButcherAll(player);
 							// Il n'a pas la permission
 							} else {
@@ -235,12 +236,12 @@ public class EEButcher extends ECommand<EverEssentials> {
 				}
 			} else if (args.size() == 3 && args.get(0).equals("type")){
 				// Si il a la permission
-				if(player.hasPermission(this.plugin.getPermissions().get("BUTCHER_TYPE"))){
+				if(player.hasPermission(EEPermissions.BUTCHER_TYPE.get())){
 					Optional<EntityType> type = getEntityType(args.get(1));
 					if(type.isPresent()) {
 						if (args.get(2).equals("all")){
 							// Si il a la permission
-							if(player.hasPermission(this.plugin.getPermissions().get("BUTCHER_WORLD"))){
+							if(player.hasPermission(EEPermissions.BUTCHER_WORLD.get())){
 								resultat = commandButcherType(player, type.get());
 							// Il n'a pas la permission
 							} else {

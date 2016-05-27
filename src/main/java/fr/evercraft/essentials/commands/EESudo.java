@@ -26,6 +26,7 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
 
+import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.EChat;
@@ -40,7 +41,7 @@ public class EESudo extends ECommand<EverEssentials> {
     }
 	
 	public boolean testPermission(final CommandSource source) {
-		return source.hasPermission(this.plugin.getPermissions().get("SUDO"));
+		return source.hasPermission(EEPermissions.SUDO.get());
 	}
 
 	public Text description(final CommandSource source) {
@@ -48,7 +49,7 @@ public class EESudo extends ECommand<EverEssentials> {
 	}
 
 	public Text help(final CommandSource source) {
-		if(source.hasPermission(this.plugin.getPermissions().get("SUDO_CONSOLE"))){
+		if(source.hasPermission(EEPermissions.SUDO_CONSOLE.get())){
 			return Text.builder("/sudo <joueur|console> <commande>").onClick(TextActions.suggestCommand("/sudo "))
 					.color(TextColors.RED).build();
 		}
@@ -83,7 +84,7 @@ public class EESudo extends ECommand<EverEssentials> {
 				} 
 			} else {
 				// Si il a la permission
-				if(source.hasPermission(this.plugin.getPermissions().get("SUDO_CONSOLE"))){
+				if(source.hasPermission(EEPermissions.SUDO_CONSOLE.get())){
 					resultat = commandSudoConsole(source, getCommand(args));
 				// Il n'a pas la permission
 				} else {
@@ -99,7 +100,7 @@ public class EESudo extends ECommand<EverEssentials> {
 	
 	public boolean commandSudo(final CommandSource staff, final EPlayer player, final String command) {
 		// Si le joueur n'a pas la permission bypass
-		if(!player.hasPermission(this.plugin.getPermissions().get("SUDO_BYPASS"))) {
+		if(!player.hasPermission(EEPermissions.SUDO_BYPASS.get())) {
 			if(player.getCommandSource().isPresent()) {
 				this.plugin.getGame().getCommandManager().process(player.getCommandSource().get(), command);
 				staff.sendMessage(ETextBuilder.toBuilder(this.plugin.getMessages().getText("PREFIX"))

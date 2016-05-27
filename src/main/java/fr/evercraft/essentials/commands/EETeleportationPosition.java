@@ -30,6 +30,7 @@ import org.spongepowered.api.world.World;
 
 import com.flowpowered.math.vector.Vector3i;
 
+import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.EChat;
@@ -44,7 +45,7 @@ public class EETeleportationPosition extends ECommand<EverEssentials> {
     }
 	
 	public boolean testPermission(final CommandSource source) {
-		return source.hasPermission(this.plugin.getPermissions().get("TPPOS"));
+		return source.hasPermission(EEPermissions.TPPOS.get());
 	}
 
 	public Text description(final CommandSource source) {
@@ -52,7 +53,7 @@ public class EETeleportationPosition extends ECommand<EverEssentials> {
 	}
 
 	public Text help(final CommandSource source) {
-		if(source.hasPermission(this.plugin.getPermissions().get("TPPOS_OTHERS"))){
+		if(source.hasPermission(EEPermissions.TPPOS_OTHERS.get())){
 			return Text.builder("/tppos <x> <y> <z> [monde [joueur]]").onClick(TextActions.suggestCommand("/tppos "))
 					.color(TextColors.RED).build();
 		} 
@@ -68,7 +69,7 @@ public class EETeleportationPosition extends ECommand<EverEssentials> {
 			for(World world : this.plugin.getEServer().getWorlds()){
 				suggests.add(world.getProperties().getWorldName());
 			}
-		} else if (args.size() == 5 && source.hasPermission(this.plugin.getPermissions().get("TPPOS_OTHERS"))){
+		} else if (args.size() == 5 && source.hasPermission(EEPermissions.TPPOS_OTHERS.get())){
 			suggests = null;
 		}
 		return suggests;
@@ -97,7 +98,7 @@ public class EETeleportationPosition extends ECommand<EverEssentials> {
 		// Pour téléporter un autre joueur
 		} else if (args.size() == 5){
 			// Si il a la permission
-			if (source.hasPermission(this.plugin.getPermissions().get("TPPOS_OTHERS"))){
+			if (source.hasPermission(EEPermissions.TPPOS_OTHERS.get())){
 				Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(args.get(4));
 				// Le joueur existe
 				if(optPlayer.isPresent()){
