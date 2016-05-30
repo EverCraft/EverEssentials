@@ -31,7 +31,7 @@ import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.ECommand;
 import fr.evercraft.everapi.server.player.EPlayer;
 
-public class EESuicide  extends ECommand<EverEssentials> {
+public class EESuicide extends ECommand<EverEssentials> {
 	
 	public EESuicide(final EverEssentials plugin) {
         super(plugin, "suicide");

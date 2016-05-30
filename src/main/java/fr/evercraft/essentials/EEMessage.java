@@ -344,6 +344,10 @@ public class EEMessage extends EMessage {
 		
 		INVSEE_DESCRIPTION("invsee.description", "Regarde l'inventaire d'un autre joueur"),
 		
+		RELOAD_ALL_DESCRIPTION("reload.description", "Recharge tous les plugins"),
+		RELOAD_ALL_FIRST("reload.first", "&cAttention : Rechargement de tous les plugins, risque de latence"),
+		RELOAD_ALL_END("reload.end", "&aRechargement terminé"),
+		
 		REPAIR_DESCRIPTION("repair.description", "Répare les objets"),
 		
 		REPAIR_HAND_DESCRIPTION("repairhand.description", "Répare l'objet dans votre main"),
