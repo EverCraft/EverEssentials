@@ -17,7 +17,6 @@
 package fr.evercraft.essentials.commands;
 
 import java.util.List;
-
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.event.SpongeEventFactory;

@@ -24,6 +24,8 @@ import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
+import org.spongepowered.api.text.chat.ChatVisibilities;
+import org.spongepowered.api.text.chat.ChatVisibility;
 import org.spongepowered.api.text.format.TextColors;
 
 import fr.evercraft.essentials.EEMessage.EEMessages;
@@ -117,6 +119,10 @@ public class EEWhois extends ECommand<EverEssentials> {
 		lists.add(getAFK(player));
 		lists.add(getFirstDatePlayed(player));
 		lists.add(getLastDatePlayed(player));
+		lists.add(getChatVisibility(player));
+		lists.add(getViewDistance(player));
+		lists.add(ChatColorsEnabled(player));
+		lists.add(getLocale(player));
 		
 		this.plugin.getEverAPI().getManagerService().getEPagination().sendTo(
 				EChat.of(EEMessages.WHOIS_TITLE.get().replace("<player>", player.getName())).toBuilder()
@@ -290,5 +296,34 @@ public class EEWhois extends ECommand<EverEssentials> {
 	public Text getLastDatePlayed(final EPlayer player){
 		return EChat.of(EEMessages.WHOIS_LAST_DATE_PLAYED.get()
 				.replaceAll("<time>", this.plugin.getEverAPI().getManagerUtils().getDate().formatDateDiff(player.getLastDatePlayed(), 3)));
+	}
+	
+	public Text getChatVisibility(final EPlayer player){
+		ChatVisibility chat = player.getChatVisibility();
+		if (chat.equals(ChatVisibilities.FULL)){
+			return EEMessages.WHOIS_CHAT_FULL.getText();
+		} else if (chat.equals(ChatVisibilities.SYSTEM)){
+			return EEMessages.WHOIS_CHAT_SYSTEM.getText();
+		} else {
+			return EEMessages.WHOIS_CHAT_HIDDEN.getText();
+		}
+	}
+	
+	public Text getViewDistance(final EPlayer player){
+		return EChat.of(EEMessages.WHOIS_VIEW_DISTANCE.get()
+				.replaceAll("<amount>", String.valueOf(player.getViewDistance())));
+	}
+	
+	public Text ChatColorsEnabled(final EPlayer player){
+		if (player.isChatColorsEnabled()){
+			return EEMessages.WHOIS_CHATCOLOR_ON.getText();
+		} else {
+			return EEMessages.WHOIS_CHATCOLOR_OFF.getText();
+		}
+	}
+	
+	public Text getLocale(final EPlayer player){
+		return EChat.of(EEMessages.WHOIS_LANGUAGE.get()
+				.replaceAll("<langue>", player.getLocale().getDisplayLanguage().toLowerCase()));
 	}
 }

@@ -557,6 +557,13 @@ public class EEMessage extends EMessage {
 		WHOIS_AFK_DISABLE("whois.afkDisable", "    &6&l➤  &6AFK : &cDésactivé"),
 		WHOIS_FIRST_DATE_PLAYED("whois.firstDatePlayed", "    &6&l➤  &6Première connexion : &a<time>"),
 		WHOIS_LAST_DATE_PLAYED("whois.lastDatePlayed", "    &6&l➤  &6Connecté depuis : &a<time>"),
+		WHOIS_CHAT_FULL("whois.chatFull", "    &6&l➤  &6Chat : &aVisible"),
+		WHOIS_CHAT_SYSTEM("whois.chatSystem", "    &6&l➤  &6Chat : &aCommandes seulement"),
+		WHOIS_CHAT_HIDDEN("whois.chatHidden", "    &6&l➤  &6Chat : &aMasqué"),
+		WHOIS_VIEW_DISTANCE("whois.viewDistance", "    &6&l➤  &6Distance d'affichage : &a<amount>"),
+		WHOIS_CHATCOLOR_ON("whois.chatColorOn", "    &6&l➤  &6Couleur dans le chat : &aoui"),
+		WHOIS_CHATCOLOR_OFF("whois.chatColorOff", "    &6&l➤  &6Couleur dans le chat : &cnon"),
+		WHOIS_LANGUAGE("whois.language", "    &6&l➤  &6langage : &a<langue>"),
 		
 		WORLDS_DESCRIPTION("worlds.description", "Téléporte le joueur dans le monde de votre choix"),
 		WORLDS_END_DESCRIPTION("worlds.endDescription", "Vous téléporte dans le monde du néant"),
