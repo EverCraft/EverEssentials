@@ -29,9 +29,7 @@ import org.spongepowered.api.text.format.TextColors;
 
 import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EverEssentials;
-import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.ECommand;
-import fr.evercraft.everapi.server.player.EPlayer;
 
 public class EEReload extends ECommand<EverEssentials>{
 	
@@ -64,23 +62,17 @@ public class EEReload extends ECommand<EverEssentials>{
 		boolean resultat = false;
 		// Si on ne connait pas le joueur
 		if(args.size() == 0) {
-			// Si la source est un joueur
-			if(source instanceof EPlayer) {
-				resultat = commandSuicide((EPlayer) source);
-			// La source n'est pas un joueur
-			} else {
-				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
-			}
+			resultat = commandReload(source);
 		} else {
 			source.sendMessage(help(source));
 		}
 		return resultat;
 	}
 	
-	public boolean commandSuicide(final EPlayer player) {
+	private boolean commandReload(final CommandSource player) {
 		this.plugin.getEServer().getBroadcastChannel().send(EEMessages.PREFIX.getText().concat(EEMessages.RELOAD_ALL_FIRST.getText()));
-		this.plugin.getGame().getEventManager().post(SpongeEventFactory.createGameReloadEvent(Cause.of(NamedCause.source(this))));
-		this.plugin.getEServer().broadcast(EEMessages.PREFIX.get() + EEMessages.RELOAD_ALL_END.get());
+		this.plugin.getGame().getEventManager().post(SpongeEventFactory.createGameReloadEvent(Cause.of(NamedCause.source(player))));
+		this.plugin.getEServer().getBroadcastChannel().send(EEMessages.PREFIX.getText().concat(EEMessages.RELOAD_ALL_END.getText()));
 		return true;
 	}
 }
