@@ -104,20 +104,30 @@ public class EEClearEffect extends ECommand<EverEssentials> {
 	}
 	
 	public boolean commandClearEffect(final EPlayer player){
-		player.clearPotions();
-		player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.CLEAREFFECT_PLAYER.getText()));
-		return true;
+		if (!player.getPotionEffects().isEmpty()){
+			player.clearPotions();
+			player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.CLEAREFFECT_PLAYER.getText()));
+			return true;
+		} else {
+			player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.CLEAREFFECT_NOEFFECT.getText()));
+			return false;
+		}
 	}
 	
 	public boolean commandClearEffectOthers(final CommandSource staff, final EPlayer player) throws CommandException{
 		// La source et le joueur sont différent
 		if(!player.equals(staff)){
-			player.clearPotions();
-			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.CLEAREFFECT_OTHERS_PLAYER.get()
-					.replaceAll("<staff>", staff.getName()));
-			staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.CLEAREFFECT_OTHERS_STAFF.get()
-					.replaceAll("<player>", player.getName())));
-			return true;
+			if (!player.getPotionEffects().isEmpty()){
+				player.clearPotions();
+				player.sendMessage(EEMessages.PREFIX.get() + EEMessages.CLEAREFFECT_OTHERS_PLAYER.get()
+						.replaceAll("<staff>", staff.getName()));
+				staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.CLEAREFFECT_OTHERS_STAFF.get()
+						.replaceAll("<player>", player.getName())));
+				return true;
+			} else {
+				staff.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.CLEAREFFECT_NOEFFECT.getText()));
+				return false;
+			}
 		// La source et le joueur sont identique
 		} else {
 			return execute(staff, new ArrayList<String>());

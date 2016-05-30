@@ -100,20 +100,36 @@ public class EEClearInventory extends ECommand<EverEssentials> {
 	}
 	
 	public boolean commandClearInventory(final EPlayer player){
-		player.getInventory().clear();
-		player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.CLEARINVENTORY_PLAYER.getText()));
-		return true;
+		int total = player.getInventory().totalItems();
+		if (total != 0){
+			player.getInventory().clear();
+			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.CLEARINVENTORY_PLAYER.get()
+					.replaceAll("<amount>", String.valueOf(total)));
+			return true;
+		} else {
+			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.CLEARINVENTORY_NOITEM.get());
+			return false;
+			
+		}
 	}
 	
 	public boolean commandClearInventory(final CommandSource staff, final EPlayer player) throws CommandException{
 		// La source et le joueur sont différent
 		if(!player.equals(staff)){
-			player.getInventory().clear();
-			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.CLEARINVENTORY_OTHERS_PLAYER.get()
-					.replaceAll("<staff>", staff.getName()));
-			staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.CLEARINVENTORY_OTHERS_STAFF.get()
-					.replaceAll("<player>", player.getName())));
-			return true;
+			int total = player.getInventory().totalItems();
+			if (total != 0){
+				player.getInventory().clear();
+				player.sendMessage(EEMessages.PREFIX.get() + EEMessages.CLEARINVENTORY_OTHERS_PLAYER.get()
+						.replaceAll("<staff>", staff.getName())
+						.replaceAll("<amount>", String.valueOf(total)));
+				staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.CLEARINVENTORY_OTHERS_STAFF.get()
+						.replaceAll("<player>", player.getName())
+						.replaceAll("<amount>", String.valueOf(total))));
+				return true;
+			} else {
+				staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.CLEARINVENTORY_NOITEM.get()));
+				return false;
+			}
 		// La source et le joueur sont identique
 		} else {
 			return execute(staff, new ArrayList<String>());
