@@ -324,7 +324,7 @@ public class EEWhois extends ECommand<EverEssentials> {
 	}
 	
 	public Text getLocale(final EPlayer player){
-		return EChat.of(StringUtils.capitalize(EEMessages.WHOIS_LANGUAGE.get()
-				.replaceAll("<langue>", player.getLocale().getDisplayLanguage())));
+		return EChat.of(EEMessages.WHOIS_LANGUAGE.get()
+				.replaceAll("<langue>", StringUtils.capitalize(player.getLocale().getDisplayLanguage())));
 	}
 }
