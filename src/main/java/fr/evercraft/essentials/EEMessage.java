@@ -561,9 +561,9 @@ public class EEMessage extends EMessage {
 		WHOIS_CHAT_SYSTEM("whois.chatSystem", "    &6&l➤  &6Chat : &aCommandes seulement"),
 		WHOIS_CHAT_HIDDEN("whois.chatHidden", "    &6&l➤  &6Chat : &aMasqué"),
 		WHOIS_VIEW_DISTANCE("whois.viewDistance", "    &6&l➤  &6Distance d'affichage : &a<amount>"),
-		WHOIS_CHATCOLOR_ON("whois.chatColorOn", "    &6&l➤  &6Couleur dans le chat : &aoui"),
-		WHOIS_CHATCOLOR_OFF("whois.chatColorOff", "    &6&l➤  &6Couleur dans le chat : &cnon"),
-		WHOIS_LANGUAGE("whois.language", "    &6&l➤  &6langage : &a<langue>"),
+		WHOIS_CHATCOLOR_ON("whois.chatColorOn", "    &6&l➤  &6Couleur dans le chat : &Activé"),
+		WHOIS_CHATCOLOR_OFF("whois.chatColorOff", "    &6&l➤  &6Couleur dans le chat : &cDésactivé"),
+		WHOIS_LANGUAGE("whois.language", "    &6&l➤  &6Langage : &a<langue>"),
 		
 		WORLDS_DESCRIPTION("worlds.description", "Téléporte le joueur dans le monde de votre choix"),
 		WORLDS_END_DESCRIPTION("worlds.endDescription", "Vous téléporte dans le monde du néant"),
