@@ -79,14 +79,14 @@ public class EERepairHand extends ECommand<EverEssentials> {
 	}
 
 	public boolean commandRepair(final EPlayer player) {
-		if (player.getItemInHand().isPresent()){
-			ItemStack item = player.getItemInHand().get();
+		if (player.getItemInMainHand().isPresent()){
+			ItemStack item = player.getItemInMainHand().get();
 			Optional<Integer> data = item.get(Keys.ITEM_DURABILITY);
 			if(data.isPresent()){
 				int value = data.get();
 				item.offer(Keys.ITEM_DURABILITY, Integer.MAX_VALUE);
 				if(item.get(Keys.ITEM_DURABILITY).get() != value){
-		            player.setItemInHand(item);
+		            player.setItemInMainHand(item);
 		            player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
 		            		.append(EEMessages.REPAIR_HAND_PLAYER.get())
 		            		.replace("<item>", EChat.getButtomItem(item, EChat.getTextColor(EEMessages.REPAIR_HAND_ITEM_COLOR.get())))

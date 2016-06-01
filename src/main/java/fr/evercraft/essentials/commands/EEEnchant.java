@@ -63,30 +63,32 @@ public class EEEnchant extends ECommand<EverEssentials> {
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		List<String> suggests = new ArrayList<String>();
 		if (source instanceof Player){
-			Player player = (Player) source;
-			if(args.size() == 1){
-				if (player.getItemInHand().isPresent()){
-					ItemStack item = player.getItemInHand().get();
-					EnchantmentData enchantmentData = item.getOrCreate(EnchantmentData.class).get();
-					if (!enchantmentData.enchantments().isEmpty()){
-						for (Enchantment enchant : getApplicableEnchant(enchantmentData, item)){
-							suggests.add(enchant.getId().replace("minecraft:", ""));
-						}
-					} else {
-						for (Enchantment enchant : UtilsEnchantment.getEnchantments()){
-							if (enchant.canBeAppliedByTable(item)){
+			Optional<EPlayer> player = this.plugin.getEServer().getEPlayer(((Player) source).getUniqueId());
+			if(player.isPresent()) {
+				if(args.size() == 1){
+					if (player.get().getItemInMainHand().isPresent()){
+						ItemStack item = player.get().getItemInMainHand().get();
+						EnchantmentData enchantmentData = item.getOrCreate(EnchantmentData.class).get();
+						if (!enchantmentData.enchantments().isEmpty()){
+							for (Enchantment enchant : getApplicableEnchant(enchantmentData, item)){
 								suggests.add(enchant.getId().replace("minecraft:", ""));
+							}
+						} else {
+							for (Enchantment enchant : UtilsEnchantment.getEnchantments()){
+								if (enchant.canBeAppliedByTable(item)){
+									suggests.add(enchant.getId().replace("minecraft:", ""));
+								}
 							}
 						}
 					}
-				}
-			} else if(args.size() == 2){
-				if (player.getItemInHand().isPresent()){
-					Optional<Enchantment> optEnchantment = UtilsEnchantment.getID("minecraft:" + args.get(0));
-					if (optEnchantment.isPresent()){
-						Enchantment enchantment = optEnchantment.get();
-						for (int cpt = 1 ; cpt <= enchantment.getMaximumLevel() ; cpt++){
-							suggests.add(String.valueOf(cpt));
+				} else if(args.size() == 2){
+					if (player.get().getItemInMainHand().isPresent()){
+						Optional<Enchantment> optEnchantment = UtilsEnchantment.getID("minecraft:" + args.get(0));
+						if (optEnchantment.isPresent()){
+							Enchantment enchantment = optEnchantment.get();
+							for (int cpt = 1 ; cpt <= enchantment.getMaximumLevel() ; cpt++){
+								suggests.add(String.valueOf(cpt));
+							}
 						}
 					}
 				}
@@ -123,8 +125,8 @@ public class EEEnchant extends ECommand<EverEssentials> {
 	}
 	
 	public boolean commandEnchant(final EPlayer player, String enchantname, String lvl) {
-		if (player.getItemInHand().isPresent()){
-			ItemStack item = player.getItemInHand().get();
+		if (player.getItemInMainHand().isPresent()){
+			ItemStack item = player.getItemInMainHand().get();
 			Optional<Enchantment> optEnchantment = UtilsEnchantment.getID("minecraft:" + enchantname);
 			if (optEnchantment.isPresent()){
 				Enchantment enchantment = optEnchantment.get();
@@ -137,7 +139,7 @@ public class EEEnchant extends ECommand<EverEssentials> {
 							if (itemEnchant.getEnchantment().canBeAppliedToStack(item)){
 								enchantmentData.set(enchantmentData.enchantments().add(itemEnchant));
 								item.offer(enchantmentData);
-								player.setItemInHand(item);
+								player.setItemInMainHand(item);
 								player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.ENCHANT_SUCCESSFULL.getText()));
 								return true;
 							} else {
@@ -172,8 +174,8 @@ public class EEEnchant extends ECommand<EverEssentials> {
 	}
 	
 	public boolean commandEnchant(final EPlayer player, String enchantname) {
-		if (player.getItemInHand().isPresent()){
-			ItemStack item = player.getItemInHand().get();
+		if (player.getItemInMainHand().isPresent()){
+			ItemStack item = player.getItemInMainHand().get();
 			Optional<Enchantment> optEnchantment = UtilsEnchantment.getID("minecraft:" + enchantname);
 			if (optEnchantment.isPresent()){
 				Enchantment enchantment = optEnchantment.get();
@@ -182,7 +184,7 @@ public class EEEnchant extends ECommand<EverEssentials> {
 				if (itemEnchant.getEnchantment().canBeAppliedToStack(item)){
 					enchantmentData.set(enchantmentData.enchantments().add(itemEnchant));
 					item.offer(enchantmentData);
-					player.setItemInHand(item);
+					player.setItemInMainHand(item);
 					player.sendMessage(EEMessages.PREFIX.get() 
 							+ EEMessages.ENCHANT_SUCCESSFULL.get());
 					return true;

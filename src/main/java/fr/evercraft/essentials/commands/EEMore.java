@@ -81,8 +81,8 @@ public class EEMore extends ECommand<EverEssentials> {
 	
 	public boolean commandMore(final EPlayer player) {
 		// Si le joueur a bien un item dans la main
-		if(player.getItemInHand().isPresent()) {
-			ItemStack item = player.getItemInHand().get();
+		if(player.getItemInMainHand().isPresent()) {
+			ItemStack item = player.getItemInMainHand().get();
 			
 			Integer max = item.getMaxStackQuantity();
 			/*if(player.hasPermission(EEPermissions.MORE_UNLIMITED"))) {
@@ -93,7 +93,7 @@ public class EEMore extends ECommand<EverEssentials> {
 			
 			if(item.getQuantity() < max) {
 				item.setQuantity(max);
-				player.setItemInHand(item);		
+				player.setItemInMainHand(item);		
 				player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
 						.append(EEMessages.MORE_PLAYER.get()
 								.replaceAll("<quantity>", max.toString()))

@@ -92,8 +92,8 @@ public class EEHat extends ECommand<EverEssentials> {
 	
 	public boolean commandHat(final EPlayer player){
 		// Si le joueur a un objet dans la main
-		if (player.getItemInHand().isPresent()){
-			ItemStack item = player.getItemInHand().get();
+		if (player.getItemInMainHand().isPresent()){
+			ItemStack item = player.getItemInMainHand().get();
 			// Si l'objet est un bloc
 			if (item.getItem().getBlock().isPresent()){
 				// Si le joueur a un item sur la tête
@@ -108,12 +108,12 @@ public class EEHat extends ECommand<EverEssentials> {
 						player.giveItemAndDrop(player.getHelmet().get());
 					}
 					
-					ItemStack stack = player.getItemInHand().get();
+					ItemStack stack = player.getItemInMainHand().get();
 					if (stack.getQuantity() > 1){
 			            stack.setQuantity(stack.getQuantity() - 1);
-			            player.setItemInHand(stack);
+			            player.setItemInMainHand(stack);
 					} else {
-						player.setItemInHand(null);
+						player.setItemInMainHand(null);
 					}
 			        stack.setQuantity(1);
 			        player.setHelmet(stack);

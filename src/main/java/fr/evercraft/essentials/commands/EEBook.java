@@ -108,8 +108,8 @@ public class EEBook extends ECommand<EverEssentials> {
 	
 	private boolean commandBook(EPlayer player) {
 		// Si le joueur a bien un item dans la main
-		if(player.getItemInHand().isPresent()) {
-			ItemStack item = player.getItemInHand().get();
+		if(player.getItemInMainHand().isPresent()) {
+			ItemStack item = player.getItemInMainHand().get();
 			if(item.getItem().equals(ItemTypes.WRITTEN_BOOK) && item.get(Keys.BOOK_PAGES).isPresent()) {
 				// Nouveau livre
 				ItemStack book = ItemStack.of(ItemTypes.WRITABLE_BOOK, 1);
@@ -118,7 +118,7 @@ public class EEBook extends ECommand<EverEssentials> {
 				book.offer(Keys.BOOK_PAGES, item.get(Keys.BOOK_PAGES).get());
 				
 				// Remplace le livre
-				player.setItemInHand(book);
+				player.setItemInMainHand(book);
 				
 				player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.BOOK_WRITABLE.getText()));
 			} else {
@@ -133,7 +133,7 @@ public class EEBook extends ECommand<EverEssentials> {
 
 	private boolean commandBookTitle(EPlayer player, String message) {
 		// Si le joueur a bien un item dans la main
-		if(player.getItemInHand().isPresent()) {
+		if(player.getItemInMainHand().isPresent()) {
 			//ItemStack item = player.getItemInHand().get();
 		// Le joueur a aucun item dans la main
 		} else {
@@ -144,7 +144,7 @@ public class EEBook extends ECommand<EverEssentials> {
 
 	private boolean commandBookAuthor(EPlayer player, String message) {
 		// Si le joueur a bien un item dans la main
-		if(player.getItemInHand().isPresent()) {
+		if(player.getItemInMainHand().isPresent()) {
 			//ItemStack item = player.getItemInHand().get();
 		// Le joueur a aucun item dans la main
 		} else {

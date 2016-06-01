@@ -81,8 +81,8 @@ public class EEInfo extends ECommand<EverEssentials> {
 	
 	public boolean commandInfo(final EPlayer player) {
 		// Si le joueur a bien un item dans la main
-		if(player.getItemInHand().isPresent()) {
-			ItemStack item = player.getItemInHand().get();
+		if(player.getItemInMainHand().isPresent()) {
+			ItemStack item = player.getItemInMainHand().get();
 			player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
 					.append(EEMessages.INFO_PLAYER.get()
 							.replaceAll("<type>", item.getItem().getName().replaceAll("minecraft:", "").toUpperCase()))
