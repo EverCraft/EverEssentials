@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.commons.lang3.StringUtils;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.text.Text;
@@ -324,6 +325,6 @@ public class EEWhois extends ECommand<EverEssentials> {
 	
 	public Text getLocale(final EPlayer player){
 		return EChat.of(EEMessages.WHOIS_LANGUAGE.get()
-				.replaceAll("<langue>", player.getLocale().getDisplayLanguage().toLowerCase()));
+				.replaceAll("<langue>", StringUtils.capitalize(player.getLocale().getDisplayLanguage())));
 	}
 }
