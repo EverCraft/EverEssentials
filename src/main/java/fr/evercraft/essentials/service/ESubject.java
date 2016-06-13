@@ -86,9 +86,12 @@ public class ESubject implements EssentialsSubject {
 	}
 	
 	public void connect() {
-		Optional<EPlayer> player = this.getEPlayer();
-		if(player.isPresent()) {
-			player.get().offer(Keys.INVISIBLE, vanish);
+		Optional<EPlayer> optPlayer = this.getEPlayer();
+		if(optPlayer.isPresent()) {
+			EPlayer player = optPlayer.get();
+			if(player.get(Keys.INVISIBLE).orElse(false) != vanish) {
+				player.offer(Keys.INVISIBLE, vanish);
+			}
 		} else {
 			this.plugin.getLogger().warn("Player empty : connect");
 		}
