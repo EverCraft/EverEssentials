@@ -51,8 +51,8 @@ public class EEEffect extends ECommand<EverEssentials> {
 	}
 
 	public Text help(final CommandSource source) {
-		return Text.builder("/effect")
-			.onClick(TextActions.suggestCommand("/effect <effet> [amplification] [durée]")).color(TextColors.RED).build();
+		return Text.builder("/effect <effet> [amplification] [durée]").onClick(TextActions.suggestCommand("/effect"))
+				.color(TextColors.RED).build();
 	}
 
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
