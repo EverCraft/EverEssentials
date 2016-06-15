@@ -28,6 +28,7 @@ import java.util.Map;
 import fr.evercraft.essentials.service.EMail;
 import fr.evercraft.essentials.service.ESubject;
 import fr.evercraft.essentials.service.warp.LocationSQL;
+import fr.evercraft.everapi.exception.PluginDisableException;
 import fr.evercraft.everapi.exception.ServerDisableException;
 import fr.evercraft.everapi.plugin.EDataBase;
 import fr.evercraft.everapi.services.essentials.Mail;
@@ -42,7 +43,7 @@ public class EEDataBase extends EDataBase<EverEssentials> {
 	private String table_warps;
 	private String table_spawns;
 
-	public EEDataBase(final EverEssentials plugin) {
+	public EEDataBase(final EverEssentials plugin) throws PluginDisableException {
 		super(plugin, true);
 	}
 

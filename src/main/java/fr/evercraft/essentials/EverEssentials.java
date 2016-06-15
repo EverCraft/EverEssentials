@@ -54,10 +54,6 @@ public class EverEssentials extends EPlugin {
 		this.config = new EEConfig(this);
 		this.databases = new EEDataBase(this);
 		
-		if(!this.databases.isEnable()) {
-			throw new PluginDisableException("This plugin requires a database");
-		}
-		
 		this.managerServices = new EEManagerServices(this);
 		
 		this.messages = new EEMessage(this, "messages");
@@ -76,8 +72,10 @@ public class EverEssentials extends EPlugin {
 	}
 	
 	@Override
-	protected void onReload() {
+	protected void onReload() throws PluginDisableException {
 		this.reloadConfigurations();
+		this.databases.reload();
+		
 		this.managerServices.reload();
 		this.managerCommands.reload();
 	}
