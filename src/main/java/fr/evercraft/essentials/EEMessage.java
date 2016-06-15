@@ -334,8 +334,8 @@ public class EEMessage extends EMessage {
 		NAMES_OTHERS_EMPTY("names.othersEmpty", "&6<player> &7n'a aucun historique de pseudo"),
 		
 		NEAR_DESCRIPTION("near.description", "Donne la liste des joueurs dans les environs"),
-		NEAR_LIST_LINE("near.list.title", "&aListe des joueurs dans les environs"),
-		NEAR_LIST_TITLE("near.list.line", "    &6&l➤  &6<player> &7: &6<distance> bloc(s)"),
+		NEAR_LIST_LINE("near.list.line", "    &6&l➤  &6<player> &7: &6<distance> bloc(s)"),
+		NEAR_LIST_TITLE("near.list.title", "&aListe des joueurs dans les environs"),
 		NEAR_NOPLAYER("near.noPlayer", "&cAucun joueur dans les environs."),
 		
 		PING_DESCRIPTION("ping.description", "Connaître la latence d'un joueur"),
