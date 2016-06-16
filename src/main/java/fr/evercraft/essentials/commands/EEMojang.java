@@ -33,7 +33,7 @@ import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.ECommand;
-import fr.evercraft.everapi.services.mojang.MojangService;
+import fr.evercraft.everapi.services.MojangService;
 import fr.evercraft.everapi.services.mojang.check.MojangServer;
 import fr.evercraft.everapi.services.mojang.check.MojangServer.Color;
 
