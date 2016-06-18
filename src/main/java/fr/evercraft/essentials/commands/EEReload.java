@@ -17,6 +17,7 @@
 package fr.evercraft.essentials.commands;
 
 import java.util.List;
+
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.event.SpongeEventFactory;
@@ -28,7 +29,7 @@ import org.spongepowered.api.text.format.TextColors;
 
 import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EverEssentials;
-import fr.evercraft.everapi.plugin.ECommand;
+import fr.evercraft.everapi.command.ECommand;
 
 public class EEReload extends ECommand<EverEssentials>{
 	
