@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of EverEssentials.
  *
  * EverEssentials is free software: you can redistribute it and/or modify
@@ -13,9 +13,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with EverEssentials.  If not, see <http://www.gnu.org/licenses/>.
- */
-/**
- * Authors : Rexbut, Lesbleu
  */
 package fr.evercraft.essentials.commands;
 
