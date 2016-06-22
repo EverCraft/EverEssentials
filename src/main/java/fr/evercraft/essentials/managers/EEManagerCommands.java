@@ -19,7 +19,7 @@ package fr.evercraft.essentials.managers;
 import java.util.TreeMap;
 
 import fr.evercraft.essentials.EverEssentials;
-import fr.evercraft.essentials.commands.*;
+import fr.evercraft.essentials.command.*;
 import fr.evercraft.everapi.plugin.command.ECommand;
 
 public class EEManagerCommands extends TreeMap<String, ECommand<EverEssentials>>{
