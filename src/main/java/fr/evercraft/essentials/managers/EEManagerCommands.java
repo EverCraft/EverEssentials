@@ -20,7 +20,7 @@ import java.util.TreeMap;
 
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.essentials.commands.*;
-import fr.evercraft.everapi.command.ECommand;
+import fr.evercraft.everapi.plugin.command.ECommand;
 
 public class EEManagerCommands extends TreeMap<String, ECommand<EverEssentials>>{
 	

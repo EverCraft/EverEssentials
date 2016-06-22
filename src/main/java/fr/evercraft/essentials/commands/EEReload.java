@@ -29,7 +29,7 @@ import org.spongepowered.api.text.format.TextColors;
 
 import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EverEssentials;
-import fr.evercraft.everapi.command.ECommand;
+import fr.evercraft.everapi.plugin.command.ECommand;
 
 public class EEReload extends ECommand<EverEssentials>{
 	

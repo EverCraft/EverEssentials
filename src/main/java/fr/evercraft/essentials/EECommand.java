@@ -25,8 +25,8 @@ import org.spongepowered.api.text.Text;
 
 import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.everapi.EAMessage.EAMessages;
-import fr.evercraft.everapi.command.ECommand;
 import fr.evercraft.everapi.exception.PluginDisableException;
+import fr.evercraft.everapi.plugin.command.ECommand;
 
 public class EECommand extends ECommand<EverEssentials> {
 	public EECommand(EverEssentials plugin) {
