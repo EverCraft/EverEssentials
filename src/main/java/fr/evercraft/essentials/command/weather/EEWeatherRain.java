@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with EverEssentials.  If not, see <http://www.gnu.org/licenses/>.
  */
-package fr.evercraft.essentials.command;
+package fr.evercraft.essentials.command.weather;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,30 +30,26 @@ import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.plugin.command.ECommand;
 
-public class EEWorldsEnd extends ECommand<EverEssentials> {
-	
-	public EEWorldsEnd(final EverEssentials plugin) {
-		super(plugin, "end");
+public class EEWeatherRain extends ECommand<EverEssentials> {
+
+	public EEWeatherRain(final EverEssentials plugin) {
+		super(plugin, "rain");
 	}
 
 	public boolean testPermission(final CommandSource source) {
-		return source.hasPermission(EEPermissions.WORLDS.get());
+		return source.hasPermission(EEPermissions.WEATHER.get());
 	}
 
 	public Text description(final CommandSource source) {
-		return EEMessages.WORLDS_END_DESCRIPTION.getText();
+		return EEMessages.WEATHER_RAIN_DESCRIPTION.getText();
 	}
 
 	public Text help(final CommandSource source) {
-		return Text.builder("/end").onClick(TextActions.suggestCommand("/end")).color(TextColors.RED).build();
+		return Text.builder("/rain").onClick(TextActions.suggestCommand("/rain")).color(TextColors.RED).build();
 	}
 
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
-		List<String> suggests = null;
-		if(!(args.size() == 1 && source.hasPermission(EEPermissions.WORLDS_OTHERS.get()))){
-			suggests = new ArrayList<String>();
-		}
-		return suggests;
+		return new ArrayList<String>();
 	}
 
 	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
@@ -61,9 +57,7 @@ public class EEWorldsEnd extends ECommand<EverEssentials> {
 		boolean resultat = false;
 		// Si on ne connait pas le joueur
 		if (args.size() == 0) {
-			resultat = commandEnd(source);
-		} else if (args.size() == 1){
-			resultat = commandEndOthers(source, args.get(0));
+			resultat = commandWeatherRain(source);
 		// Nombre d'argument incorrect
 		} else {
 			source.sendMessage(help(source));
@@ -71,13 +65,8 @@ public class EEWorldsEnd extends ECommand<EverEssentials> {
 		return resultat;
 	}
 
-	public boolean commandEnd(final CommandSource player) {
-		this.plugin.getGame().getCommandManager().process(player, "worlds DIM1");
-		return false;
-	}
-	
-	public boolean commandEndOthers(final CommandSource player, final String arg) {
-		this.plugin.getGame().getCommandManager().process(player, "worlds DIM1 "+ arg);
+	public boolean commandWeatherRain(final CommandSource player) {
+		this.plugin.getGame().getCommandManager().process(player, "weather rain");
 		return false;
 	}
 }

@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with EverEssentials.  If not, see <http://www.gnu.org/licenses/>.
  */
-package fr.evercraft.essentials.command;
+package fr.evercraft.essentials.command.time;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,10 +30,10 @@ import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.plugin.command.ECommand;
 
-public class EETimeDay extends ECommand<EverEssentials> {
+public class EETimeNight extends ECommand<EverEssentials> {
 
-	public EETimeDay(final EverEssentials plugin) {
-		super(plugin, "day");
+	public EETimeNight(final EverEssentials plugin) {
+		super(plugin, "night");
 	}
 
 	public boolean testPermission(final CommandSource source) {
@@ -41,11 +41,11 @@ public class EETimeDay extends ECommand<EverEssentials> {
 	}
 
 	public Text description(final CommandSource source) {
-		return EEMessages.TIME_DAY_DESCRIPTION.getText();
+		return EEMessages.TIME_NIGHT_DESCRIPTION.getText();
 	}
 
 	public Text help(final CommandSource source) {
-		return Text.builder("/day").onClick(TextActions.suggestCommand("/day")).color(TextColors.RED).build();
+		return Text.builder("/night").onClick(TextActions.suggestCommand("/night")).color(TextColors.RED).build();
 	}
 
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
@@ -57,7 +57,7 @@ public class EETimeDay extends ECommand<EverEssentials> {
 		boolean resultat = false;
 		// Si on ne connait pas le joueur
 		if (args.size() == 0) {
-			resultat = commandTimeDay(source);
+			resultat = commandTimeNight(source);
 		// Nombre d'argument incorrect
 		} else {
 			source.sendMessage(help(source));
@@ -65,8 +65,8 @@ public class EETimeDay extends ECommand<EverEssentials> {
 		return resultat;
 	}
 
-	public boolean commandTimeDay(final CommandSource player) {
-		this.plugin.getGame().getCommandManager().process(player, "time day");
+	public boolean commandTimeNight(final CommandSource player) {
+		this.plugin.getGame().getCommandManager().process(player, "time night");
 		return false;
 	}
 }

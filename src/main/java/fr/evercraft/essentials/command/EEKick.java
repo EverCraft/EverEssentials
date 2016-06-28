@@ -50,7 +50,7 @@ public class EEKick extends ECommand<EverEssentials> {
 	}
 
 	public Text help(final CommandSource source) {
-		return Text.builder("/kick <joueur> <raison>").onClick(TextActions.suggestCommand("/kick "))
+		return Text.builder("/kick <" + EAMessages.ARGS_PLAYER + "> <" + EAMessages.ARGS_REASON + ">").onClick(TextActions.suggestCommand("/kick "))
 					.color(TextColors.RED).build();
 	}
 	

@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with EverEssentials.  If not, see <http://www.gnu.org/licenses/>.
  */
-package fr.evercraft.essentials.command;
+package fr.evercraft.essentials.command.world;
 
 import java.util.ArrayList;
 import java.util.List;

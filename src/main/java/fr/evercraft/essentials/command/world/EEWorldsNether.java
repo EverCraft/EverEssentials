@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with EverEssentials.  If not, see <http://www.gnu.org/licenses/>.
  */
-package fr.evercraft.essentials.command;
+package fr.evercraft.essentials.command.world;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,26 +30,30 @@ import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.plugin.command.ECommand;
 
-public class EEWeatherRain extends ECommand<EverEssentials> {
-
-	public EEWeatherRain(final EverEssentials plugin) {
-		super(plugin, "rain");
+public class EEWorldsNether extends ECommand<EverEssentials> {
+	
+	public EEWorldsNether(final EverEssentials plugin) {
+		super(plugin, "nether");
 	}
 
 	public boolean testPermission(final CommandSource source) {
-		return source.hasPermission(EEPermissions.WEATHER.get());
+		return source.hasPermission(EEPermissions.WORLDS.get());
 	}
 
 	public Text description(final CommandSource source) {
-		return EEMessages.WEATHER_RAIN_DESCRIPTION.getText();
+		return EEMessages.WORLDS_NETHER_DESCRIPTION.getText();
 	}
 
 	public Text help(final CommandSource source) {
-		return Text.builder("/rain").onClick(TextActions.suggestCommand("/rain")).color(TextColors.RED).build();
+		return Text.builder("/nether").onClick(TextActions.suggestCommand("/nether")).color(TextColors.RED).build();
 	}
 
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
-		return new ArrayList<String>();
+		List<String> suggests = null;
+		if(!(args.size() == 1 && source.hasPermission(EEPermissions.WORLDS_OTHERS.get()))){
+			suggests = new ArrayList<String>();
+		}
+		return suggests;
 	}
 
 	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
@@ -57,7 +61,9 @@ public class EEWeatherRain extends ECommand<EverEssentials> {
 		boolean resultat = false;
 		// Si on ne connait pas le joueur
 		if (args.size() == 0) {
-			resultat = commandWeatherRain(source);
+			resultat = commandNether(source);
+		} else if (args.size() == 1){
+			resultat = commandNetherOthers(source, args.get(0));
 		// Nombre d'argument incorrect
 		} else {
 			source.sendMessage(help(source));
@@ -65,8 +71,13 @@ public class EEWeatherRain extends ECommand<EverEssentials> {
 		return resultat;
 	}
 
-	public boolean commandWeatherRain(final CommandSource player) {
-		this.plugin.getGame().getCommandManager().process(player, "weather rain");
+	public boolean commandNether(final CommandSource player) {
+		this.plugin.getGame().getCommandManager().process(player, "worlds DIM-1");
+		return false;
+	}
+	
+	public boolean commandNetherOthers(final CommandSource player, final String arg) {
+		this.plugin.getGame().getCommandManager().process(player, "worlds DIM-1 "+ arg);
 		return false;
 	}
 }

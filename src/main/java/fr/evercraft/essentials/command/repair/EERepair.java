@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with EverEssentials.  If not, see <http://www.gnu.org/licenses/>.
  */
-package fr.evercraft.essentials.command;
+package fr.evercraft.essentials.command.repair;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,28 +30,38 @@ import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.plugin.command.ECommand;
 
-public class EEWorldsNether extends ECommand<EverEssentials> {
-	
-	public EEWorldsNether(final EverEssentials plugin) {
-		super(plugin, "nether");
+public class EERepair extends ECommand<EverEssentials> {
+
+	public EERepair(final EverEssentials plugin) {
+		super(plugin, "repair", "fix");
 	}
 
 	public boolean testPermission(final CommandSource source) {
-		return source.hasPermission(EEPermissions.WORLDS.get());
+		return source.hasPermission(EEPermissions.REPAIR.get());
 	}
 
 	public Text description(final CommandSource source) {
-		return EEMessages.WORLDS_NETHER_DESCRIPTION.getText();
+		return EEMessages.REPAIR_DESCRIPTION.getText();
 	}
 
 	public Text help(final CommandSource source) {
-		return Text.builder("/nether").onClick(TextActions.suggestCommand("/nether")).color(TextColors.RED).build();
+		return Text.builder("/repair ").onClick(TextActions.suggestCommand("/repair "))
+				.append(Text.of("<"))
+				.append(Text.builder("all").onClick(TextActions.suggestCommand("/repair all")).build())
+				.append(Text.of("|"))
+				.append(Text.builder("hand").onClick(TextActions.suggestCommand("/repair hand")).build())
+				.append(Text.of("|"))
+				.append(Text.builder("hotbar").onClick(TextActions.suggestCommand("/repair hotbar")).build())
+				.append(Text.of(">"))
+				.color(TextColors.RED).build();
 	}
 
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
-		List<String> suggests = null;
-		if(!(args.size() == 1 && source.hasPermission(EEPermissions.WORLDS_OTHERS.get()))){
-			suggests = new ArrayList<String>();
+		List<String> suggests = new ArrayList<String>();
+		if(args.size() == 1){
+			suggests.add("all");
+			suggests.add("hand");
+			suggests.add("hotbar");
 		}
 		return suggests;
 	}
@@ -59,25 +69,34 @@ public class EEWorldsNether extends ECommand<EverEssentials> {
 	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Résultat de la commande :
 		boolean resultat = false;
-		// Si on ne connait pas le joueur
-		if (args.size() == 0) {
-			resultat = commandNether(source);
-		} else if (args.size() == 1){
-			resultat = commandNetherOthers(source, args.get(0));
-		// Nombre d'argument incorrect
+		if(args.size() == 1) {
+			if(args.get(0).equalsIgnoreCase("all")) {
+				resultat = commandRepairAll(source);
+			} else if(args.get(0).equalsIgnoreCase("hand")) {
+				resultat = commandRepairHand(source);
+			} else if(args.get(0).equalsIgnoreCase("hotbar")) {
+				resultat = commandRepairHotbar(source);
+			} else {
+				source.sendMessage(help(source));
+			}
 		} else {
 			source.sendMessage(help(source));
 		}
 		return resultat;
 	}
 
-	public boolean commandNether(final CommandSource player) {
-		this.plugin.getGame().getCommandManager().process(player, "worlds DIM-1");
+	public boolean commandRepairAll(final CommandSource player) {
+		this.plugin.getGame().getCommandManager().process(player, "repairall");
 		return false;
 	}
 	
-	public boolean commandNetherOthers(final CommandSource player, final String arg) {
-		this.plugin.getGame().getCommandManager().process(player, "worlds DIM-1 "+ arg);
+	public boolean commandRepairHand(final CommandSource player) {
+		this.plugin.getGame().getCommandManager().process(player, "repairhand");
+		return false;
+	}
+	
+	public boolean commandRepairHotbar(final CommandSource player) {
+		this.plugin.getGame().getCommandManager().process(player, "repairhotbar");
 		return false;
 	}
 }

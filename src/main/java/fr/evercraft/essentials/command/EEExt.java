@@ -50,7 +50,7 @@ public class EEExt extends ECommand<EverEssentials> {
 
 	public Text help(final CommandSource source) {
 		if(source.hasPermission(EEPermissions.EXT_OTHERS.get())){
-			return Text.builder("/ext [joueur]").onClick(TextActions.suggestCommand("/ext "))
+			return Text.builder("/ext [" + EAMessages.ARGS_PLAYER + "]").onClick(TextActions.suggestCommand("/ext "))
 					.color(TextColors.RED).build();
 		}
 		return Text.builder("/ext").onClick(TextActions.suggestCommand("/ext"))

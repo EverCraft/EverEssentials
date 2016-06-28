@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with EverEssentials.  If not, see <http://www.gnu.org/licenses/>.
  */
-package fr.evercraft.essentials.command;
+package fr.evercraft.essentials.command.time;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,22 +30,22 @@ import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.plugin.command.ECommand;
 
-public class EEWeatherSun extends ECommand<EverEssentials> {
+public class EETimeDay extends ECommand<EverEssentials> {
 
-	public EEWeatherSun(final EverEssentials plugin) {
-		super(plugin, "sun");
+	public EETimeDay(final EverEssentials plugin) {
+		super(plugin, "day");
 	}
 
 	public boolean testPermission(final CommandSource source) {
-		return source.hasPermission(EEPermissions.WEATHER.get());
+		return source.hasPermission(EEPermissions.TIME.get());
 	}
 
 	public Text description(final CommandSource source) {
-		return EEMessages.WEATHER_SUN_DESCRIPTION.getText();
+		return EEMessages.TIME_DAY_DESCRIPTION.getText();
 	}
 
 	public Text help(final CommandSource source) {
-		return Text.builder("/sun").onClick(TextActions.suggestCommand("/sun")).color(TextColors.RED).build();
+		return Text.builder("/day").onClick(TextActions.suggestCommand("/day")).color(TextColors.RED).build();
 	}
 
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
@@ -57,7 +57,7 @@ public class EEWeatherSun extends ECommand<EverEssentials> {
 		boolean resultat = false;
 		// Si on ne connait pas le joueur
 		if (args.size() == 0) {
-			resultat = commandWeatherSun(source);
+			resultat = commandTimeDay(source);
 		// Nombre d'argument incorrect
 		} else {
 			source.sendMessage(help(source));
@@ -65,8 +65,8 @@ public class EEWeatherSun extends ECommand<EverEssentials> {
 		return resultat;
 	}
 
-	public boolean commandWeatherSun(final CommandSource player) {
-		this.plugin.getGame().getCommandManager().process(player, "weather sun");
+	public boolean commandTimeDay(final CommandSource player) {
+		this.plugin.getGame().getCommandManager().process(player, "time day");
 		return false;
 	}
 }

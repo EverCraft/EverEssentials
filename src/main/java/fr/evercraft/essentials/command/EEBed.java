@@ -54,7 +54,7 @@ public class EEBed extends ECommand<EverEssentials> {
 
 	public Text help(final CommandSource source) {
 		if(source.hasPermission(EEPermissions.BED_OTHERS.get())){
-			return Text.builder("/bed [joueur]").onClick(TextActions.suggestCommand("/bed "))
+			return Text.builder("/bed [" + EAMessages.ARGS_PLAYER + "]").onClick(TextActions.suggestCommand("/bed "))
 					.color(TextColors.RED).build();
 		}
 		return Text.builder("/bed").onClick(TextActions.suggestCommand("/bed"))

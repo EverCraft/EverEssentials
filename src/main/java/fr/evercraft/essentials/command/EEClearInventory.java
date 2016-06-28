@@ -50,7 +50,7 @@ public class EEClearInventory extends ECommand<EverEssentials> {
 
 	public Text help(final CommandSource source) {
 		if(source.hasPermission(EEPermissions.CLEARINVENTORY_OTHERS.get())){
-			return Text.builder("/clearinventory [joueur]").onClick(TextActions.suggestCommand("/clearinventory "))
+			return Text.builder("/clearinventory [" + EAMessages.ARGS_PLAYER + "]").onClick(TextActions.suggestCommand("/clearinventory "))
 					.color(TextColors.RED).build();
 		}
 		return Text.builder("/clearinventory").onClick(TextActions.suggestCommand("/clearinventory"))

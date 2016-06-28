@@ -53,7 +53,7 @@ public class EEFly extends ECommand<EverEssentials> {
 		Text help;
 		if(source.hasPermission(EEPermissions.FLY_OTHERS.get())){
 			help = Text.builder("/fly").onClick(TextActions.suggestCommand("/fly "))
-					.append(Text.builder(" [joueur [on|off]]").build())
+					.append(Text.builder(" [" + EAMessages.ARGS_PLAYER + " [on|off]]").build())
 					.color(TextColors.RED).build();
 		} else {
 			help = Text.builder("/fly").onClick(TextActions.suggestCommand("/fly"))

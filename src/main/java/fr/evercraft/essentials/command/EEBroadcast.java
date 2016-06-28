@@ -29,6 +29,7 @@ import org.spongepowered.api.text.format.TextColors;
 import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
+import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ECommand;
 import fr.evercraft.everapi.server.player.EPlayer;
@@ -48,7 +49,7 @@ public class EEBroadcast extends ECommand<EverEssentials> {
 	}
 
 	public Text help(final CommandSource source) {
-		Text help = Text.builder("/broadcast <message...>").onClick(TextActions.suggestCommand("/broadcast "))
+		Text help = Text.builder("/broadcast <" + EAMessages.ARGS_MESSAGE + ">").onClick(TextActions.suggestCommand("/broadcast "))
 					.color(TextColors.RED).build();
 		return help;
 	}

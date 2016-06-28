@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with EverEssentials.  If not, see <http://www.gnu.org/licenses/>.
  */
-package fr.evercraft.essentials.command;
+package fr.evercraft.essentials.command.home;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -88,7 +88,7 @@ public class EEHomeSet extends ECommand<EverEssentials> {
 	public Text help(final CommandSource source) {
 		Text help;
 		if(source.hasPermission(EEPermissions.SETHOME_MULTIPLE.get())) {
-			help = Text.builder("/sethome <name>").onClick(TextActions.suggestCommand("/sethome "))
+			help = Text.builder("/sethome <" + EAMessages.ARGS_HOME + ">").onClick(TextActions.suggestCommand("/sethome "))
 					.color(TextColors.RED).build();
 		} else {
 			help = Text.builder("/sethome").onClick(TextActions.suggestCommand("/sethome"))

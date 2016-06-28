@@ -52,7 +52,7 @@ public class EEGod extends ECommand<EverEssentials> {
 		Text help;
 		if(source.hasPermission(EEPermissions.GOD_OTHERS.get())){
 			help = Text.builder("/god").onClick(TextActions.suggestCommand("/god "))
-					.append(Text.builder(" [joueur [on|off]]").build())
+					.append(Text.builder(" [" + EAMessages.ARGS_PLAYER + " [on|off]]").build())
 					.color(TextColors.RED).build();
 		} else {
 			help = Text.builder("/god").onClick(TextActions.suggestCommand("/god"))

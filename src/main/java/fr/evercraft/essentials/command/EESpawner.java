@@ -57,7 +57,7 @@ public class EESpawner extends ECommand<EverEssentials> {
 	}
 
 	public Text help(final CommandSource source) {
-		return Text.builder("/spawner <créature> [délais]").onClick(TextActions.suggestCommand("/spawner "))
+		return Text.builder("/spawner <" + EAMessages.ARGS_ENTITY + "> [délais]").onClick(TextActions.suggestCommand("/spawner "))
 				.color(TextColors.RED).build();
 	}
 	

@@ -20,6 +20,31 @@ import java.util.TreeMap;
 
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.essentials.command.*;
+import fr.evercraft.essentials.command.home.EEHome;
+import fr.evercraft.essentials.command.home.EEHomeDel;
+import fr.evercraft.essentials.command.home.EEHomeOthers;
+import fr.evercraft.essentials.command.home.EEHomeSet;
+import fr.evercraft.essentials.command.repair.EERepair;
+import fr.evercraft.essentials.command.repair.EERepairAll;
+import fr.evercraft.essentials.command.repair.EERepairHand;
+import fr.evercraft.essentials.command.repair.EERepairHotBar;
+import fr.evercraft.essentials.command.teleport.EETeleportation;
+import fr.evercraft.essentials.command.teleport.EETeleportationAll;
+import fr.evercraft.essentials.command.teleport.EETeleportationHere;
+import fr.evercraft.essentials.command.teleport.EETeleportationPosition;
+import fr.evercraft.essentials.command.time.EETime;
+import fr.evercraft.essentials.command.time.EETimeDay;
+import fr.evercraft.essentials.command.time.EETimeNight;
+import fr.evercraft.essentials.command.warp.EEWarp;
+import fr.evercraft.essentials.command.warp.EEWarpDel;
+import fr.evercraft.essentials.command.warp.EEWarpSet;
+import fr.evercraft.essentials.command.weather.EEWeather;
+import fr.evercraft.essentials.command.weather.EEWeatherRain;
+import fr.evercraft.essentials.command.weather.EEWeatherStorm;
+import fr.evercraft.essentials.command.weather.EEWeatherSun;
+import fr.evercraft.essentials.command.world.EEWorlds;
+import fr.evercraft.essentials.command.world.EEWorldsEnd;
+import fr.evercraft.essentials.command.world.EEWorldsNether;
 import fr.evercraft.everapi.plugin.command.ECommand;
 
 public class EEManagerCommands extends TreeMap<String, ECommand<EverEssentials>>{

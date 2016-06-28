@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with EverEssentials.  If not, see <http://www.gnu.org/licenses/>.
  */
-package fr.evercraft.essentials.command;
+package fr.evercraft.essentials.command.home;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,7 +58,7 @@ public class EEHomeOthers extends ECommand<EverEssentials> {
 	}
 
 	public Text help(final CommandSource source) {
-		return Text.builder("/homeothers <player> [home [delete]]").onClick(TextActions.suggestCommand("/homeothers "))
+		return Text.builder("/homeothers <" + EAMessages.ARGS_PLAYER + "> [" + EAMessages.ARGS_HOME + " [delete]]").onClick(TextActions.suggestCommand("/homeothers "))
 				.color(TextColors.RED).build();
 	}
 	

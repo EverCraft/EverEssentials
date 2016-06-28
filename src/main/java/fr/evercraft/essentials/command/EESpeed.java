@@ -55,13 +55,13 @@ public class EESpeed extends ECommand<EverEssentials> {
 	public Text help(final CommandSource source) {
 		if(source.hasPermission(EEPermissions.SPEED_WALK.get()) && 
 			source.hasPermission(EEPermissions.SPEED_FLY.get())) {
-			return Text.builder("/speed [vitesse] [walk|fly] [joueur]").onClick(TextActions.suggestCommand("/speed "))
+			return Text.builder("/speed [" + EAMessages.ARGS_SPEED + "] [walk|fly] [" + EAMessages.ARGS_PLAYER + "]").onClick(TextActions.suggestCommand("/speed "))
 					.color(TextColors.RED).build();
-		} else if(source.hasPermission(EEPermissions.SPEED_WALK.get())) {
-				return Text.builder("/speed [vitesse] [fly] [joueur]").onClick(TextActions.suggestCommand("/speed "))
+		} else if(source.hasPermission(EEPermissions.SPEED_FLY.get())) {
+				return Text.builder("/speed [" + EAMessages.ARGS_SPEED + "] [fly] [" + EAMessages.ARGS_PLAYER + "]").onClick(TextActions.suggestCommand("/speed "))
 						.color(TextColors.RED).build();
 		} else if(source.hasPermission(EEPermissions.SPEED_WALK.get())) {
-			return Text.builder("/speed [vitesse] [walk] [joueur]").onClick(TextActions.suggestCommand("/speed "))
+			return Text.builder("/speed [" + EAMessages.ARGS_SPEED + "] [walk] [" + EAMessages.ARGS_PLAYER + "]").onClick(TextActions.suggestCommand("/speed "))
 					.color(TextColors.RED).build();
 		}
 		return Text.builder("/speed").onClick(TextActions.suggestCommand("/speed"))

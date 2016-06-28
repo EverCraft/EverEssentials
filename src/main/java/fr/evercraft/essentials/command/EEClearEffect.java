@@ -50,7 +50,7 @@ public class EEClearEffect extends ECommand<EverEssentials> {
 
 	public Text help(final CommandSource source) {
 		if(source.hasPermission(EEPermissions.CLEAREFFECT_OTHERS.get())){
-			return Text.builder("/cleareffect [joueur]")
+			return Text.builder("/cleareffect [" + EAMessages.ARGS_PLAYER + "]")
 					.onClick(TextActions.suggestCommand("/cleareffect "))
 					.color(TextColors.RED)
 					.build();

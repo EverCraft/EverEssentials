@@ -14,13 +14,14 @@
  * You should have received a copy of the GNU General Public License
  * along with EverEssentials.  If not, see <http://www.gnu.org/licenses/>.
  */
-package fr.evercraft.essentials.command;
+package fr.evercraft.essentials.command.repair;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
+import org.spongepowered.api.item.inventory.entity.Hotbar;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
@@ -28,75 +29,55 @@ import org.spongepowered.api.text.format.TextColors;
 import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
+import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.command.ECommand;
+import fr.evercraft.everapi.server.player.EPlayer;
+import fr.evercraft.everapi.sponge.UtilsInventory;
 
-public class EERepair extends ECommand<EverEssentials> {
+public class EERepairHotBar extends ECommand<EverEssentials> {
 
-	public EERepair(final EverEssentials plugin) {
-		super(plugin, "repair", "fix");
+	public EERepairHotBar(final EverEssentials plugin) {
+		super(plugin, "repairhotbar");
 	}
 
 	public boolean testPermission(final CommandSource source) {
-		return source.hasPermission(EEPermissions.REPAIR.get());
+		return source.hasPermission(EEPermissions.REPAIR_HOTBAR.get());
 	}
 
 	public Text description(final CommandSource source) {
-		return EEMessages.REPAIR_DESCRIPTION.getText();
+		return EEMessages.REPAIR_HOTBAR_DESCRIPTION.getText();
 	}
 
 	public Text help(final CommandSource source) {
-		return Text.builder("/repair ").onClick(TextActions.suggestCommand("/repair "))
-				.append(Text.of("<"))
-				.append(Text.builder("all").onClick(TextActions.suggestCommand("/repair all")).build())
-				.append(Text.of("|"))
-				.append(Text.builder("hand").onClick(TextActions.suggestCommand("/repair hand")).build())
-				.append(Text.of("|"))
-				.append(Text.builder("hotbar").onClick(TextActions.suggestCommand("/repair hotbar")).build())
-				.append(Text.of(">"))
-				.color(TextColors.RED).build();
+		return Text.builder("/repairhotbar").onClick(TextActions.suggestCommand("/repairhotbar")).color(TextColors.RED).build();
 	}
 
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
-		List<String> suggests = new ArrayList<String>();
-		if(args.size() == 1){
-			suggests.add("all");
-			suggests.add("hand");
-			suggests.add("hotbar");
-		}
-		return suggests;
+		return new ArrayList<String>();
 	}
 
 	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Résultat de la commande :
 		boolean resultat = false;
-		if(args.size() == 1) {
-			if(args.get(0).equalsIgnoreCase("all")) {
-				resultat = commandRepairAll(source);
-			} else if(args.get(0).equalsIgnoreCase("hand")) {
-				resultat = commandRepairHand(source);
-			} else if(args.get(0).equalsIgnoreCase("hotbar")) {
-				resultat = commandRepairHotbar(source);
+		// Si on ne connait pas le joueur
+		if (args.size() == 0) {
+			// Si la source est un joueur
+			if (source instanceof EPlayer) {
+				resultat = commandRepairHotBar((EPlayer) source);
+				// La source n'est pas un joueur
 			} else {
-				source.sendMessage(help(source));
+				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
 			}
+			// On connais le joueur
 		} else {
 			source.sendMessage(help(source));
 		}
 		return resultat;
 	}
 
-	public boolean commandRepairAll(final CommandSource player) {
-		this.plugin.getGame().getCommandManager().process(player, "repairall");
-		return false;
-	}
-	
-	public boolean commandRepairHand(final CommandSource player) {
-		this.plugin.getGame().getCommandManager().process(player, "repairhand");
-		return false;
-	}
-	
-	public boolean commandRepairHotbar(final CommandSource player) {
-		this.plugin.getGame().getCommandManager().process(player, "repairhotbar");
+	public boolean commandRepairHotBar(final EPlayer player) {
+		UtilsInventory.repair(player.getInventory().query(Hotbar.class));
+		player.sendMessage(EEMessages.PREFIX.get() + EEMessages.REPAIR_HOTBAR_PLAYER.get());
 		return false;
 	}
 }
