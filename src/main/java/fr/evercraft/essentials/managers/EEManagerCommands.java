@@ -20,32 +20,16 @@ import java.util.TreeMap;
 
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.essentials.command.*;
-import fr.evercraft.essentials.command.home.EEHome;
-import fr.evercraft.essentials.command.home.EEHomeDel;
-import fr.evercraft.essentials.command.home.EEHomeOthers;
-import fr.evercraft.essentials.command.home.EEHomeSet;
-import fr.evercraft.essentials.command.repair.EERepair;
-import fr.evercraft.essentials.command.repair.EERepairAll;
-import fr.evercraft.essentials.command.repair.EERepairHand;
-import fr.evercraft.essentials.command.repair.EERepairHotBar;
-import fr.evercraft.essentials.command.teleport.EETeleportation;
-import fr.evercraft.essentials.command.teleport.EETeleportationAll;
-import fr.evercraft.essentials.command.teleport.EETeleportationHere;
-import fr.evercraft.essentials.command.teleport.EETeleportationPosition;
-import fr.evercraft.essentials.command.time.EETime;
-import fr.evercraft.essentials.command.time.EETimeDay;
-import fr.evercraft.essentials.command.time.EETimeNight;
-import fr.evercraft.essentials.command.warp.EEWarp;
-import fr.evercraft.essentials.command.warp.EEWarpDel;
-import fr.evercraft.essentials.command.warp.EEWarpSet;
-import fr.evercraft.essentials.command.weather.EEWeather;
-import fr.evercraft.essentials.command.weather.EEWeatherRain;
-import fr.evercraft.essentials.command.weather.EEWeatherStorm;
-import fr.evercraft.essentials.command.weather.EEWeatherSun;
-import fr.evercraft.essentials.command.world.EEWorlds;
-import fr.evercraft.essentials.command.world.EEWorldsEnd;
-import fr.evercraft.essentials.command.world.EEWorldsNether;
+import fr.evercraft.essentials.command.home.*;
+import fr.evercraft.essentials.command.repair.*;
+import fr.evercraft.essentials.command.spawn.*;
+import fr.evercraft.essentials.command.teleport.*;
+import fr.evercraft.essentials.command.time.*;
+import fr.evercraft.essentials.command.warp.*;
+import fr.evercraft.essentials.command.weather.*;
+import fr.evercraft.essentials.command.world.*;
 import fr.evercraft.everapi.plugin.command.ECommand;
+import fr.evercraft.everapi.plugin.command.EReloadCommand;
 
 public class EEManagerCommands extends TreeMap<String, ECommand<EverEssentials>>{
 	
@@ -55,6 +39,7 @@ public class EEManagerCommands extends TreeMap<String, ECommand<EverEssentials>>
 	
 	private EEHomeSet homeSet;
 	private EENear near;
+	private EEWarp warp;
 	
 	public EEManagerCommands(EverEssentials plugin){
 		super();
@@ -66,9 +51,11 @@ public class EEManagerCommands extends TreeMap<String, ECommand<EverEssentials>>
 	public void load() {
 		this.homeSet = new EEHomeSet(this.plugin);
 		this.near = new EENear(this.plugin);
+		this.warp = new EEWarp(this.plugin);
 		
 		register(this.homeSet);
 		register(this.near);
+		register(this.warp);
 		
 		register(new EEAfk(this.plugin));
 		register(new EEBack(this.plugin));
@@ -92,6 +79,7 @@ public class EEManagerCommands extends TreeMap<String, ECommand<EverEssentials>>
 		register(new EEHeal(this.plugin));
 		register(new EEHome(this.plugin));
 		register(new EEHomeDel(this.plugin));
+		register(new EEHomeSet(this.plugin));
 		register(new EEHomeOthers(this.plugin));
 		register(new EEInfo(this.plugin));
 		register(new EEJump(this.plugin));
@@ -106,6 +94,7 @@ public class EEManagerCommands extends TreeMap<String, ECommand<EverEssentials>>
 		register(new EEMore(this.plugin));
 		register(new EEMotd(this.plugin));
 		register(new EENames(this.plugin));
+		register(new EENear(this.plugin));
 		register(new EEReload(this.plugin));
 		register(new EERepair(this.plugin));
 		register(new EERepairAll(this.plugin));
@@ -115,6 +104,9 @@ public class EEManagerCommands extends TreeMap<String, ECommand<EverEssentials>>
 		register(new EEPing(this.plugin));
 		register(new EESeeInventory(this.plugin));
 		register(new EESkull(this.plugin));
+		register(new EESpawn(this.plugin));
+		register(new EESpawnSet(this.plugin));
+		register(new EESpawnDel(this.plugin));
 		register(new EESpawner(this.plugin));
 		register(new EESpawnMob(this.plugin));
 		register(new EESpeed(this.plugin));
@@ -146,8 +138,11 @@ public class EEManagerCommands extends TreeMap<String, ECommand<EverEssentials>>
 	}
 	
 	public void reload(){
-		this.homeSet.reload();
-		this.near.reload();
+		for(ECommand<EverEssentials> command : this.values()) {
+			if(command instanceof EReloadCommand) {
+				((EReloadCommand<EverEssentials>) command).reload();
+			}
+		}
 	}
 	
 	private void register(ECommand<EverEssentials> command) {

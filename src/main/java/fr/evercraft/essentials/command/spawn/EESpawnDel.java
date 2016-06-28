@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with EverEssentials.  If not, see <http://www.gnu.org/licenses/>.
  */
-package fr.evercraft.essentials.command.warp;
+package fr.evercraft.essentials.command.spawn;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,14 +38,14 @@ import fr.evercraft.everapi.plugin.command.ECommand;
 import fr.evercraft.everapi.server.player.EPlayer;
 import fr.evercraft.everapi.text.ETextBuilder;
 
-public class EEWarpDel extends ECommand<EverEssentials> {
+public class EESpawnDel extends ECommand<EverEssentials> {
 	
-	public EEWarpDel(final EverEssentials plugin) {
-        super(plugin, "delwarp", "delwarps");
+	public EESpawnDel(final EverEssentials plugin) {
+        super(plugin, "delspawn", "delspawns");
     }
 	
 	public boolean testPermission(final CommandSource source) {
-		return source.hasPermission(EEPermissions.DELWARP.get());
+		return source.hasPermission(EEPermissions.DELSPAWN.get());
 	}
 
 	public Text description(final CommandSource source) {

@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with EverEssentials.  If not, see <http://www.gnu.org/licenses/>.
  */
-package fr.evercraft.essentials.command.warp;
+package fr.evercraft.essentials.command.spawn;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,27 +36,21 @@ import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.EChat;
-import fr.evercraft.everapi.plugin.command.EReloadCommand;
+import fr.evercraft.everapi.plugin.command.ECommand;
 import fr.evercraft.everapi.server.location.LocationSQL;
 import fr.evercraft.everapi.server.player.EPlayer;
 import fr.evercraft.everapi.text.ETextBuilder;
 
-public class EEWarp extends EReloadCommand<EverEssentials> {
+public class EESpawn extends ECommand<EverEssentials> {
 	
 	private boolean permission;
 	
-	public EEWarp(final EverEssentials plugin) {
-        super(plugin, "warp", "warps");
-        
-        reload();
+	public EESpawn(final EverEssentials plugin) {
+        super(plugin, "spawn", "spawns");
     }
-	
-	public void reload() {
-		this.permission = this.plugin.getConfigs().get("warp-permission").getBoolean(true);
-	}
 
 	public boolean testPermission(final CommandSource source) {
-		return source.hasPermission(EEPermissions.WARP.get());
+		return source.hasPermission(EEPermissions.SPAWN.get());
 	}
 
 	public Text description(final CommandSource source) {

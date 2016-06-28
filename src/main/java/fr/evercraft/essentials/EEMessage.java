@@ -368,6 +368,15 @@ public class EEMessage extends EMessage {
 		SKULL_MY_HEAD("skull.myHead", "&7Vous avez reçu votre tête."),
 		SKULL_OTHERS("skull.others", "&7Vous avez reçu la tête de &6<player>&7."),
 		
+		SPAWN_DESCRIPTION("spawn.description", "Permet de modifier le type d'un mob spawner"),
+
+		SETSPAWN_DESCRIPTION("setspawn.description", "Permet de définir un spawn"),
+		SETSPAWN_ERROR_GROUP("setspawn.errorGroup", "&cIl y a aucun groupe qui porte le nom &6<group>."),
+		SETSPAWN_NAME("setspawn.name", "&6&l<name>"),
+		SETSPAWN_NAME_HOVER("setspawn.nameHover", "&cMonde : &6<world>[RT]&cX : &6<x>[RT]&cY : &6<y>[RT]&cZ : &6<z>"),
+		SETSPAWN_REPLACE("setspawn.replace", "&7Vous avez redéfini le spawn &6<group>&7."),
+		SETSPAWN_NEW("setspawn.new", "&7Vous avez défini le spawn &6<group>&7."),
+		
 		SPAWNER_DESCRIPTION("spawner.description", "Permet de modifier le type d'un mob spawner"),
 		
 		SPAWNMOB_DESCRIPTION("spawnmob.description", "Fait apparaître une entité"),

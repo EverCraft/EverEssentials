@@ -39,8 +39,8 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
 import fr.evercraft.essentials.EverEssentials;
-import fr.evercraft.essentials.service.warp.LocationSQL;
 import fr.evercraft.everapi.exception.ServerDisableException;
+import fr.evercraft.everapi.server.location.LocationSQL;
 import fr.evercraft.everapi.server.player.EPlayer;
 import fr.evercraft.everapi.services.essentials.EssentialsSubject;
 import fr.evercraft.everapi.services.essentials.Mail;

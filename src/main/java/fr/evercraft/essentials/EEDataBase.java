@@ -22,15 +22,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
-import java.util.HashMap;
-import java.util.Map;
 
 import fr.evercraft.essentials.service.EMail;
 import fr.evercraft.essentials.service.ESubject;
-import fr.evercraft.essentials.service.warp.LocationSQL;
 import fr.evercraft.everapi.exception.PluginDisableException;
 import fr.evercraft.everapi.exception.ServerDisableException;
 import fr.evercraft.everapi.plugin.EDataBase;
+import fr.evercraft.everapi.server.location.LocationSQL;
 import fr.evercraft.everapi.services.essentials.Mail;
 
 public class EEDataBase extends EDataBase<EverEssentials> {
@@ -340,6 +338,10 @@ public class EEDataBase extends EDataBase<EverEssentials> {
 	    }
 	}
 	
+	/*
+	 * Home
+	 */
+	
 	public void addHome(final String identifier, final String name, final LocationSQL location) {
 		Connection connection = null;
 		PreparedStatement preparedStatement = null;
@@ -513,230 +515,8 @@ public class EEDataBase extends EDataBase<EverEssentials> {
 	}
 	
 	/*
-	 * Warps
+	 * Mails
 	 */
-	public Map<String, LocationSQL> selectWarps() {
-		Map<String, LocationSQL> warps = new HashMap<String, LocationSQL>();
-		Connection connection = null;
-		PreparedStatement preparedStatement = null;
-    	try {
-    		connection = this.getConnection();
-    		String query = 	  "SELECT *" 
-							+ "FROM `" + this.getTableWarps() + "` ;";
-			preparedStatement = connection.prepareStatement(query);
-			ResultSet list = preparedStatement.executeQuery();
-			if (list.next()) {
-				warps.put(list.getString("identifier"), new LocationSQL(this.plugin,	list.getString("world"), 
-																				list.getDouble("x"),
-																				list.getDouble("y"),
-																				list.getDouble("z"),
-																				list.getDouble("yaw"),
-																				list.getDouble("pitch")));
-				this.plugin.getLogger().debug("Loading : (warp='" + list.getString("identifier") + "';location='" + warps.get(list.getString("identifier")) + "')");
-			}
-    	} catch (SQLException e) {
-    		this.plugin.getLogger().warn("Warps error when loading : " + e.getMessage());
-		} catch (ServerDisableException e) {
-			e.execute();
-		} finally {
-			try {
-				if (preparedStatement != null) preparedStatement.close();
-				if (connection != null) connection.close();
-			} catch (SQLException e) {}
-	    }
-    	return warps;
-	}
-	
-	public void addWarp(final String identifier, final LocationSQL location) {
-		Connection connection = null;
-		PreparedStatement preparedStatement = null;
-    	try {
-    		connection = this.getConnection();
-    		String query = 	  "INSERT INTO `" + this.getTableWarps() + "` "
-    						+ "VALUES (?, ?, ?, ?, ?, ?, ?);";
-			preparedStatement = connection.prepareStatement(query);
-			preparedStatement.setString(1, identifier);
-			preparedStatement.setString(2, location.getWorldUUID());
-			preparedStatement.setDouble(3, location.getX());
-			preparedStatement.setDouble(4, location.getY());
-			preparedStatement.setDouble(5, location.getZ());
-			preparedStatement.setDouble(6, location.getYaw());
-			preparedStatement.setDouble(7, location.getPitch());
-			
-			preparedStatement.execute();
-			this.plugin.getLogger().debug("Adding to the database : (warp='" + identifier + "';location='" + location + "')");
-    	} catch (SQLException e) {
-        	this.plugin.getLogger().warn("Error during a change of warp : " + e.getMessage());
-		} catch (ServerDisableException e) {
-			e.execute();
-		} finally {
-			try {
-				if (preparedStatement != null) preparedStatement.close();
-				if (connection != null) connection.close();
-			} catch (SQLException e) {}
-	    }
-	}
-	
-	public void removeWarp(final String identifier) {
-		Connection connection = null;
-		PreparedStatement preparedStatement = null;
-    	try {
-    		connection = this.getConnection();
-    		String query = 	  "DELETE " 
-		    				+ "FROM `" + this.getTableWarps() + "` "
-		    				+ "WHERE `identifier` = ? ;";
-			preparedStatement = connection.prepareStatement(query);
-			preparedStatement.setString(1, identifier);
-			
-			preparedStatement.execute();
-			this.plugin.getLogger().debug("Remove from database : (warp='" + identifier + "')");
-    	} catch (SQLException e) {
-        	this.plugin.getLogger().warn("Error during a change of warp : " + e.getMessage());
-		} catch (ServerDisableException e) {
-			e.execute();
-		} finally {
-			try {
-				if (preparedStatement != null) preparedStatement.close();
-				if (connection != null) connection.close();
-			} catch (SQLException e) {}
-	    }
-	}
-	
-	public void clearWarps() {
-		Connection connection = null;
-		PreparedStatement preparedStatement = null;
-    	try {
-    		connection = this.getConnection();
-    		String query = 	  "DELETE " 
-		    				+ "FROM `" + this.getTableWarps() + "` ;";
-			preparedStatement = connection.prepareStatement(query);
-			
-			preparedStatement.execute();
-			this.plugin.getLogger().debug("Removes the database warps");
-    	} catch (SQLException e) {
-    		this.plugin.getLogger().warn("Error warps deletions : " + e.getMessage());
-		} catch (ServerDisableException e) {
-			e.execute();
-		} finally {
-			try {
-				if (preparedStatement != null) preparedStatement.close();
-				if (connection != null) connection.close();
-			} catch (SQLException e) {}
-	    }
-	}
-	
-	/*
-	 * Spawn
-	 */
-	public Map<String, LocationSQL> selectSpawns() {
-		Map<String, LocationSQL> warps = new HashMap<String, LocationSQL>();
-		Connection connection = null;
-		PreparedStatement preparedStatement = null;
-    	try {
-    		connection = this.getConnection();
-    		String query = 	  "SELECT *" 
-							+ "FROM `" + this.getTableSpawns() + "` ;";
-			preparedStatement = connection.prepareStatement(query);
-			ResultSet list = preparedStatement.executeQuery();
-			if (list.next()) {
-			warps.put(list.getString("identifier"), new LocationSQL(this.plugin,	list.getString("world"), 
-																					list.getDouble("x"),
-																					list.getDouble("y"),
-																					list.getDouble("z"),
-																					list.getDouble("yaw"),
-																					list.getDouble("pitch")));
-				this.plugin.getLogger().debug("Loading : (spawn='" + list.getString("identifier") + "';location='" + warps.get(list.getString("identifier")) + "')");
-			}
-    	} catch (SQLException e) {
-    		this.plugin.getLogger().warn("Spawns error when loading : " + e.getMessage());
-		} catch (ServerDisableException e) {
-			e.execute();
-		} finally {
-			try {
-				if (preparedStatement != null) preparedStatement.close();
-				if (connection != null) connection.close();
-			} catch (SQLException e) {}
-	    }
-    	return warps;
-	}
-	
-	public void addSpawn(final String identifier, final LocationSQL location) {
-		Connection connection = null;
-		PreparedStatement preparedStatement = null;
-    	try {
-    		connection = this.getConnection();
-    		String query = 	  "INSERT INTO `" + this.getTableSpawns() + "` "
-    						+ "VALUES (?, ?, ?, ?, ?, ?, ?);";
-			preparedStatement = connection.prepareStatement(query);
-			preparedStatement.setString(1, identifier);
-			preparedStatement.setString(2, location.getWorldUUID());
-			preparedStatement.setDouble(3, location.getX());
-			preparedStatement.setDouble(4, location.getY());
-			preparedStatement.setDouble(5, location.getZ());
-			preparedStatement.setDouble(6, location.getYaw());
-			preparedStatement.setDouble(7, location.getPitch());
-			
-			preparedStatement.execute();
-			this.plugin.getLogger().debug("Adding to the database : (spawn='" + identifier + "';location='" + location + "')");
-    	} catch (SQLException e) {
-        	this.plugin.getLogger().warn("Error during a change of spawn : " + e.getMessage());
-		} catch (ServerDisableException e) {
-			e.execute();
-		} finally {
-			try {
-				if (preparedStatement != null) preparedStatement.close();
-				if (connection != null) connection.close();
-			} catch (SQLException e) {}
-	    }
-	}
-	
-	public void removeSpawn(final String identifier) {
-		Connection connection = null;
-		PreparedStatement preparedStatement = null;
-    	try {
-    		connection = this.getConnection();
-    		String query = 	  "DELETE " 
-		    				+ "FROM `" + this.getTableSpawns() + "` "
-		    				+ "WHERE `identifier` = ? ;";
-			preparedStatement = connection.prepareStatement(query);
-			preparedStatement.setString(1, identifier);
-			
-			preparedStatement.execute();
-			this.plugin.getLogger().debug("Remove from database : (spawn='" + identifier + "')");
-    	} catch (SQLException e) {
-        	this.plugin.getLogger().warn("Error during a change of spawn : " + e.getMessage());
-		} catch (ServerDisableException e) {
-			e.execute();
-		} finally {
-			try {
-				if (preparedStatement != null) preparedStatement.close();
-				if (connection != null) connection.close();
-			} catch (SQLException e) {}
-	    }
-	}
-	
-	public void clearSpawns() {
-		Connection connection = null;
-		PreparedStatement preparedStatement = null;
-    	try {
-    		connection = this.getConnection();
-    		String query = 	  "DELETE " 
-		    				+ "FROM `" + this.getTableSpawns() + "` ;";
-			preparedStatement = connection.prepareStatement(query);
-			
-			preparedStatement.execute();
-			this.plugin.getLogger().debug("Removes the database spawns");
-    	} catch (SQLException e) {
-    		this.plugin.getLogger().warn("Error spawns deletions : " + e.getMessage());
-		} catch (ServerDisableException e) {
-			e.execute();
-		} finally {
-			try {
-				if (preparedStatement != null) preparedStatement.close();
-				if (connection != null) connection.close();
-			} catch (SQLException e) {}
-	    }
-	}
 
 	public void sendMail(ESubject subject, String to, String message) {
 		Connection connection = null;

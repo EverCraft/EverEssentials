@@ -142,6 +142,13 @@ public enum EEPermissions implements EnumPermission {
 	SKULL("skull.command"),
 	SKULL_OTHERS("skull.others"),
 	
+	//Spawn
+	
+	SPAWN("spawn.command"),
+	SPAWN_OTHERS("spawn.others"),
+	SETSPAWN("setspawn.command"),
+	DELSPAWN("delspawn.command"),
+	
 	SPAWNER("spawner.command"),
 	
 	SPAWNMOB("spawnmob.command"),
@@ -186,7 +193,7 @@ public enum EEPermissions implements EnumPermission {
 	VANISH_INTERACT("vanish.interact"),
 	
 	WARP("warp.command"),
-	WARP_NAME("warp"),
+	WARP_NAME("warps"),
 	WARP_OTHERS("warp.others"),
 	DELWARP("delwarp.command"),
 	SETWARP("setwarp.command"),

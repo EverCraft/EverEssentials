@@ -38,11 +38,11 @@ import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.java.UtilsMap;
 import fr.evercraft.everapi.plugin.EChat;
-import fr.evercraft.everapi.plugin.command.ECommand;
+import fr.evercraft.everapi.plugin.command.EReloadCommand;
 import fr.evercraft.everapi.server.player.EPlayer;
 import fr.evercraft.everapi.text.ETextBuilder;
 
-public class EEHomeSet extends ECommand<EverEssentials> {
+public class EEHomeSet extends EReloadCommand<EverEssentials> {
 	
 	private final static String DEFAULT_HOME = "home";
 	

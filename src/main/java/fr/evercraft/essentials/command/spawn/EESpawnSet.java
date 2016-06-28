@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with EverEssentials.  If not, see <http://www.gnu.org/licenses/>.
  */
-package fr.evercraft.essentials.command.warp;
+package fr.evercraft.essentials.command.spawn;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +23,7 @@ import java.util.Optional;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.entity.Transform;
+import org.spongepowered.api.service.permission.Subject;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
@@ -39,37 +40,67 @@ import fr.evercraft.everapi.plugin.command.ECommand;
 import fr.evercraft.everapi.server.player.EPlayer;
 import fr.evercraft.everapi.text.ETextBuilder;
 
-public class EEWarpSet extends ECommand<EverEssentials> {
+public class EESpawnSet extends ECommand<EverEssentials> {
 	
-	public EEWarpSet(final EverEssentials plugin) {
-        super(plugin, "setwarp", "setwarps");
+	private final static String DEFAULT_SPAWN = "Default";
+	
+	public EESpawnSet(final EverEssentials plugin) {
+        super(plugin, "setspawn");
     }
 	
 	public boolean testPermission(final CommandSource source) {
-		return source.hasPermission(EEPermissions.SETWARP.get());
+		return source.hasPermission(EEPermissions.SETSPAWN.get());
 	}
 
 	public Text description(final CommandSource source) {
-		return EEMessages.SETWARP_DESCRIPTION.getText();
+		return EEMessages.SETSPAWN_DESCRIPTION.getText();
 	}
 
 	public Text help(final CommandSource source) {
-		return Text.builder("/setwarp <name>").onClick(TextActions.suggestCommand("/setwarp "))
-				.color(TextColors.RED).build();
+		return Text.builder("/setspawn [" + EAMessages.ARGS_GROUP + "]")
+					.onClick(TextActions.suggestCommand("/sethome "))
+					.color(TextColors.RED)
+					.build();
 	}
 	
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
-		return new ArrayList<String>();
+		ArrayList<String> suggest = new ArrayList<String>();
+		if(args.size() == 1 && this.plugin.getEverAPI().getManagerService().getPermission().isPresent()) {
+			for(Subject group : this.plugin.getEverAPI().getManagerService().getPermission().get().getGroupSubjects().getAllSubjects()) {
+				suggest.add(group.getIdentifier());
+			}
+		}
+		return suggest;
 	}
 	
 	public boolean execute(final CommandSource source, final List<String> args) throws CommandException, ServerDisableException {
 		// Résultat de la commande :
 		boolean resultat = false;
 		
-		if(args.size() == 1) {
+		if(args.size() == 0) {
 			// Si la source est un joueur
 			if(source instanceof EPlayer) {
-				resultat = commandSetWarp((EPlayer) source, args.get(0)); 
+				resultat = this.commandSetSpawn((EPlayer) source, DEFAULT_SPAWN);
+			// La source n'est pas un joueur
+			} else {
+				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
+			}
+		// Si on ne connait pas le joueur
+		} else if(args.size() == 1) {
+			// Si la source est un joueur
+			if(source instanceof EPlayer) {
+				if(this.plugin.getEverAPI().getManagerService().getPermission().isPresent()) {
+					Subject group = this.plugin.getEverAPI().getManagerService().getPermission().get().getGroupSubjects().get(args.get(0));
+					if(group != null) {
+						resultat = this.commandSetSpawn((EPlayer) source, group.getIdentifier());
+					} else {
+						source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.SETSPAWN_ERROR_GROUP.get()
+								.replaceAll("<group>", args.get(0))));
+					}
+				} else {
+					resultat = this.commandSetSpawn((EPlayer) source, DEFAULT_SPAWN);
+				}
+				
 			// La source n'est pas un joueur
 			} else {
 				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
@@ -81,24 +112,23 @@ public class EEWarpSet extends ECommand<EverEssentials> {
 		return resultat;
 	}
 	
-	public boolean commandSetWarp(final EPlayer player, final String warp_name) throws ServerDisableException {
-		String name = EChat.fixLength(warp_name, this.plugin.getEverAPI().getConfigs().get("maxCaractere").getInt(16));
-		Optional<Transform<World>> warp = this.plugin.getManagerServices().getWarp().get(name);
-		if(warp.isPresent()) {
-			if(this.plugin.getManagerServices().getWarp().remove(name) && this.plugin.getManagerServices().getWarp().add(name, player.getTransform())) {
+	private boolean commandSetSpawn(final EPlayer player, final String group_name) throws ServerDisableException {
+		Optional<Transform<World>> group = this.plugin.getManagerServices().getSpawn().get(group_name);
+		if(group.isPresent()) {
+			if(this.plugin.getManagerServices().getSpawn().update(group_name, player.getTransform())) {
 				player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
-						.append(EEMessages.SETWARP_REPLACE.get())
-						.replace("<warp>", getButtonWarp(name, player.getLocation()))
+						.append(EEMessages.SETSPAWN_REPLACE.get())
+						.replace("<group>", getButtonSpawn(group_name, player.getLocation()))
 						.build());
 				return true;
 			} else {
 				player.sendMessage(EEMessages.PREFIX.get() + EAMessages.COMMAND_ERROR.get());
 			}
 		} else {
-			if(this.plugin.getManagerServices().getWarp().add(name, player.getTransform())) {
+			if(this.plugin.getManagerServices().getWarp().add(group_name, player.getTransform())) {
 				player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
-						.append(EEMessages.SETWARP_NEW.get())
-						.replace("<warp>", getButtonWarp(name, player.getLocation()))
+						.append(EEMessages.SETSPAWN_NEW.get())
+						.replace("<group>", getButtonSpawn(group_name, player.getLocation()))
 						.build());
 				return true;
 			} else {
@@ -108,10 +138,10 @@ public class EEWarpSet extends ECommand<EverEssentials> {
 		return false;
 	}
 
-	public Text getButtonWarp(final String name, final Location<World> location){
-		return EChat.of(EEMessages.SETWARP_NAME.get().replaceAll("<name>", name)).toBuilder()
-					.onHover(TextActions.showText(EChat.of(EEMessages.SETWARP_NAME_HOVER.get()
-							.replaceAll("<warp>", name)
+	public Text getButtonSpawn(final String name, final Location<World> location){
+		return EChat.of(EEMessages.SETSPAWN_NAME.get().replaceAll("<name>", name)).toBuilder()
+					.onHover(TextActions.showText(EChat.of(EEMessages.SETSPAWN_NAME_HOVER.get()
+							.replaceAll("<group>", name)
 							.replaceAll("<world>", location.getExtent().getName())
 							.replaceAll("<x>", String.valueOf(location.getBlockX()))
 							.replaceAll("<y>", String.valueOf(location.getBlockY()))
