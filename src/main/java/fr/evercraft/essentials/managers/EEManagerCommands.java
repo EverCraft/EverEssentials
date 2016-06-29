@@ -37,10 +37,6 @@ public class EEManagerCommands extends TreeMap<String, ECommand<EverEssentials>>
 
 	private EverEssentials plugin;
 	
-	private EEHomeSet homeSet;
-	private EENear near;
-	private EEWarp warp;
-	
 	public EEManagerCommands(EverEssentials plugin){
 		super();
 		
@@ -48,15 +44,7 @@ public class EEManagerCommands extends TreeMap<String, ECommand<EverEssentials>>
 		load();
 	}
 	
-	public void load() {
-		this.homeSet = new EEHomeSet(this.plugin);
-		this.near = new EENear(this.plugin);
-		this.warp = new EEWarp(this.plugin);
-		
-		register(this.homeSet);
-		register(this.near);
-		register(this.warp);
-		
+	public void load() {	
 		register(new EEAfk(this.plugin));
 		register(new EEBack(this.plugin));
 		register(new EEBed(this.plugin));
