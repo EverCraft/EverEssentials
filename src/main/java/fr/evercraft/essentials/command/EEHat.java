@@ -94,41 +94,32 @@ public class EEHat extends ECommand<EverEssentials> {
 		// Si le joueur a un objet dans la main
 		if (player.getItemInMainHand().isPresent()){
 			ItemStack item = player.getItemInMainHand().get();
-			// Si l'objet est un bloc
-			if (item.getItem().getBlock().isPresent()){
-				// Si le joueur a un item sur la tête
-				if (player.getHelmet().isPresent() && !player.getHelmet().get().getItem().getBlock().isPresent()){
-					player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
-							.append(EEMessages.HAT_NO_EMPTY.get())
-							.replace("<item>", EChat.getButtomItem(player.getHelmet().get(), EChat.getTextColor(EEMessages.HAT_ITEM_COLOR.get())))
-							.build());
-				// Le joueur peut avoir l'ojet sur la tête
-				} else {
-					if(player.getHelmet().isPresent()) {
-						player.giveItemAndDrop(player.getHelmet().get());
-					}
-					
-					ItemStack stack = player.getItemInMainHand().get();
-					if (stack.getQuantity() > 1){
-			            stack.setQuantity(stack.getQuantity() - 1);
-			            player.setItemInMainHand(stack);
-					} else {
-						player.setItemInMainHand(null);
-					}
-			        stack.setQuantity(1);
-			        player.setHelmet(stack);
-			        player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
-							.append(EEMessages.HAT_IS_HAT.get())
-							.replace("<item>", EChat.getButtomItem(item, EChat.getTextColor(EEMessages.HAT_ITEM_COLOR.get())))
-							.build());
-			        return true;
-				}
-			// L'objet est un item
-			} else {
+			// Si le joueur a un item sur la tête
+			if (player.getHelmet().isPresent() && !player.getHelmet().get().getItem().getBlock().isPresent()){
 				player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
-						.append(EEMessages.HAT_IS_NOT_HAT.get())
+						.append(EEMessages.HAT_NO_EMPTY.get())
+						.replace("<item>", EChat.getButtomItem(player.getHelmet().get(), EChat.getTextColor(EEMessages.HAT_ITEM_COLOR.get())))
+						.build());
+			// Le joueur peut avoir l'ojet sur la tête
+			} else {
+				if(player.getHelmet().isPresent()) {
+					player.giveItemAndDrop(player.getHelmet().get());
+				}
+				
+				ItemStack stack = player.getItemInMainHand().get();
+				if (stack.getQuantity() > 1){
+		            stack.setQuantity(stack.getQuantity() - 1);
+		            player.setItemInMainHand(stack);
+				} else {
+					player.setItemInMainHand(null);
+				}
+		        stack.setQuantity(1);
+		        player.setHelmet(stack);
+		        player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
+						.append(EEMessages.HAT_IS_HAT.get())
 						.replace("<item>", EChat.getButtomItem(item, EChat.getTextColor(EEMessages.HAT_ITEM_COLOR.get())))
 						.build());
+		        return true;
 			}
 		// Le jouer n'a pas d'objet dans la main
 		} else {

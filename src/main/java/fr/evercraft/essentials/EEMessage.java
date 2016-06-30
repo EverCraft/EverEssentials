@@ -175,7 +175,6 @@ public class EEMessage extends EMessage {
 		
 		HAT_DESCRIPTION("hat.description", 				"Place l'objet dans votre main sur votre tête"),
 		HAT_ITEM_COLOR("hat.itemColor", 				"&6"),
-		HAT_IS_NOT_HAT("hat.isNotHat", 					"<item> &7n'est pas un chapeau."),
 		HAT_NO_EMPTY("hat.noEmpty", 					"&7Vous ne pouvez pas mettre un objet sur votre tête quand vous avez un <item>&7."),
 		HAT_IS_HAT("hat.isHat", 						"&7Votre nouveau chapeau : &6<item>&7."),
 		HAT_REMOVE("hat.remove", 						"&7Vous avez enlevé l'objet sur votre chapeau."),
