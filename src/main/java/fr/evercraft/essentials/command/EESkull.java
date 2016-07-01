@@ -22,10 +22,6 @@ import java.util.concurrent.CompletableFuture;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
-import org.spongepowered.api.data.key.Keys;
-import org.spongepowered.api.data.type.SkullTypes;
-import org.spongepowered.api.item.ItemTypes;
-import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.profile.GameProfile;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
@@ -37,6 +33,7 @@ import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.command.ECommand;
 import fr.evercraft.everapi.server.player.EPlayer;
+import fr.evercraft.everapi.sponge.UtilsItemStack;
 
 public class EESkull extends ECommand<EverEssentials> {
 
@@ -92,7 +89,7 @@ public class EESkull extends ECommand<EverEssentials> {
 	}
 
 	public boolean commandSkull(final EPlayer player) {
-		player.giveItemAndDrop(createPlayerHead(player.getProfile()));
+		player.giveItemAndDrop(UtilsItemStack.createPlayerHead(player.getProfile()));
 		player.sendMessage(EEMessages.PREFIX.get() + EEMessages.SKULL_MY_HEAD.get());
 		return true;
 	}
@@ -104,7 +101,7 @@ public class EESkull extends ECommand<EverEssentials> {
 				if (profile!= null && profile.getName().isPresent()) {
 					try {
 						GameProfile profile_skin = this.plugin.getEServer().getGameProfileManager().fill(profile, true, false).get();
-						player.giveItemAndDrop(createPlayerHead(profile_skin));
+						player.giveItemAndDrop(UtilsItemStack.createPlayerHead(profile_skin));
 						player.sendMessage(EEMessages.PREFIX.get() + EEMessages.SKULL_OTHERS.get().replaceAll("<player>", profile_skin.getName().get()));
 					} catch (Exception e) {
 						player.sendMessage(EEMessages.PREFIX.get() + EAMessages.PLAYER_NOT_FOUND.get());
@@ -116,12 +113,5 @@ public class EESkull extends ECommand<EverEssentials> {
 			return profile;
 		}, this.plugin.getGame().getScheduler().createAsyncExecutor(this.plugin));
 		return false;
-	}
-	
-	public ItemStack createPlayerHead(GameProfile profile) {
-		ItemStack skull = ItemStack.of(ItemTypes.SKULL, 1);
-		skull.offer(Keys.SKULL_TYPE, SkullTypes.PLAYER);
-		skull.offer(Keys.REPRESENTED_PLAYER, profile);
-		return skull;
 	}
 }
