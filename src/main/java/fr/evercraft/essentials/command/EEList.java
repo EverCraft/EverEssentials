@@ -106,7 +106,7 @@ public class EEList extends ECommand<EverEssentials> {
 			}
 		}
 		
-		// Cache les groupes et redimmensionne
+		// Cache les groupes et redimensionne
 		for(Entry<Object, ? extends ConfigurationNode> config : this.plugin.getConfigs().getConfigList().getChildrenMap().entrySet()) {
 			if(config.getKey() instanceof String && groups.containsKey((String) config.getKey())) {
 				// Groupe caché

@@ -263,13 +263,13 @@ public class EEMessage extends EMessage {
 		LAG_WORLDS_LINE_HOVER("lag.worldsLineHover", "&6Chunks : &c<chunks>[RT]&6Entités : &c<entities>[RT]&6Tiles : &c<tiles>"),
 		
 		LIST_DESCRIPTION("list.description", "Affiche la liste des joueurs connecté"),
-		LIST_TITLE("list.title", "&aListe des joueurs connectés : &6<" + EChat.ONLINE_PLAYERS_CANSEE + "> &a/ &6<" + EChat.MAX_PLAYERS + ">"),
-		LIST_TITLE_VANISH("list.titleVanish", "&aListe des joueurs connectés : &6<" + EChat.ONLINE_PLAYERS_CANSEE + "> &a(+&6<vanish>&a) / &6<" + EChat.MAX_PLAYERS + ">"),
+		LIST_TITLE("list.title", "&aListe des joueurs connectés : &6" + EChat.ONLINE_PLAYERS + " &a/ &6" + EChat.MAX_PLAYERS + ""),
+		LIST_TITLE_VANISH("list.titleVanish", "&aListe des joueurs connectés : &6" + EChat.ONLINE_PLAYERS + " &a(+&6<vanish>&a) / &6" + EChat.MAX_PLAYERS),
 		LIST_GROUP("list.group", "&6<group>&f : <players>"),
 		LIST_SEPARATOR("list.separator", ", "),
 		LIST_PLAYER("list.player", "<afk>&r<vanish>&r<DISPLAYNAME_FORMAT>"),
 		LIST_TAG_AFK("list.tagAFK", "&7[AFK] "),
-		LIST_TAG_VANISH("list.tagVanish", "&7[VANISH]"),
+		LIST_TAG_VANISH("list.tagVanish", "&7[VANISH] "),
 		LIST_EMPTY("list.empty", "&7Aucun joueur"),
 		
 		MAIL_DESCRIPTION("mail.description", "Gestion de vos messages"),
@@ -367,7 +367,15 @@ public class EEMessage extends EMessage {
 		SKULL_MY_HEAD("skull.myHead", "&7Vous avez reçu votre tête."),
 		SKULL_OTHERS("skull.others", "&7Vous avez reçu la tête de &6<player>&7."),
 		
-		SPAWN_DESCRIPTION("spawn.description", "Permet de modifier le type d'un mob spawner"),
+		SPAWN_DESCRIPTION("spawn.description", "Permet de téléporter au spawn"),
+		SPAWN_PLAYER("spawn.player", "&7Vous avez été téléporté au &6<spawn>&7."),
+		SPAWN_OTHERS("spawn.others", "&7Vous avez été téléporté au &6<spawn>&7 du groupe &6<group>&7."),
+		SPAWN_NAME("spawn.name", "&6&lspawn"),
+		SPAWN_NAME_HOVER("spawn.nameHover", "&cMonde : &6<world>[RT]&cX : &6<x>[RT]&cY : &6<y>[RT]&cZ : &6<z>"),
+		SPAWN_ERROR_GROUP("spawn.errorGroup", "&cIl y a aucun groupe qui porte le nom &6<group>."),
+		SPAWN_ERROR_SET("spawn.errorSet", "&cIl y a aucun spawn défini pour le groupe &6<group>."),
+		SPAWN_ERROR_TELEPORT("spawn.errorTeleport", "&cImpossible de vous téléporter au <spawn>&7."),
+		SPAWN_ERROR_OTHERS_TELEPORT("spawn.errorOtherTeleport", "&cImpossible de vous téléporter au <spawn>&7 du groupe &6<group>&7."),
 
 		SETSPAWN_DESCRIPTION("setspawn.description", "Permet de définir un spawn"),
 		SETSPAWN_ERROR_GROUP("setspawn.errorGroup", "&cIl y a aucun groupe qui porte le nom &6<group>."),

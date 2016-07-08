@@ -23,6 +23,7 @@ import java.util.Optional;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.entity.Transform;
+import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
@@ -41,7 +42,7 @@ import fr.evercraft.everapi.text.ETextBuilder;
 public class EESpawnDel extends ECommand<EverEssentials> {
 	
 	public EESpawnDel(final EverEssentials plugin) {
-        super(plugin, "delspawn", "delspawns");
+        super(plugin, "delspawn");
     }
 	
 	public boolean testPermission(final CommandSource source) {
@@ -53,16 +54,14 @@ public class EESpawnDel extends ECommand<EverEssentials> {
 	}
 
 	public Text help(final CommandSource source) {
-		return Text.builder("/delwarp <name>").onClick(TextActions.suggestCommand("/delwarp "))
+		return Text.builder("/spawn [" + EAMessages.ARGS_GROUP + "]").onClick(TextActions.suggestCommand("/spawn "))
 				.color(TextColors.RED).build();
 	}
 	
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		List<String> suggests = new ArrayList<String>();
-		if(args.size() == 1){
-			for(String warp : this.plugin.getManagerServices().getWarp().getAll().keySet()){
-				suggests.add(warp);
-			}
+		if(args.size() == 1 && source instanceof Player){
+			suggests.addAll(this.plugin.getManagerServices().getSpawn().getAll().keySet());
 		} else if(args.size() == 2){
 			suggests.add("confirmation");
 		}

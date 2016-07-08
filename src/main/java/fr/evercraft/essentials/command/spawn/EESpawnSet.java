@@ -38,11 +38,10 @@ import fr.evercraft.everapi.exception.ServerDisableException;
 import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ECommand;
 import fr.evercraft.everapi.server.player.EPlayer;
+import fr.evercraft.everapi.services.essentials.SpawnService;
 import fr.evercraft.everapi.text.ETextBuilder;
 
 public class EESpawnSet extends ECommand<EverEssentials> {
-	
-	private final static String DEFAULT_SPAWN = "Default";
 	
 	public EESpawnSet(final EverEssentials plugin) {
         super(plugin, "setspawn");
@@ -80,7 +79,7 @@ public class EESpawnSet extends ECommand<EverEssentials> {
 		if(args.size() == 0) {
 			// Si la source est un joueur
 			if(source instanceof EPlayer) {
-				resultat = this.commandSetSpawn((EPlayer) source, DEFAULT_SPAWN);
+				resultat = this.commandSetSpawn((EPlayer) source, SpawnService.DEFAULT);
 			// La source n'est pas un joueur
 			} else {
 				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
@@ -98,7 +97,7 @@ public class EESpawnSet extends ECommand<EverEssentials> {
 								.replaceAll("<group>", args.get(0))));
 					}
 				} else {
-					resultat = this.commandSetSpawn((EPlayer) source, DEFAULT_SPAWN);
+					resultat = this.commandSetSpawn((EPlayer) source, SpawnService.DEFAULT);
 				}
 				
 			// La source n'est pas un joueur
@@ -125,7 +124,7 @@ public class EESpawnSet extends ECommand<EverEssentials> {
 				player.sendMessage(EEMessages.PREFIX.get() + EAMessages.COMMAND_ERROR.get());
 			}
 		} else {
-			if(this.plugin.getManagerServices().getWarp().add(group_name, player.getTransform())) {
+			if(this.plugin.getManagerServices().getSpawn().add(group_name, player.getTransform())) {
 				player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
 						.append(EEMessages.SETSPAWN_NEW.get())
 						.replace("<group>", getButtonSpawn(group_name, player.getLocation()))

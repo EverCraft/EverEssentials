@@ -89,6 +89,15 @@ private final EverEssentials plugin;
 		}
 		return Optional.empty();
 	}
+	
+	@Override
+	public Transform<World> getDefault() {
+		Optional<Transform<World>> spawn = this.get(SpawnService.DEFAULT);
+		if(spawn.isPresent()) {
+			return spawn.get();
+		}
+		return this.plugin.getEServer().getSpawn();
+	}
 
 	@Override
 	public boolean add(final String identifier, final Transform<World> location) {

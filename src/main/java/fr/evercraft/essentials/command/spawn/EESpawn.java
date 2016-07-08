@@ -18,14 +18,12 @@ package fr.evercraft.essentials.command.spawn;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map.Entry;
-import java.util.Optional;
-import java.util.TreeMap;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.entity.Transform;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.service.permission.Subject;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
@@ -37,16 +35,14 @@ import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ECommand;
-import fr.evercraft.everapi.server.location.LocationSQL;
 import fr.evercraft.everapi.server.player.EPlayer;
+import fr.evercraft.everapi.services.essentials.SpawnService;
 import fr.evercraft.everapi.text.ETextBuilder;
 
 public class EESpawn extends ECommand<EverEssentials> {
 	
-	private boolean permission;
-	
 	public EESpawn(final EverEssentials plugin) {
-        super(plugin, "spawn", "spawns");
+        super(plugin, "spawn");
     }
 
 	public boolean testPermission(final CommandSource source) {
@@ -54,22 +50,18 @@ public class EESpawn extends ECommand<EverEssentials> {
 	}
 
 	public Text description(final CommandSource source) {
-		return EEMessages.WARP_DESCRIPTION.getText();
+		return EEMessages.SPAWN_DESCRIPTION.getText();
 	}
 
 	public Text help(final CommandSource source) {
-		return Text.builder("/warp [name [joueur]]").onClick(TextActions.suggestCommand("/warp "))
+		return Text.builder("/spawn [" + EAMessages.ARGS_GROUP + "]").onClick(TextActions.suggestCommand("/spawn "))
 				.color(TextColors.RED).build();
 	}
 	
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		List<String> suggests = new ArrayList<String>();
 		if(args.size() == 1 && source instanceof Player){
-			for(String warp : this.plugin.getManagerServices().getWarp().getAll().keySet()){
-				suggests.add(warp);
-			}
-		} else if(args.size() == 2 && source.hasPermission(EEPermissions.WARP_OTHERS.get())) {
-			suggests = null;
+			suggests.addAll(this.plugin.getManagerServices().getSpawn().getAll().keySet());
 		}
 		return suggests;
 	}
@@ -77,32 +69,50 @@ public class EESpawn extends ECommand<EverEssentials> {
 	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Résultat de la commande :
 		boolean resultat = false;
-		// Nom du warp inconnu
+		// Groupe inconnu
 		if (args.size() == 0) {
-			resultat = commandWarpList(source);
-		// Nom du warp connu
-		} else if(args.size() == 1) {
 			// Si la source est un joueur
 			if (source instanceof EPlayer) {
-				resultat = commandWarpTeleport((EPlayer) source, args.get(0));
+				resultat = commandSpawn((EPlayer) source);
 			// La source n'est pas un joueur
 			} else {
 				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
 			}
-		} else if(args.size() == 2) {
-			// Si il a la permission
-			if(source.hasPermission(EEPermissions.WARP_OTHERS.get())){
-				Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(args.get(0));
-				// Le joueur existe
-				if(optPlayer.isPresent()){
-					resultat = commandWarpTeleportOthers(source, optPlayer.get(), args.get(1));
-				// Le joueur est introuvable
+		// Groupe connu
+		} else if (args.size() == 1) {
+			// Si la source est un joueur
+			if (source instanceof EPlayer) {
+				// Si il a la permission
+				if(source.hasPermission(EEPermissions.SPAWN_OTHERS.get())) {
+					// Spawn par défaut
+					if(args.get(0).equalsIgnoreCase(SpawnService.DEFAULT)) {
+						resultat = this.commandSpawn((EPlayer) source, this.plugin.getManagerServices().getSpawn().getDefault(), SpawnService.DEFAULT);
+					// Pas le spawn par défaut
+					} else {
+						if(this.plugin.getEverAPI().getManagerService().getPermission().isPresent()) {
+							Subject group = this.plugin.getEverAPI().getManagerService().getPermission().get().getGroupSubjects().get(args.get(0));
+							// Groupe existant
+							if(group != null) {
+								if(this.plugin.getManagerServices().getSpawn().getAll().containsKey(group.getIdentifier())) {
+									resultat = this.commandSpawn((EPlayer) source, this.plugin.getManagerServices().getSpawn().get(group), group.getIdentifier());
+								} else {
+									source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.SPAWN_ERROR_SET.get()));
+								}
+							// Groupe inexistant
+							} else {
+								source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.SPAWN_ERROR_GROUP.get()));
+							}
+						} else {
+							source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.SPAWN_ERROR_GROUP.get()));
+						}
+					}
+				// Il n'a pas la permission
 				} else {
-					source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
+					source.sendMessage(EAMessages.NO_PERMISSION.getText());
 				}
-			// Il n'a pas la permission
+			// La source n'est pas un joueur
 			} else {
-				source.sendMessage(EAMessages.NO_PERMISSION.getText());
+				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
 			}
 		// Nombre d'argument incorrect
 		} else {
@@ -111,155 +121,48 @@ public class EESpawn extends ECommand<EverEssentials> {
 		return resultat;
 	}
 	
-	public boolean commandWarpList(final CommandSource player) throws CommandException {
-		TreeMap<String, LocationSQL> warps = new TreeMap<String, LocationSQL>(this.plugin.getManagerServices().getWarp().getAllSQL());
-		
-		List<Text> lists = new ArrayList<Text>();
-		if(player.hasPermission(EEPermissions.DELWARP.get())) {
-			for (Entry<String, LocationSQL> warp : warps.entrySet()) {
-				if(hasPermission(player, warp.getKey())) {
-					Optional<World> world = warp.getValue().getWorld();
-					if(world.isPresent()){
-						lists.add(ETextBuilder.toBuilder(EEMessages.WARP_LIST_LINE_DELETE.get())
-							.replace("<warp>", getButtonWarp(warp.getKey(), warp.getValue()))
-							.replace("<teleport>", getButtonTeleport(warp.getKey(), warp.getValue()))
-							.replace("<delete>", getButtonDelete(warp.getKey(), warp.getValue()))
-							.build());
-					} else {
-						lists.add(ETextBuilder.toBuilder(EEMessages.WARP_LIST_LINE_DELETE_ERROR_WORLD.get())
-								.replace("<warp>", getButtonWarp(warp.getKey(), warp.getValue()))
-								.replace("<delete>", getButtonDelete(warp.getKey(), warp.getValue()))
-								.build());
-					}
-				}
-			}
+	private boolean commandSpawn(final EPlayer player) throws CommandException {
+		Transform<World> spawn = player.getSpawn();
+		if(player.setTransform(spawn)) {
+			player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
+					.append(EEMessages.SPAWN_PLAYER.get())
+					.replace("<spawn>", getButtonSpawn(spawn))
+					.build());
+			return true;
 		} else {
-			for (Entry<String, LocationSQL> warp : warps.entrySet()) {
-				if(hasPermission(player, warp.getKey())) {
-					Optional<World> world = warp.getValue().getWorld();
-					if(world.isPresent()){
-						lists.add(ETextBuilder.toBuilder(EEMessages.WARP_LIST_LINE.get())
-							.replace("<warp>", getButtonWarp(warp.getKey(), warp.getValue()))
-							.replace("<teleport>", getButtonTeleport(warp.getKey(), warp.getValue()))
-							.build());
-					}
-				}
-			}
-		}
-		
-		if(lists.size() == 0) {
-			player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.WARP_EMPTY.get()));
-		} else {
-			this.plugin.getEverAPI().getManagerService().getEPagination().sendTo(EEMessages.WARP_LIST_TITLE.getText().toBuilder()
-					.onClick(TextActions.runCommand("/warp")).build(), lists, player);
-		}			
-		return false;
-	}
-	
-	public boolean commandWarpTeleport(final EPlayer player, final String warp_name) {
-		String name = EChat.fixLength(warp_name, this.plugin.getEverAPI().getConfigs().get("maxCaractere").getInt(16));
-		Optional<Transform<World>> warp = this.plugin.getManagerServices().getWarp().get(name);
-		// Le serveur a un warp qui porte ce nom
-		if(warp.isPresent()) {
-			if(hasPermission(player, name)) {
-				// Le joueur a bien été téléporter au warp
-				if(player.teleportSafe(warp.get())){
-					player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
-							.append(EEMessages.WARP_TELEPORT_PLAYER.get())
-							.replace("<warp>", getButtonWarp(name, warp.get()))
-							.build());
-					return true;
-				// Erreur lors de la téléportation du joueur
-				} else {
-					player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
-							.append(EEMessages.WARP_TELEPORT_PLAYER_ERROR.get())
-							.replace("<warp>", getButtonWarp(name, warp.get()))
-							.build());
-				}
-			} else {
-				player.sendMessage(EEMessages.PREFIX.get() + EEMessages.WARP_NO_PERMISSION.get()
-						.replaceAll("<warp>", name));
-			}
-		// Le serveur n'a pas de warp qui porte ce nom
-		} else {
-			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.WARP_INCONNU.get()
-					.replaceAll("<warp>", name));
+			player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
+					.append(EEMessages.SPAWN_ERROR_TELEPORT.get())
+					.replace("<spawn>", getButtonSpawn(spawn))
+					.build());
 		}
 		return false;
 	}
 	
-	public boolean commandWarpTeleportOthers(final CommandSource staff, final EPlayer player, final String warp_name) {
-		String name = EChat.fixLength(warp_name, this.plugin.getEverAPI().getConfigs().get("maxCaractere").getInt(16));
-		Optional<Transform<World>> warp = this.plugin.getManagerServices().getWarp().get(name);
-		// Le serveur a un warp qui porte ce nom
-		if(warp.isPresent()) {
-			// Le joueur a bien été téléporter au warp
-			if(player.teleportSafe(warp.get())){
-				player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
-						.append(EEMessages.WARP_TELEPORT_OTHERS_PLAYER.get()
-								.replaceAll("<staff>", staff.getName()))
-						.replace("<warp>", getButtonWarp(name, warp.get()))
-						.build());
-				staff.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
-						.append(EEMessages.WARP_TELEPORT_OTHERS_STAFF.get()
-								.replaceAll("<player>", player.getName()))
-						.replace("<warp>", getButtonWarp(name, warp.get()))
-						.build());
-				return true;
-			// Erreur lors de la téléportation du joueur
-			} else {
-				staff.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
-						.append(EEMessages.WARP_TELEPORT_OTHERS_ERROR.get())
-						.replace("<warp>", getButtonWarp(name, warp.get()))
-						.build());
-			}
-		// Le serveur n'a pas de warp qui porte ce nom
+	private boolean commandSpawn(final EPlayer player, final Transform<World> spawn, final String name) throws CommandException {
+		if(player.setTransform(spawn)) {
+			player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
+					.append(EEMessages.SPAWN_OTHERS.get()
+							.replaceAll("<group>", name))
+					.replace("<spawn>", getButtonSpawn(spawn))
+					.build());
+			return true;
 		} else {
-			staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.WARP_INCONNU.get()
-					.replaceAll("<warp>", name)));
+			player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
+					.append(EEMessages.SPAWN_ERROR_OTHERS_TELEPORT.get()
+						.replaceAll("<group>",  name))
+					.replace("<spawn>", getButtonSpawn(spawn))
+					.build());
 		}
 		return false;
 	}
 	
-	public Text getButtonTeleport(final String name, final LocationSQL location){
-		return EEMessages.WARP_LIST_TELEPORT.getText().toBuilder()
-					.onHover(TextActions.showText(EChat.of(EEMessages.WARP_LIST_TELEPORT_HOVER.get()
-							.replaceAll("<warp>", name))))
-					.onClick(TextActions.runCommand("/warp \"" + name + "\""))
-					.build();
-	}
-	
-	public Text getButtonDelete(final String name, final LocationSQL location){
-		return EEMessages.WARP_LIST_DELETE.getText().toBuilder()
-					.onHover(TextActions.showText(EChat.of(EEMessages.WARP_LIST_DELETE_HOVER.get()
-							.replaceAll("<warp>", name))))
-					.onClick(TextActions.runCommand("/delwarp \"" + name + "\""))
-					.build();
-	}
-	
-	public Text getButtonWarp(final String name, final LocationSQL location){
-		return EChat.of(EEMessages.WARP_NAME.get().replaceAll("<name>", name)).toBuilder()
-					.onHover(TextActions.showText(EChat.of(EEMessages.WARP_NAME_HOVER.get()
-							.replaceAll("<warp>", name)
-							.replaceAll("<world>", location.getWorldName())
-							.replaceAll("<x>", location.getX().toString())
-							.replaceAll("<y>", location.getY().toString())
-							.replaceAll("<z>", location.getZ().toString()))))
-					.build();
-	}
-	
-	public Text getButtonWarp(final String name, final Transform<World> location){
-		return EChat.of(EEMessages.WARP_NAME.get().replaceAll("<name>", name)).toBuilder()
-					.onHover(TextActions.showText(EChat.of(EEMessages.WARP_NAME_HOVER.get()
-							.replaceAll("<warp>", name)
+	private Text getButtonSpawn(final Transform<World> location){
+		return EChat.of(EEMessages.SPAWN_NAME.get()).toBuilder()
+					.onHover(TextActions.showText(EChat.of(EEMessages.SPAWN_NAME_HOVER.get()
 							.replaceAll("<world>", location.getExtent().getName())
 							.replaceAll("<x>", String.valueOf(location.getLocation().getBlockX()))
 							.replaceAll("<y>", String.valueOf(location.getLocation().getBlockY()))
 							.replaceAll("<z>", String.valueOf(location.getLocation().getBlockZ())))))
 					.build();
-	}
-	
-	private boolean hasPermission(CommandSource player, String warp) {
-		return (!this.permission || player.hasPermission(EEPermissions.WARP_NAME.get() + "." + warp));
 	}
 }

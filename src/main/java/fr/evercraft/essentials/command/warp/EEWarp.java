@@ -71,9 +71,7 @@ public class EEWarp extends EReloadCommand<EverEssentials> {
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		List<String> suggests = new ArrayList<String>();
 		if(args.size() == 1 && source instanceof Player){
-			for(String warp : this.plugin.getManagerServices().getWarp().getAll().keySet()){
-				suggests.add(warp);
-			}
+			suggests.addAll(this.plugin.getManagerServices().getWarp().getAll().keySet());
 		} else if(args.size() == 2 && source.hasPermission(EEPermissions.WARP_OTHERS.get())) {
 			suggests = null;
 		}
