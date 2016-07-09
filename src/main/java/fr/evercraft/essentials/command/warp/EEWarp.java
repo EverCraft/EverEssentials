@@ -225,7 +225,7 @@ public class EEWarp extends EReloadCommand<EverEssentials> {
 		return false;
 	}
 	
-	public Text getButtonTeleport(final String name, final LocationSQL location){
+	private Text getButtonTeleport(final String name, final LocationSQL location){
 		return EEMessages.WARP_LIST_TELEPORT.getText().toBuilder()
 					.onHover(TextActions.showText(EChat.of(EEMessages.WARP_LIST_TELEPORT_HOVER.get()
 							.replaceAll("<warp>", name))))
@@ -233,7 +233,7 @@ public class EEWarp extends EReloadCommand<EverEssentials> {
 					.build();
 	}
 	
-	public Text getButtonDelete(final String name, final LocationSQL location){
+	private Text getButtonDelete(final String name, final LocationSQL location){
 		return EEMessages.WARP_LIST_DELETE.getText().toBuilder()
 					.onHover(TextActions.showText(EChat.of(EEMessages.WARP_LIST_DELETE_HOVER.get()
 							.replaceAll("<warp>", name))))
@@ -241,7 +241,7 @@ public class EEWarp extends EReloadCommand<EverEssentials> {
 					.build();
 	}
 	
-	public Text getButtonWarp(final String name, final LocationSQL location){
+	private Text getButtonWarp(final String name, final LocationSQL location){
 		return EChat.of(EEMessages.WARP_NAME.get().replaceAll("<name>", name)).toBuilder()
 					.onHover(TextActions.showText(EChat.of(EEMessages.WARP_NAME_HOVER.get()
 							.replaceAll("<warp>", name)
@@ -252,7 +252,7 @@ public class EEWarp extends EReloadCommand<EverEssentials> {
 					.build();
 	}
 	
-	public Text getButtonWarp(final String name, final Transform<World> location){
+	private Text getButtonWarp(final String name, final Transform<World> location){
 		return EChat.of(EEMessages.WARP_NAME.get().replaceAll("<name>", name)).toBuilder()
 					.onHover(TextActions.showText(EChat.of(EEMessages.WARP_NAME_HOVER.get()
 							.replaceAll("<warp>", name)

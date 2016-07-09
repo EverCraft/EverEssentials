@@ -94,7 +94,7 @@ public class EESpawnSet extends ECommand<EverEssentials> {
 						resultat = this.commandSetSpawn((EPlayer) source, group.getIdentifier());
 					} else {
 						source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.SETSPAWN_ERROR_GROUP.get()
-								.replaceAll("<group>", args.get(0))));
+								.replaceAll("<name>", args.get(0))));
 					}
 				} else {
 					resultat = this.commandSetSpawn((EPlayer) source, SpawnService.DEFAULT);
@@ -117,7 +117,7 @@ public class EESpawnSet extends ECommand<EverEssentials> {
 			if(this.plugin.getManagerServices().getSpawn().update(group_name, player.getTransform())) {
 				player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
 						.append(EEMessages.SETSPAWN_REPLACE.get())
-						.replace("<group>", getButtonSpawn(group_name, player.getLocation()))
+						.replace("<name>", getButtonSpawn(group_name, player.getLocation()))
 						.build());
 				return true;
 			} else {
@@ -127,7 +127,7 @@ public class EESpawnSet extends ECommand<EverEssentials> {
 			if(this.plugin.getManagerServices().getSpawn().add(group_name, player.getTransform())) {
 				player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
 						.append(EEMessages.SETSPAWN_NEW.get())
-						.replace("<group>", getButtonSpawn(group_name, player.getLocation()))
+						.replace("<name>", getButtonSpawn(group_name, player.getLocation()))
 						.build());
 				return true;
 			} else {
@@ -140,7 +140,7 @@ public class EESpawnSet extends ECommand<EverEssentials> {
 	public Text getButtonSpawn(final String name, final Location<World> location){
 		return EChat.of(EEMessages.SETSPAWN_NAME.get().replaceAll("<name>", name)).toBuilder()
 					.onHover(TextActions.showText(EChat.of(EEMessages.SETSPAWN_NAME_HOVER.get()
-							.replaceAll("<group>", name)
+							.replaceAll("<name>", name)
 							.replaceAll("<world>", location.getExtent().getName())
 							.replaceAll("<x>", String.valueOf(location.getBlockX()))
 							.replaceAll("<y>", String.valueOf(location.getBlockY()))

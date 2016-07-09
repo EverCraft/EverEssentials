@@ -108,4 +108,8 @@ public class EEConfig extends EConfig {
 	public ConfigurationNode getConfigList() {
 		return get("list");
 	}
+
+	public String getSpawnNewbies() {
+		return get("newbies-spawnpoint").getString("newbies");
+	}
 }

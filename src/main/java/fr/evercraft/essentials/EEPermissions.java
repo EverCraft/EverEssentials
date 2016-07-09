@@ -145,7 +145,7 @@ public enum EEPermissions implements EnumPermission {
 	//Spawn
 	
 	SPAWN("spawn.command"),
-	SPAWN_OTHERS("spawn.others"),
+	SPAWNS("spawns.command"),
 	SETSPAWN("setspawn.command"),
 	DELSPAWN("delspawn.command"),
 	

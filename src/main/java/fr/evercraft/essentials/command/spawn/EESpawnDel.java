@@ -50,7 +50,7 @@ public class EESpawnDel extends ECommand<EverEssentials> {
 	}
 
 	public Text description(final CommandSource source) {
-		return EEMessages.DELWARP_DESCRIPTION.getText();
+		return EEMessages.DELSPAWN_DESCRIPTION.getText();
 	}
 
 	public Text help(final CommandSource source) {
@@ -73,9 +73,9 @@ public class EESpawnDel extends ECommand<EverEssentials> {
 		boolean resultat = false;
 		// Si on ne connait pas le joueur
 		if(args.size() == 1) {
-			commandDeleteWarp((EPlayer) source, args.get(0));
+			commandDeleteSpawn((EPlayer) source, args.get(0));
 		} else if(args.size() == 2 && args.get(1).equalsIgnoreCase("confirmation")) {
-			commandDeleteWarpConfirmation((EPlayer) source, args.get(0));
+			commandDeleteSpawnConfirmation((EPlayer) source, args.get(0));
 		// Nombre d'argument incorrect
 		} else {
 			source.sendMessage(getHelp(source).get());
@@ -83,50 +83,48 @@ public class EESpawnDel extends ECommand<EverEssentials> {
 		return resultat;
 	}
 	
-	public boolean commandDeleteWarp(final EPlayer player, final String warp_name) {
-		String name = EChat.fixLength(warp_name, this.plugin.getEverAPI().getConfigs().get("maxCaractere").getInt(16));
-		Optional<Transform<World>> warp = this.plugin.getManagerServices().getWarp().get(name);
-		// Le serveur a un warp qui porte ce nom
-		if(warp.isPresent()) {
+	public boolean commandDeleteSpawn(final EPlayer player, final String spawn_name) {
+		Optional<Transform<World>> spawn = this.plugin.getManagerServices().getSpawn().get(spawn_name);
+		// Le serveur a un spawn qui porte ce nom
+		if(spawn.isPresent()) {
 			player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
 					.append(EEMessages.DELWARP_CONFIRMATION.get())
-					.replace("<warp>", getButtonWarp(name, warp.get()))
-					.replace("<confirmation>", getButtonConfirmation(name))
+					.replace("<spawn>", getButtonSpawn(spawn_name, spawn.get()))
+					.replace("<confirmation>", getButtonConfirmation(spawn_name))
 					.build());
-		// Le serveur n'a pas de warp qui porte ce nom
+		// Le serveur n'a pas de spawn qui porte ce nom
 		} else {
-			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.DELWARP_INCONNU.get().replaceAll("<warp>", name));
+			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.DELSPAWN_INCONNU.get().replaceAll("<name>", spawn_name));
 		}
 		return false;
 	}
 	
-	public boolean commandDeleteWarpConfirmation(final EPlayer player, final String warp_name) throws ServerDisableException {
-		String name = EChat.fixLength(warp_name, this.plugin.getEverAPI().getConfigs().get("maxCaractere").getInt(16));
-		Optional<Transform<World>> warp = this.plugin.getManagerServices().getWarp().get(name);
-		// Le serveur a un warp qui porte ce nom
-		if(warp.isPresent()) {
-			// Si le warp a bien été supprimer
-			if(this.plugin.getManagerServices().getWarp().remove(name)) {
+	public boolean commandDeleteSpawnConfirmation(final EPlayer player, final String spawn_name) throws ServerDisableException {
+		Optional<Transform<World>> spawn = this.plugin.getManagerServices().getSpawn().get(spawn_name);
+		// Le serveur a un spawn qui porte ce nom
+		if(spawn.isPresent()) {
+			// Si le spawn a bien été supprimer
+			if(this.plugin.getManagerServices().getSpawn().remove(spawn_name)) {
 				player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
-						.append(EEMessages.DELWARP_DELETE.get())
-						.replace("<warp>", getButtonWarp(name, warp.get()))
+						.append(EEMessages.DELSPAWN_DELETE.get())
+						.replace("<name>", getButtonSpawn(spawn_name, spawn.get()))
 						.build());
 				return true;
-			// Le warp n'a pas été supprimer
+			// Le spawn n'a pas été supprimer
 			} else {
 				player.sendMessage(EEMessages.PREFIX.get() + EAMessages.COMMAND_ERROR.get());
 			}
-			// Le serveur n'a pas de warp qui porte ce nom
+		// Le serveur n'a pas de spawn qui porte ce nom
 		} else {
-			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.DELWARP_INCONNU.get().replaceAll("<warp>", name));
+			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.DELSPAWN_INCONNU.get().replaceAll("<name>", spawn_name));
 		}
 		return false;
 	}
 	
-	public Text getButtonWarp(final String name, final Transform<World> location){
-		return EChat.of(EEMessages.DELWARP_NAME.get().replaceAll("<name>", name)).toBuilder()
-					.onHover(TextActions.showText(EChat.of(EEMessages.DELWARP_NAME_HOVER.get()
-							.replaceAll("<warp>", name)
+	public Text getButtonSpawn(final String name, final Transform<World> location){
+		return EChat.of(EEMessages.DELSPAWN_NAME.get().replaceAll("<name>", name)).toBuilder()
+					.onHover(TextActions.showText(EChat.of(EEMessages.DELSPAWN_NAME_HOVER.get()
+							.replaceAll("<name>", name)
 							.replaceAll("<world>", location.getExtent().getName())
 							.replaceAll("<x>", String.valueOf(location.getLocation().getBlockX()))
 							.replaceAll("<y>", String.valueOf(location.getLocation().getBlockY()))
@@ -135,10 +133,10 @@ public class EESpawnDel extends ECommand<EverEssentials> {
 	}
 	
 	public Text getButtonConfirmation(final String name){
-		return EEMessages.DELWARP_CONFIRMATION_VALID.getText().toBuilder()
-					.onHover(TextActions.showText(EChat.of(EEMessages.DELWARP_CONFIRMATION_VALID_HOVER.get()
-							.replaceAll("<warp>", name))))
-					.onClick(TextActions.runCommand("/delwarp \"" + name + "\" confirmation"))
+		return EEMessages.DELSPAWN_CONFIRMATION_VALID.getText().toBuilder()
+					.onHover(TextActions.showText(EChat.of(EEMessages.DELSPAWN_CONFIRMATION_VALID_HOVER.get()
+							.replaceAll("<name>", name))))
+					.onClick(TextActions.runCommand("/delspawn \"" + name + "\" confirmation"))
 					.build();
 	}
 }

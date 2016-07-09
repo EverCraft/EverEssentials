@@ -18,6 +18,7 @@ package fr.evercraft.essentials.command.spawn;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
@@ -34,16 +35,24 @@ import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.EChat;
-import fr.evercraft.everapi.plugin.command.ECommand;
+import fr.evercraft.everapi.plugin.command.EReloadCommand;
 import fr.evercraft.everapi.server.player.EPlayer;
 import fr.evercraft.everapi.services.essentials.SpawnService;
 import fr.evercraft.everapi.text.ETextBuilder;
 
-public class EESpawn extends ECommand<EverEssentials> {
+public class EESpawn extends EReloadCommand<EverEssentials> {
+	
+	public String newbies;
 	
 	public EESpawn(final EverEssentials plugin) {
         super(plugin, "spawn");
+        
+        reload();
     }
+	
+	public void reload() {
+		this.newbies = this.plugin.getConfigs().getSpawnNewbies();
+	}
 
 	public boolean testPermission(final CommandSource source) {
 		return source.hasPermission(EEPermissions.SPAWN.get());
@@ -54,14 +63,26 @@ public class EESpawn extends ECommand<EverEssentials> {
 	}
 
 	public Text help(final CommandSource source) {
-		return Text.builder("/spawn [" + EAMessages.ARGS_GROUP + "]").onClick(TextActions.suggestCommand("/spawn "))
+		if(source.hasPermission(EEPermissions.SPAWNS.get())) {
+			return Text.builder("/spawn [" + EAMessages.ARGS_GROUP + "]").onClick(TextActions.suggestCommand("/spawn "))
+				.color(TextColors.RED).build();
+		}
+		return Text.builder("/spawn").onClick(TextActions.suggestCommand("/spawn"))
 				.color(TextColors.RED).build();
 	}
 	
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		List<String> suggests = new ArrayList<String>();
-		if(args.size() == 1 && source instanceof Player){
+		if(args.size() == 1 && source instanceof Player && source.hasPermission(EEPermissions.SPAWNS.get())){
 			suggests.addAll(this.plugin.getManagerServices().getSpawn().getAll().keySet());
+			
+			if(!suggests.contains(this.newbies)) {
+				suggests.add(this.newbies);
+			}
+			
+			if(!suggests.contains(SpawnService.DEFAULT)) {
+				suggests.add(SpawnService.DEFAULT);
+			}
 		}
 		return suggests;
 	}
@@ -83,21 +104,20 @@ public class EESpawn extends ECommand<EverEssentials> {
 			// Si la source est un joueur
 			if (source instanceof EPlayer) {
 				// Si il a la permission
-				if(source.hasPermission(EEPermissions.SPAWN_OTHERS.get())) {
+				if(source.hasPermission(EEPermissions.SPAWNS.get())) {
 					// Spawn par défaut
 					if(args.get(0).equalsIgnoreCase(SpawnService.DEFAULT)) {
 						resultat = this.commandSpawn((EPlayer) source, this.plugin.getManagerServices().getSpawn().getDefault(), SpawnService.DEFAULT);
+					// Spawn Newbie
+					} else if(args.get(0).equalsIgnoreCase(this.newbies)) {
+						resultat = this.commandSpawn((EPlayer) source, this.newbies);
 					// Pas le spawn par défaut
 					} else {
 						if(this.plugin.getEverAPI().getManagerService().getPermission().isPresent()) {
 							Subject group = this.plugin.getEverAPI().getManagerService().getPermission().get().getGroupSubjects().get(args.get(0));
 							// Groupe existant
 							if(group != null) {
-								if(this.plugin.getManagerServices().getSpawn().getAll().containsKey(group.getIdentifier())) {
-									resultat = this.commandSpawn((EPlayer) source, this.plugin.getManagerServices().getSpawn().get(group), group.getIdentifier());
-								} else {
-									source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.SPAWN_ERROR_SET.get()));
-								}
+								resultat = this.commandSpawn((EPlayer) source, group.getIdentifier());
 							// Groupe inexistant
 							} else {
 								source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.SPAWN_ERROR_GROUP.get()));
@@ -138,18 +158,29 @@ public class EESpawn extends ECommand<EverEssentials> {
 		return false;
 	}
 	
+	private boolean commandSpawn(final EPlayer player, final String group) throws CommandException {
+		Optional<Transform<World>> spawn = this.plugin.getManagerServices().getSpawn().get(group);
+		if(spawn.isPresent()) {
+			return this.commandSpawn(player, spawn.get(), group);
+		} else {
+			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.SPAWN_ERROR_SET.get()
+					.replaceAll("<name>", group));
+		}
+		return false;
+	}
+	
 	private boolean commandSpawn(final EPlayer player, final Transform<World> spawn, final String name) throws CommandException {
 		if(player.setTransform(spawn)) {
 			player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
-					.append(EEMessages.SPAWN_OTHERS.get()
-							.replaceAll("<group>", name))
+					.append(EEMessages.SPAWNS_PLAYER.get()
+							.replaceAll("<name>", name))
 					.replace("<spawn>", getButtonSpawn(spawn))
 					.build());
 			return true;
 		} else {
 			player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
-					.append(EEMessages.SPAWN_ERROR_OTHERS_TELEPORT.get()
-						.replaceAll("<group>",  name))
+					.append(EEMessages.SPAWNS_ERROR_TELEPORT.get()
+						.replaceAll("<name>",  name))
 					.replace("<spawn>", getButtonSpawn(spawn))
 					.build());
 		}
