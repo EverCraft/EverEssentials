@@ -88,7 +88,7 @@ public class EESpawnDel extends ECommand<EverEssentials> {
 		// Le serveur a un spawn qui porte ce nom
 		if(spawn.isPresent()) {
 			player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
-					.append(EEMessages.DELWARP_CONFIRMATION.get())
+					.append(EEMessages.DELSPAWN_CONFIRMATION.get())
 					.replace("<spawn>", getButtonSpawn(spawn_name, spawn.get()))
 					.replace("<confirmation>", getButtonConfirmation(spawn_name))
 					.build());

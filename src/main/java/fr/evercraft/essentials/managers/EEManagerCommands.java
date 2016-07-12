@@ -113,7 +113,6 @@ public class EEManagerCommands extends TreeMap<String, ECommand<EverEssentials>>
 		register(new EETree(this.plugin));
 		register(new EEUuid(this.plugin));
 		register(new EEVanish(this.plugin));
-		register(new EESpawns(this.plugin));
 		register(new EEWarpDel(this.plugin));
 		register(new EEWarpSet(this.plugin));
 		register(new EEWeather(this.plugin));

@@ -117,7 +117,7 @@ public class EESpawns extends ECommand<EverEssentials> {
 	public Text getButtonTeleport(final String name, final LocationSQL location){
 		return EEMessages.SPAWNS_TELEPORT.getText().toBuilder()
 					.onHover(TextActions.showText(EChat.of(EEMessages.SPAWNS_TELEPORT_HOVER.get()
-							.replaceAll("<spawn>", name))))
+							.replaceAll("<name>", name))))
 					.onClick(TextActions.runCommand("/spawn \"" + name + "\""))
 					.build();
 	}
@@ -125,7 +125,7 @@ public class EESpawns extends ECommand<EverEssentials> {
 	public Text getButtonDelete(final String name, final LocationSQL location){
 		return EEMessages.SPAWNS_DELETE.getText().toBuilder()
 					.onHover(TextActions.showText(EChat.of(EEMessages.SPAWNS_DELETE_HOVER.get()
-							.replaceAll("<spawn>", name))))
+							.replaceAll("<name>", name))))
 					.onClick(TextActions.runCommand("/delspawn \"" + name + "\""))
 					.build();
 	}

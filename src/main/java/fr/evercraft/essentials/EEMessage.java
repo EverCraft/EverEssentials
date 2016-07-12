@@ -376,8 +376,8 @@ public class EEMessage extends EMessage {
 		SPAWN_ERROR_TELEPORT("spawn.errorTeleport", "&cImpossible de vous téléporter au <spawn>&7."),
 		
 		SPAWNS_DESCRIPTION("spawns.description", "Affiche la liste des spawns"),
-		SPAWNS_EMPTY("spawns.empty", "&cIl n'y a aucun warp sur le serveur."),
-		SPAWNS_TITLE("spawns.title", "&aListe des warps"),
+		SPAWNS_EMPTY("spawns.empty", "&cIl n'y a aucun spawn défini sur le serveur."),
+		SPAWNS_TITLE("spawns.title", "&aListe des spawn"),
 		SPAWNS_LINE_DELETE("spawns.lineDelete", "    &6&l➤  <spawn> &7: <teleport> <delete>"),
 		SPAWNS_LINE_DELETE_ERROR_WORLD("spawns.lineDeleteErrorWorld", "    &6&l➤  <spawn> &7: <delete>"),
 		SPAWNS_LINE("spawns.line", "    &6&l➤  <spawn> &7: <teleport>"),
@@ -390,7 +390,6 @@ public class EEMessage extends EMessage {
 		SPAWNS_PLAYER("spawns.player", "&7Vous avez été téléporté au spawn &6<spawn>&7."),
 		SPAWNS_ERROR_TELEPORT("spawns.errorTeleport", "&cImpossible de vous téléporter au spawn <spawn>&7."),
 
-		
 		DELSPAWN_DESCRIPTION("delspawn.description", "Supprime un spawn"),
 		DELSPAWN_INCONNU("delspawn.inconnu", "&cIl n'y pas de spawn qui s'appelle &6<spawn>&c."),
 		DELSPAWN_NAME("delspawn.name", "&6&l<name>"),
