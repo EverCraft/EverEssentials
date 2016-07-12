@@ -118,9 +118,7 @@ public class EEEffect extends ECommand<EverEssentials> {
 
 	public boolean commandEffect(final EPlayer player, final String effect) {
 		if (UtilsEffect.getEffect(effect).isPresent()) {
-			this.plugin.getEServer().broadcast("test 1");
 			PotionEffect potion = createPotionEffect(UtilsEffect.getEffect(effect).get().getType(), getDefaultAmplifier(), getDefaultDuration());
-			this.plugin.getEServer().broadcast("" + potion);
 			player.addPotion(potion);
 			return true;
 		} else {
