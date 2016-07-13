@@ -32,14 +32,24 @@ import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
-import fr.evercraft.everapi.plugin.command.ECommand;
+import fr.evercraft.everapi.plugin.command.EReloadCommand;
 import fr.evercraft.everapi.server.player.EPlayer;
 import fr.evercraft.everapi.sponge.UtilsEffect;
 
-public class EEEffect extends ECommand<EverEssentials> {
-
+public class EEEffect extends EReloadCommand<EverEssentials> {
+	private int default_duration;
+	private int default_max_duration;
+	private int default_amplifier;
+	
 	public EEEffect(final EverEssentials plugin) {
 		super(plugin, "effect", "effects");
+		reload();
+	}
+
+	public void reload() {
+		this.default_duration = this.plugin.getConfigs().get("effect-default-duration").getInt() * 20;
+		this.default_max_duration = this.plugin.getConfigs().get("effect-default-max-duration").getInt() * 20;
+		this.default_amplifier = this.plugin.getConfigs().get("effect-default-amplifier").getInt();
 	}
 
 	public boolean testPermission(final CommandSource source) {
@@ -150,13 +160,13 @@ public class EEEffect extends ECommand<EverEssentials> {
 		if (UtilsEffect.getEffect(effect).isPresent()) {
 			UtilsEffect utils = UtilsEffect.getEffect(effect).get();
 			if (utils.getMinAmplifier() <= amplifier && amplifier <= utils.getMaxAmplifier()) {
-				if (duration > 0 && duration <= getMaxDefaultDuration()) {
+				if (duration > 0 && duration <= getDefaultMaxDuration()) {
 					player.addPotion(createPotionEffect(utils.getType(), amplifier - 1, duration));
 				} else {
 					player.sendMessage(EEMessages.PREFIX.get() 
 						+ EEMessages.EFFECT_ERROR_DURATION.get()
 							.replaceAll("<min>", String.valueOf(1))
-							.replaceAll("<max>", String.valueOf(getMaxDefaultDuration())));
+							.replaceAll("<max>", String.valueOf(getDefaultMaxDuration())));
 				}
 			} else {
 				player.sendMessage(EEMessages.PREFIX.get()
@@ -181,14 +191,14 @@ public class EEEffect extends ECommand<EverEssentials> {
 	}
 
 	private int getDefaultDuration() {
-		return this.plugin.getConfigs().get("effect-default-duration").getInt() * 20;
+		return this.default_duration;
 	}
 	
-	private int getMaxDefaultDuration() {
-		return this.plugin.getConfigs().get("effect-default-max-duration").getInt() * 20;
+	private int getDefaultMaxDuration() {
+		return this.default_max_duration;
 	}
 
 	private int getDefaultAmplifier() {
-		return this.plugin.getConfigs().get("effect-default-amplifier").getInt();
+		return this.default_amplifier;
 	}
 }
