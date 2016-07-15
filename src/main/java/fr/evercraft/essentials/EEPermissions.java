@@ -17,7 +17,6 @@
 package fr.evercraft.essentials;
 
 import org.spongepowered.api.command.CommandSource;
-
 import com.google.common.base.Preconditions;
 
 import fr.evercraft.everapi.plugin.EnumPermission;
@@ -202,6 +201,8 @@ public enum EEPermissions implements EnumPermission {
 	
 	WORLDS("worlds.command"),
 	WORLDS_OTHERS("worlds.others"),
+	
+	WORLD("world"),
 	
 	WHOIS("whois.command"),
 	WHOIS_OTHERS("whois.others"),

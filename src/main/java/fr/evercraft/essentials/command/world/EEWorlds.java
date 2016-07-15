@@ -31,7 +31,6 @@ import org.spongepowered.api.world.World;
 import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
-import fr.evercraft.everapi.EAPermissions;
 import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ECommand;
@@ -65,7 +64,7 @@ public class EEWorlds extends ECommand<EverEssentials> {
 		List<String> suggests = new ArrayList<String>();
 		if (args.size() == 1) {
 			for (World world : this.plugin.getEServer().getWorlds()) {
-				if (source.hasPermission(EAPermissions.WORLDS.get() + "." + world.getName())) {
+				if(this.plugin.getManagerServices().getEssentials().hasPermissionWorld(source, world)) {
 					suggests.add(world.getProperties().getWorldName());
 				}
 			}
@@ -118,7 +117,7 @@ public class EEWorlds extends ECommand<EverEssentials> {
 	public boolean commandWorldList(final CommandSource player) {
 		List<Text> lists = new ArrayList<Text>();
 		for (World world : this.plugin.getEServer().getWorlds()) {
-			if(player.hasPermission(EAPermissions.WORLDS.get() + "." + world.getName())){
+			if(this.plugin.getManagerServices().getEssentials().hasPermissionWorld(player, world)) {
 				lists.add(ETextBuilder.toBuilder(EEMessages.WORLDS_LIST_LINE.get()
 						.replaceAll("<world>", world.getName()))
 					.replace("<teleport>", getButtonTeleport(world.getName()))
@@ -133,7 +132,7 @@ public class EEWorlds extends ECommand<EverEssentials> {
 	public boolean commandWorldTeleport(final EPlayer player, final String world_name) {
 		Optional<World> optWorld = this.plugin.getEServer().getWorld(world_name);
 		if(optWorld.isPresent()) {
-			if(player.hasPermission(EAPermissions.WORLDS.get() + "." + optWorld.get().getName())) {
+			if(this.plugin.getManagerServices().getEssentials().hasPermissionWorld(player, optWorld.get())) {
 				if(player.teleportSafe(optWorld.get().getSpawnLocation())) {
 					player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
 							.append(EEMessages.WORLDS_TELEPORT_PLAYER.get())
@@ -162,7 +161,7 @@ public class EEWorlds extends ECommand<EverEssentials> {
 	public boolean commandWorldTeleportOthers(final CommandSource staff, final EPlayer player, String world_name) {
 		Optional<World> optWorld = this.plugin.getEServer().getWorld(world_name);
 		if(optWorld.isPresent()) {
-			if(player.hasPermission(EAPermissions.WORLDS.get() + "." + optWorld.get().getName())) {
+			if(this.plugin.getManagerServices().getEssentials().hasPermissionWorld(player, optWorld.get())) {
 				if(player.teleportSafe(optWorld.get().getSpawnLocation())) {
 					player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
 							.append(EEMessages.WORLDS_TELEPORT_OTHERS_PLAYER.get()

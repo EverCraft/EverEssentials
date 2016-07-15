@@ -32,7 +32,6 @@ import org.spongepowered.api.world.World;
 import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
-import fr.evercraft.everapi.EAPermissions;
 import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ECommand;
@@ -109,8 +108,8 @@ public class EETeleportationAll extends ECommand<EverEssentials> {
 		if(optTransform.isPresent()) {
 			for(EPlayer player : this.plugin.getEServer().getOnlineEPlayers()) {
 				if(!staff.equals(player)) {
-					if(player.getWorld().equals(optTransform.get().getExtent()) || !this.plugin.getConfigs().isWorldTeleportPermissions() ||
-							player.hasPermission(EAPermissions.WORLDS.get() + "." + optTransform.get().getExtent().getName())) {
+					if(player.getWorld().equals(optTransform.get().getExtent()) || 
+							this.plugin.getManagerServices().getEssentials().hasPermissionWorld(player, optTransform.get().getExtent())) {
 						player.setTransform(optTransform.get());
 						player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
 								.append(EEMessages.TPALL_PLAYER.get()
@@ -137,8 +136,8 @@ public class EETeleportationAll extends ECommand<EverEssentials> {
 			if(optTransform.isPresent()) {
 				for(EPlayer player : this.plugin.getEServer().getOnlineEPlayers()) {
 					if(!destination.equals(player)) {
-						if(player.getWorld().equals(optTransform.get().getExtent()) || !this.plugin.getConfigs().isWorldTeleportPermissions() ||
-								player.hasPermission(EAPermissions.WORLDS.get() + "." + optTransform.get().getExtent().getName())) {
+						if(player.getWorld().equals(optTransform.get().getExtent()) || 
+								this.plugin.getManagerServices().getEssentials().hasPermissionWorld(player, optTransform.get().getExtent())) {
 							player.setTransform(optTransform.get());
 							if(!player.equals(staff)) {
 								player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())

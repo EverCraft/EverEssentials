@@ -509,16 +509,19 @@ public class ESubject implements EssentialsSubject {
 	public boolean setBack(Transform<World> location) {
 		Preconditions.checkNotNull(location, "location");
 		
-		if(!this.back.isPresent()) {
-			final LocationSQL locationSQL = new LocationSQL(this.plugin, location);
-			this.back = Optional.of(locationSQL);
-			this.plugin.getThreadAsync().execute(() -> this.plugin.getDataBases().addBack(this.getIdentifier(), locationSQL));
-			return true;
-		} else if (!this.back.get().getTransform().equals(location)) {
-			final LocationSQL locationSQL = new LocationSQL(this.plugin, location);
-			this.back = Optional.of(locationSQL);
-			this.plugin.getThreadAsync().execute(() -> this.plugin.getDataBases().setBack(this.getIdentifier(), locationSQL));
-			return true;
+		Optional<EPlayer> player = this.getEPlayer();
+		if(this.plugin.getManagerServices().getEssentials().hasPermissionWorld(player.get(), location.getExtent())) {
+			if(!this.back.isPresent()) {
+				final LocationSQL locationSQL = new LocationSQL(this.plugin, location);
+				this.back = Optional.of(locationSQL);
+				this.plugin.getThreadAsync().execute(() -> this.plugin.getDataBases().addBack(this.getIdentifier(), locationSQL));
+				return true;
+			} else if (!this.back.get().getTransform().equals(location)) {
+				final LocationSQL locationSQL = new LocationSQL(this.plugin, location);
+				this.back = Optional.of(locationSQL);
+				this.plugin.getThreadAsync().execute(() -> this.plugin.getDataBases().setBack(this.getIdentifier(), locationSQL));
+				return true;
+			}
 		}
 		return false;
 	}

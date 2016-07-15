@@ -36,6 +36,7 @@ public class EEConfig extends EConfig {
 		addDefault("debug", false, "Displays plugin performance in the logs");
 		addDefault("language", EMessage.ENGLISH, "Select language messages", "Examples : ", "  French : FR_fr", "  English : EN_en");
 		
+		// SQL
 		addComment("SQL", 	"Save the user in a database : ",
 				" H2 : \"jdbc:h2:" + this.plugin.getPath().toAbsolutePath() + "/data\"",
 				" SQL : \"jdbc:mysql://[login[:password]@]<host>:<port>/<database>\"",
@@ -44,15 +45,33 @@ public class EEConfig extends EConfig {
 		addDefault("SQL.url", "jdbc:mysql://root:password@localhost:3306/minecraft");
 		addDefault("SQL.prefix", "everessentials_");
 		
+		
+		// Home
+		addComment("sethome-multiple", "Allow players to have multiple homes.",
+						  "You can set the default number of multiple homes using the 'default' rank below.",
+						  "To remove the home limit entirely, give people 'everessentials.sethome.multiple.unlimited'.",
+						  "To grant different home amounts to different people, you need to define a 'home-rank' below.",
+						  "Create the 'home-rank' below, and give the matching permission: everessentials.sethome.multiple.<home-rank>");
+		if(this.get("sethome-multiple").isVirtual()) {
+			addDefault("sethome-multiple.moderator", 2);	
+		}
 		addDefault("sethome-multiple.default", 1);
-		addDefault("sethome-multiple.paladin", 2);
-		addDefault("teleport-delay.default", 6);
-		addDefault("teleport-delay.paladin", 5);
+		
+		// Teleport
+		addDefault("teleport-delay", 6, "The delay, in seconds, before a user actually teleports.  If the user moves or gets attacked in this timeframe, the teleport never occurs.");		
+		
+		// Near
+		if(this.get("near-distance").isVirtual()) {
+			addDefault("near-distance.moderator", 300);
+		}
 		addDefault("near-distance.default", 200);
-		addDefault("near-distance.paladin", 300);
+
 		addDefault("butcher-max-radius", 1000);
-		addDefault("warp-permission", true);
-		addDefault("world-teleport-permissions", false);
+		addDefault("warp-permission", true, "Set this true to enable permission per warp.");
+		addDefault("world-teleport-permissions", false, "Set to true to enable per-world permissions for teleporting between worlds with essentials commands.",
+														"This applies to /world, /back, /tp[a|o][here|all], but not warps.",
+														"Give someone permission to teleport to a world with everessentials.worlds.<worldname>",
+														"This does not affect the /home command, there is a separate toggle below for this.");
 		
 		addDefault("effect-default-duration", 60);
 		addDefault("effect-default-max-duration", 600);
