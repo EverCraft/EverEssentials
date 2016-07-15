@@ -84,14 +84,18 @@ public class EEBack extends ECommand<EverEssentials> {
 		Optional<Transform<World>> back = player.getBack();
 		// Le joueur a une position de retour
 		if(back.isPresent()){
-			player.setBack(player.getTransform());
-			// Le joueur a bien été téléporter
-			player.setTransform(back.get());
-			player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.getText())
-					.append(EEMessages.BACK_TELEPORT.get())
-					.replace("<back>", getButtonLocation(back.get().getLocation()))
-					.build());
-			return true;
+			if(this.plugin.getManagerServices().getEssentials().hasPermissionWorld(player, back.get().getExtent())){
+				player.setBack(player.getTransform());
+				// Le joueur a bien été téléporter
+				player.setTransform(back.get());
+				player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.getText())
+						.append(EEMessages.BACK_TELEPORT.get())
+						.replace("<back>", getButtonLocation(back.get().getLocation()))
+						.build());
+				return true;
+			} else {
+				player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.NO_PERMISSION_WORLD_OTHERS.get()));
+			}
 		// Le joueur n'a pas de position de retour
 		} else {
 			player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.BACK_INCONNU.getText()));
