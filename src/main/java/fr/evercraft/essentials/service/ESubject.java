@@ -61,6 +61,12 @@ public class ESubject implements EssentialsSubject {
 	
 	// Tempo
 	private boolean afk;
+	private long last_activated;
+	
+	private final ConcurrentMap<UUID, Long> teleport_ask;
+	private final ConcurrentMap<UUID, Long> teleport_here;
+	
+	private Optional<Runnable> teleport;
 
 	public ESubject(final EverEssentials plugin, final UUID uuid) {
 		Preconditions.checkNotNull(plugin, "plugin");
@@ -73,6 +79,14 @@ public class ESubject implements EssentialsSubject {
 		this.ignores = new CopyOnWriteArraySet<UUID>();
 		this.mails = new CopyOnWriteArraySet<Mail>();
 		this.back = Optional.empty();
+		
+		this.afk = false;
+		this.updateLastActivated();
+		
+		this.teleport_ask = new ConcurrentHashMap<UUID, Long>();
+		this.teleport_here = new ConcurrentHashMap<UUID, Long>();
+		
+		this.teleport = Optional.empty();
 		
 		reloadData();
 	}
@@ -312,6 +326,16 @@ public class ESubject implements EssentialsSubject {
 			return true;
 		}
 		return false;
+	}
+	
+	@Override
+	public void updateLastActivated() {
+		this.last_activated = System.currentTimeMillis();
+	}
+	
+	@Override
+	public long getLastActivated() {
+		return this.last_activated;
 	}
 	
 	/*
@@ -589,6 +613,89 @@ public class ESubject implements EssentialsSubject {
 		Preconditions.checkNotNull(mail, "mail");
 		this.mails.add(mail);
 	}
+	
+	/*
+	 * Teleport Ask
+	 */
+	
+	@Override
+	public boolean addTeleportAsk(UUID uuid, long time) {
+		if(!this.teleport_ask.containsKey(uuid)) {
+			this.teleport_ask.put(uuid, time);
+			return true;
+		}
+		return false;
+	}
+	
+	@Override
+	public boolean removeTeleportAsk(UUID uuid) {
+		if(this.teleport_ask.containsKey(uuid)) {
+			this.teleport_ask.remove(uuid);
+			return true;
+		}
+		return false;
+	}
+	
+	public Map<UUID, Long> getTeleportAsk() {
+		return ImmutableMap.copyOf(this.teleport_ask);
+	}
+	
+	/*
+	 * Teleport Here
+	 */
+	
+	@Override
+	public boolean addTeleportHere(UUID uuid, long time) {
+		if(!this.teleport_here.containsKey(uuid)) {
+			this.teleport_here.put(uuid, time);
+			return true;
+		}
+		return false;
+	}
+	
+	@Override
+	public boolean removeTeleportHere(UUID uuid) {
+		if(this.teleport_here.containsKey(uuid)) {
+			this.teleport_here.remove(uuid);
+			return true;
+		}
+		return false;
+	}
+	
+	@Override
+	public Map<UUID, Long> getTeleportHere() {
+		return ImmutableMap.copyOf(this.teleport_here);
+	}
+	
+	/*
+	 * Teleport
+	 */
+	
+	@Override
+	public boolean teleport() {
+		if(this.teleport.isPresent()) {
+			this.teleport.get().run();
+			this.teleport = Optional.empty();
+			return true;
+		}
+		return false;
+	}
+	
+	@Override
+	public boolean setTeleport(Runnable runnable) {
+		Preconditions.checkNotNull(runnable, "runnable");
+		
+		if(!this.teleport.isPresent()) {
+			this.teleport = Optional.of(runnable);
+			return true;
+		}
+		return false;
+	}
+	
+	/*
+	 * Accesseurs
+	 */
+	
 	
 	public String getIdentifier() {
 		return this.identifier.toString();
