@@ -51,8 +51,6 @@ public class EEDataBase extends EDataBase<EverEssentials> {
 							"`uuid` varchar(36) NOT NULL," +
 							"`vanish` boolean NOT NULL DEFAULT 0," +
 							"`god` boolean NOT NULL DEFAULT 0," +
-							"`mute` float NOT NULL DEFAULT 0," +
-							"`ban` float NOT NULL DEFAULT 0," +
 							"PRIMARY KEY (`uuid`));";
 		initTable(this.getTablePlayers(), players);
 		
@@ -200,58 +198,6 @@ public class EEDataBase extends EDataBase<EverEssentials> {
 			this.plugin.getLogger().debug("Updating the database : (identifier='" + identifier + "';god='" + god + "')");
     	} catch (SQLException e) {
         	this.plugin.getLogger().warn("Error during a change of god : " + e.getMessage());
-		} catch (ServerDisableException e) {
-			e.execute();
-		} finally {
-			try {
-				if (preparedStatement != null) preparedStatement.close();
-				if (connection != null) connection.close();
-			} catch (SQLException e) {}
-	    }
-	}
-	
-	public void setMute(final String identifier, final long mute) {
-		Connection connection = null;
-		PreparedStatement preparedStatement = null;
-    	try {
-    		connection = this.getConnection();
-    		String query = 	  "UPDATE `" + this.getTablePlayers() + "` "
-							+ "SET `mute` = ? "
-							+ "WHERE `uuid` = ? ;";
-			preparedStatement = connection.prepareStatement(query);
-			preparedStatement.setLong(1, mute);
-			preparedStatement.setString(2, identifier);
-			
-			preparedStatement.execute();
-			this.plugin.getLogger().debug("Updating the database : (identifier='" + identifier + "';mute='" + mute + "')");
-    	} catch (SQLException e) {
-        	this.plugin.getLogger().warn("Error during a change of mute : " + e.getMessage());
-		} catch (ServerDisableException e) {
-			e.execute();
-		} finally {
-			try {
-				if (preparedStatement != null) preparedStatement.close();
-				if (connection != null) connection.close();
-			} catch (SQLException e) {}
-	    }
-	}
-	
-	public void setBan(final String identifier, final long ban) {
-		Connection connection = null;
-		PreparedStatement preparedStatement = null;
-    	try {
-    		connection = this.getConnection();
-    		String query = 	  "UPDATE `" + this.getTablePlayers() + "` "
-							+ "SET `ban` = ? "
-							+ "WHERE `uuid` = ? ;";
-			preparedStatement = connection.prepareStatement(query);
-			preparedStatement.setLong(1, ban);
-			preparedStatement.setString(2, identifier);
-			
-			preparedStatement.execute();
-			this.plugin.getLogger().debug("Updating the database : (identifier='" + identifier + "';ban='" + ban + "')");
-    	} catch (SQLException e) {
-        	this.plugin.getLogger().warn("Error during a change of tempban : " + e.getMessage());
 		} catch (ServerDisableException e) {
 			e.execute();
 		} finally {

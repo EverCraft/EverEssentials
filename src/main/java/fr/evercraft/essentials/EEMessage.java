@@ -377,7 +377,7 @@ public class EEMessage extends EMessage {
 		
 		SPAWNS_DESCRIPTION("spawns.description", "Affiche la liste des spawns"),
 		SPAWNS_EMPTY("spawns.empty", "&cIl n'y a aucun spawn défini sur le serveur."),
-		SPAWNS_TITLE("spawns.title", "&aListe des spawn"),
+		SPAWNS_TITLE("spawns.title", "&aListe des spawns"),
 		SPAWNS_LINE_DELETE("spawns.lineDelete", "    &6&l➤  <spawn> &7: <teleport> <delete>"),
 		SPAWNS_LINE_DELETE_ERROR_WORLD("spawns.lineDeleteErrorWorld", "    &6&l➤  <spawn> &7: <delete>"),
 		SPAWNS_LINE("spawns.line", "    &6&l➤  <spawn> &7: <teleport>"),
@@ -400,11 +400,11 @@ public class EEMessage extends EMessage {
 		DELSPAWN_DELETE("delspawn.delete", "&7Vous avez supprimé le spawn &6<spawn>&7."),
 
 		SETSPAWN_DESCRIPTION("setspawn.description", "Permet de définir un spawn"),
-		SETSPAWN_ERROR_GROUP("setspawn.errorGroup", "&cIl y a aucun groupe qui porte le nom &6<group>."),
+		SETSPAWN_ERROR_GROUP("setspawn.errorGroup", "&cIl y a aucun groupe qui porte le nom &6<name>."),
 		SETSPAWN_NAME("setspawn.name", "&6&l<name>"),
 		SETSPAWN_NAME_HOVER("setspawn.nameHover", "&cMonde : &6<world>[RT]&cX : &6<x>[RT]&cY : &6<y>[RT]&cZ : &6<z>"),
-		SETSPAWN_REPLACE("setspawn.replace", "&7Vous avez redéfini le spawn &6<group>&7."),
-		SETSPAWN_NEW("setspawn.new", "&7Vous avez défini le spawn &6<group>&7."),
+		SETSPAWN_REPLACE("setspawn.replace", "&7Vous avez redéfini le spawn &6<name>&7."),
+		SETSPAWN_NEW("setspawn.new", "&7Vous avez défini le spawn &6<name>&7."),
 		
 		SPAWNER_DESCRIPTION("spawner.description", "Permet de modifier le type d'un mob spawner"),
 		

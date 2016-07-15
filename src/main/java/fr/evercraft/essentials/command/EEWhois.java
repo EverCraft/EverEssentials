@@ -265,12 +265,15 @@ public class EEWhois extends ECommand<EverEssentials> {
 		}
 	}
 	
-	public Text getMute(final EPlayer player){
+	public Text getMute(final EPlayer player) {
+		// TODO EverSanctions
+		return EChat.of(EEMessages.WHOIS_MUTE_ENABLE.get());
+		/*
 		if(player.isMute()) {
 			return EChat.of(EEMessages.WHOIS_MUTE_ENABLE.get());
 		} else {
 			return EChat.of(EEMessages.WHOIS_MUTE_DISABLE.get());
-		}
+		}*/
 	}
 	
 	public Text getVanish(final EPlayer player){

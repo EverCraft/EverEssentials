@@ -53,7 +53,7 @@ public class EETeleportation extends ECommand<EverEssentials> {
 
 	public Text help(final CommandSource source) {
 		if(source.hasPermission(EEPermissions.TP_OTHERS.get())){
-			return Text.builder("/tp [joueur|destination <joueur>]").onClick(TextActions.suggestCommand("/tp "))
+			return Text.builder("/tp <joueur|destination <joueur>>").onClick(TextActions.suggestCommand("/tp "))
 					.color(TextColors.RED).build();
 		} 
 		return Text.builder("/tp <joueur>").onClick(TextActions.suggestCommand("/tp "))

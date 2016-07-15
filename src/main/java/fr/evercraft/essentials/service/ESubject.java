@@ -54,9 +54,6 @@ public class ESubject implements EssentialsSubject {
 	private boolean god;
 	private boolean vanish;
 	
-	private long mute;
-	private long ban;
-	
 	private final ConcurrentMap<String, LocationSQL> homes;
 	private final CopyOnWriteArraySet<UUID> ignores;
 	private final CopyOnWriteArraySet<Mail> mails;
@@ -142,14 +139,9 @@ public class ESubject implements EssentialsSubject {
 				this.vanish = list.getBoolean("vanish");
 				this.god = list.getBoolean("god");
 				
-				this.mute = list.getLong("mute");
-				this.ban = list.getLong("ban");
-				
 				this.plugin.getLogger().debug("Loading : (identifier='" + this.identifier + "';"
 														+ "vanish='" + this.vanish + "';"
-														+ "god='" + this.god + "';"
-														+ "mute='" + this.mute + "';"
-														+ "ban='" + this.ban + "')");
+														+ "god='" + this.god + "')");
 			} else {
 				this.insertPlayer(connection);
 			}
@@ -260,20 +252,16 @@ public class ESubject implements EssentialsSubject {
 		PreparedStatement preparedStatement = null;
 		try {
 			String query = 	  "INSERT INTO `" + this.plugin.getDataBases().getTablePlayers() + "` "
-							+ "VALUES (?, ?, ?, ?, ?);";
+							+ "VALUES (?, ?, ?);";
 			preparedStatement = connection.prepareStatement(query);
 			preparedStatement.setString(1, this.getIdentifier());
 			preparedStatement.setBoolean(2, this.vanish);
 			preparedStatement.setBoolean(3, this.god);
-			preparedStatement.setLong(4, this.mute);
-			preparedStatement.setLong(5, this.ban);
 			
 			preparedStatement.execute();
 			this.plugin.getLogger().debug("Insert : (identifier='" + this.identifier + "';"
 													+ "vanish='" + this.vanish + "';"
-													+ "god='" + this.god + "';"
-													+ "mute='" + this.mute + "';"
-													+ "ban='" + this.ban + "')");
+													+ "god='" + this.god + "')");
 		} catch (SQLException e) {
 	    	this.plugin.getLogger().warn("Error during a change of player : " + e.getMessage());
 		} finally {
@@ -303,72 +291,6 @@ public class ESubject implements EssentialsSubject {
 			} else {
 				this.plugin.getGame().getEventManager().post(new VanishEvent(this.plugin, player.get(), VanishEvent.Action.REMOVE));
 			}
-			return true;
-		}
-		return false;
-	}
-	
-	/*
-	 * Mute
-	 */
-
-	@Override
-	public boolean isMute() {
-		return this.mute != 0;
-	}
-
-	@Override
-	public boolean setMute(final boolean mute) {
-		if(mute && this.mute != -1) {
-			this.mute = -1;
-			this.plugin.getThreadAsync().execute(() -> this.plugin.getDataBases().setMute(this.getIdentifier(), -1));
-			return true;
-		} else if(!mute && this.mute != 0) {
-			this.mute = 0;
-			this.plugin.getThreadAsync().execute(() -> this.plugin.getDataBases().setMute(this.getIdentifier(), 0));
-			return true;
-		}
-		return false;
-	}
-	
-	@Override
-	public boolean setMute(final long time) {
-		if(this.mute != time) {
-			this.mute = time;
-			this.plugin.getThreadAsync().execute(() -> this.plugin.getDataBases().setMute(this.getIdentifier(), time));
-			return true;
-		}
-		return false;
-	}
-	
-	/*
-	 * Ban
-	 */
-
-	@Override
-	public boolean isBan() {
-		return this.mute != 0;
-	}
-
-	@Override
-	public boolean setBan(final boolean ban) {
-		if(ban && this.ban != -1) {
-			this.ban = -1;
-			this.plugin.getThreadAsync().execute(() -> this.plugin.getDataBases().setMute(this.getIdentifier(), -1));
-			return true;
-		} else if(!ban && this.ban != 0) {
-			this.ban = 0;
-			this.plugin.getThreadAsync().execute(() -> this.plugin.getDataBases().setMute(this.getIdentifier(), 0));
-			return true;
-		}
-		return false;
-	}
-	
-	@Override
-	public boolean setBan(final long time) {
-		if(this.ban != time) {
-			this.ban = time;
-			this.plugin.getThreadAsync().execute(() -> this.plugin.getDataBases().setMute(this.getIdentifier(), time));
 			return true;
 		}
 		return false;

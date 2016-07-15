@@ -107,7 +107,7 @@ public class EESpawnDel extends ECommand<EverEssentials> {
 			if(this.plugin.getManagerServices().getSpawn().remove(spawn_name)) {
 				player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
 						.append(EEMessages.DELSPAWN_DELETE.get())
-						.replace("<name>", getButtonSpawn(spawn_name, spawn.get()))
+						.replace("<spawn>", getButtonSpawn(spawn_name, spawn.get()))
 						.build());
 				return true;
 			// Le spawn n'a pas été supprimer
