@@ -33,58 +33,85 @@ public class EEConfig extends EConfig {
 
 	@Override
 	public void loadDefault() {
-		addDefault("debug", false, "Displays plugin performance in the logs");
-		addDefault("language", EMessage.FRENCH, "Select language messages", "Examples : ", "  French : FR_fr", "  English : EN_en");
+		addDefault("debug", false, 	"Displays plugin performance in the logs");
+		addDefault("language", EMessage.FRENCH, 
+										"Select language messages", 
+										"Examples : ", 
+										"  French : FR_fr", 
+										"  English : EN_en");
 		
 		// SQL
-		addComment("SQL", 	"Save the user in a database : ",
-				" H2 : \"jdbc:h2:" + this.plugin.getPath().toAbsolutePath() + "/data\"",
-				" SQL : \"jdbc:mysql://[login[:password]@]<host>:<port>/<database>\"",
-				" Default users are saving in the 'data.mv.db'");
+		addComment("SQL", 				"Save the user in a database : ",
+										" H2 : \"jdbc:h2:" + this.plugin.getPath().toAbsolutePath() + "/data\"",
+										" SQL : \"jdbc:mysql://[login[:password]@]<host>:<port>/<database>\"",
+										" Default users are saving in the 'data.mv.db'");
 		addDefault("SQL.enable", false);
 		addDefault("SQL.url", "jdbc:mysql://root:password@localhost:3306/minecraft");
 		addDefault("SQL.prefix", "everessentials_");
 		
 		
 		// Home
-		addComment("sethome-multiple", "Allow players to have multiple homes.",
-						  "You can set the default number of multiple homes using the 'default' rank below.",
-						  "To remove the home limit entirely, give people 'everessentials.sethome.multiple.unlimited'.",
-						  "To grant different home amounts to different people, you need to define a 'home-rank' below.",
-						  "Create the 'home-rank' below, and give the matching permission: everessentials.sethome.multiple.<home-rank>");
+		addComment("sethome-multiple", 	"Allow players to have multiple homes.",
+						  				"You can set the default number of multiple homes using the 'default' rank below.",
+						  				"To remove the home limit entirely, give people 'everessentials.sethome.multiple.unlimited'.",
+						  				"To grant different home amounts to different people, you need to define a 'home-rank' below.",
+						  				"Create the 'home-rank' below, and give the matching permission: everessentials.sethome.multiple.<home-rank>");
 		if(this.get("sethome-multiple").isVirtual()) {
 			addDefault("sethome-multiple.moderator", 2);	
 		}
 		addDefault("sethome-multiple.default", 1);
 		
 		// Teleport
-		addDefault("teleport-delay", 6, "The delay, in seconds, before a user actually teleports.  If the user moves or gets attacked in this timeframe, the teleport never occurs.");		
+		addDefault("teleport-delay", 3, "The delay, in seconds, before a user actually teleports.",
+										"If the user moves or gets attacked in this timeframe, the teleport never occurs.");
 		
+		// AFK
+		addDefault("afk-auto", 3, 		"Auto-AFK",
+								  		"After this timeout in seconds, the user will be set as afk.",
+								  		"This feature requires the player to have everessentials.afk.auto node.",
+								  		"Set to -1 for no timeout.");
+		addDefault("afk-auto-kick", 120, 
+										"Auto-AFK Kick",
+										"After this timeout in seconds, the user will be kicked from the server.",
+										"everessentials.afk.kickexempt node overrides this feature.",
+										"Set to -1 for no timeout.");
+						
 		// Near
 		if(this.get("near-distance").isVirtual()) {
 			addDefault("near-distance.moderator", 300);
 		}
 		addDefault("near-distance.default", 200);
 
+		// SpawnMob
+		addDefault("spawnmob-limit", 50, "Mob limit on the /spawnmob command per execution.");
+		
+		// Butcher
 		addDefault("butcher-max-radius", 1000);
+		
+		// Warp
 		addDefault("warp-permission", true, "Set this true to enable permission per warp.");
+		
+		// World
 		addDefault("world-teleport-permissions", false, "Set to true to enable per-world permissions for teleporting between worlds with essentials commands.",
 														"This applies to /world, /back, /tp[a|o][here|all], but not warps.",
 														"Give someone permission to teleport to a world with everessentials.worlds.<worldname>",
 														"This does not affect the /home command, there is a separate toggle below for this.");
 		
+		// Effect
 		addDefault("effect-default-duration", 60);
 		addDefault("effect-default-max-duration", 600);
 		addDefault("effect-default-amplifier", 0);
 		
 		addDefault("remove-god-on-disconnect", false);
 		addDefault("remove-vanish-on-disconnect", true);
+		
+		// GameMode
 		addDefault("gamemode-kill", true);
 		addDefault("gamemode-paint", true);
 		
 		addDefault("god-teleport-to-spawn", true);
 		
-		if(get("list").getValue() == null) {
+		if(this.get("list").getValue() == null) {
 			addDefault("list.Admins", "owner admin", "To merge groups, list the groups you wish to merge", "Staff: owner admin moderator");
 			addDefault("list.builder", 20, "To limit groups, set a max user limit");
 			addDefault("list.default", "hidden", "To hide groups, set the group as hidden");
@@ -93,42 +120,54 @@ public class EEConfig extends EConfig {
 	}
 	
 	public boolean isWorldTeleportPermissions() {
-		return get("world-teleport-permissions").getBoolean(false);
+		return this.get("world-teleport-permissions").getBoolean(false);
 	}
 	
 	public boolean isWarpPermissions() {
-		return get("warp-permission").getBoolean(false);
+		return this.get("warp-permission").getBoolean(false);
 	}
 	
 	public int getButcherMaxRadius() {
-		return get("butcher-max-radius").getInt(1000);
+		return this.get("butcher-max-radius").getInt(1000);
 	}
 
 	public boolean removeGodOnDisconnect() {
-		return get("remove-god-on-disconnect").getBoolean(false);
+		return this.get("remove-god-on-disconnect").getBoolean(false);
 	}
 	
 	public boolean removeVanishOnDisconnect() {
-		return get("remove-vanish-on-disconnect").getBoolean(true);
+		return this.get("remove-vanish-on-disconnect").getBoolean(true);
 	}
 	
 	public boolean isGodTeleportToSpawn() {
-		return get("remove-vanish-on-disconnect").getBoolean(true);
+		return this.get("remove-vanish-on-disconnect").getBoolean(true);
 	}
 	
 	public boolean isGameModeKill() {
-		return get("gamemode-kill").getBoolean(true);
+		return this.get("gamemode-kill").getBoolean(true);
 	}
 	
 	public boolean isGameModePaint() {
-		return get("gamemode-paint").getBoolean(true);
+		return this.get("gamemode-paint").getBoolean(true);
 	}
 	
 	public ConfigurationNode getConfigList() {
-		return get("list");
+		return this.get("list");
 	}
 
 	public String getSpawnNewbies() {
-		return get("newbies-spawnpoint").getString("newbies");
+		return this.get("newbies-spawnpoint").getString("newbies");
+	}
+
+	public long getTeleportDelay() {
+		return this.get("teleport-delay").getLong(0);
+	}
+
+	public long getAfkAuto() {
+		return this.get("afk-auto").getLong(-1);
+	}
+	
+	public long getAfkAutoKick() {
+		return this.get("afk-auto-kick").getLong(-1);
 	}
 }

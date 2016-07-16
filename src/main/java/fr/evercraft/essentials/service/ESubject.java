@@ -39,6 +39,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
 import fr.evercraft.essentials.EverEssentials;
+import fr.evercraft.essentials.service.teleport.Teleport;
 import fr.evercraft.everapi.exception.ServerDisableException;
 import fr.evercraft.everapi.server.location.LocationSQL;
 import fr.evercraft.everapi.server.player.EPlayer;
@@ -66,7 +67,7 @@ public class ESubject implements EssentialsSubject {
 	private final ConcurrentMap<UUID, Long> teleport_ask;
 	private final ConcurrentMap<UUID, Long> teleport_here;
 	
-	private Optional<Runnable> teleport;
+	private Optional<Teleport> teleport;
 
 	public ESubject(final EverEssentials plugin, final UUID uuid) {
 		Preconditions.checkNotNull(plugin, "plugin");
@@ -683,13 +684,23 @@ public class ESubject implements EssentialsSubject {
 	
 	@Override
 	public boolean setTeleport(Runnable runnable) {
+		return this.setTeleport(this.plugin.getConfigs().getTeleportDelay(), runnable);
+	}
+	
+	@Override
+	public boolean setTeleport(long delay, Runnable runnable) {
+		Preconditions.checkNotNull(delay, "delay");
 		Preconditions.checkNotNull(runnable, "runnable");
 		
 		if(!this.teleport.isPresent()) {
-			this.teleport = Optional.of(runnable);
+			this.teleport = Optional.of(new Teleport(delay, runnable));
 			return true;
 		}
 		return false;
+	}
+	
+	public Optional<Teleport> getTeleport() {
+		return this.teleport;
 	}
 	
 	/*
@@ -703,5 +714,13 @@ public class ESubject implements EssentialsSubject {
 	
 	public UUID getUniqueId() {
 		return this.identifier;
+	}
+
+	@Override
+	public Optional<Long> getTeleportTime() {
+		if(this.teleport.isPresent()) {
+			return Optional.of(this.teleport.get().getTime());
+		}
+		return Optional.empty();
 	}
 }

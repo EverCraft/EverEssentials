@@ -18,6 +18,7 @@ package fr.evercraft.essentials.service;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -95,6 +96,12 @@ public class EEssentialsService implements EssentialsService {
 			this.plugin.getLogger().warn("Error : Loading user (identifier='" + uuid + "';message='" + e.getMessage() + "')");
 			return null;
 		}
+	}
+	
+	public Optional<ESubject> getOnline(UUID uuid) {
+		Preconditions.checkNotNull(uuid, "uuid");
+		
+		return Optional.ofNullable(this.subjects.get(uuid));
 	}
 	
 	@Override
