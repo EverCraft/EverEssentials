@@ -573,6 +573,9 @@ public class EEMessage extends EMessage {
 		WHITELIST_DISABLED("whitelist.disabled", "&7La whitelist est désormais &cdésactivée&7."),
 		WHITELIST_ALREADY_ACTIVATED("whitelist.alreadyActivated", "&cErreur : &7La whitelist est déjà &aactivée&7."),
 		WHITELIST_ALREADY_DISABLED("whitelist.alreadyDisabled", "&cErreur : &7La whitelist est déjà &cdésactivée&7."),
+		WHITELIST_STATUS("whitelist.status.message", "&7La whitelist est <status>."),
+		WHITELIST_STATUS_ACTIVATED("whitelist.statusActivated", "&aactivée"),
+		WHITELIST_STATUS_DISABLED("whitelist.statusDisabled", "&cdésactivée"),
 		
 		WHOIS_DESCRIPTION("whois.description", "Affiche les informations d'un joueur"),
 		WHOIS_TITLE("whois.title", "&aInformations : &c<player>"),
