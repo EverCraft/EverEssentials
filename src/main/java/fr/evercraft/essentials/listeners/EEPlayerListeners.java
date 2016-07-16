@@ -65,7 +65,8 @@ public class EEPlayerListeners {
 	@Listener
 	public void onClientConnectionEvent(final ClientConnectionEvent.Join event) {
 		this.plugin.getManagerServices().getEssentials().registerPlayer(event.getTargetEntity().getUniqueId());
-
+		this.plugin.getScheduler().start();
+		
 		/*
 		 * Optional<EPlayer> player =
 		 * this.plugin.getEverAPI().getEServer().getEPlayer
@@ -80,6 +81,13 @@ public class EEPlayerListeners {
 	@Listener
 	public void onClientConnectionEvent(final ClientConnectionEvent.Disconnect event) {
 		this.plugin.getManagerServices().getEssentials().removePlayer(event.getTargetEntity().getUniqueId());
+	}
+	
+	@Listener(order = Order.POST)
+	public void onClientConnectionEventPost(final ClientConnectionEvent.Disconnect event) {
+		if(this.plugin.getEServer().getOnlinePlayers().isEmpty()) {
+			this.plugin.getScheduler().stop();
+		}
 	}
 
 	@Listener

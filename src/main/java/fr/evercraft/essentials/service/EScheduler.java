@@ -56,7 +56,7 @@ public class EScheduler {
 	}
 
 	public boolean start() {
-		if(this.task == null) {
+		if(this.task == null && !this.plugin.getEServer().getOnlinePlayers().isEmpty()) {
 			this.task = this.plugin.getGame().getScheduler().createTaskBuilder()
 							.async()
 							.execute(() -> this.async())

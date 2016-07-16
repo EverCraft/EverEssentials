@@ -22,6 +22,7 @@ import org.spongepowered.api.plugin.Plugin;
 import fr.evercraft.essentials.listeners.EEPlayerListeners;
 import fr.evercraft.essentials.managers.EEManagerCommands;
 import fr.evercraft.essentials.managers.EEManagerServices;
+import fr.evercraft.essentials.service.EScheduler;
 import fr.evercraft.everapi.exception.PluginDisableException;
 import fr.evercraft.everapi.plugin.EPlugin;
 
@@ -44,6 +45,8 @@ public class EverEssentials extends EPlugin {
 	
 	private EEManagerServices managerServices;
 	private EEManagerCommands managerCommands;
+	
+	private EScheduler scheduler;
 	
 	private EEMotd motd;
 	private EEConfigRules rules;
@@ -69,15 +72,22 @@ public class EverEssentials extends EPlugin {
 		
 		// Listeners
 		this.getGame().getEventManager().registerListeners(this, new EEPlayerListeners(this));
+		
+		this.scheduler = new EScheduler(this);
 	}
 	
 	@Override
 	protected void onReload() throws PluginDisableException {
+		this.scheduler.stop();
+		
 		this.reloadConfigurations();
 		this.databases.reload();
 		
 		this.managerServices.reload();
 		this.managerCommands.reload();
+		this.scheduler.reload();
+		
+		this.scheduler.start();
 	}
 	
 	@Override
@@ -111,5 +121,9 @@ public class EverEssentials extends EPlugin {
 
 	public EEDataBase getDataBases() {
 		return this.databases;
+	}
+
+	public EScheduler getScheduler() {
+		return this.scheduler;
 	}
 }
