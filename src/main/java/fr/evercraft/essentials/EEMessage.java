@@ -568,6 +568,12 @@ public class EEMessage extends EMessage {
 		WEATHER_STORM_DESCRIPTION("weather.stormDescription", "Met la tempête dans votre monde"),
 		WEATHER_SUN_DESCRIPTION("weather.sunDescription", "Met le beau dans temps dans votre monde"),
 		
+		WHITELIST_DESCRIPTION("whitelist.description", "Gère la liste d'acces des joueurs"),
+		WHITELIST_ACTIVATED("whitelist.activated", "&7La whitelist est désormais &aactivée&7."),
+		WHITELIST_DISABLED("whitelist.disabled", "&7La whitelist est désormais &cdésactivée&7."),
+		WHITELIST_ALREADY_ACTIVATED("whitelist.alreadyActivated", "&cErreur : &7La whitelist est déjà &aactivée&7."),
+		WHITELIST_ALREADY_DISABLED("whitelist.alreadyDisabled", "&cErreur : &7La whitelist est déjà &cdésactivée&7."),
+		
 		WHOIS_DESCRIPTION("whois.description", "Affiche les informations d'un joueur"),
 		WHOIS_TITLE("whois.title", "&aInformations : &c<player>"),
 		WHOIS_UUID("whois.uuid", "    &6&l➤ &6UUID : <uuid>"),
