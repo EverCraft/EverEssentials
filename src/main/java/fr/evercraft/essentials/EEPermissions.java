@@ -201,6 +201,9 @@ public enum EEPermissions implements EnumPermission {
 	
 	WEATHER("weather.command"),
 	
+	WHITELIST("whitelist.command"),
+	WHITELIST_MANAGE("whitelist.manage"),
+	
 	WORLDS("worlds.command"),
 	WORLDS_OTHERS("worlds.others"),
 	

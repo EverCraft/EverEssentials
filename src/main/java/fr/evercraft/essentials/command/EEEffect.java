@@ -128,7 +128,9 @@ public class EEEffect extends EReloadCommand<EverEssentials> {
 
 	public boolean commandEffect(final EPlayer player, final String effect) {
 		if (UtilsEffect.getEffect(effect).isPresent()) {
-			PotionEffect potion = createPotionEffect(UtilsEffect.getEffect(effect).get().getType(), getDefaultAmplifier(), getDefaultDuration());
+			PotionEffect potion = createPotionEffect(UtilsEffect.getEffect(effect).get().getType(), 
+					this.default_amplifier, 
+					this.default_duration);
 			player.addPotion(potion);
 			return true;
 		} else {
@@ -141,7 +143,7 @@ public class EEEffect extends EReloadCommand<EverEssentials> {
 		if (UtilsEffect.getEffect(effect).isPresent()) {
 			UtilsEffect utils = UtilsEffect.getEffect(effect).get();
 			if (utils.getMinAmplifier() <= amplifier && amplifier <= utils.getMaxAmplifier()) {
-				player.addPotion(createPotionEffect(utils.getType(), amplifier - 1, getDefaultDuration()));
+				player.addPotion(createPotionEffect(utils.getType(), amplifier - 1, this.default_duration));
 			} else {
 				player.sendMessage(EEMessages.PREFIX.get()
 					+ EEMessages.EFFECT_ERROR_AMPLIFIER.get()
@@ -160,13 +162,13 @@ public class EEEffect extends EReloadCommand<EverEssentials> {
 		if (UtilsEffect.getEffect(effect).isPresent()) {
 			UtilsEffect utils = UtilsEffect.getEffect(effect).get();
 			if (utils.getMinAmplifier() <= amplifier && amplifier <= utils.getMaxAmplifier()) {
-				if (duration > 0 && duration <= getDefaultMaxDuration()) {
+				if (duration > 0 && duration <= this.default_max_duration) {
 					player.addPotion(createPotionEffect(utils.getType(), amplifier - 1, duration));
 				} else {
 					player.sendMessage(EEMessages.PREFIX.get() 
 						+ EEMessages.EFFECT_ERROR_DURATION.get()
 							.replaceAll("<min>", String.valueOf(1))
-							.replaceAll("<max>", String.valueOf(getDefaultMaxDuration())));
+							.replaceAll("<max>", String.valueOf(this.default_max_duration)));
 				}
 			} else {
 				player.sendMessage(EEMessages.PREFIX.get()
@@ -188,17 +190,5 @@ public class EEEffect extends EReloadCommand<EverEssentials> {
 				.amplifier(amplifier)
 				.particles(true)
 				.duration(duration).build();
-	}
-
-	private int getDefaultDuration() {
-		return this.default_duration;
-	}
-	
-	private int getDefaultMaxDuration() {
-		return this.default_max_duration;
-	}
-
-	private int getDefaultAmplifier() {
-		return this.default_amplifier;
 	}
 }

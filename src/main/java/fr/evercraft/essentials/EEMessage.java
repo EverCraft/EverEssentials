@@ -154,7 +154,12 @@ public class EEMessage extends EMessage {
 		GAMEMODE_OTHERS_EQUAL("gamemode.othersEqual", 					"&6<player> &7possède déjà le mode de jeu &6<gamemode>&7."),
 		GAMEMODE_ERROR_NAME("gamemode.errorName", 						"&cMode de jeu inconnu."),
 		
-		GENERATE_DESCRIPTION("generate.description", 		"Initialise tous les chunks d'un monde."),
+		GENERATE_DESCRIPTION("generate.description", 							"Initialise tous les chunks d'un monde."),
+		GENERATE_WARNING("generate.warning.message", 							"&cAttention : &7Générer tous les chunks d'un monde peut prendre plusieurs heures et causer des latences."
+				+ "[RT] Le nombre total de chunks a générer est de &6<chunk>&7."
+				+ "[RT] Souhaitez-vous vraiment générer tous les chuncks du monde &6<world> ? <confirmation>"),
+		GENERATE_WARNING_VALID("generate.warning.confirmationValid", 			"&2&nConfirmer"),
+		GENERATE_WARNING_VALID_HOVER("generate.warning.confirmationValidHover", "&cCliquez ici pour lancer la génération des chunks dans le monde &6<world>&7."),
 		
 		GETPOS_DESCRIPTION("getpos.description", 		"Affiche les coordonnées d'un joueur."),
 		GETPOS_MESSAGE("getpos.message", 				"&7Voici votre &6<position>&7."),
@@ -562,6 +567,12 @@ public class EEMessage extends EMessage {
 		WEATHER_RAIN_DESCRIPTION("weather.rainDescription", "Met la pluie dans votre monde"),
 		WEATHER_STORM_DESCRIPTION("weather.stormDescription", "Met la tempête dans votre monde"),
 		WEATHER_SUN_DESCRIPTION("weather.sunDescription", "Met le beau dans temps dans votre monde"),
+		
+		WHITELIST_DESCRIPTION("whitelist.description", "Gère la liste d'acces des joueurs"),
+		WHITELIST_ACTIVATED("whitelist.activated", "&7La whitelist est désormais &aactivée&7."),
+		WHITELIST_DISABLED("whitelist.disabled", "&7La whitelist est désormais &cdésactivée&7."),
+		WHITELIST_ALREADY_ACTIVATED("whitelist.alreadyActivated", "&cErreur : &7La whitelist est déjà &aactivée&7."),
+		WHITELIST_ALREADY_DISABLED("whitelist.alreadyDisabled", "&cErreur : &7La whitelist est déjà &cdésactivée&7."),
 		
 		WHOIS_DESCRIPTION("whois.description", "Affiche les informations d'un joueur"),
 		WHOIS_TITLE("whois.title", "&aInformations : &c<player>"),

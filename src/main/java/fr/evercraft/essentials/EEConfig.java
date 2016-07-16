@@ -102,6 +102,10 @@ public class EEConfig extends EConfig {
 		addDefault("effect-default-max-duration", 600);
 		addDefault("effect-default-amplifier", 0);
 		
+		addDefault("generate.tickPercentLimit", 0.15, "Float");
+		addDefault("generate.tickInterval", 10, "Int");
+		addDefault("generate.chunksPerTick", 10, "Int");
+		
 		addDefault("remove-god-on-disconnect", false);
 		addDefault("remove-vanish-on-disconnect", true);
 		
