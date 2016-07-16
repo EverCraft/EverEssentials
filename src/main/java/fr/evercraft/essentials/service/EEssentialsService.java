@@ -47,6 +47,8 @@ public class EEssentialsService implements EssentialsService {
 	private final ConcurrentMap<UUID, ESubject> subjects;
 	private final LoadingCache<UUID, ESubject> cache;
 	
+	private final EScheduler scheduler;
+	
 	private boolean world;
 
 	public EEssentialsService(final EverEssentials plugin) {		
@@ -81,6 +83,9 @@ public class EEssentialsService implements EssentialsService {
 					            return subject;
 					        }
 					    });
+		
+		this.scheduler = new EScheduler(this.plugin);
+		this.scheduler.start();
 	}
 
 	@Override
@@ -118,12 +123,17 @@ public class EEssentialsService implements EssentialsService {
 	 * Rechargement : Vide le cache et recharge tous les joueurs
 	 */
 	public void reload() {
+		this.scheduler.stop();
+		this.scheduler.reload();
+		
 		this.world = this.plugin.getConfigs().isWorldTeleportPermissions();
 		
 		this.cache.cleanUp();
 		for(ESubject subject : this.subjects.values()) {
 			subject.reloadData();
 		}
+		
+		this.scheduler.start();
 	}
 	
 	/**
@@ -177,6 +187,10 @@ public class EEssentialsService implements EssentialsService {
 		list.addAll(this.subjects.values());
 		list.addAll(this.cache.asMap().values());
 		return list;
+	}
+	
+	public Collection<ESubject> getOnlines() {
+		return this.subjects.values();
 	}
 	
 	/*

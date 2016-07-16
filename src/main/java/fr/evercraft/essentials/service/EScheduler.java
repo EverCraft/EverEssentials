@@ -16,16 +16,17 @@
  */
 package fr.evercraft.essentials.service;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import org.spongepowered.api.scheduler.Task;
 
 import fr.evercraft.essentials.EverEssentials;
+import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.everapi.server.player.EPlayer;
 
 
@@ -47,8 +48,8 @@ public class EScheduler {
 	}
 	
 	public void reload() {
-		this.afk_time = this.plugin.getConfigs().getAfkAuto();
-		this.afk_kick_time = this.plugin.getConfigs().getAfkAutoKick();
+		this.afk_time = this.plugin.getConfigs().getAfkAuto() * 1000;
+		this.afk_kick_time = this.plugin.getConfigs().getAfkAutoKick() * 1000;
 		
 		this.afk = this.afk_time > 0;
 		this.afk_kick = this.afk_kick_time > 0;
@@ -59,7 +60,7 @@ public class EScheduler {
 			this.task = this.plugin.getGame().getScheduler().createTaskBuilder()
 							.async()
 							.execute(() -> this.async())
-							.delay(1, TimeUnit.SECONDS)
+							.interval(1, TimeUnit.SECONDS)
 							.name("EScheduler")
 							.submit(this.plugin);
 			return true;
@@ -77,11 +78,12 @@ public class EScheduler {
 	}
 	
 	public void async() {
+		this.plugin.getLogger().warn("async");
 		long current_time = System.currentTimeMillis();
 		
-		final List<UUID> players = new ArrayList<UUID>();
+		final Set<UUID> players = new HashSet<UUID>();
 		
-		for(ESubject player : this.plugin.getManagerServices().getEssentials().getAll()) {			
+		for(ESubject player : this.plugin.getManagerServices().getEssentials().getOnlines()) {			
 			// Teleport Ask
 			for(Entry<UUID, Long> teleport : player.getTeleportAsk().entrySet()) {
 				if(teleport.getValue() >= current_time) {
@@ -121,7 +123,8 @@ public class EScheduler {
 		}
 	}
 	
-	public void sync(final List<UUID> players) {
+	public void sync(final Set<UUID> players) {
+		this.plugin.getLogger().warn("sync");
 		long current_time = System.currentTimeMillis();
 		
 		for(UUID uuid : players) {
@@ -136,12 +139,18 @@ public class EScheduler {
 				
 				// AFK
 				if(this.afk && !player.isAFK() && player.getLastActivated() + this.afk_time <= current_time) {
-					players.add(player.getUniqueId());
+					player.setAFK(true);
+					
+					if(EEMessages.AFK_ALL_ENABLE.has()) {
+						player.broadcast(EEMessages.PREFIX.getText().concat(player.replaceVariable(EEMessages.AFK_ALL_ENABLE.get())));
+					} else {
+						player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.AFK_PLAYER_ENABLE.getText()));
+					}
 				}
 				
 				// AFK Kick
 				if(this.afk_kick  && player.getLastActivated() + this.afk_kick_time <= current_time) {
-					players.add(player.getUniqueId());
+					player.kick(EEMessages.AFK_KICK.getText());
 				}
 			}
 		}

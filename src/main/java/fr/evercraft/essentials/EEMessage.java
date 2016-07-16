@@ -48,6 +48,7 @@ public class EEMessage extends EMessage {
 		AFK_STAFF_DISABLE("afk.staffDisable", 				"&6<player> &7n'est plus AFK."),
 		AFK_STAFF_ENABLE_ERROR("afk.staffEnableError", 		"&6<player> &cest déjà signalé AFK."),
 		AFK_STAFF_DISABLE_ERROR("afk.staffDisableError", 	"&6<player> &cn'est pas AFK."),
+		AFK_KICK("afk.kick", 								"&cPour cause d'inactivité"),
 		
 		BACK_DESCRIPTION("back.description",				"Retourne à la dernière position sauvegardé."),
 		BACK_NAME("back.name", 								"&6&lposition"),
