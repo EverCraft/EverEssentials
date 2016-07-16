@@ -71,6 +71,8 @@ public enum EEPermissions implements EnumPermission {
 	GAMEMODE("gamemode.command"),
 	GAMEMODE_OTHERS("gamemode.others"),
 	
+	GENERATE("generate.command"),
+	
 	GETPOS("getpos.command"),
 	GETPOS_OTHERS("getpos.others"),
 	
