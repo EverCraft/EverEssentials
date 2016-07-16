@@ -154,7 +154,12 @@ public class EEMessage extends EMessage {
 		GAMEMODE_OTHERS_EQUAL("gamemode.othersEqual", 					"&6<player> &7possède déjà le mode de jeu &6<gamemode>&7."),
 		GAMEMODE_ERROR_NAME("gamemode.errorName", 						"&cMode de jeu inconnu."),
 		
-		GENERATE_DESCRIPTION("generate.description", 		"Initialise tous les chunks d'un monde."),
+		GENERATE_DESCRIPTION("generate.description", 							"Initialise tous les chunks d'un monde."),
+		GENERATE_WARNING("generate.warning.message", 							"&cAttention : &7Générer tous les chunks d'un monde peut prendre plusieurs heures et causer des latences."
+				+ "[RT] Le nombre total de chunks a générer est de &6<chunk>&7."
+				+ "[RT] Souhaitez-vous vraiment générer tous les chuncks du monde &6<world> ? <confirmation>"),
+		GENERATE_WARNING_VALID("generate.warning.confirmationValid", 			"&2&nConfirmer"),
+		GENERATE_WARNING_VALID_HOVER("generate.warning.confirmationValidHover", "&cCliquez ici pour lancer la génération des chunks dans le monde &6<world>&7."),
 		
 		GETPOS_DESCRIPTION("getpos.description", 		"Affiche les coordonnées d'un joueur."),
 		GETPOS_MESSAGE("getpos.message", 				"&7Voici votre &6<position>&7."),

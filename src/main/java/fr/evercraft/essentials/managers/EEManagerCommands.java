@@ -61,6 +61,7 @@ public class EEManagerCommands extends TreeMap<String, ECommand<EverEssentials>>
 		register(new EEFeed(this.plugin));
 		register(new EEFly(this.plugin));
 		register(new EEGameMode(this.plugin));
+		register(new EEGenerate(this.plugin));
 		register(new EEGetPos(this.plugin));
 		register(new EEGod(this.plugin));
 		register(new EEHat(this.plugin));
