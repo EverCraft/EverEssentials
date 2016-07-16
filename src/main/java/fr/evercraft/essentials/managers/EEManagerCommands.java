@@ -135,6 +135,7 @@ public class EEManagerCommands extends TreeMap<String, ECommand<EverEssentials>>
 		whitelist.add(new EEWhitelistOn(this.plugin, whitelist));
 		whitelist.add(new EEWhitelistOff(this.plugin, whitelist));
 		whitelist.add(new EEWhitelistStatus(this.plugin, whitelist));
+		register(whitelist);
 	}
 	
 	public void reload(){
