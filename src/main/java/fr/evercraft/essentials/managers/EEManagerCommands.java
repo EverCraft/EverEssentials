@@ -27,6 +27,10 @@ import fr.evercraft.essentials.command.teleport.*;
 import fr.evercraft.essentials.command.time.*;
 import fr.evercraft.essentials.command.warp.*;
 import fr.evercraft.essentials.command.weather.*;
+import fr.evercraft.essentials.command.whitelist.EEWhitelist;
+import fr.evercraft.essentials.command.whitelist.EEWhitelistOff;
+import fr.evercraft.essentials.command.whitelist.EEWhitelistOn;
+import fr.evercraft.essentials.command.whitelist.EEWhitelistStatus;
 import fr.evercraft.essentials.command.world.*;
 import fr.evercraft.everapi.plugin.command.ECommand;
 import fr.evercraft.everapi.plugin.command.EReloadCommand;
@@ -125,6 +129,12 @@ public class EEManagerCommands extends TreeMap<String, ECommand<EverEssentials>>
 		register(new EEWorlds(this.plugin));
 		register(new EEWorldsEnd(this.plugin));
 		register(new EEWorldsNether(this.plugin));
+		
+		// Commands
+		EEWhitelist whitelist = new EEWhitelist(this.plugin);
+		whitelist.add(new EEWhitelistOn(this.plugin, whitelist));
+		whitelist.add(new EEWhitelistOff(this.plugin, whitelist));
+		whitelist.add(new EEWhitelistStatus(this.plugin, whitelist));
 	}
 	
 	public void reload(){

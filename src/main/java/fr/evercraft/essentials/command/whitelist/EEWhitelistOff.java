@@ -75,4 +75,3 @@ public class EEWhitelistOff extends ESubCommand<EverEssentials> {
 		return true;
 	}
 }
-
