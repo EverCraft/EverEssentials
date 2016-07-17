@@ -35,7 +35,11 @@ import org.spongepowered.api.event.entity.DestructEntityEvent;
 import org.spongepowered.api.event.entity.HealEntityEvent;
 import org.spongepowered.api.event.entity.InteractEntityEvent;
 import org.spongepowered.api.event.entity.MountEntityEvent;
+import org.spongepowered.api.event.entity.MoveEntityEvent;
 import org.spongepowered.api.event.filter.cause.First;
+import org.spongepowered.api.event.item.inventory.ChangeInventoryEvent;
+import org.spongepowered.api.event.item.inventory.InteractInventoryEvent;
+import org.spongepowered.api.event.message.MessageChannelEvent;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
 
 import fr.evercraft.essentials.EEMessage.EEMessages;
@@ -140,21 +144,68 @@ public class EEPlayerListeners {
 	
 	
 	@Listener(order=Order.LAST)
-	public void onPlayerInteract(InteractEntityEvent.Secondary event, @First Player player) {
-		if (event.getTargetEntity() instanceof Painting) {
-			if (this.plugin.getConfigs().isGameModePaint() && 
-				player.get(Keys.IS_SNEAKING).orElse(false) && 
-				player.get(Keys.GAME_MODE).orElse(GameModes.SURVIVAL).equals(GameModes.CREATIVE)) {
-				Painting paint = (Painting) event.getTargetEntity();
-				if (paint.get(Keys.ART).isPresent()){
-					Optional<UtilsPainting> painting = UtilsPainting.get(paint.get(Keys.ART).get());
-					if (painting.isPresent()){
-						paint.offer(Keys.ART, painting.get().next().getArt());
+	public void onPlayerInteract(InteractEntityEvent event, @First Player player_sponge) {
+		Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(player_sponge);
+		
+		if(optPlayer.isPresent()) {
+			EPlayer player = optPlayer.get();
+			
+			// GameMode : Painting
+			if (event instanceof InteractEntityEvent.Secondary && event.getTargetEntity() instanceof Painting) {
+				if (this.plugin.getConfigs().isGameModePaint() && player.isSneaking() && player.isCreative()) {
+					Painting paint = (Painting) event.getTargetEntity();
+					if (paint.get(Keys.ART).isPresent()){
+						Optional<UtilsPainting> painting = UtilsPainting.get(paint.get(Keys.ART).get());
+						if (painting.isPresent()){
+							paint.offer(Keys.ART, painting.get().next().getArt());
+						}
 					}
 				}
 			}
+			
+			// AFK
+			player.updateLastActivated();
 		}
 	}
+	
+	@Listener
+	public void onPlayerMove(MoveEntityEvent event) {
+		// AFK
+		if(event.getTargetEntity() instanceof Player && 
+				(event.getToTransform().getPitch() != event.getFromTransform().getPitch() || event.getToTransform().getYaw() != event.getFromTransform().getYaw())) {
+			Optional<EPlayer> player = this.plugin.getEServer().getEPlayer((Player) event.getTargetEntity());
+			if(player.isPresent()) {
+				player.get().updateLastActivated();
+			}
+		}
+	}
+	
+	@Listener
+	public void onPlayerInteractInventory(InteractInventoryEvent event, @First Player player_sponge) {
+		// AFK
+		Optional<EPlayer> player = this.plugin.getEServer().getEPlayer(player_sponge);
+		if(player.isPresent()) {
+			player.get().updateLastActivated();
+		}
+	}
+	
+	@Listener
+	public void onPlayerChangeInventory(ChangeInventoryEvent event, @First Player player_sponge) {
+		// AFK
+		Optional<EPlayer> player = this.plugin.getEServer().getEPlayer(player_sponge);
+		if(player.isPresent()) {
+			player.get().updateLastActivated();
+		}
+	}
+	
+	@Listener
+    public void onPlayerWriteChat(MessageChannelEvent.Chat event, @First Player player_sponge) {
+		// AFK
+		Optional<EPlayer> player = this.plugin.getEServer().getEPlayer(player_sponge);
+		if(player.isPresent()) {
+			player.get().updateLastActivated();
+		}
+    }
 
 	@Listener
 	public void onPlayerHeal(HealEntityEvent event) {
