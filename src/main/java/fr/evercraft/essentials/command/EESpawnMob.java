@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.commons.lang3.StringUtils;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.text.Text;
@@ -35,15 +36,23 @@ import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.EChat;
-import fr.evercraft.everapi.plugin.command.ECommand;
+import fr.evercraft.everapi.plugin.command.EReloadCommand;
 import fr.evercraft.everapi.server.player.EPlayer;
 import fr.evercraft.everapi.sponge.UtilsEntity;
 
-public class EESpawnMob extends ECommand<EverEssentials> {
+public class EESpawnMob extends EReloadCommand<EverEssentials> {
+	
+	private int limit;
 	
 	public EESpawnMob(final EverEssentials plugin) {
         super(plugin, "spawnmob");
+        reload();
     }
+	
+	@Override
+	public void reload() {
+		this.limit = this.plugin.getConfigs().get("spawnmob.limit").getInt();
+	}
 
 	public boolean testPermission(final CommandSource source) {
 		return source.hasPermission(EEPermissions.SPAWNMOB.get());
@@ -64,6 +73,9 @@ public class EESpawnMob extends ECommand<EverEssentials> {
 			for(UtilsEntity type : UtilsEntity.values()){
 				suggests.add(type.getName());
 			}
+		} else if(args.size() == 2){
+			suggests.add("1");
+			suggests.add(String.valueOf(this.limit));
 		}
 		return suggests;
 	}
@@ -90,8 +102,8 @@ public class EESpawnMob extends ECommand<EverEssentials> {
 				Optional<UtilsEntity> optEntity = UtilsEntity.get(args.get(0));
 				if (optEntity.isPresent()){
 					try {
-						int amount = Integer.parseInt(args.get(1));
-						resultat = commandSpawnMob((EPlayer) source, optEntity.get(), amount);
+						int amount = Math.min(Integer.parseInt(args.get(1)), this.limit);
+						resultat = commandSpawnMob((EPlayer) source, optEntity.get(), amount);						
 					} catch (NumberFormatException e){
 						source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.IS_NOT_NUMBER.get()
 								.replaceAll("<number>", args.get(1))));
@@ -116,6 +128,9 @@ public class EESpawnMob extends ECommand<EverEssentials> {
 			for (int cpt = 0; cpt < amount; cpt++){
 				utilsEntity.spawnEntity(spawnLocation);
 	    	}
+			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.SPAWNMOB_MOB.get()
+					.replaceAll("<nb>", String.valueOf(amount))
+					.replaceAll("<entity>", StringUtils.capitalize(utilsEntity.getName())));
 		} else {
 			player.sendMessage(EEMessages.PREFIX.get() + EAMessages.PLAYER_NO_LOOK_BLOCK.get());
 		}

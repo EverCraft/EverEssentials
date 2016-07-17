@@ -417,6 +417,7 @@ public class EEMessage extends EMessage {
 		SPAWNER_DESCRIPTION("spawner.description", "Permet de modifier le type d'un mob spawner"),
 		
 		SPAWNMOB_DESCRIPTION("spawnmob.description", "Fait apparaître une entité"),
+		SPAWNMOB_MOB("spawnmob.mob", "&7Vous venez d'invoquer &6<nb> <entity>(s)&7."),
 		SPAWNMOB_ERROR_MOB("spawnmob.errorMob", "&cErreur : nom invalide."),
 		
 		SPEED_DESCRIPTION("speed.description", "Change la vitesse de déplacement"),

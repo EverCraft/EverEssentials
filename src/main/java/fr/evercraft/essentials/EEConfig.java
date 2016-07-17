@@ -98,13 +98,15 @@ public class EEConfig extends EConfig {
 														"This does not affect the /home command, there is a separate toggle below for this.");
 		
 		// Effect
-		addDefault("effect-default-duration", 60);
-		addDefault("effect-default-max-duration", 600);
-		addDefault("effect-default-amplifier", 0);
+		addDefault("effect-default-duration", 60, "Int");
+		addDefault("effect-default-max-duration", 600, "Int");
+		addDefault("effect-default-amplifier", 0, "Int");
 		
 		addDefault("generate.tickPercentLimit", 0.15, "Float");
 		addDefault("generate.tickInterval", 10, "Int");
 		addDefault("generate.chunksPerTick", 10, "Int");
+		
+		addDefault("spawnmob.limit", 20, "Mob limit on the /spawnmob command per execution.");
 		
 		addDefault("remove-god-on-disconnect", false);
 		addDefault("remove-vanish-on-disconnect", true);
