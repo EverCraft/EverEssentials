@@ -29,6 +29,7 @@ import org.spongepowered.api.event.Order;
 import org.spongepowered.api.event.cause.entity.damage.source.DamageSource;
 import org.spongepowered.api.event.cause.entity.damage.source.DamageSources;
 import org.spongepowered.api.event.cause.entity.damage.source.EntityDamageSource;
+import org.spongepowered.api.event.command.SendCommandEvent;
 import org.spongepowered.api.event.data.ChangeDataHolderEvent;
 import org.spongepowered.api.event.entity.DamageEntityEvent;
 import org.spongepowered.api.event.entity.DestructEntityEvent;
@@ -85,15 +86,12 @@ public class EEPlayerListeners {
 	@Listener
 	public void onClientConnectionEvent(final ClientConnectionEvent.Disconnect event) {
 		this.plugin.getManagerServices().getEssentials().removePlayer(event.getTargetEntity().getUniqueId());
-	}
-	
-	@Listener(order = Order.POST)
-	public void onClientConnectionEventPost(final ClientConnectionEvent.Disconnect event) {
-		if(this.plugin.getEServer().getOnlinePlayers().isEmpty()) {
+		
+		if(this.plugin.getEServer().getOnlinePlayers().size() <= 1) {
 			this.plugin.getScheduler().stop();
 		}
 	}
-
+	
 	@Listener
 	public void onPlayerDamage(DamageEntityEvent event) {
 		// C'est un joueur
@@ -200,6 +198,15 @@ public class EEPlayerListeners {
 	
 	@Listener
     public void onPlayerWriteChat(MessageChannelEvent.Chat event, @First Player player_sponge) {
+		// AFK
+		Optional<EPlayer> player = this.plugin.getEServer().getEPlayer(player_sponge);
+		if(player.isPresent()) {
+			player.get().updateLastActivated();
+		}
+    }
+	
+	@Listener
+    public void onPlayerSendCommand(SendCommandEvent event, @First Player player_sponge) {
 		// AFK
 		Optional<EPlayer> player = this.plugin.getEServer().getEPlayer(player_sponge);
 		if(player.isPresent()) {

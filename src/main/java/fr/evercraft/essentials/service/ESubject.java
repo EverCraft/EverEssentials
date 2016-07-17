@@ -39,6 +39,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
 import fr.evercraft.essentials.EverEssentials;
+import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.service.teleport.Teleport;
 import fr.evercraft.everapi.exception.ServerDisableException;
 import fr.evercraft.everapi.server.location.LocationSQL;
@@ -64,8 +65,7 @@ public class ESubject implements EssentialsSubject {
 	private boolean afk;
 	private long last_activated;
 	
-	private final ConcurrentMap<UUID, Long> teleport_ask;
-	private final ConcurrentMap<UUID, Long> teleport_here;
+	private final ConcurrentMap<UUID, Long> teleports;
 	
 	private Optional<Teleport> teleport;
 
@@ -84,8 +84,7 @@ public class ESubject implements EssentialsSubject {
 		this.afk = false;
 		this.updateLastActivated();
 		
-		this.teleport_ask = new ConcurrentHashMap<UUID, Long>();
-		this.teleport_here = new ConcurrentHashMap<UUID, Long>();
+		this.teleports = new ConcurrentHashMap<UUID, Long>();
 		
 		this.teleport = Optional.empty();
 		
@@ -332,6 +331,18 @@ public class ESubject implements EssentialsSubject {
 	@Override
 	public void updateLastActivated() {
 		this.last_activated = System.currentTimeMillis();
+		if(this.afk) {
+			this.setAFK(false);
+			
+			Optional<EPlayer> player = this.plugin.getEServer().getEPlayer(this.identifier);
+			if(player.isPresent()) {
+				if(EEMessages.AFK_ALL_DISABLE.has()) {
+					player.get().broadcast(EEMessages.PREFIX.getText().concat(player.get().replaceVariable(EEMessages.AFK_ALL_DISABLE.get())));
+				} else {
+					player.get().sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.AFK_PLAYER_DISABLE.getText()));
+				}
+			}
+		}
 	}
 	
 	@Override
@@ -620,52 +631,25 @@ public class ESubject implements EssentialsSubject {
 	 */
 	
 	@Override
-	public boolean addTeleportAsk(UUID uuid, long time) {
-		if(!this.teleport_ask.containsKey(uuid)) {
-			this.teleport_ask.put(uuid, time);
+	public boolean addTeleport(UUID uuid, long time) {
+		if(!this.teleports.containsKey(uuid)) {
+			this.teleports.put(uuid, time);
 			return true;
 		}
 		return false;
 	}
 	
 	@Override
-	public boolean removeTeleportAsk(UUID uuid) {
-		if(this.teleport_ask.containsKey(uuid)) {
-			this.teleport_ask.remove(uuid);
+	public boolean removeTeleport(UUID uuid) {
+		if(this.teleports.containsKey(uuid)) {
+			this.teleports.remove(uuid);
 			return true;
 		}
 		return false;
 	}
 	
-	public Map<UUID, Long> getTeleportAsk() {
-		return ImmutableMap.copyOf(this.teleport_ask);
-	}
-	
-	/*
-	 * Teleport Here
-	 */
-	
-	@Override
-	public boolean addTeleportHere(UUID uuid, long time) {
-		if(!this.teleport_here.containsKey(uuid)) {
-			this.teleport_here.put(uuid, time);
-			return true;
-		}
-		return false;
-	}
-	
-	@Override
-	public boolean removeTeleportHere(UUID uuid) {
-		if(this.teleport_here.containsKey(uuid)) {
-			this.teleport_here.remove(uuid);
-			return true;
-		}
-		return false;
-	}
-	
-	@Override
-	public Map<UUID, Long> getTeleportHere() {
-		return ImmutableMap.copyOf(this.teleport_here);
+	public Map<UUID, Long> getAllTeleports() {
+		return ImmutableMap.copyOf(this.teleports);
 	}
 	
 	/*

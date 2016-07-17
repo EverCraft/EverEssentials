@@ -48,8 +48,8 @@ public class EScheduler {
 	}
 	
 	public void reload() {
-		this.afk_time = this.plugin.getConfigs().getAfkAuto() * 1000;
-		this.afk_kick_time = this.plugin.getConfigs().getAfkAutoKick() * 1000;
+		this.afk_time = this.plugin.getConfigs().getAfkAuto() * 60000;
+		this.afk_kick_time = this.plugin.getConfigs().getAfkAutoKick() * 60000;
 		
 		this.afk = this.afk_time > 0;
 		this.afk_kick = this.afk_kick_time > 0;
@@ -78,23 +78,15 @@ public class EScheduler {
 	}
 	
 	public void async() {
-		this.plugin.getLogger().warn("async");
 		long current_time = System.currentTimeMillis();
 		
 		final Set<UUID> players = new HashSet<UUID>();
 		
 		for(ESubject player : this.plugin.getManagerServices().getEssentials().getOnlines()) {			
 			// Teleport Ask
-			for(Entry<UUID, Long> teleport : player.getTeleportAsk().entrySet()) {
+			for(Entry<UUID, Long> teleport : player.getAllTeleports().entrySet()) {
 				if(teleport.getValue() >= current_time) {
-					player.removeTeleportHere(teleport.getKey());
-				}
-			}
-			
-			// Teleport Here
-			for(Entry<UUID, Long> teleport : player.getTeleportHere().entrySet()) {
-				if(teleport.getValue() >= current_time) {
-					players.add(player.getUniqueId());
+					player.removeTeleport(teleport.getKey());
 				}
 			}
 			
@@ -124,7 +116,6 @@ public class EScheduler {
 	}
 	
 	public void sync(final Set<UUID> players) {
-		this.plugin.getLogger().warn("sync");
 		long current_time = System.currentTimeMillis();
 		
 		for(UUID uuid : players) {

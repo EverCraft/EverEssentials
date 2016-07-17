@@ -37,14 +37,14 @@ import fr.evercraft.everapi.plugin.command.ECommand;
 import fr.evercraft.everapi.server.player.EPlayer;
 import fr.evercraft.everapi.text.ETextBuilder;
 
-public class EETeleportation extends ECommand<EverEssentials> {
+public class EETeleportationAsk extends ECommand<EverEssentials> {
 	
-	public EETeleportation(final EverEssentials plugin) {
-        super(plugin, "tp", "teleport", "tp2p", "tele");
+	public EETeleportationAsk(final EverEssentials plugin) {
+        super(plugin, "tpa", "call", "tpask");
     }
 	
 	public boolean testPermission(final CommandSource source) {
-		return source.hasPermission(EEPermissions.TP.get());
+		return source.hasPermission(EEPermissions.TPA.get());
 	}
 
 	public Text description(final CommandSource source) {

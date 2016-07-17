@@ -54,7 +54,7 @@ public class EETeleportationAll extends ECommand<EverEssentials> {
 
 	public Text help(final CommandSource source) {
 		if(source.hasPermission(EEPermissions.TPALL_OTHERS.get())){
-			return Text.builder("/tpall <joueur>").onClick(TextActions.suggestCommand("/tpall "))
+			return Text.builder("/tpall [joueur]").onClick(TextActions.suggestCommand("/tpall "))
 					.color(TextColors.RED).build();
 		} 
 		return Text.builder("/tpall").onClick(TextActions.suggestCommand("/tpall"))
