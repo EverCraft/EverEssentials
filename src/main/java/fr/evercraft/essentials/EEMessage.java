@@ -591,6 +591,7 @@ public class EEMessage extends EMessage {
 		WHITELIST_LIST_LINE("whitelist.list.line", "    &6&l➤  <player> &7: <delete>"),
 		WHITELIST_LIST_REMOVE("whitelist.list.remove", "&a&nSupprimer"),
 		WHITELIST_LIST_REMOVE_HOVER("whitelist.list.removeHover", "&cCliquez ici pour retirer &6<player> &cde la whitelist."),
+		WHITELIST_LIST_NO_PLAYER("whitelist.list.noPlayer", "&7Il n'y a aucun joueur dans la whitelist."),
 		
 		WHOIS_DESCRIPTION("whois.description", "Affiche les informations d'un joueur"),
 		WHOIS_TITLE("whois.title", "&aInformations : &c<player>"),
