@@ -66,15 +66,15 @@ public class EEMessage extends EMessage {
 		BOOK_WRITABLE("book.writable", 						""),
 		BOOK_NO_WRITTEN("book.noWritten", 					""),
 		
-		BUTCHER_DESCRIPTION("butcher.description", 			"Supprime les entitées dans un monde ou dans un rayon."),
+		BUTCHER_DESCRIPTION("butcher.description", 			"Supprime les entités dans un monde ou dans un rayon."),
 		BUTCHER_NOENTITY("butcher.noEntity", 				"&cIl y a aucune entité à supprimer."),
 		BUTCHER_ENTITY_COLOR("butcher.entityColor", 		"&6"),
 		BUTCHER_ANIMAL("butcher.killAnimal", 				"&7Suppression de &6<count> &7animaux dans ce monde."),
 		BUTCHER_ANIMAL_RADIUS("butcher.killAnimalRadius", 	"&7Suppression de &6<count> &7animaux dans un rayon de &6<radius> bloc(s)&7."),
 		BUTCHER_MONSTER("butcher.killMonster", 				"&7Suppression de &6<count> &7monstre(s) dans ce monde."),
 		BUTCHER_MONSTER_RADIUS("butcher.killMonsterRadius", "&7Suppression de &6<count> &7monstre(s) dans un rayon de &6<radius> bloc(s)&7."),
-		BUTCHER_ALL("butcher.killAll",						"&7Suppression de &6<count> &7entitée(s) dans ce monde."),
-		BUTCHER_ALL_RADIUS("butcher.killAllRadius", 		"&7Suppression de &6<count> &7entitée(s) dans un rayon de &6<radius> bloc(s)&7."),
+		BUTCHER_ALL("butcher.killAll",						"&7Suppression de &6<count> &7entité(s) dans ce monde."),
+		BUTCHER_ALL_RADIUS("butcher.killAllRadius", 		"&7Suppression de &6<count> &7entité(s) dans un rayon de &6<radius> bloc(s)&7."),
 		BUTCHER_TYPE("butcher.killType", 					"&7Suppression de &6<count> &6<entity>&6(s)&7 dans ce monde."),
 		BUTCHER_TYPE_RADIUS("butcher.killTypeRadius", 		"&7Suppression de &6<count> &6<entity>&6(s)&7 dans un rayon de &6<radius> bloc(s)&7."),
 		
@@ -417,6 +417,7 @@ public class EEMessage extends EMessage {
 		SPAWNER_DESCRIPTION("spawner.description", "Permet de modifier le type d'un mob spawner"),
 		
 		SPAWNMOB_DESCRIPTION("spawnmob.description", "Fait apparaître une entité"),
+		SPAWNMOB_MOB("spawnmob.mob", "&7Vous venez d'invoquer &6<nb> <entity>(s)&7."),
 		SPAWNMOB_ERROR_MOB("spawnmob.errorMob", "&cErreur : nom invalide."),
 		
 		SPEED_DESCRIPTION("speed.description", "Change la vitesse de déplacement"),
@@ -616,6 +617,7 @@ public class EEMessage extends EMessage {
 		WHITELIST_LIST_LINE("whitelist.list.line", "    &6&l➤  <player> &7: <delete>"),
 		WHITELIST_LIST_REMOVE("whitelist.list.remove", "&a&nSupprimer"),
 		WHITELIST_LIST_REMOVE_HOVER("whitelist.list.removeHover", "&cCliquez ici pour retirer &6<player> &cde la whitelist."),
+		WHITELIST_LIST_NO_PLAYER("whitelist.list.noPlayer", "&7Il n'y a aucun joueur dans la whitelist."),
 		
 		WHOIS_DESCRIPTION("whois.description", "Affiche les informations d'un joueur"),
 		WHOIS_TITLE("whois.title", "&aInformations : &c<player>"),
