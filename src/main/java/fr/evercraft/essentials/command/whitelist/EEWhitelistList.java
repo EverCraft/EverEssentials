@@ -71,27 +71,30 @@ public class EEWhitelistList extends ESubCommand<EverEssentials> {
 	}
 
 	private boolean commandWhitelistList(final CommandSource player) {
-		Optional<WhitelistService> whitelist = this.plugin.getEverAPI().getManagerService().getWhitelist();
-		if(whitelist.isPresent()){
+		Optional<WhitelistService> optWhitelist = this.plugin.getEverAPI().getManagerService().getWhitelist();
+		if(optWhitelist.isPresent()){
 			List<Text> lists = new ArrayList<Text>();
-			
-			if(player.hasPermission(EEPermissions.WHITELIST_MANAGE.get())) {
-				for(GameProfile profile : whitelist.get().getWhitelistedProfiles()) {
-					String name = profile.getName().orElse(profile.getUniqueId().toString());
-					lists.add(ETextBuilder.toBuilder(EEMessages.WHITELIST_LIST_LINE.get()
-								.replaceAll("<player>", name))
-							.replace("<delete>", getButtonDelete(name))
-							.build());
+			WhitelistService whitelist = optWhitelist.get();
+			if(!whitelist.getWhitelistedProfiles().isEmpty()){
+				if(player.hasPermission(EEPermissions.WHITELIST_MANAGE.get())) {
+					for(GameProfile profile : whitelist.getWhitelistedProfiles()) {
+						String name = profile.getName().orElse(profile.getUniqueId().toString());
+						lists.add(ETextBuilder.toBuilder(EEMessages.WHITELIST_LIST_LINE.get()
+									.replaceAll("<player>", name))
+								.replace("<delete>", getButtonDelete(name))
+								.build());
+					}
+				} else {
+					for(GameProfile profile : whitelist.getWhitelistedProfiles()) {
+						lists.add(ETextBuilder.toBuilder(EEMessages.WHITELIST_LIST_LINE.get()
+									.replaceAll("<player>", profile.getName().orElse(profile.getUniqueId().toString())))
+								.replace("<delete>", "")
+								.build());
+						}
 				}
 			} else {
-				for(GameProfile profile : whitelist.get().getWhitelistedProfiles()) {
-					lists.add(ETextBuilder.toBuilder(EEMessages.WHITELIST_LIST_LINE.get()
-								.replaceAll("<player>", profile.getName().orElse(profile.getUniqueId().toString())))
-							.replace("<delete>", "")
-							.build());
-					}
+				lists.add(EEMessages.WHITELIST_LIST_NO_PLAYER.getText());
 			}
-			
 			this.plugin.getEverAPI().getManagerService().getEPagination().sendTo(EEMessages.WHITELIST_LIST_TITLE.getText().toBuilder()
 					.onClick(TextActions.runCommand("/" + this.getName())).build(), lists, player);
 		}
