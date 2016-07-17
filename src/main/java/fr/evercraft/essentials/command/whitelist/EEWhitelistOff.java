@@ -40,7 +40,7 @@ public class EEWhitelistOff extends ESubCommand<EverEssentials> {
 	}
 
 	public Text description(final CommandSource source) {
-		return EChat.of(EEMessages.WHITELIST_DESCRIPTION.get());
+		return EChat.of(EEMessages.WHITELIST_OFF_DESCRIPTION.get());
 	}
 	
 	public List<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
@@ -68,9 +68,9 @@ public class EEWhitelistOff extends ESubCommand<EverEssentials> {
 	private boolean commandWhitelistOff(final CommandSource player) {
 		if(this.plugin.getEServer().hasWhitelist()){
 			this.plugin.getEServer().setHasWhitelist(false);
-			player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.WHITELIST_DISABLED.get()));
+			player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.WHITELIST_OFF_DISABLED.get()));
 		} else {
-			player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.WHITELIST_ALREADY_DISABLED.get()));
+			player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.WHITELIST_OFF_ALREADY_DISABLED.get()));
 		}
 		return true;
 	}
