@@ -84,14 +84,10 @@ public class EEWhitelistAdd extends ESubCommand<EverEssentials> {
 		// Le joueur existe
 		if(gameprofile.isPresent()) {
 			Optional<WhitelistService> whitelist = this.plugin.getEverAPI().getManagerService().getWhitelist();
-			if(whitelist.isPresent()){
-				if(!whitelist.get().getWhitelistedProfiles().contains(gameprofile.get())) {
-					if(whitelist.get().addProfile(gameprofile.get())) {
-						player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.WHITELIST_ADD_PLAYER.get()
-								.replaceAll("<player>", gameprofile.get().getName().orElse(identifier))));
-					} else {
-						player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.COMMAND_ERROR.get()));
-					}
+			if(whitelist.isPresent()){				
+				if(!whitelist.get().addProfile(gameprofile.get())) {
+					player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.WHITELIST_ADD_PLAYER.get()
+							.replaceAll("<player>", gameprofile.get().getName().orElse(identifier))));
 				} else {
 					player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.WHITELIST_ADD_ERROR.get()
 							.replaceAll("<player>", gameprofile.get().getName().orElse(identifier))));
