@@ -19,6 +19,7 @@ package fr.evercraft.essentials.command.whitelist;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.profile.GameProfile;
@@ -26,12 +27,12 @@ import org.spongepowered.api.service.whitelist.WhitelistService;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
+
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ESubCommand;
-import fr.evercraft.everapi.server.player.EPlayer;
 import fr.evercraft.everapi.text.ETextBuilder;
 
 public class EEWhitelistList extends ESubCommand<EverEssentials> {
@@ -69,39 +70,39 @@ public class EEWhitelistList extends ESubCommand<EverEssentials> {
 		return resultat;
 	}
 
-	private boolean commandWhitelistList(final CommandSource source) {
-		Optional<WhitelistService> optWhitelist = this.plugin.getEverAPI().getManagerService().getWhitelist();
-		if(optWhitelist.isPresent()){
-			WhitelistService whitelist = optWhitelist.get();
+	private boolean commandWhitelistList(final CommandSource player) {
+		Optional<WhitelistService> whitelist = this.plugin.getEverAPI().getManagerService().getWhitelist();
+		if(whitelist.isPresent()){
 			List<Text> lists = new ArrayList<Text>();
-			for(GameProfile profile : whitelist.getWhitelistedProfiles()) {
-				Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(profile.getUniqueId());
-				if(optPlayer.isPresent()){
-					EPlayer player = optPlayer.get();
-					if(source.hasPermission(EEPermissions.WHITELIST_MANAGE.get())){
-						lists.add(ETextBuilder.toBuilder(EEMessages.WHITELIST_LIST_LINE.get()
-								.replaceAll("<player>", player.getDisplayName()))
-								.replace("<delete>", getButtonDelete(player))
-								.build());
-					} else {
-						lists.add(ETextBuilder.toBuilder(EEMessages.WHITELIST_LIST_LINE.get()
-								.replaceAll("<player>", player.getDisplayName()))
-								.replace("<delete>", "")
-								.build());
-					}
+			
+			if(player.hasPermission(EEPermissions.WHITELIST_MANAGE.get())) {
+				for(GameProfile profile : whitelist.get().getWhitelistedProfiles()) {
+					String name = profile.getName().orElse(profile.getUniqueId().toString());
+					lists.add(ETextBuilder.toBuilder(EEMessages.WHITELIST_LIST_LINE.get()
+								.replaceAll("<player>", name))
+							.replace("<delete>", getButtonDelete(name))
+							.build());
 				}
+			} else {
+				for(GameProfile profile : whitelist.get().getWhitelistedProfiles()) {
+					lists.add(ETextBuilder.toBuilder(EEMessages.WHITELIST_LIST_LINE.get()
+								.replaceAll("<player>", profile.getName().orElse(profile.getUniqueId().toString())))
+							.replace("<delete>", "")
+							.build());
+					}
 			}
+			
 			this.plugin.getEverAPI().getManagerService().getEPagination().sendTo(EEMessages.WHITELIST_LIST_TITLE.getText().toBuilder()
-					.onClick(TextActions.runCommand("/whitelist")).build(), lists, source);
+					.onClick(TextActions.runCommand("/" + this.getName())).build(), lists, player);
 		}
 		return true;
 	}
 	
-	public Text getButtonDelete(final EPlayer player){
+	public Text getButtonDelete(final String name){
 		return EEMessages.WHITELIST_LIST_REMOVE.getText().toBuilder()
 					.onHover(TextActions.showText(EChat.of(EEMessages.WHITELIST_LIST_REMOVE_HOVER.get()
-							.replaceAll("<player>", player.getDisplayName()))))
-					.onClick(TextActions.runCommand("/whitelist remove " + player.getDisplayName()))
+							.replaceAll("<player>", name))))
+					.onClick(TextActions.runCommand("/whitelist remove " + name))
 					.build();
 	}
 }

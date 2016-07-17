@@ -19,7 +19,6 @@ package fr.evercraft.essentials.command.whitelist;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.ExecutionException;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
@@ -35,7 +34,6 @@ import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ESubCommand;
-import fr.evercraft.everapi.server.player.EPlayer;
 
 public class EEWhitelistAdd extends ESubCommand<EverEssentials> {
 	public EEWhitelistAdd(final EverEssentials plugin, final EEWhitelist command) {
@@ -51,55 +49,60 @@ public class EEWhitelistAdd extends ESubCommand<EverEssentials> {
 	}
 	
 	public List<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
-		return new ArrayList<String>();
+		List<String> suggets = new ArrayList<String>();
+		if(args.size() == 1) {
+			for(GameProfile player : this.plugin.getEServer().getGameProfileManager().getCache().getProfiles()) {
+				if(player.getName().isPresent()) {
+					suggets.add(player.getName().orElse(player.getUniqueId().toString()));
+				}
+			}
+		}
+		return suggets;
 	}
 
 	public Text help(final CommandSource source) {
-		return Text.builder("/" + this.getName())
-					.onClick(TextActions.suggestCommand("/" + this.getName()))
+		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_PLAYER.get() + ">")
+					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
 					.build();
 	}
 	
 	public boolean subExecute(final CommandSource source, final List<String> args) {
-		// Résultat de la commande :
-		boolean resultat = false;
 		if(args.size() == 1) {
-			resultat = commandWhitelistAdd(source, args.get(0));
+			this.plugin.getGame().getScheduler().createTaskBuilder()
+												.async()
+												.execute(() -> this.commandWhitelistAdd(source, args.get(0)))
+												.submit(this.plugin);
 		} else {
 			source.sendMessage(this.help(source));
 		}
-		return resultat;
+		return false;
 	}
 
-	private boolean commandWhitelistAdd(final CommandSource source, final String arg) {
-		Optional<EPlayer> optTarget = this.plugin.getEServer().getEPlayer(arg);
+	private boolean commandWhitelistAdd(final CommandSource player, final String identifier) {
+		Optional<GameProfile> gameprofile = this.plugin.getEServer().getGameProfile(identifier);
 		// Le joueur existe
-		if(optTarget.isPresent()){
-			EPlayer target = optTarget.get();
-			Optional<WhitelistService> optWhitelist = this.plugin.getEverAPI().getManagerService().getWhitelist();
-			if(optWhitelist.isPresent()){
-				WhitelistService whitelist = optWhitelist.get();
-				try {
-					GameProfile profile = this.plugin.getEServer().getGameProfileManager().get(target.getUniqueId()).get();
-					if(!whitelist.isWhitelisted(profile)){
-						whitelist.addProfile(this.plugin.getEServer().getGameProfileManager().get(target.getUniqueId()).get());
-						source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.WHITELIST_ADD_PLAYER.get()
-								.replaceAll("<player>", target.getDisplayName())));
+		if(gameprofile.isPresent()) {
+			Optional<WhitelistService> whitelist = this.plugin.getEverAPI().getManagerService().getWhitelist();
+			if(whitelist.isPresent()){
+				if(!whitelist.get().getWhitelistedProfiles().contains(gameprofile.get())) {
+					if(whitelist.get().addProfile(gameprofile.get())) {
+						player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.WHITELIST_ADD_PLAYER.get()
+								.replaceAll("<player>", gameprofile.get().getName().orElse(identifier))));
 					} else {
-						source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.WHITELIST_ADD_ERROR.get()
-								.replaceAll("<player>", target.getDisplayName())));
+						player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.COMMAND_ERROR.get()));
 					}
-				} catch (InterruptedException | ExecutionException e) {
-					e.printStackTrace();
+				} else {
+					player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.WHITELIST_ADD_ERROR.get()
+							.replaceAll("<player>", gameprofile.get().getName().orElse(identifier))));
 				}
 			} else {
-				this.plugin.getLogger().error(EAMessages.COMMAND_ERROR.get());
+				player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.COMMAND_ERROR.get()));
 			}
 		// Le joueur est introuvable
 		} else {
-			source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
+			player.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
 		}
-		return true;
+		return false;
 	}
 }
