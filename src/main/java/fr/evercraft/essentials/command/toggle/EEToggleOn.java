@@ -15,8 +15,8 @@ import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ESubCommand;
 
-public class EEToggleEnable extends ESubCommand<EverEssentials> {
-	public EEToggleEnable(final EverEssentials plugin, final EEToggle command) {
+public class EEToggleOn extends ESubCommand<EverEssentials> {
+	public EEToggleOn(final EverEssentials plugin, final EEToggle command) {
         super(plugin, command, "enable");
     }
 	
