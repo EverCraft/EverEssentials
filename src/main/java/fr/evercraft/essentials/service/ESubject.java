@@ -58,6 +58,7 @@ public class ESubject implements EssentialsSubject {
 
 	private boolean god;
 	private boolean vanish;
+	private boolean toggle;
 	
 	private final ConcurrentMap<String, LocationSQL> homes;
 	private final CopyOnWriteArraySet<UUID> ignores;
@@ -155,10 +156,13 @@ public class ESubject implements EssentialsSubject {
 			if (list.next()) {
 				this.vanish = list.getBoolean("vanish");
 				this.god = list.getBoolean("god");
+				this.toggle = list.getBoolean("toggle");
 				
 				this.plugin.getLogger().debug("Loading : (identifier='" + this.identifier + "';"
 														+ "vanish='" + this.vanish + "';"
-														+ "god='" + this.god + "')");
+														+ "god='" + this.god + "';"
+														+ "toggle='" + this.toggle + "';"
+														+ ")");
 			} else {
 				this.insertPlayer(connection);
 			}
@@ -269,16 +273,19 @@ public class ESubject implements EssentialsSubject {
 		PreparedStatement preparedStatement = null;
 		try {
 			String query = 	  "INSERT INTO `" + this.plugin.getDataBases().getTablePlayers() + "` "
-							+ "VALUES (?, ?, ?);";
+							+ "VALUES (?, ?, ?, ?);";
 			preparedStatement = connection.prepareStatement(query);
 			preparedStatement.setString(1, this.getIdentifier());
 			preparedStatement.setBoolean(2, this.vanish);
 			preparedStatement.setBoolean(3, this.god);
+			preparedStatement.setBoolean(4, this.toggle);
 			
 			preparedStatement.execute();
 			this.plugin.getLogger().debug("Insert : (identifier='" + this.identifier + "';"
 													+ "vanish='" + this.vanish + "';"
-													+ "god='" + this.god + "')");
+													+ "god='" + this.god + "';"
+													+ "toggle='" + this.toggle + "';"
+													+ ")");
 		} catch (SQLException e) {
 	    	this.plugin.getLogger().warn("Error during a change of player : " + e.getMessage());
 		} finally {
@@ -367,6 +374,23 @@ public class ESubject implements EssentialsSubject {
 		if(this.god != god) {
 			this.god = god;
 			this.plugin.getThreadAsync().execute(() -> this.plugin.getDataBases().setGod(this.getIdentifier(), god));
+			return true;
+		}
+		return false;
+	}
+	
+	/*
+	 * Toggle
+	 */
+
+	public boolean isToggle() {
+		return this.toggle;
+	}
+
+	public boolean setToggle(final boolean toggle) {		
+		if(this.toggle != toggle) {
+			this.toggle = toggle;
+			this.plugin.getThreadAsync().execute(() -> this.plugin.getDataBases().setToggle(this.getIdentifier(), toggle));
 			return true;
 		}
 		return false;
