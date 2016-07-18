@@ -58,7 +58,8 @@ public class EEHomeOthers extends ECommand<EverEssentials> {
 	}
 
 	public Text help(final CommandSource source) {
-		return Text.builder("/homeothers <" + EAMessages.ARGS_PLAYER + "> [" + EAMessages.ARGS_HOME + " [delete]]").onClick(TextActions.suggestCommand("/homeothers "))
+		return Text.builder("/homeothers <" + EAMessages.ARGS_PLAYER.get() + "> [" + EAMessages.ARGS_HOME.get() + " [delete]]")
+				.onClick(TextActions.suggestCommand("/homeothers "))
 				.color(TextColors.RED).build();
 	}
 	

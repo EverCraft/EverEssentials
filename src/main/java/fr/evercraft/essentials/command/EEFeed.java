@@ -51,7 +51,7 @@ public class EEFeed extends ECommand<EverEssentials> {
 	public Text help(final CommandSource source) {
 		if(source.hasPermission(EEPermissions.FEED_OTHERS.get())){
 			return Text.builder("/feed").onClick(TextActions.suggestCommand("/feed "))
-					.append(Text.builder(" [" + EAMessages.ARGS_PLAYER + "|*]").build())
+					.append(Text.builder(" [" + EAMessages.ARGS_PLAYER.get() + "|*]").build())
 					.color(TextColors.RED).build();
 		}
 		return Text.builder("/feed").onClick(TextActions.suggestCommand("/feed"))

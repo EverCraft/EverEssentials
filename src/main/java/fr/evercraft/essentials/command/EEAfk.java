@@ -52,7 +52,7 @@ public class EEAfk extends ECommand<EverEssentials> {
 		Text help;
 		if(source.hasPermission(EEPermissions.AFK_OTHERS.get())){
 			help = Text.builder("/afk").onClick(TextActions.suggestCommand("/afk "))
-					.append(Text.builder(" [" + EAMessages.ARGS_PLAYER + " [on|off]]").build())
+					.append(Text.builder(" [" + EAMessages.ARGS_PLAYER.get() + " [on|off]]").build())
 					.color(TextColors.RED).build();
 		} else {
 			help = Text.builder("/afk").onClick(TextActions.suggestCommand("/afk"))

@@ -50,7 +50,8 @@ public class EEHeal extends ECommand<EverEssentials> {
 
 	public Text help(final CommandSource source) {
 		if(source.hasPermission(EEPermissions.HEAL_OTHERS.get())){
-			return Text.builder("/heal [" + EAMessages.ARGS_PLAYER + "|*]").onClick(TextActions.suggestCommand("/heal "))
+			return Text.builder("/heal [" + EAMessages.ARGS_PLAYER.get() + "|*]")
+					.onClick(TextActions.suggestCommand("/heal "))
 					.color(TextColors.RED).build();
 		}
 		return Text.builder("/heal").onClick(TextActions.suggestCommand("/heal"))

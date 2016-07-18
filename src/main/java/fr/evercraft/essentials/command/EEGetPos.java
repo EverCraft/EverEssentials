@@ -53,7 +53,8 @@ public class EEGetPos extends ECommand<EverEssentials> {
 
 	public Text help(final CommandSource source) {
 		if(source.hasPermission(EEPermissions.GETPOS_OTHERS.get())){
-			return Text.builder("/getpos [" + EAMessages.ARGS_PLAYER + "]").onClick(TextActions.suggestCommand("/getpos "))
+			return Text.builder("/getpos [" + EAMessages.ARGS_PLAYER.get() + "]")
+					.onClick(TextActions.suggestCommand("/getpos "))
 					.color(TextColors.RED).build();
 		}
 		return Text.builder("/getpos").onClick(TextActions.suggestCommand("/getpos"))

@@ -56,7 +56,8 @@ public class EENames extends ECommand<EverEssentials> {
 
 	public Text help(final CommandSource source) {
 		if(source.hasPermission(EEPermissions.NAMES_OTHERS.get())){
-			return Text.builder("/names [" + EAMessages.ARGS_PLAYER + "]").onClick(TextActions.suggestCommand("/names "))
+			return Text.builder("/names [" + EAMessages.ARGS_PLAYER.get() + "]")
+					.onClick(TextActions.suggestCommand("/names "))
 					.color(TextColors.RED).build();
 		}
 		return Text.builder("/names").onClick(TextActions.suggestCommand("/names"))

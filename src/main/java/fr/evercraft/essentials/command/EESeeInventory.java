@@ -49,7 +49,8 @@ public class EESeeInventory extends ECommand<EverEssentials> {
 	}
 
 	public Text help(final CommandSource source) {
-		Text help = Text.builder("/invsee <" + EAMessages.ARGS_PLAYER + ">").onClick(TextActions.suggestCommand("/invsee "))
+		Text help = Text.builder("/invsee <" + EAMessages.ARGS_PLAYER.get() + ">")
+				.onClick(TextActions.suggestCommand("/invsee "))
 				.color(TextColors.RED).build();
 		return help;
 	}

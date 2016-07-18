@@ -50,7 +50,8 @@ public class EEPing extends ECommand<EverEssentials> {
 
 	public Text help(final CommandSource source) {
 		if(source.hasPermission(EEPermissions.PING_OTHERS.get())){
-			return Text.builder("/ping [" + EAMessages.ARGS_PLAYER + "]").onClick(TextActions.suggestCommand("/ping "))
+			return Text.builder("/ping [" + EAMessages.ARGS_PLAYER.get() + "]")
+					.onClick(TextActions.suggestCommand("/ping "))
 					.color(TextColors.RED).build();
 		}
 		return Text.builder("/ping").onClick(TextActions.suggestCommand("/ping"))

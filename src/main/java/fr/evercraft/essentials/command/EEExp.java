@@ -50,10 +50,11 @@ public class EEExp extends ECommand<EverEssentials> {
 
 	public Text help(final CommandSource source) {
 		if(source.hasPermission(EEPermissions.EXP_OTHERS.get())){
-			return Text.builder("/xp <give|set> <lvl|exp> <" + EAMessages.ARGS_AMOUNT + "> [" + EAMessages.ARGS_PLAYER + "]").onClick(TextActions.suggestCommand("/xp "))
+			return Text.builder("/xp <give|set> <lvl|exp> <" + EAMessages.ARGS_AMOUNT.get() + "> [" + EAMessages.ARGS_PLAYER.get() + "]")
+					.onClick(TextActions.suggestCommand("/xp "))
 				.color(TextColors.RED).build();
 		}
-		return Text.builder("/xp <give|set> <lvl|exp> <" + EAMessages.ARGS_AMOUNT + ">").onClick(TextActions.suggestCommand("/xp "))
+		return Text.builder("/xp <give|set> <lvl|exp> <" + EAMessages.ARGS_AMOUNT.get() + ">").onClick(TextActions.suggestCommand("/xp "))
 				.color(TextColors.RED).build();
 	}
 	

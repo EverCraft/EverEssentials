@@ -66,10 +66,12 @@ public class EEMail extends ECommand<EverEssentials> {
 		
 		if(source.hasPermission(EEPermissions.MAIL_SENDALL.get())){
 			build = build.append(Text.of("|"));
-			build = build.append(Text.builder("send <*|" + EAMessages.ARGS_PLAYER + "> <message>").onClick(TextActions.suggestCommand("/" + this.getName() + " send ")).build());
+			build = build.append(Text.builder("send <*|" + EAMessages.ARGS_PLAYER.get() + "> <message>")
+					.onClick(TextActions.suggestCommand("/" + this.getName() + " send ")).build());
 		} else if(source.hasPermission(EEPermissions.MAIL_SEND.get())){
 			build = build.append(Text.of("|"));
-			build = build.append(Text.builder("send <" + EAMessages.ARGS_PLAYER + "> <message>").onClick(TextActions.suggestCommand("/" + this.getName() + " send ")).build());
+			build = build.append(Text.builder("send <" + EAMessages.ARGS_PLAYER.get() + "> <message>")
+					.onClick(TextActions.suggestCommand("/" + this.getName() + " send ")).build());
 		}
 		return build.append(Text.of(">")).color(TextColors.RED).build();
 	}

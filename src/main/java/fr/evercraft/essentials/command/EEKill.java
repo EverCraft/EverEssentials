@@ -50,7 +50,8 @@ public class EEKill  extends ECommand<EverEssentials> {
 
 	public Text help(final CommandSource source) {
 		Text help;
-		help = Text.builder("/kill <" + EAMessages.ARGS_PLAYER + ">").onClick(TextActions.suggestCommand("/kill "))
+		help = Text.builder("/kill <" + EAMessages.ARGS_PLAYER.get() + ">")
+				.onClick(TextActions.suggestCommand("/kill "))
 				.color(TextColors.RED).build();
 		return help;
 	}

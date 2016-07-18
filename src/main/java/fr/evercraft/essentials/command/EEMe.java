@@ -47,8 +47,9 @@ public class EEMe extends ECommand<EverEssentials> {
 	}
 
 	public Text help(final CommandSource source) {
-		Text help = Text.builder("/me <" + EAMessages.ARGS_PLAYER + ">").onClick(TextActions.suggestCommand("/me "))
-					.color(TextColors.RED).build();
+		Text help = Text.builder("/me <" + EAMessages.ARGS_PLAYER.get() + ">")
+				.onClick(TextActions.suggestCommand("/me "))
+				.color(TextColors.RED).build();
 		return help;
 	}
 	
