@@ -54,16 +54,17 @@ import fr.evercraft.everapi.services.essentials.event.VanishEvent;
 public class ESubject implements EssentialsSubject {
 	
 	private final EverEssentials plugin;
+	
 	private final UUID identifier;
-
-	private boolean god;
-	private boolean vanish;
-	private boolean toggle;
 	
 	private final ConcurrentMap<String, LocationSQL> homes;
 	private final CopyOnWriteArraySet<UUID> ignores;
 	private final CopyOnWriteArraySet<Mail> mails;
 	private Optional<LocationSQL> back;
+	
+	private boolean god;
+	private boolean vanish;
+	private boolean toggle;
 	
 	// Tempo
 	private boolean afk;
@@ -84,6 +85,12 @@ public class ESubject implements EssentialsSubject {
 		this.ignores = new CopyOnWriteArraySet<UUID>();
 		this.mails = new CopyOnWriteArraySet<Mail>();
 		this.back = Optional.empty();
+		
+		this.god = false;
+		this.vanish = false;
+		this.toggle = true;
+		
+		// Tempo
 		
 		this.afk = false;
 		this.updateLastActivated();

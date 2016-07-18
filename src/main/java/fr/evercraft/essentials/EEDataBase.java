@@ -49,9 +49,9 @@ public class EEDataBase extends EDataBase<EverEssentials> {
 		this.table_players = "players";
 		String players = 	"CREATE TABLE IF NOT EXISTS <table> (" +
 							"`uuid` varchar(36) NOT NULL," +
-							"`vanish` boolean NOT NULL DEFAULT 0," +
-							"`god` boolean NOT NULL DEFAULT 0," +
-							"`toggle` boolean NOT NULL DEFAULT 1," +
+							"`vanish` BOOL NOT NULL DEFAULT '0'," +
+							"`god` BOOL NOT NULL DEFAULT '0'," +
+							"`toggle` BOOL NOT NULL DEFAULT '1'," +
 							"PRIMARY KEY (`uuid`));";
 		initTable(this.getTablePlayers(), players);
 		
