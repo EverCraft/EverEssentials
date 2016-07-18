@@ -696,6 +696,8 @@ public class EEMessage extends EMessage {
 		WHOIS_CHATCOLOR_ON("whois.chatColorOn", "    &6&l➤  &6Couleur dans le chat : &aActivé"),
 		WHOIS_CHATCOLOR_OFF("whois.chatColorOff", "    &6&l➤  &6Couleur dans le chat : &cDésactivé"),
 		WHOIS_LANGUAGE("whois.language", "    &6&l➤  &6Langage : &a<langue>"),
+		WHOIS_TOGGLE_ENABLE("whois.toggleEnable", "    &6&l➤  &6Requêtes de téléportation : &aActivé"),
+		WHOIS_TOGGLE_DISABLE("whois.toggleDisable", "    &6&l➤  &6Requêtes de téléportation : &cDésactivé"),
 		
 		WORLDS_DESCRIPTION("worlds.description", "Téléporte le joueur dans le monde de votre choix"),
 		WORLDS_END_DESCRIPTION("worlds.endDescription", "Vous téléporte dans le monde du néant"),

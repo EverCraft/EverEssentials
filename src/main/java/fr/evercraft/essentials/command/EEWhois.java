@@ -124,6 +124,7 @@ public class EEWhois extends ECommand<EverEssentials> {
 		lists.add(getViewDistance(player));
 		lists.add(ChatColorsEnabled(player));
 		lists.add(getLocale(player));
+		lists.add(getToggle(player));
 		
 		this.plugin.getEverAPI().getManagerService().getEPagination().sendTo(
 				EChat.of(EEMessages.WHOIS_TITLE.get().replace("<player>", player.getName())).toBuilder()
@@ -329,5 +330,13 @@ public class EEWhois extends ECommand<EverEssentials> {
 	public Text getLocale(final EPlayer player){
 		return EChat.of(EEMessages.WHOIS_LANGUAGE.get()
 				.replaceAll("<langue>", StringUtils.capitalize(player.getLocale().getDisplayLanguage())));
+	}
+	
+	public Text getToggle(final EPlayer player){
+		if(player.isToggle()) {
+			return EChat.of(EEMessages.WHOIS_TOGGLE_ENABLE.get());
+		} else {
+			return EChat.of(EEMessages.WHOIS_TOGGLE_DISABLE.get());
+		}
 	}
 }
