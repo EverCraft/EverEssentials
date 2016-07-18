@@ -383,10 +383,12 @@ public class ESubject implements EssentialsSubject {
 	 * Toggle
 	 */
 
+	@Override
 	public boolean isToggle() {
 		return this.toggle;
 	}
 
+	@Override
 	public boolean setToggle(final boolean toggle) {		
 		if(this.toggle != toggle) {
 			this.toggle = toggle;

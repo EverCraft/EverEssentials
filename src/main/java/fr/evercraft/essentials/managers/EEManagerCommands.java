@@ -25,6 +25,10 @@ import fr.evercraft.essentials.command.repair.*;
 import fr.evercraft.essentials.command.spawn.*;
 import fr.evercraft.essentials.command.teleport.*;
 import fr.evercraft.essentials.command.time.*;
+import fr.evercraft.essentials.command.toggle.EEToggle;
+import fr.evercraft.essentials.command.toggle.EEToggleOff;
+import fr.evercraft.essentials.command.toggle.EEToggleOn;
+import fr.evercraft.essentials.command.toggle.EEToggleStatus;
 import fr.evercraft.essentials.command.warp.*;
 import fr.evercraft.essentials.command.weather.*;
 import fr.evercraft.essentials.command.whitelist.EEWhitelist;
@@ -134,6 +138,12 @@ public class EEManagerCommands extends TreeMap<String, ECommand<EverEssentials>>
 		register(new EEWorldsNether(this.plugin));
 		
 		// Commands
+		EEToggle toggle = new EEToggle(this.plugin);
+		toggle.add(new EEToggleOn(this.plugin, toggle));
+		toggle.add(new EEToggleOff(this.plugin, toggle));
+		toggle.add(new EEToggleStatus(this.plugin, toggle));
+		register(toggle);
+		
 		EEWhitelist whitelist = new EEWhitelist(this.plugin);
 		whitelist.add(new EEWhitelistOn(this.plugin, whitelist));
 		whitelist.add(new EEWhitelistOff(this.plugin, whitelist));

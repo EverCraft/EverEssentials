@@ -51,7 +51,7 @@ public class EEDataBase extends EDataBase<EverEssentials> {
 							"`uuid` varchar(36) NOT NULL," +
 							"`vanish` boolean NOT NULL DEFAULT 0," +
 							"`god` boolean NOT NULL DEFAULT 0," +
-							"`toggle` boolean NOT NULL DEFAULT 0," +
+							"`toggle` boolean NOT NULL DEFAULT 1," +
 							"PRIMARY KEY (`uuid`));";
 		initTable(this.getTablePlayers(), players);
 		

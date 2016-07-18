@@ -73,7 +73,7 @@ public class EEWhitelistStatus extends ESubCommand<EverEssentials> {
 		} else {
 			message = EEMessages.WHITELIST_STATUS_DISABLED.get();
 		}
-		player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.WHITELIST_STATUS.get()
+		player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.WHITELIST_STATUS_MESSAGE.get()
 				.replaceAll("<status>", message)));
 		return true;
 	}
