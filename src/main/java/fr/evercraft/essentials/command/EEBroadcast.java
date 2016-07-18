@@ -32,7 +32,6 @@ import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ECommand;
-import fr.evercraft.everapi.server.player.EPlayer;
 
 public class EEBroadcast extends ECommand<EverEssentials> {
 	
@@ -61,7 +60,7 @@ public class EEBroadcast extends ECommand<EverEssentials> {
 	public boolean execute(final CommandSource source, final List<String> args, String arg) throws CommandException {
 		return execute(source, Arrays.asList(arg));
 	}
-	
+
 	protected List<String> getArg(final String arg){
 		if(arg.isEmpty()) {
 			return Arrays.asList();
@@ -73,29 +72,15 @@ public class EEBroadcast extends ECommand<EverEssentials> {
 		// Résultat de la commande :
 		boolean resultat = false;
 		if(args.size() == 1) {
-			// Si la source est un joueur
-			if (source instanceof EPlayer) {
-				resultat = commandBroadcastPlayer((EPlayer) source, args.get(0));
-			// La source n'est pas un joueur
-			} else {
-				resultat = commandBroadcastConsole(source, args.get(0));
-			}
+			commandBroadcast(args.get(0));
 		} else {
 			source.sendMessage(help(source));
 		}
 		return resultat;
 	}
 	
-	public boolean commandBroadcastPlayer(final EPlayer player, String message) {
-		
-		this.plugin.getEServer().getBroadcastChannel().send(EChat.of(EEMessages.BROADCAST_PREFIX_PLAYER.get()
-				.replaceAll("<player>", player.getName())
-				.replaceAll("<message>", message)));
-		return true;
-	}
-	
-	public boolean commandBroadcastConsole(final CommandSource player, String message) {
-		this.plugin.getEServer().getBroadcastChannel().send(EChat.of(EEMessages.BROADCAST_PREFIX_CONSOLE.get()
+	public boolean commandBroadcast(final String message) {
+		this.plugin.getEServer().getBroadcastChannel().send(EChat.of(EEMessages.BROADCAST_MESSAGE.get()
 				.replaceAll("<message>", message)));
 		return true;
 	}

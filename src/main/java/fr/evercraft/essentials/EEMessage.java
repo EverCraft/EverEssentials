@@ -59,8 +59,7 @@ public class EEMessage extends EMessage {
 		BED_DESCRIPTION("bed.description", 					"Retourne à la dernière position ou vous avez dormi"),
 		
 		BROADCAST_DESCRIPTION("broadcast.description", 		"Envoye un message à tous les joueurs."),
-		BROADCAST_PREFIX_PLAYER("broadcast.prefixPlayer", 	"&7[&6<player>&7] : <message>"),
-		BROADCAST_PREFIX_CONSOLE("broadcast.prefixConsole", "&7[&6Console&7] : <message>"),
+		BROADCAST_MESSAGE("broadcast.message", 				"&7[&6&lBroadcast&7] <message>"),
 		
 		BOOK_DESCRIPTION("book.description", 				"Permet de modifier un livre."),
 		BOOK_WRITABLE("book.writable", 						""),
@@ -370,6 +369,10 @@ public class EEMessage extends EMessage {
 		REPAIR_ALL_PLAYER("repairall.player", "&7Vous venez de réparer tous les objets de votre inventaire."),
 		
 		RULES_DESCRIPTION("rules.description", "&7Affiche les règles d'Evercraft."),
+		
+		SAY_DESCRIPTION("say.description", 		"Envoye un message à tous les joueurs."),
+		SAY_PREFIX_PLAYER("say.prefixPlayer", 	"&7[&6<player>&7] <message>"),
+		SAY_PREFIX_CONSOLE("say.prefixConsole", "&7[&6Console&7] <message>"),
 		
 		SKULL_DESCRIPTION("skull.description", "Donne la tête d'un joueur"),
 		SKULL_MY_HEAD("skull.myHead", "&7Vous avez reçu votre tête."),

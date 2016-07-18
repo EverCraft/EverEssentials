@@ -102,6 +102,7 @@ public class EEManagerCommands extends TreeMap<String, ECommand<EverEssentials>>
 		register(new EERepairHotBar(this.plugin));
 		register(new EERules(this.plugin));
 		register(new EEPing(this.plugin));
+		register(new EESay(this.plugin));
 		register(new EESeeInventory(this.plugin));
 		register(new EESkull(this.plugin));
 		register(new EESpawn(this.plugin));
