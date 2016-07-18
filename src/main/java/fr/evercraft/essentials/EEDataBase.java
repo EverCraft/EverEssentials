@@ -51,6 +51,7 @@ public class EEDataBase extends EDataBase<EverEssentials> {
 							"`uuid` varchar(36) NOT NULL," +
 							"`vanish` boolean NOT NULL DEFAULT 0," +
 							"`god` boolean NOT NULL DEFAULT 0," +
+							"`toggle` boolean NOT NULL DEFAULT 0," +
 							"PRIMARY KEY (`uuid`));";
 		initTable(this.getTablePlayers(), players);
 		
@@ -198,6 +199,32 @@ public class EEDataBase extends EDataBase<EverEssentials> {
 			this.plugin.getLogger().debug("Updating the database : (identifier='" + identifier + "';god='" + god + "')");
     	} catch (SQLException e) {
         	this.plugin.getLogger().warn("Error during a change of god : " + e.getMessage());
+		} catch (ServerDisableException e) {
+			e.execute();
+		} finally {
+			try {
+				if (preparedStatement != null) preparedStatement.close();
+				if (connection != null) connection.close();
+			} catch (SQLException e) {}
+	    }
+	}
+	
+	public void setToggle(final String identifier, final boolean toggle) {
+		Connection connection = null;
+		PreparedStatement preparedStatement = null;
+    	try {
+    		connection = this.getConnection();
+    		String query = 	  "UPDATE `" + this.getTablePlayers() + "` "
+							+ "SET `toggle` = ? "
+							+ "WHERE `uuid` = ? ;";
+			preparedStatement = connection.prepareStatement(query);
+			preparedStatement.setBoolean(1, toggle);
+			preparedStatement.setString(2, identifier);
+			
+			preparedStatement.execute();
+			this.plugin.getLogger().debug("Updating the database : (identifier='" + identifier + "';toggle='" + toggle + "')");
+    	} catch (SQLException e) {
+        	this.plugin.getLogger().warn("Error during a change of toggle : " + e.getMessage());
 		} catch (ServerDisableException e) {
 			e.execute();
 		} finally {

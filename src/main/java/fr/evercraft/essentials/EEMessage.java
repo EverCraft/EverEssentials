@@ -542,6 +542,9 @@ public class EEMessage extends EMessage {
 		TIME_DAY_DESCRIPTION("time.dayDescription", "Mettre le jour dans votre monde"),
 		TIME_NIGHT_DESCRIPTION("time.nightDescription", "Mettre la nuit dans votre monde"),
 		
+		TOGGLE_DESCRIPTION("toggle.description", "Permet de gérer les demandes de téléportation"),
+		TOGGLE_ENABLE_DESCRIPTION("toggle.enable.description", "Permet de gérer les demandes de téléportation"),
+		
 		TOP_DESCRIPTION("top.description", "Téléporte le joueur à la position la plus élevée"),
 		TOP_POSITION("top.position", "&6&lposition"),
 		TOP_POSITION_HOVER("top.positionHover", "&cMonde : &6<world>[RT]&cX : &6<x>[RT]&cY : &6<y>[RT]&cZ : &6<z>"),
