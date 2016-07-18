@@ -37,7 +37,8 @@ import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.command.ECommand;
 import fr.evercraft.everapi.server.player.EPlayer;
-import fr.evercraft.everapi.services.essentials.EssentialsSubject.TeleportRequest;
+import fr.evercraft.everapi.services.essentials.TeleportRequest;
+import fr.evercraft.everapi.services.essentials.TeleportRequest.Type;
 import fr.evercraft.everapi.text.ETextBuilder;
 
 public class EETeleportationDeny extends ECommand<EverEssentials> {
@@ -100,21 +101,29 @@ public class EETeleportationDeny extends ECommand<EverEssentials> {
 	}
 
 	private boolean commandTeleportationDeny(EPlayer player) {
-		Map<UUID, Long> teleports = player.getAllTeleports();
+		Map<UUID, TeleportRequest> teleports = player.getAllTeleports();
 		List<Text> lists = new ArrayList<Text>();
 		
 		Optional<EPlayer> one_player = Optional.empty();
 		
-		for(Entry<UUID, Long> teleport : teleports.entrySet()) {
+		for(Entry<UUID, TeleportRequest> teleport : teleports.entrySet()) {
 			Optional<EPlayer> player_request = this.plugin.getEServer().getEPlayer(teleport.getKey());
 			
 			if(player_request.isPresent()) {
 				one_player = player_request;
-				lists.add(ETextBuilder.toBuilder(EEMessages.TPA_PLAYER_LIST_LINE.get()
-						.replaceAll("<player>", player_request.get().getName()))
-					.replace("<accept>", EETeleportationAsk.getButtonAccept(player_request.get().getName()))
-					.replace("<deny>", EETeleportationAsk.getButtonAccept(player_request.get().getName()))
-					.build());
+				if(teleport.getValue().equals(Type.TPA)) {
+					lists.add(ETextBuilder.toBuilder(EEMessages.TPA_PLAYER_LIST_LINE.get()
+							.replaceAll("<player>", player_request.get().getName()))
+						.replace("<accept>", EETeleportationAsk.getButtonAccept(player_request.get().getName()))
+						.replace("<deny>", EETeleportationAsk.getButtonAccept(player_request.get().getName()))
+						.build());
+				} else if(teleport.getValue().equals(Type.TPAHERE)) {
+					lists.add(ETextBuilder.toBuilder(EEMessages.TPA_PLAYER_LIST_LINE.get()
+							.replaceAll("<player>", player_request.get().getName()))
+						.replace("<accept>", EETeleportationAskHere.getButtonAccept(player_request.get().getName()))
+						.replace("<deny>", EETeleportationAskHere.getButtonAccept(player_request.get().getName()))
+						.build());
+				}
 			}
 		}
 
@@ -133,24 +142,24 @@ public class EETeleportationDeny extends ECommand<EverEssentials> {
 	}
 	
 	private boolean commandTeleportationDeny(final EPlayer player, final EPlayer player_request) {
-		TeleportRequest teleports = player.getTeleport(player_request.getUniqueId());
+		Optional<TeleportRequest> teleports = player.getTeleport(player_request.getUniqueId());
 		
-		// Demande de téléportation toujours valide
-		if(teleports.equals(TeleportRequest.VALID)) {
-			long delay = this.plugin.getConfigs().getTeleportDelay();
-			if(delay > 0) {
-				player_request.sendMessage(EEMessages.PREFIX.get() + EEMessages.TPA_STAFF_ACCEPT.get()
-						.replaceAll("<player>", player.getName())
-						.replaceAll("<delay>", String.valueOf(delay)));
+		// Il y a une demande de téléportation
+		if(teleports.isPresent()) {
+			// La demande est toujours valide
+			if(!teleports.get().isExpire()) {
+				player.removeTeleport(player_request.getUniqueId());
+				
+				player.sendMessage(EEMessages.PREFIX.get() + EEMessages.TPAHERE_PLAYER_DENY.get()
+						.replaceAll("<player>", player_request.getName()));
+				player_request.sendMessage(EEMessages.PREFIX.get() + EEMessages.TPA_STAFF_DENY.get()
+						.replaceAll("<player>", player.getName()));
+				
+			// La demande a expiré
+			} else {
+				player.sendMessage(EEMessages.PREFIX.get() + EEMessages.TPA_PLAYER_EXPIRE.get()
+						.replaceAll("<player>", player_request.getName()));
 			}
-			final Transform<World> location = player_request.getTransform();
-			player.setTeleport(() -> this.teleport(player_request, player, location));
-			
-		// Demande de téléportation expiré
-		} else if(teleports.equals(TeleportRequest.EXPIRE)) {
-			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.TPA_PLAYER_EXPIRE.get()
-					.replaceAll("<player>", player_request.getName()));
-		
 		// Aucune demande de téléportation
 		} else {
 			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.TPA_PLAYER_EMPTY.get()

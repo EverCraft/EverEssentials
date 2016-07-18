@@ -36,22 +36,22 @@ import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ECommand;
 import fr.evercraft.everapi.server.player.EPlayer;
 
-public class EETeleportationAsk extends ECommand<EverEssentials> {
+public class EETeleportationAskHere extends ECommand<EverEssentials> {
 	
-	public EETeleportationAsk(final EverEssentials plugin) {
-        super(plugin, "tpa", "call", "tpask");
+	public EETeleportationAskHere(final EverEssentials plugin) {
+        super(plugin, "tpahere");
     }
 	
 	public boolean testPermission(final CommandSource source) {
-		return source.hasPermission(EEPermissions.TPA.get());
+		return source.hasPermission(EEPermissions.TPAHERE.get());
 	}
 
 	public Text description(final CommandSource source) {
-		return EEMessages.TPA_DESCRIPTION.getText();
+		return EEMessages.TPAHERE_DESCRIPTION.getText();
 	}
 
 	public Text help(final CommandSource source) {
-		return Text.builder("/tpa <joueur>").onClick(TextActions.suggestCommand("/tpa "))
+		return Text.builder("/tpahere <joueur>").onClick(TextActions.suggestCommand("/tpahere "))
 					.color(TextColors.RED).build();
 	}
 	
@@ -94,8 +94,8 @@ public class EETeleportationAsk extends ECommand<EverEssentials> {
 	}
 	
 	public Text getButtonPosition(final String player, final Location<World> location){
-		return EChat.of(EEMessages.TPA_DESTINATION.get().replaceAll("<player>", player)).toBuilder()
-					.onHover(TextActions.showText(EChat.of(EEMessages.TPA_DESTINATION_HOVER.get()
+		return EChat.of(EEMessages.TPAHERE_DESTINATION.get().replaceAll("<player>", player)).toBuilder()
+					.onHover(TextActions.showText(EChat.of(EEMessages.TPAHERE_DESTINATION_HOVER.get()
 							.replaceAll("<world>", location.getExtent().getName())
 							.replaceAll("<x>", String.valueOf(location.getBlockX()))
 							.replaceAll("<y>", String.valueOf(location.getBlockY()))
@@ -104,15 +104,15 @@ public class EETeleportationAsk extends ECommand<EverEssentials> {
 	}
 	
 	public static Text getButtonAccept(final String player){
-		return EChat.of(EEMessages.TPA_PLAYER_QUESTION_ACCEPT.get().replaceAll("<player>", player)).toBuilder()
-					.onHover(TextActions.showText(EChat.of(EEMessages.TPA_PLAYER_QUESTION_ACCEPT_HOVER.get())))
+		return EChat.of(EEMessages.TPAHERE_PLAYER_QUESTION_ACCEPT.get().replaceAll("<player>", player)).toBuilder()
+					.onHover(TextActions.showText(EChat.of(EEMessages.TPAHERE_PLAYER_QUESTION_ACCEPT_HOVER.get())))
 					.onClick(TextActions.runCommand("/tpaccept " + player))
 					.build();
 	}
 	
 	public static Text getButtonDeny(final String player){
-		return EChat.of(EEMessages.TPA_PLAYER_QUESTION_DENY.get().replaceAll("<player>", player)).toBuilder()
-					.onHover(TextActions.showText(EChat.of(EEMessages.TPA_PLAYER_QUESTION_DENY_HOVER.get())))
+		return EChat.of(EEMessages.TPAHERE_PLAYER_QUESTION_DENY.get().replaceAll("<player>", player)).toBuilder()
+					.onHover(TextActions.showText(EChat.of(EEMessages.TPAHERE_PLAYER_QUESTION_DENY_HOVER.get())))
 					.onClick(TextActions.runCommand("/tpdeny " + player))
 					.build();
 	}

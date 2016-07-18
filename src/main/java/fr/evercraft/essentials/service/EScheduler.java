@@ -28,6 +28,7 @@ import org.spongepowered.api.scheduler.Task;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.everapi.server.player.EPlayer;
+import fr.evercraft.everapi.services.essentials.TeleportRequest;
 
 
 public class EScheduler {
@@ -84,9 +85,10 @@ public class EScheduler {
 		
 		for(ESubject player : this.plugin.getManagerServices().getEssentials().getOnlines()) {			
 			// Teleport Ask
-			for(Entry<UUID, Long> teleport : player.getAllTeleports().entrySet()) {
-				if(teleport.getValue() >= current_time) {
-					player.removeTeleport(teleport.getKey());
+			for(Entry<UUID, TeleportRequest> teleport : player.getAllTeleports().entrySet()) {
+				if(!teleport.getValue().isExpire() && teleport.getValue().getTime() >= current_time) {
+					teleport.getValue().setExpire(true);
+					// TODO Message
 				}
 			}
 			

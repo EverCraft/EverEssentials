@@ -174,6 +174,7 @@ public enum EEPermissions implements EnumPermission {
 	TPDENY("tpadeny.command"),
 	
 	TPA("tpa.command"),
+	TPAHERE("tpahere.command"),
 	
 	TPALL("tpall.command"),
 	TPALL_OTHERS("tpall.others"),

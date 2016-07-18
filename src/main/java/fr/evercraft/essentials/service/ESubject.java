@@ -47,6 +47,8 @@ import fr.evercraft.everapi.server.location.LocationSQL;
 import fr.evercraft.everapi.server.player.EPlayer;
 import fr.evercraft.everapi.services.essentials.EssentialsSubject;
 import fr.evercraft.everapi.services.essentials.Mail;
+import fr.evercraft.everapi.services.essentials.TeleportRequest;
+import fr.evercraft.everapi.services.essentials.TeleportRequest.Type;
 import fr.evercraft.everapi.services.essentials.event.VanishEvent;
 
 public class ESubject implements EssentialsSubject {
@@ -66,7 +68,7 @@ public class ESubject implements EssentialsSubject {
 	private boolean afk;
 	private long last_activated;
 	
-	private final LinkedHashMap<UUID, Long> teleports;
+	private final LinkedHashMap<UUID, TeleportRequest> teleports;
 	
 	private Optional<Teleport> teleport;
 
@@ -85,7 +87,7 @@ public class ESubject implements EssentialsSubject {
 		this.afk = false;
 		this.updateLastActivated();
 		
-		this.teleports = new LinkedHashMap<UUID, Long>();
+		this.teleports = new LinkedHashMap<UUID, TeleportRequest>();
 		
 		this.teleport = Optional.empty();
 		
@@ -632,9 +634,18 @@ public class ESubject implements EssentialsSubject {
 	 */
 	
 	@Override
-	public boolean addTeleport(UUID uuid, long time) {
+	public boolean addTeleportAsk(UUID uuid, long time) {
 		if(!this.teleports.containsKey(uuid)) {
-			this.teleports.put(uuid, time);
+			this.teleports.put(uuid, new TeleportRequest(Type.TPA, time));
+			return true;
+		}
+		return false;
+	}
+	
+	@Override
+	public boolean addTeleportAskHere(UUID uuid, long time) {
+		if(!this.teleports.containsKey(uuid)) {
+			this.teleports.put(uuid, new TeleportRequest(Type.TPAHERE, time));
 			return true;
 		}
 		return false;
@@ -649,20 +660,12 @@ public class ESubject implements EssentialsSubject {
 		return false;
 	}
 	
-	public Map<UUID, Long> getAllTeleports() {
+	public Map<UUID, TeleportRequest> getAllTeleports() {
 		return ImmutableMap.copyOf(this.teleports);
 	}
 	
-	public TeleportRequest getTeleport(UUID uuid) {
-		Long time = this.teleports.get(uuid);
-		if(time != null) {
-			if(time != -1) {
-				return TeleportRequest.VALID;
-			} else {
-				return TeleportRequest.EXPIRE;
-			}
-		}
-		return TeleportRequest.EMPTY;
+	public Optional<TeleportRequest> getTeleport(UUID uuid) {
+		return Optional.ofNullable(this.teleports.get(uuid));
 	}
 	
 	/*

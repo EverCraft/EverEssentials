@@ -37,7 +37,7 @@ import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.command.ECommand;
 import fr.evercraft.everapi.server.player.EPlayer;
-import fr.evercraft.everapi.services.essentials.EssentialsSubject.TeleportRequest;
+import fr.evercraft.everapi.services.essentials.TeleportRequest;
 import fr.evercraft.everapi.text.ETextBuilder;
 
 public class EETeleportationAccept extends ECommand<EverEssentials> {
@@ -100,12 +100,12 @@ public class EETeleportationAccept extends ECommand<EverEssentials> {
 	}
 
 	private boolean commandTeleportationAccept(EPlayer player) {
-		Map<UUID, Long> teleports = player.getAllTeleports();
+		Map<UUID, TeleportRequest> teleports = player.getAllTeleports();
 		List<Text> lists = new ArrayList<Text>();
 		
 		Optional<EPlayer> one_player = Optional.empty();
 		
-		for(Entry<UUID, Long> teleport : teleports.entrySet()) {
+		for(Entry<UUID, TeleportRequest> teleport : teleports.entrySet()) {
 			Optional<EPlayer> player_request = this.plugin.getEServer().getEPlayer(teleport.getKey());
 			
 			if(player_request.isPresent()) {
@@ -134,24 +134,26 @@ public class EETeleportationAccept extends ECommand<EverEssentials> {
 	
 
 	private boolean commandTeleportationAccept(final EPlayer player, final EPlayer player_request) {
-		TeleportRequest teleports = player.getTeleport(player_request.getUniqueId());
+		Optional<TeleportRequest> teleports = player.getTeleport(player_request.getUniqueId());
 		
-		// Demande de téléportation toujours valide
-		if(teleports.equals(TeleportRequest.VALID)) {
-			long delay = this.plugin.getConfigs().getTeleportDelay();
-			if(delay > 0) {
-				player_request.sendMessage(EEMessages.PREFIX.get() + EEMessages.TPA_STAFF_ACCEPT.get()
-						.replaceAll("<player>", player.getName())
-						.replaceAll("<delay>", String.valueOf(delay)));
+		// Il y a une demande de téléportation
+		if(teleports.isPresent()) {
+			// La demande est toujours valide
+			if(!teleports.get().isExpire()) {
+				long delay = this.plugin.getConfigs().getTeleportDelay();
+				if(delay > 0) {
+					player_request.sendMessage(EEMessages.PREFIX.get() + EEMessages.TPA_STAFF_ACCEPT.get()
+							.replaceAll("<player>", player.getName())
+							.replaceAll("<delay>", String.valueOf(delay)));
+				}
+				final Transform<World> location = player_request.getTransform();
+				player.setTeleport(() -> this.teleport(player_request, player, location));
+				
+			// La demande a expiré
+			} else {
+				player.sendMessage(EEMessages.PREFIX.get() + EEMessages.TPA_PLAYER_EXPIRE.get()
+						.replaceAll("<player>", player_request.getName()));
 			}
-			final Transform<World> location = player_request.getTransform();
-			player.setTeleport(() -> this.teleport(player_request, player, location));
-			
-		// Demande de téléportation expiré
-		} else if(teleports.equals(TeleportRequest.EXPIRE)) {
-			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.TPA_PLAYER_EXPIRE.get()
-					.replaceAll("<player>", player_request.getName()));
-		
 		// Aucune demande de téléportation
 		} else {
 			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.TPA_PLAYER_EMPTY.get()
