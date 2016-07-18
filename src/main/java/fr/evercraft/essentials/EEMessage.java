@@ -516,12 +516,8 @@ public class EEMessage extends EMessage {
 		TPAHERE_PLAYER_QUESTION_ACCEPT_HOVER("tpahere.playerQuestionAcceptHover", "&cCliquez ici pour vous téléporter à &6<player>&c."),
 		TPAHERE_PLAYER_QUESTION_DENY("tpahere.playerQuestionDeny", "&2&l&nRefuser"),
 		TPAHERE_PLAYER_QUESTION_DENY_HOVER("tpahere.playerQuestionDenyHover", "&cCliquez ici pour refuser la téléportation de &6<player>&7."),
-<<<<<<< HEAD
-		TPAHERE_PLAYER_EXPIRE("tpahere.playerExpire", "&cLa demande de téléportation de &6<player> &ca expiré."),
-		TPAHERE_PLAYER_DENY("tpahere.playerDeny", "&7La demande de &6<player> &7 a bien été refusé."),
-=======
 		TPAHERE_PLAYER_EXPIRE("tpahere.playerExpire", "&cLa demande de téléportation de &6<player> &ca expirée."),
->>>>>>> branch 'master' of git@github.com:EverCraft/EverEssentials.git
+		TPAHERE_PLAYER_DENY("tpahere.playerDeny", "&7La demande de &6<player> &7 a bien été refusé."),
 		TPAHERE_PLAYER_TELEPORT("tpahere.staffTeleport", "&7Vous avez été téléporté vers &6<destination>&7."),
 		TPAHERE_PLAYER_EMPTY("tpahere.playerEmpty", "&cVous n'avez aucune demande de téléportation de &6<player>&c."),
 		TPAHERE_ERROR_EQUALS("tpahere.errorEquals", "&cImpossible de vous envoyer une demande à vous même."),
