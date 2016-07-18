@@ -55,7 +55,8 @@ public class EEHomeDel extends ECommand<EverEssentials> {
 	}
 
 	public Text help(final CommandSource source) {
-		return Text.builder("/delhome <" + EAMessages.ARGS_HOME + ">").onClick(TextActions.suggestCommand("/delhome "))
+		return Text.builder("/delhome <" + EAMessages.ARGS_HOME.get() + ">")
+				.onClick(TextActions.suggestCommand("/delhome "))
 				.color(TextColors.RED).build();
 	}
 	

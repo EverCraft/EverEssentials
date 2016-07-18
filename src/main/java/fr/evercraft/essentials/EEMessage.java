@@ -368,7 +368,7 @@ public class EEMessage extends EMessage {
 		REPAIR_ALL_DESCRIPTION("repairall.description", "Répare tous vos objets"),
 		REPAIR_ALL_PLAYER("repairall.player", "&7Vous venez de réparer tous les objets de votre inventaire."),
 		
-		RULES_DESCRIPTION("rules.description", "&7Affiche les règles d'Evercraft."),
+		RULES_DESCRIPTION("rules.description", "Affiche les règles d'Evercraft."),
 		
 		SAY_DESCRIPTION("say.description", 		"Envoye un message à tous les joueurs."),
 		SAY_PREFIX_PLAYER("say.prefixPlayer", 	"&7[&6<player>&7] <message>"),
@@ -566,7 +566,7 @@ public class EEMessage extends EMessage {
 		
 		TREE_DESCRIPTION("tree.description", "Place un arbre"),
 		TREE_INCONNU("tree.inconnu", "&cType d'arbre inconnu : &6<type>"),
-		TREE_NO_CAN("tree.noCan", "&cImpossible de placer un arbre à cette endroit : Regarder plutot un bloc d'herbre ou de terre."),
+		TREE_NO_CAN("tree.noCan", "&cErreur : Impossible de placer un arbre à cette endroit. Regarder plutôt un bloc d'herbe ou de terre."),
 		
 		UUID_DESCRIPTION("uuid.description", "Affiche l'identifiant unique du joueur."),
 		UUID_NAME("uuid.name", "&6&l<uuid>"),

@@ -58,7 +58,8 @@ public class EEHome extends ECommand<EverEssentials> {
 	}
 
 	public Text help(final CommandSource source) {
-		return Text.builder("/home [" + EAMessages.ARGS_HOME + "]").onClick(TextActions.suggestCommand("/home "))
+		return Text.builder("/home [" + EAMessages.ARGS_HOME.get() + "]")
+				.onClick(TextActions.suggestCommand("/home "))
 				.color(TextColors.RED).build();
 	}
 	

@@ -88,7 +88,8 @@ public class EEHomeSet extends EReloadCommand<EverEssentials> {
 	public Text help(final CommandSource source) {
 		Text help;
 		if(source.hasPermission(EEPermissions.SETHOME_MULTIPLE.get())) {
-			help = Text.builder("/sethome <" + EAMessages.ARGS_HOME + ">").onClick(TextActions.suggestCommand("/sethome "))
+			help = Text.builder("/sethome <" + EAMessages.ARGS_HOME.get() + ">")
+					.onClick(TextActions.suggestCommand("/sethome "))
 					.color(TextColors.RED).build();
 		} else {
 			help = Text.builder("/sethome").onClick(TextActions.suggestCommand("/sethome"))

@@ -49,7 +49,7 @@ public class EESay extends ECommand<EverEssentials> {
 	}
 
 	public Text help(final CommandSource source) {
-		Text help = Text.builder("/say <" + EAMessages.ARGS_MESSAGE + ">").onClick(TextActions.suggestCommand("/say "))
+		Text help = Text.builder("/say <" + EAMessages.ARGS_MESSAGE.get() + ">").onClick(TextActions.suggestCommand("/say "))
 					.color(TextColors.RED).build();
 		return help;
 	}

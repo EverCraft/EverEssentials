@@ -63,7 +63,8 @@ public class EESpawnMob extends EReloadCommand<EverEssentials> {
 	}
 
 	public Text help(final CommandSource source) {
-		return Text.builder("/spawnmob <" + EAMessages.ARGS_ENTITY + "> [quantité]").onClick(TextActions.suggestCommand("/spawnmob "))
+		return Text.builder("/spawnmob <" + EAMessages.ARGS_ENTITY.get() + "> [quantité]")
+				.onClick(TextActions.suggestCommand("/spawnmob "))
 				.color(TextColors.RED).build();
 	}
 	

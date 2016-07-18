@@ -35,7 +35,13 @@ public class EECommand extends ECommand<EverEssentials> {
 
 	@Override
 	public boolean execute(CommandSource source, List<String> args) throws CommandException, PluginDisableException {
-		if(args.size() == 1){
+		if(args.size() == 0){
+			if(source.hasPermission(EEPermissions.HELP.get())) {					
+				this.plugin.getEverAPI().getManagerService().getEPagination().helpCommand(this.plugin.getManagerCommands(), source, this.plugin);
+			} else {
+				source.sendMessage(EAMessages.NO_PERMISSION.getText());
+			}
+		} else if(args.size() == 1){
 			if(args.get(0).equalsIgnoreCase("help")) {
 				if(source.hasPermission(EEPermissions.HELP.get())) {					
 					this.plugin.getEverAPI().getManagerService().getEPagination().helpCommand(this.plugin.getManagerCommands(), source, this.plugin);
@@ -57,6 +63,7 @@ public class EECommand extends ECommand<EverEssentials> {
 	public List<String> tabCompleter(CommandSource source, List<String> args) throws CommandException {
 		List<String> suggests = new ArrayList<String>();
 		if(args.size() == 1){
+			suggests.add("help");
 			suggests.add("reload");
 		}
 		return suggests;

@@ -48,8 +48,9 @@ public class EEBroadcast extends ECommand<EverEssentials> {
 	}
 
 	public Text help(final CommandSource source) {
-		Text help = Text.builder("/broadcast <" + EAMessages.ARGS_MESSAGE + ">").onClick(TextActions.suggestCommand("/broadcast "))
-					.color(TextColors.RED).build();
+		Text help = Text.builder("/broadcast <" + EAMessages.ARGS_MESSAGE.get() + ">")
+				.onClick(TextActions.suggestCommand("/broadcast "))
+				.color(TextColors.RED).build();
 		return help;
 	}
 	

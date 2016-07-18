@@ -54,7 +54,8 @@ public class EESpawnDel extends ECommand<EverEssentials> {
 	}
 
 	public Text help(final CommandSource source) {
-		return Text.builder("/spawn [" + EAMessages.ARGS_GROUP + "]").onClick(TextActions.suggestCommand("/spawn "))
+		return Text.builder("/spawn [" + EAMessages.ARGS_GROUP.get() + "]")
+				.onClick(TextActions.suggestCommand("/spawn "))
 				.color(TextColors.RED).build();
 	}
 	
