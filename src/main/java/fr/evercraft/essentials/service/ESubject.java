@@ -395,6 +395,23 @@ public class ESubject implements EssentialsSubject {
 		}
 		return false;
 	}
+	
+	/*
+	 * Toggle
+	 */
+
+	public boolean isToggle() {
+		return this.toggle;
+	}
+
+	public boolean setToggle(final boolean toggle) {		
+		if(this.toggle != toggle) {
+			this.toggle = toggle;
+			this.plugin.getThreadAsync().execute(() -> this.plugin.getDataBases().setToggle(this.getIdentifier(), toggle));
+			return true;
+		}
+		return false;
+	}
 
 	/*
 	 * Homes
