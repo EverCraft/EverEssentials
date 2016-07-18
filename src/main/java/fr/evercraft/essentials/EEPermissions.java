@@ -184,6 +184,8 @@ public enum EEPermissions implements EnumPermission {
 	
 	TIME("time.command"),
 	
+	TOGGLE("toggle.command"),
+	
 	TOP("top.command"),
 	
 	TPHERE("tphere.command"),
