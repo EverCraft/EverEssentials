@@ -168,6 +168,10 @@ public class EEConfig extends EConfig {
 	public long getTeleportDelay() {
 		return this.get("teleport-delay").getLong(0);
 	}
+	
+	public boolean hasTeleportDelay() {
+		return this.getTeleportDelay() > 0;
+	}
 
 	public long getAfkAuto() {
 		return this.get("afk-auto").getLong(-1);

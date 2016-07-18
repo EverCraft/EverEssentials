@@ -14,29 +14,31 @@
  * You should have received a copy of the GNU General Public License
  * along with EverEssentials.  If not, see <http://www.gnu.org/licenses/>.
  */
-package fr.evercraft.essentials.command.teleport;
+package fr.evercraft.essentials.command.teleport.request;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.UUID;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
+import org.spongepowered.api.entity.Transform;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
-import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
 import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
-import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ECommand;
 import fr.evercraft.everapi.server.player.EPlayer;
+import fr.evercraft.everapi.services.essentials.EssentialsSubject.TeleportRequest;
+import fr.evercraft.everapi.text.ETextBuilder;
 
 public class EETeleportationAccept extends ECommand<EverEssentials> {
 	
@@ -81,7 +83,7 @@ public class EETeleportationAccept extends ECommand<EverEssentials> {
 				Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(args.get(0));
 				// Le joueur existe
 				if(optPlayer.isPresent()){
-					resultat = commandTeleportation((EPlayer) source, optPlayer.get());
+					resultat = commandTeleportationAccept((EPlayer) source, optPlayer.get());
 				// Joueur introuvable
 				} else {
 					source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
@@ -99,25 +101,66 @@ public class EETeleportationAccept extends ECommand<EverEssentials> {
 
 	private boolean commandTeleportationAccept(EPlayer player) {
 		Map<UUID, Long> teleports = player.getAllTeleports();
-		if(teleports.isEmpty()) {
+		List<Text> lists = new ArrayList<Text>();
+		
+		Optional<EPlayer> one_player = Optional.empty();
+		
+		for(Entry<UUID, Long> teleport : teleports.entrySet()) {
+			Optional<EPlayer> player_request = this.plugin.getEServer().getEPlayer(teleport.getKey());
 			
+			if(player_request.isPresent()) {
+				one_player = player_request;
+				lists.add(ETextBuilder.toBuilder(EEMessages.TPA_PLAYER_LIST_LINE.get()
+						.replaceAll("<player>", player_request.get().getName()))
+					.replace("<accept>", EETeleportationAsk.getButtonAccept(player_request.get().getName()))
+					.replace("<deny>", EETeleportationAsk.getButtonAccept(player_request.get().getName()))
+					.build());
+			}
+		}
+
+		if(!(lists.size() == 1 && one_player.isPresent())) {
+			if(lists.isEmpty()) {
+				lists.add(EEMessages.TPA_PLAYER_LIST_EMPTY.getText());
+			}
+			
+			this.plugin.getEverAPI().getManagerService().getEPagination().sendTo(EEMessages.TPA_PLAYER_LIST_TITLE.getText().toBuilder()
+					.onClick(TextActions.runCommand("/" + this.getName())).build(), lists, player);
+		} else {
+			return this.commandTeleportationAccept(player, one_player.get());
+		}
+		
+		return true;
+	}
+	
+
+	private boolean commandTeleportationAccept(final EPlayer player, final EPlayer player_request) {
+		TeleportRequest teleports = player.getTeleport(player_request.getUniqueId());
+		
+		// Demande de téléportation toujours valide
+		if(teleports.equals(TeleportRequest.VALID)) {
+			long delay = this.plugin.getConfigs().getTeleportDelay();
+			if(delay > 0) {
+				player_request.sendMessage(EEMessages.PREFIX.get() + EEMessages.TPA_STAFF_ACCEPT.get()
+						.replaceAll("<player>", player.getName())
+						.replaceAll("<delay>", String.valueOf(delay)));
+			}
+			final Transform<World> location = player_request.getTransform();
+			player.setTeleport(() -> this.teleport(player_request, player, location));
+			
+		// Demande de téléportation expiré
+		} else if(teleports.equals(TeleportRequest.EXPIRE)) {
+			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.TPA_PLAYER_EXPIRE.get()
+					.replaceAll("<player>", player_request.getName()));
+		
+		// Aucune demande de téléportation
+		} else {
+			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.TPA_PLAYER_EMPTY.get()
+					.replaceAll("<player>", player_request.getName()));
 		}
 		return false;
 	}
 	
-
-	private boolean commandTeleportation(EPlayer source, EPlayer ePlayer) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-	
-	public Text getButtonPosition(final String player, final Location<World> location){
-		return EChat.of(EEMessages.TP_DESTINATION.get().replaceAll("<player>", player)).toBuilder()
-					.onHover(TextActions.showText(EChat.of(EEMessages.TP_DESTINATION_HOVER.get()
-							.replaceAll("<world>", location.getExtent().getName())
-							.replaceAll("<x>", String.valueOf(location.getBlockX()))
-							.replaceAll("<y>", String.valueOf(location.getBlockY()))
-							.replaceAll("<z>", String.valueOf(location.getBlockZ())))))
-					.build();
+	public void teleport(final EPlayer player_request, final EPlayer player, final Transform<World> teleport) {
+		
 	}
 }

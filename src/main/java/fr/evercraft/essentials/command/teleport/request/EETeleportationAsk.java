@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with EverEssentials.  If not, see <http://www.gnu.org/licenses/>.
  */
-package fr.evercraft.essentials.command.teleport;
+package fr.evercraft.essentials.command.teleport.request;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -215,12 +215,26 @@ public class EETeleportationAsk extends ECommand<EverEssentials> {
 	}
 	
 	public Text getButtonPosition(final String player, final Location<World> location){
-		return EChat.of(EEMessages.TP_DESTINATION.get().replaceAll("<player>", player)).toBuilder()
-					.onHover(TextActions.showText(EChat.of(EEMessages.TP_DESTINATION_HOVER.get()
+		return EChat.of(EEMessages.TPA_DESTINATION.get().replaceAll("<player>", player)).toBuilder()
+					.onHover(TextActions.showText(EChat.of(EEMessages.TPA_DESTINATION_HOVER.get()
 							.replaceAll("<world>", location.getExtent().getName())
 							.replaceAll("<x>", String.valueOf(location.getBlockX()))
 							.replaceAll("<y>", String.valueOf(location.getBlockY()))
 							.replaceAll("<z>", String.valueOf(location.getBlockZ())))))
+					.build();
+	}
+	
+	public static Text getButtonAccept(final String player){
+		return EChat.of(EEMessages.TPA_PLAYER_QUESTION_ACCEPT.get().replaceAll("<player>", player)).toBuilder()
+					.onHover(TextActions.showText(EChat.of(EEMessages.TPA_PLAYER_QUESTION_ACCEPT_HOVER.get())))
+					.onClick(TextActions.runCommand("/tpaccept " + player))
+					.build();
+	}
+	
+	public static Text getButtonDeny(final String player){
+		return EChat.of(EEMessages.TPA_PLAYER_QUESTION_ACCEPT.get().replaceAll("<player>", player)).toBuilder()
+					.onHover(TextActions.showText(EChat.of(EEMessages.TPA_PLAYER_QUESTION_ACCEPT_HOVER.get())))
+					.onClick(TextActions.runCommand("/tpdeny " + player))
 					.build();
 	}
 }

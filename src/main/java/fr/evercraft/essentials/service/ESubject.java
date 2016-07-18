@@ -21,6 +21,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
@@ -65,7 +66,7 @@ public class ESubject implements EssentialsSubject {
 	private boolean afk;
 	private long last_activated;
 	
-	private final ConcurrentMap<UUID, Long> teleports;
+	private final LinkedHashMap<UUID, Long> teleports;
 	
 	private Optional<Teleport> teleport;
 
@@ -84,7 +85,7 @@ public class ESubject implements EssentialsSubject {
 		this.afk = false;
 		this.updateLastActivated();
 		
-		this.teleports = new ConcurrentHashMap<UUID, Long>();
+		this.teleports = new LinkedHashMap<UUID, Long>();
 		
 		this.teleport = Optional.empty();
 		
@@ -650,6 +651,18 @@ public class ESubject implements EssentialsSubject {
 	
 	public Map<UUID, Long> getAllTeleports() {
 		return ImmutableMap.copyOf(this.teleports);
+	}
+	
+	public TeleportRequest getTeleport(UUID uuid) {
+		Long time = this.teleports.get(uuid);
+		if(time != null) {
+			if(time != -1) {
+				return TeleportRequest.VALID;
+			} else {
+				return TeleportRequest.EXPIRE;
+			}
+		}
+		return TeleportRequest.EMPTY;
 	}
 	
 	/*
