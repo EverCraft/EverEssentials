@@ -243,9 +243,11 @@ public class EEMessage extends EMessage {
 		SETHOME_MULTIPLE_ERROR_MAX("sethome.multipleErrorMax", 			"&cVous ne pouvez pas créer plus de <nombre> résidence(s)."),
 		SETHOME_MULTIPLE_NO_PERMISSION("sethome.multipleNoPermission", 	"&cVous n'avez pas la permission d'avoir plusieurs résidences."),
 		
-		INFO_DESCRIPTION("info.description", "Connaître le type d'un item"),
+		INFO_DESCRIPTION("info.description", "Indique le type d'un item"),
 		INFO_PLAYER("info.player", "&7Le type de l'objet <item> &7est &6<type>&7."),
 		INFO_ITEM_COLOR("info.itemColor", "&6"),
+		
+		ITEM_DESCRIPTION("item.description", "Donne un item spécifique"),
 		
 		JUMP_DESCRIPTION("jump.description", "Vous téléporte à l'endroit de votre choix"),
 		JUMP_TELEPORT("jump.teleport", "&7Vous avez été téléporté à l'endroit de votre choix."),
