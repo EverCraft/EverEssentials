@@ -19,6 +19,7 @@ package fr.evercraft.essentials;
 import org.spongepowered.api.plugin.Dependency;
 import org.spongepowered.api.plugin.Plugin;
 
+import fr.evercraft.essentials.command.sub.EEReload;
 import fr.evercraft.essentials.listeners.EEPlayerListeners;
 import fr.evercraft.essentials.managers.EEManagerCommands;
 import fr.evercraft.essentials.managers.EEManagerServices;
@@ -67,7 +68,9 @@ public class EverEssentials extends EPlugin {
 	@Override
 	protected void onCompleteEnable() {		
 		// Commandes
-		new EECommand(this);
+		EECommand command = new EECommand(this);
+		command.add(new EEReload(this, command));
+		
 		this.managerCommands = new EEManagerCommands(this);
 		
 		// Listeners

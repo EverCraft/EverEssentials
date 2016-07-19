@@ -36,6 +36,7 @@ public class EEMessage extends EMessage {
 
 	public enum EEMessages implements EnumMessage {
 		PREFIX("prefix", 									"[&4Ever&6&lEssentials&f] "),
+		DESCRIPTION("description", 							"Information sur EverEssentials"),
 		
 		AFK_DESCRIPTION("afk.description", 					"Permet de vous signaler AFK."),
 		AFK_ALL_ENABLE("afk.allEnable", 					"&6" + EChat.DISPLAYNAME_FORMAT + " &7est désormais AFK."),
@@ -194,6 +195,8 @@ public class EEMessage extends EMessage {
 		HEAL_OTHERS_STAFF("heal.othersStaff", 			"&7Vous avez soigné &6<player>&7."),
 		HEAL_OTHERS_DEAD_STAFF("heal.othersDeadStaff", 	"&6<player>&7 est déjà mort."),
 		HEAL_ALL_STAFF("heal.allStaff", 				"&7Vous avez soigné tous les joueurs."),
+		
+		HELP_DESCRIPTION("help.description", 			"Affiche l'aide du plugin."),
 		
 		HOME_NAME("home.name", 							"&6&l<name>"),
 		HOME_NAME_HOVER("home.nameHover", 				"&cMonde : &6<world>[RT]&cX : &6<x>[RT]&cY : &6<y>[RT]&cZ : &6<z>"),
