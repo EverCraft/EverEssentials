@@ -17,6 +17,7 @@
 package fr.evercraft.essentials;
 
 import ninja.leaping.configurate.ConfigurationNode;
+
 import fr.evercraft.everapi.plugin.file.EConfig;
 import fr.evercraft.everapi.plugin.file.EMessage;
 
@@ -64,6 +65,9 @@ public class EEConfig extends EConfig {
 		// Teleport
 		addDefault("teleport-delay", 3, "The delay, in seconds, before a user actually teleports.",
 										"If the user moves or gets attacked in this timeframe, the teleport never occurs.");
+		
+		addDefault("tpa-accept-cancellation", 120, 	"Set the timeout, in seconds for players to accept a tpa before the request is cancelled.",
+													"Set to -1 for no timeout.");
 		
 		// AFK
 		addDefault("afk-auto", 3, 		"Auto-AFK",
@@ -166,7 +170,11 @@ public class EEConfig extends EConfig {
 	}
 
 	public long getTeleportDelay() {
-		return this.get("teleport-delay").getLong(0);
+		return this.get("teleport-delay").getLong(0) * 1000;
+	}
+	
+	public long getTpaAcceptCancellation() {
+		return this.get("tpa-accept-cancellation").getLong(-1);
 	}
 	
 	public boolean hasTeleportDelay() {

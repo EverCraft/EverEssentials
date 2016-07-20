@@ -105,6 +105,8 @@ public class ESubject implements EssentialsSubject {
 	public void reload() {
 		reloadData();
 		connect();
+		
+		this.teleports.clear();
 	}
 	
 	public void connect() {
@@ -309,7 +311,7 @@ public class ESubject implements EssentialsSubject {
 		return this.vanish;
 	}
 
-	@Override
+	
 	public boolean setVanish(final boolean vanish) {
 		Optional<EPlayer> player = this.getEPlayer();
 		if(this.vanish != vanish && player.isPresent()) {
@@ -667,25 +669,31 @@ public class ESubject implements EssentialsSubject {
 	 */
 	
 	@Override
-	public boolean addTeleportAsk(UUID uuid, long time) {
-		if(!this.teleports.containsKey(uuid)) {
-			this.teleports.put(uuid, new TeleportRequest(Type.TPA, time));
+	public boolean addTeleportAsk(UUID uuid, long delay) {
+		TeleportRequest teleport = this.teleports.get(uuid);
+		if(teleport == null) {
+			this.teleports.put(uuid, new TeleportRequest(Type.TPA, System.currentTimeMillis() + delay));
 			return true;
+		} else {
+			teleport.setTime(delay);
 		}
 		return false;
 	}
 	
 	@Override
-	public boolean addTeleportAskHere(UUID uuid, long time) {
-		if(!this.teleports.containsKey(uuid)) {
-			this.teleports.put(uuid, new TeleportRequest(Type.TPAHERE, time));
+	public boolean addTeleportAskHere(UUID uuid, long delay) {
+		TeleportRequest teleport = this.teleports.get(uuid);
+		if(teleport == null) {
+			this.teleports.put(uuid, new TeleportRequest(Type.TPAHERE, System.currentTimeMillis() + delay));
 			return true;
+		} else {
+			teleport.setTime(delay);
 		}
 		return false;
 	}
 	
 	@Override
-	public boolean removeTeleport(UUID uuid) {
+	public boolean removeTeleportAsk(UUID uuid) {
 		if(this.teleports.containsKey(uuid)) {
 			this.teleports.remove(uuid);
 			return true;
@@ -693,11 +701,11 @@ public class ESubject implements EssentialsSubject {
 		return false;
 	}
 	
-	public Map<UUID, TeleportRequest> getAllTeleports() {
+	public Map<UUID, TeleportRequest> getAllTeleportsAsk() {
 		return ImmutableMap.copyOf(this.teleports);
 	}
 	
-	public Optional<TeleportRequest> getTeleport(UUID uuid) {
+	public Optional<TeleportRequest> getTeleportAsk(UUID uuid) {
 		return Optional.ofNullable(this.teleports.get(uuid));
 	}
 	
@@ -706,7 +714,12 @@ public class ESubject implements EssentialsSubject {
 	 */
 	
 	@Override
-	public boolean teleport() {
+	public boolean hasTeleport() {
+		return this.teleport.isPresent();
+	}
+	
+	@Override
+	public boolean runTeleport() {
 		if(this.teleport.isPresent()) {
 			this.teleport.get().run();
 			this.teleport = Optional.empty();
@@ -716,8 +729,17 @@ public class ESubject implements EssentialsSubject {
 	}
 	
 	@Override
+	public boolean cancelTeleport() {
+		if(this.teleport.isPresent()) {
+			this.teleport = Optional.empty();
+			return true;
+		}
+		return false;
+	}
+	
+	@Override
 	public boolean setTeleport(Runnable runnable) {
-		return this.setTeleport(this.plugin.getConfigs().getTeleportDelay(), runnable);
+		return this.setTeleport(System.currentTimeMillis() + this.plugin.getConfigs().getTeleportDelay(), runnable);
 	}
 	
 	@Override
@@ -732,8 +754,11 @@ public class ESubject implements EssentialsSubject {
 		return false;
 	}
 	
-	public Optional<Teleport> getTeleport() {
-		return this.teleport;
+	public Optional<Long> getTeleport() {
+		if(this.teleport.isPresent()) {
+			return Optional.of(this.teleport.get().getTime());
+		}
+		return Optional.empty();
 	}
 	
 	/*
@@ -747,13 +772,5 @@ public class ESubject implements EssentialsSubject {
 	
 	public UUID getUniqueId() {
 		return this.identifier;
-	}
-
-	@Override
-	public Optional<Long> getTeleportTime() {
-		if(this.teleport.isPresent()) {
-			return Optional.of(this.teleport.get().getTime());
-		}
-		return Optional.empty();
 	}
 }

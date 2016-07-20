@@ -38,6 +38,7 @@ import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.command.ECommand;
 import fr.evercraft.everapi.server.player.EPlayer;
 import fr.evercraft.everapi.services.essentials.TeleportRequest;
+import fr.evercraft.everapi.services.essentials.TeleportRequest.Type;
 import fr.evercraft.everapi.text.ETextBuilder;
 
 public class EETeleportationAccept extends ECommand<EverEssentials> {
@@ -100,7 +101,7 @@ public class EETeleportationAccept extends ECommand<EverEssentials> {
 	}
 
 	private boolean commandTeleportationAccept(EPlayer player) {
-		Map<UUID, TeleportRequest> teleports = player.getAllTeleports();
+		Map<UUID, TeleportRequest> teleports = player.getAllTeleportsAsk();
 		List<Text> lists = new ArrayList<Text>();
 		
 		Optional<EPlayer> one_player = Optional.empty();
@@ -110,11 +111,19 @@ public class EETeleportationAccept extends ECommand<EverEssentials> {
 			
 			if(player_request.isPresent()) {
 				one_player = player_request;
-				lists.add(ETextBuilder.toBuilder(EEMessages.TPA_PLAYER_LIST_LINE.get()
-						.replaceAll("<player>", player_request.get().getName()))
-					.replace("<accept>", EETeleportationAsk.getButtonAccept(player_request.get().getName()))
-					.replace("<deny>", EETeleportationAsk.getButtonAccept(player_request.get().getName()))
-					.build());
+				if(teleport.getValue().equals(Type.TPA)) {
+					lists.add(ETextBuilder.toBuilder(EEMessages.TPA_PLAYER_LIST_LINE.get()
+							.replaceAll("<player>", player_request.get().getName()))
+						.replace("<accept>", EETeleportationAsk.getButtonAccept(player_request.get().getName()))
+						.replace("<deny>", EETeleportationAsk.getButtonDeny(player_request.get().getName()))
+						.build());
+				} else if(teleport.getValue().equals(Type.TPAHERE)) {
+					lists.add(ETextBuilder.toBuilder(EEMessages.TPA_PLAYER_LIST_LINE.get()
+							.replaceAll("<player>", player_request.get().getName()))
+						.replace("<accept>", EETeleportationAskHere.getButtonAccept(player_request.get().getName()))
+						.replace("<deny>", EETeleportationAskHere.getButtonDeny(player_request.get().getName()))
+						.build());
+				}
 			}
 		}
 
@@ -134,20 +143,41 @@ public class EETeleportationAccept extends ECommand<EverEssentials> {
 	
 
 	private boolean commandTeleportationAccept(final EPlayer player, final EPlayer player_request) {
-		Optional<TeleportRequest> teleports = player.getTeleport(player_request.getUniqueId());
+		Optional<TeleportRequest> teleports = player.getTeleportAsk(player_request.getUniqueId());
 		
 		// Il y a une demande de téléportation
 		if(teleports.isPresent()) {
 			// La demande est toujours valide
 			if(!teleports.get().isExpire()) {
 				long delay = this.plugin.getConfigs().getTeleportDelay();
-				if(delay > 0) {
-					player_request.sendMessage(EEMessages.PREFIX.get() + EEMessages.TPA_STAFF_ACCEPT.get()
-							.replaceAll("<player>", player.getName())
-							.replaceAll("<delay>", String.valueOf(delay)));
+				String delay_format = this.plugin.getEverAPI().getManagerUtils().getDate().formatDateDiff(System.currentTimeMillis() + delay);
+				
+				player.removeTeleportAsk(player_request.getUniqueId());
+				
+				if(teleports.get().getType().equals(TeleportRequest.Type.TPA)) {
+					if(delay > 0) {
+						player_request.sendMessage(EEMessages.PREFIX.get() + EEMessages.TPA_STAFF_ACCEPT.get()
+								.replaceAll("<player>", player.getName())
+								.replaceAll("<delay>", delay_format));
+						player_request.sendMessage(EEMessages.PREFIX.get() + EEMessages.TELEPORT_DELAY.get()
+								.replaceAll("<delay>", delay_format));
+						player.sendMessage(EEMessages.PREFIX.get() + EEMessages.TPA_PLAYER_ACCEPT.get()
+								.replaceAll("<player>", player_request.getName())
+								.replaceAll("<delay>", delay_format));
+					}
+					final Transform<World> location = player.getTransform();
+					player.setTeleport(delay, () -> this.teleportAsk(player_request, player, location));
+				} else {
+					if(delay > 0) {
+						player_request.sendMessage(EEMessages.PREFIX.get() + EEMessages.TPAHERE_STAFF_ACCEPT.get()
+								.replaceAll("<player>", player.getName())
+								.replaceAll("<delay>", delay_format));
+						player_request.sendMessage(EEMessages.PREFIX.get() + EEMessages.TELEPORT_DELAY.get()
+								.replaceAll("<delay>", delay_format));
+					}
+					final Transform<World> location = player_request.getTransform();
+					player.setTeleport(delay, () -> this.teleportAskHere(player_request, player, location));
 				}
-				final Transform<World> location = player_request.getTransform();
-				player.setTeleport(() -> this.teleport(player_request, player, location));
 				
 			// La demande a expiré
 			} else {
@@ -162,7 +192,37 @@ public class EETeleportationAccept extends ECommand<EverEssentials> {
 		return false;
 	}
 	
-	public void teleport(final EPlayer player_request, final EPlayer player, final Transform<World> teleport) {
-		
+	public void teleportAsk(final EPlayer player_request, final EPlayer player, final Transform<World> teleport) {
+		if(player_request.setTransform(teleport)) {
+			player_request.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.getText())
+					.append(EEMessages.TPA_STAFF_TELEPORT.get()
+						.replaceAll("<player>", player.getName()))
+					.replace("<destination>", EETeleportationAsk.getButtonPosition(player.getName(), teleport.getLocation()))
+					.build());
+			player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.getText())
+					.append(EEMessages.TPA_PLAYER_TELEPORT.get())
+					.replace("<player>", EETeleportationAsk.getButtonPosition(player_request.getName(), teleport.getLocation()))
+					.build());
+		} else {
+			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.TPA_ERROR_LOCATION.get()
+						.replaceAll("<player>", player_request.getName()));
+		}
+	}
+	
+	public void teleportAskHere(final EPlayer player_request, final EPlayer player, final Transform<World> teleport) {
+		if(player.setTransform(teleport)) {
+			player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.getText())
+					.append(EEMessages.TPAHERE_PLAYER_TELEPORT.get()
+						.replaceAll("<player>", player.getName()))
+					.replace("<destination>", EETeleportationAsk.getButtonPosition(player.getName(), teleport.getLocation()))
+					.build());
+			player_request.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.getText())
+					.append(EEMessages.TPAHERE_STAFF_TELEPORT.get())
+					.replace("<player>", EETeleportationAsk.getButtonPosition(player_request.getName(), teleport.getLocation()))
+					.build());
+		} else {
+			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.TPAHERE_ERROR_LOCATION.get()
+						.replaceAll("<player>", player_request.getName()));
+		}
 	}
 }

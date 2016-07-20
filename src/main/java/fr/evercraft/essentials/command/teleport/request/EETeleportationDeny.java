@@ -101,7 +101,7 @@ public class EETeleportationDeny extends ECommand<EverEssentials> {
 	}
 
 	private boolean commandTeleportationDeny(EPlayer player) {
-		Map<UUID, TeleportRequest> teleports = player.getAllTeleports();
+		Map<UUID, TeleportRequest> teleports = player.getAllTeleportsAsk();
 		List<Text> lists = new ArrayList<Text>();
 		
 		Optional<EPlayer> one_player = Optional.empty();
@@ -115,13 +115,13 @@ public class EETeleportationDeny extends ECommand<EverEssentials> {
 					lists.add(ETextBuilder.toBuilder(EEMessages.TPA_PLAYER_LIST_LINE.get()
 							.replaceAll("<player>", player_request.get().getName()))
 						.replace("<accept>", EETeleportationAsk.getButtonAccept(player_request.get().getName()))
-						.replace("<deny>", EETeleportationAsk.getButtonAccept(player_request.get().getName()))
+						.replace("<deny>", EETeleportationAsk.getButtonDeny(player_request.get().getName()))
 						.build());
 				} else if(teleport.getValue().equals(Type.TPAHERE)) {
 					lists.add(ETextBuilder.toBuilder(EEMessages.TPA_PLAYER_LIST_LINE.get()
 							.replaceAll("<player>", player_request.get().getName()))
 						.replace("<accept>", EETeleportationAskHere.getButtonAccept(player_request.get().getName()))
-						.replace("<deny>", EETeleportationAskHere.getButtonAccept(player_request.get().getName()))
+						.replace("<deny>", EETeleportationAskHere.getButtonDeny(player_request.get().getName()))
 						.build());
 				}
 			}
@@ -142,13 +142,13 @@ public class EETeleportationDeny extends ECommand<EverEssentials> {
 	}
 	
 	private boolean commandTeleportationDeny(final EPlayer player, final EPlayer player_request) {
-		Optional<TeleportRequest> teleports = player.getTeleport(player_request.getUniqueId());
+		Optional<TeleportRequest> teleports = player.getTeleportAsk(player_request.getUniqueId());
 		
 		// Il y a une demande de téléportation
 		if(teleports.isPresent()) {
 			// La demande est toujours valide
 			if(!teleports.get().isExpire()) {
-				player.removeTeleport(player_request.getUniqueId());
+				player.removeTeleportAsk(player_request.getUniqueId());
 				
 				player.sendMessage(EEMessages.PREFIX.get() + EEMessages.TPAHERE_PLAYER_DENY.get()
 						.replaceAll("<player>", player_request.getName()));

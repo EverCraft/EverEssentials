@@ -168,12 +168,20 @@ public class EEPlayerListeners {
 	
 	@Listener
 	public void onPlayerMove(MoveEntityEvent event) {
-		// AFK
 		if(event.getTargetEntity() instanceof Player && 
 				(event.getToTransform().getPitch() != event.getFromTransform().getPitch() || event.getToTransform().getYaw() != event.getFromTransform().getYaw())) {
-			Optional<EPlayer> player = this.plugin.getEServer().getEPlayer((Player) event.getTargetEntity());
-			if(player.isPresent()) {
-				player.get().updateLastActivated();
+			Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer((Player) event.getTargetEntity());
+			if(optPlayer.isPresent()) {
+				EPlayer player = optPlayer.get();
+				
+				// AFK
+				player.updateLastActivated();
+				
+				// Teleport
+				if(player.hasTeleport()) {
+					player.cancelTeleport();
+					player.sendMessage(EEMessages.PREFIX.get() + EEMessages.TELEPORT_ERROR_DELAY.get());
+				}
 			}
 		}
 	}

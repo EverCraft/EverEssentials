@@ -85,15 +85,14 @@ public class EScheduler {
 		
 		for(ESubject player : this.plugin.getManagerServices().getEssentials().getOnlines()) {			
 			// Teleport Ask
-			for(Entry<UUID, TeleportRequest> teleport : player.getAllTeleports().entrySet()) {
-				if(!teleport.getValue().isExpire() && teleport.getValue().getTime() >= current_time) {
+			for(Entry<UUID, TeleportRequest> teleport : player.getAllTeleportsAsk().entrySet()) {
+				if(!teleport.getValue().isExpire() && teleport.getValue().getTime().isPresent() &&  teleport.getValue().getTime().get() <= current_time) {
 					teleport.getValue().setExpire(true);
-					// TODO Message
 				}
 			}
 			
 			// Teleport Delay
-			if(player.getTeleport().isPresent() && player.getTeleport().get().getTime() >= current_time) {
+			if(player.getTeleport().isPresent() && player.getTeleport().get() <= current_time) {
 				players.add(player.getUniqueId());
 			}
 			
@@ -125,9 +124,9 @@ public class EScheduler {
 			if(optPlayer.isPresent()) {
 				EPlayer player = optPlayer.get();
 				// Teleport Delay
-				Optional<Long> teleport = player.getTeleportTime();
-				if(teleport.isPresent() && teleport.get() >= current_time) {
-					player.teleport();
+				Optional<Long> teleport = player.getTeleport();
+				if(teleport.isPresent() && teleport.get() <= current_time) {
+					player.runTeleport();
 				}
 				
 				// AFK

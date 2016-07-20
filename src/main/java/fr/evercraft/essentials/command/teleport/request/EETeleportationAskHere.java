@@ -35,6 +35,7 @@ import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ECommand;
 import fr.evercraft.everapi.server.player.EPlayer;
+import fr.evercraft.everapi.text.ETextBuilder;
 
 public class EETeleportationAskHere extends ECommand<EverEssentials> {
 	
@@ -51,7 +52,7 @@ public class EETeleportationAskHere extends ECommand<EverEssentials> {
 	}
 
 	public Text help(final CommandSource source) {
-		return Text.builder("/tpahere <joueur>").onClick(TextActions.suggestCommand("/tpahere "))
+		return Text.builder("/tpahere <" + EAMessages.ARGS_PLAYER.get() + ">").onClick(TextActions.suggestCommand("/tpahere "))
 					.color(TextColors.RED).build();
 	}
 	
@@ -71,7 +72,7 @@ public class EETeleportationAskHere extends ECommand<EverEssentials> {
 			if(source instanceof EPlayer) {
 				Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(args.get(0));
 				// Le joueur existe
-				if(optPlayer.isPresent()){
+				if(optPlayer.isPresent()) {
 					resultat = commandTeleportation((EPlayer) source, optPlayer.get());
 				// Joueur introuvable
 				} else {
@@ -89,11 +90,33 @@ public class EETeleportationAskHere extends ECommand<EverEssentials> {
 	}
 	
 	private boolean commandTeleportation(EPlayer player, EPlayer destination) {
-		
+		if(!player.equals(destination)) {
+			if(destination.isToggle()) {
+				if(destination.addTeleportAsk(player.getUniqueId(), this.plugin.getConfigs().getTpaAcceptCancellation())) {
+					player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.TPAHERE_STAFF_QUESTION.get()
+							.replaceAll("<player>", destination.getName())));
+					
+					destination.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.getText())
+									.append(EEMessages.TPAHERE_PLAYER_QUESTION.get()
+										.replaceAll("<player>", player.getName()))
+									.replace("<accept>", EETeleportationAsk.getButtonAccept(player.getName()))
+									.replace("<deny>", EETeleportationAsk.getButtonDeny(player.getName()))
+									.build());
+				} else {
+					player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.TPAHERE_ERROR_DELAY.get()
+							.replaceAll("<player>", destination.getName())));
+				}
+			} else {
+				player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.TOGGLE_DISABLED.get()
+						.replaceAll("<player>", destination.getName())));
+			}
+		} else {
+			player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.TPAHERE_ERROR_EQUALS.get()));
+		}
 		return false;
 	}
 	
-	public Text getButtonPosition(final String player, final Location<World> location){
+	public static Text getButtonPosition(final String player, final Location<World> location){
 		return EChat.of(EEMessages.TPAHERE_DESTINATION.get().replaceAll("<player>", player)).toBuilder()
 					.onHover(TextActions.showText(EChat.of(EEMessages.TPAHERE_DESTINATION_HOVER.get()
 							.replaceAll("<world>", location.getExtent().getName())
