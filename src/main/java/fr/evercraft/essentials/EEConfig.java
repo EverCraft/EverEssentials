@@ -92,6 +92,9 @@ public class EEConfig extends EConfig {
 		// Butcher
 		addDefault("butcher-max-radius", 1000);
 		
+		// Blacklist item
+		addDefault("blacklist", "minecraft:dirt", "minecraft:sand");
+		
 		// Warp
 		addDefault("warp-permission", true, "Set this true to enable permission per warp.");
 		

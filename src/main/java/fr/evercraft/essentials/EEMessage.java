@@ -36,6 +36,7 @@ public class EEMessage extends EMessage {
 
 	public enum EEMessages implements EnumMessage {
 		PREFIX("prefix", 									"[&4Ever&6&lEssentials&f] "),
+		DESCRIPTION("description", 							"Information sur EverEssentials"),
 		
 		AFK_DESCRIPTION("afk.description", 					"Permet de vous signaler AFK."),
 		AFK_ALL_ENABLE("afk.allEnable", 					"&6" + EChat.DISPLAYNAME_FORMAT + " &7est désormais AFK."),
@@ -195,6 +196,8 @@ public class EEMessage extends EMessage {
 		HEAL_OTHERS_DEAD_STAFF("heal.othersDeadStaff", 	"&6<player>&7 est déjà mort."),
 		HEAL_ALL_STAFF("heal.allStaff", 				"&7Vous avez soigné tous les joueurs."),
 		
+		HELP_DESCRIPTION("help.description", 			"Affiche l'aide du plugin."),
+		
 		HOME_NAME("home.name", 							"&6&l<name>"),
 		HOME_NAME_HOVER("home.nameHover", 				"&cMonde : &6<world>[RT]&cX : &6<x>[RT]&cY : &6<y>[RT]&cZ : &6<z>"),
 		
@@ -240,9 +243,16 @@ public class EEMessage extends EMessage {
 		SETHOME_MULTIPLE_ERROR_MAX("sethome.multipleErrorMax", 			"&cVous ne pouvez pas créer plus de <nombre> résidence(s)."),
 		SETHOME_MULTIPLE_NO_PERMISSION("sethome.multipleNoPermission", 	"&cVous n'avez pas la permission d'avoir plusieurs résidences."),
 		
-		INFO_DESCRIPTION("info.description", "Connaître le type d'un item"),
+		INFO_DESCRIPTION("info.description", "Indique le type d'un item"),
 		INFO_PLAYER("info.player", "&7Le type de l'objet <item> &7est &6<type>&7."),
 		INFO_ITEM_COLOR("info.itemColor", "&6"),
+		
+		ITEM_DESCRIPTION("item.description", "Donne un item spécifique"),
+		ITEM_ERROR_ITEM_NOT_FOUND("item.errorItemNotFound", "&cErreur : L'objet <item> n'existe pas."),
+		ITEM_ERROR_ITEM_BLACKLIST("item.errorItemBlacklist", "&cErreur : Vous ne pouvez pas vous donner cet objet car il se trouve dans la liste noire."),
+		ITEM_ERROR_QUANTITY("item.errorQuantity", "&cErreur : Vous ne pouvez pas vous donner plus que <nb> objet(s)."),
+		ITEM_GIVE("item.give", "&7Vous avez reçu <item>"),
+		ITEM_GIVE_COLOR("item.giveColor", "&6"),
 		
 		JUMP_DESCRIPTION("jump.description", "Vous téléporte à l'endroit de votre choix"),
 		JUMP_TELEPORT("jump.teleport", "&7Vous avez été téléporté à l'endroit de votre choix."),
