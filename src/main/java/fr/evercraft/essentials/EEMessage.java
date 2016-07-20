@@ -248,6 +248,11 @@ public class EEMessage extends EMessage {
 		INFO_ITEM_COLOR("info.itemColor", "&6"),
 		
 		ITEM_DESCRIPTION("item.description", "Donne un item spécifique"),
+		ITEM_ERROR_ITEM_NOT_FOUND("item.errorItemNotFound", "&cErreur : L'objet <item> n'existe pas."),
+		ITEM_ERROR_ITEM_BLACKLIST("item.errorItemBlacklist", "&cErreur : Vous ne pouvez pas vous donner cet objet car il se trouve dans la liste noire."),
+		ITEM_ERROR_QUANTITY("item.errorQuantity", "&cErreur : Vous ne pouvez pas vous donner plus que <nb> objet(s)."),
+		ITEM_GIVE("item.give", "&7Vous avez reçu <item>"),
+		ITEM_GIVE_COLOR("item.giveColor", "&6"),
 		
 		JUMP_DESCRIPTION("jump.description", "Vous téléporte à l'endroit de votre choix"),
 		JUMP_TELEPORT("jump.teleport", "&7Vous avez été téléporté à l'endroit de votre choix."),

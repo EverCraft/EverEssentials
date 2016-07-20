@@ -82,6 +82,7 @@ public class EEManagerCommands extends TreeMap<String, ECommand<EverEssentials>>
 		register(new EEHomeSet(this.plugin));
 		register(new EEHomeOthers(this.plugin));
 		register(new EEInfo(this.plugin));
+		register(new EEItem(this.plugin));
 		register(new EEJump(this.plugin));
 		register(new EEKick(this.plugin));
 		register(new EEKickall(this.plugin));
