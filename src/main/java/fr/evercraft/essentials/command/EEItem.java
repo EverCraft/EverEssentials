@@ -51,7 +51,7 @@ public class EEItem extends EReloadCommand<EverEssentials> {
 	
 	@Override
 	public void reload() {
-		this.items = UtilsItemTypes.getItemTypes();
+		this.items = UtilsItemTypes.getItems();
 		this.blacklist = getBlacklist();
 	}
 
