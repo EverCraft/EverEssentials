@@ -724,14 +724,14 @@ public class EEMessage extends EMessage {
 		
 		WORLDBORDER_DESCRIPTION("worldborder.description", "Gère la bordure des mondes"),
 		
-		WORLDBORDER_INFO_DESCRIPTION("worldborder.info.description", "Affiche les différentes informations sur la bordure d'un monde"),
+		WORLDBORDER_INFO_DESCRIPTION("worldborder.info.description", "Affiche les informations sur la bordure d'un monde"),
 		WORLDBORDER_INFO_TITLE("worldborder.info.title", "&6Monde : <world>"),
-		WORLDBORDER_INFO_LOCATION("worldborder.info.location", "    &6&l➤  &7Centre : <position>"),
+		WORLDBORDER_INFO_LOCATION("worldborder.info.location", "    &6&l➤  &6Centre : <position>"),
 		WORLDBORDER_INFO_LOCATION_POSITION("worldborder.info.locationPosition", "&6(&c<x>&6, &c<z>&6, &c<world>&6)"),
 		WORLDBORDER_INFO_LOCATION_POSITION_HOVER("worldborder.info.locationPositionHover", "&cMonde : &6<world>[RT]&cX : &6<x>[RT]&cZ : &6<z>"),
-		WORLDBORDER_INFO_BORDER("worldborder.info.border", "    &6&l➤  &7La bordure est de &6<nb> &7bloc(s)"),
-		WORLDBORDER_INFO_BUFFER("worldborder.info.buffer", "    &6&l➤  &7Augmentation des dégats tous les &6<nb> &7bloc(s)"),
-		WORLDBORDER_INFO_DAMAGE("worldborder.info.damage", "    &6&l➤  &7Dégat(s) : &6<nb> &7coeur(s)"),
+		WORLDBORDER_INFO_BORDER("worldborder.info.border", "    &6&l➤  &6La bordure est de &a<nb> &6bloc(s)"),
+		WORLDBORDER_INFO_BUFFER("worldborder.info.buffer", "    &6&l➤  &6Augmentation des dégats tous les &a<nb> &6bloc(s)"),
+		WORLDBORDER_INFO_DAMAGE("worldborder.info.damage", "    &6&l➤  &6Dégat(s) : &a<nb> &6coeur(s)"),
 		
 		WORLDS_DESCRIPTION("worlds.description", "Téléporte le joueur dans le monde de votre choix"),
 		WORLDS_END_DESCRIPTION("worlds.endDescription", "Vous téléporte dans le monde du néant"),

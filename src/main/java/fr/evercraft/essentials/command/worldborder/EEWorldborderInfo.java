@@ -149,12 +149,12 @@ public class EEWorldborderInfo extends ESubCommand<EverEssentials> {
 	
 	public Text getButtonLocation(final World world){
 		return EChat.of(EEMessages.WORLDBORDER_INFO_LOCATION_POSITION.get()
-					.replaceAll("<x>", String.valueOf(world.getWorldBorder().getCenter().getX()))
-					.replaceAll("<z>", String.valueOf(world.getWorldBorder().getCenter().getZ()))
+					.replaceAll("<x>", String.valueOf(Math.floor(world.getWorldBorder().getCenter().getX())))
+					.replaceAll("<z>", String.valueOf(Math.floor(world.getWorldBorder().getCenter().getZ())))
 					.replaceAll("<world>", world.getName())).toBuilder()
 				.onHover(TextActions.showText(EChat.of(EEMessages.WORLDBORDER_INFO_LOCATION_POSITION_HOVER.get()
-						.replaceAll("<x>", String.valueOf(world.getWorldBorder().getCenter().getX()))
-						.replaceAll("<z>", String.valueOf(world.getWorldBorder().getCenter().getZ()))
+						.replaceAll("<x>", String.valueOf(Math.floor(world.getWorldBorder().getCenter().getX())))
+						.replaceAll("<z>", String.valueOf(Math.floor(world.getWorldBorder().getCenter().getZ())))
 						.replaceAll("<world>", world.getName()))))
 				.build();
 	}
