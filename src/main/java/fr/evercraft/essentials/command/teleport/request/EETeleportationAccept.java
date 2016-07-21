@@ -170,7 +170,7 @@ public class EETeleportationAccept extends ECommand<EverEssentials> {
 						player_request.sendMessage(EEMessages.PREFIX.get() + EEMessages.TPAHERE_STAFF_ACCEPT.get()
 								.replaceAll("<player>", player.getName())
 								.replaceAll("<delay>", delay_format));
-						player.sendMessage(EEMessages.PREFIX.get() + EEMessages.TELEPORT_DELAY.get()
+						player.sendMessage(EEMessages.PREFIX.get() + EEMessages.TPAHERE_PLAYER_ACCEPT.get()
 								.replaceAll("<player>", player_request.getName())
 								.replaceAll("<delay>", delay_format));
 					}

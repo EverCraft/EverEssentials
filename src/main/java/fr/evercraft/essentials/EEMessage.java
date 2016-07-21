@@ -498,7 +498,6 @@ public class EEMessage extends EMessage {
 		TPPOS_OTHERS_STAFF("tppos.othersStaff", "&7Vous téléportez &6<player> &7à cette <position>&7."),
 		TPPOS_OTHERS_ERROR("tppos.othersError", "&7Impossible de téléporter &6<player> &7à cette <position>&7."),
 		
-		TELEPORT_DELAY("teleport.delay", "&7Votre téléportation commencera dans &6<delay>&7. Ne bougez pas."),
 		TELEPORT_ERROR_DELAY("teleport.errorDelay", "&cVous avez bougé donc votre demande de téléportation a été annulé."),
 		
 		TPA_DESCRIPTION("tpa.description", "Envoie une demande de téléportation à un joueur"),
@@ -530,7 +529,7 @@ public class EEMessage extends EMessage {
 		TPAHERE_STAFF_ACCEPT("tpahere.staffAccept", "&7Votre demande de téléportation a été acceptée par &6<player>&7."),
 		TPAHERE_STAFF_DENY("tpahere.staffDeny", "&7Votre demande de téléportation a été refusée par &6<player>&7."),
 		TPAHERE_STAFF_EXPIRE("tpahere.staffExpire", "&7Votre demande de téléportation à &6<player> vient d'expirée&7."),
-		TPAHERE_STAFF_TELEPORT("tpahere.staffTeleport", "&7Vous avez été téléporté vers &6<destination>&7."),
+		TPAHERE_STAFF_TELEPORT("tpahere.staffTeleport", "&6<player>&7 a été téléporté à vous."),
 		TPAHERE_PLAYER_QUESTION("tpahere.playerQuestion", "&6<player> &7souhaite que vous vous téléportiez à lui/elle : <accept> <deny>[RT]"
 														+ "&7Cette demande de téléportation expira dans <delay>."),
 		TPAHERE_PLAYER_QUESTION_ACCEPT("tpahere.playerQuestionAccept", "&2&l&nSe téléporter"),
@@ -539,6 +538,7 @@ public class EEMessage extends EMessage {
 		TPAHERE_PLAYER_QUESTION_DENY_HOVER("tpahere.playerQuestionDenyHover", "&cCliquez ici pour refuser la téléportation de &6<player>&7."),
 		TPAHERE_PLAYER_EXPIRE("tpahere.playerExpire", "&cLa demande de téléportation de &6<player> &ca expirée."),
 		TPAHERE_PLAYER_DENY("tpahere.playerDeny", "&7La demande de &6<player> &7 a bien été refusé."),
+		TPAHERE_PLAYER_ACCEPT("teleport.playerAccept", "&7Votre téléportation commencera dans &6<delay>&7. Ne bougez pas."),
 		TPAHERE_PLAYER_TELEPORT("tpahere.playerTeleport", "&7Vous avez été téléporté vers &6<destination>&7."),
 		TPAHERE_PLAYER_EMPTY("tpahere.playerEmpty", "&cVous n'avez aucune demande de téléportation de &6<player>&c."),
 		TPAHERE_ERROR_EQUALS("tpahere.errorEquals", "&cImpossible de vous envoyer une demande à vous même."),
