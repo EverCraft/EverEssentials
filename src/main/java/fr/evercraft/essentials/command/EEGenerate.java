@@ -33,6 +33,7 @@ import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.EReloadCommand;
+import fr.evercraft.everapi.server.player.EPlayer;
 import fr.evercraft.everapi.text.ETextBuilder;
 
 public class EEGenerate extends EReloadCommand<EverEssentials> {
@@ -74,6 +75,7 @@ public class EEGenerate extends EReloadCommand<EverEssentials> {
 					suggests.add(world.getProperties().getWorldName());
 				}
 			}
+			suggests.add("confirmation");
 		} else if(args.size() == 2){
 			suggests.add("confirmation");
 		}
@@ -83,22 +85,45 @@ public class EEGenerate extends EReloadCommand<EverEssentials> {
 	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Résultat de la commande :
 		boolean resultat = false;
-		if(args.size() == 1) {
-			resultat = commandGenerateWarning(source, args.get(0));
-		} else if(args.size() == 2 && args.get(1).equalsIgnoreCase("confirmation")){
-			resultat = commandGenerate(source, args.get(0));
+		if(source instanceof EPlayer) {
+			EPlayer player = (EPlayer) source;
+			if(args.size() == 0){
+				resultat = commandGenerateWarning(player);
+			} else if(args.size() == 1) {
+				if(args.get(0).equalsIgnoreCase("confirmation")){
+					commandGenerate(player);
+				} else {
+					resultat = commandGenerateWarning(player, args.get(0));
+				}
+			} else if(args.size() == 2 && args.get(1).equalsIgnoreCase("confirmation")){
+				resultat = commandGenerate(player, args.get(0));
+			} else {
+				source.sendMessage(help(source));
+			}
 		} else {
-			source.sendMessage(help(source));
+			source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
 		}
 		return resultat;
 	}
 	
-	public boolean commandGenerateWarning(final CommandSource source, String world_name) {
+	public boolean commandGenerateWarning(final EPlayer player) {
+			World world =player.getWorld();
+			int chunk = (int) Math.round(Math.pow((world.getWorldBorder().getDiameter() / 16), 2)); 
+			player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.getText())
+				.append(EEMessages.GENERATE_WARNING.get()
+					.replaceAll("<world>", world.getName())
+					.replaceAll("<chunk>", String.valueOf(chunk)))
+					.replace("<confirmation>", getButtonConfirmation(world.getName()))
+				.build());
+			return true;
+	}
+	
+	public boolean commandGenerateWarning(final EPlayer player, final String world_name) {
 		Optional<World> optWorld = this.plugin.getEServer().getWorld(world_name);
 		if(optWorld.isPresent()) {
 			World world = optWorld.get();
 			int chunk = (int) Math.round(Math.pow((world.getWorldBorder().getDiameter() / 16), 2)); 
-			source.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.getText())
+			player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.getText())
 				.append(EEMessages.GENERATE_WARNING.get()
 					.replaceAll("<world>", world.getName())
 					.replaceAll("<chunk>", String.valueOf(chunk)))
@@ -106,13 +131,13 @@ public class EEGenerate extends EReloadCommand<EverEssentials> {
 				.build());
 			return true;
 		} else {
-			source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.WORLD_NOT_FOUND.get()
+			player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.WORLD_NOT_FOUND.get()
 				.replaceAll("<world>", world_name)));
 			return false;
 		}
 	}
 
-	private boolean commandGenerate(final CommandSource source, String world_name) {
+	private boolean commandGenerate(final EPlayer player, String world_name) {
 		Optional<World> optWorld = this.plugin.getEServer().getWorld(world_name);
 		if(optWorld.isPresent()) {
 			World world = optWorld.get();
@@ -124,12 +149,29 @@ public class EEGenerate extends EReloadCommand<EverEssentials> {
 				.tickInterval(this.tickInterval)
 				.chunksPerTick(this.chunksPerTick)
 			.start();
+			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.GENERATE_LAUNCH.get()
+					.replaceAll("<world>", world.getName()));
 			return true;
 		} else {
-			source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.WORLD_NOT_FOUND.get()
+			player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.WORLD_NOT_FOUND.get()
 					.replaceAll("<world>", world_name)));
 			return false;
 		}
+	}
+	
+	private boolean commandGenerate(final EPlayer player) {
+			World world = player.getWorld();
+			world.getWorldBorder()
+				.newChunkPreGenerate(world)
+				.logger(this.plugin.getLogger().getLogger())
+				.owner(this.plugin)
+				.tickPercentLimit(this.tickPercentLimit)
+				.tickInterval(this.tickInterval)
+				.chunksPerTick(this.chunksPerTick)
+			.start();
+			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.GENERATE_LAUNCH.get()
+					.replaceAll("<world>", world.getName()));
+			return true;
 	}
 	
 	public Text getButtonConfirmation(final String world_name){
