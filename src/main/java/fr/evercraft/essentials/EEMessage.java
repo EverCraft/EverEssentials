@@ -162,7 +162,7 @@ public class EEMessage extends EMessage {
 		GENERATE_WARNING_VALID("generate.warning.confirmationValid", 				"&2&nConfirmer"),
 		GENERATE_WARNING_VALID_HOVER("generate.warning.confirmationValidHover", 	"&cCliquez ici pour lancer la génération des chunks dans le monde &6<world>&7."),
 		GENERATE_LAUNCH("generate.launch", 											"&7Génération du monde &6<world> &7lancée avec succès."),
-		
+				
 		GETPOS_DESCRIPTION("getpos.description", 		"Affiche les coordonnées d'un joueur."),
 		GETPOS_MESSAGE("getpos.message", 				"&7Voici votre &6<position>&7."),
 		GETPOS_MESSAGE_OTHERS("getpos.messageOthers", 	"&7Voici la <position> &7de &6<player>&7."),
@@ -505,7 +505,7 @@ public class EEMessage extends EMessage {
 		TPA_DESTINATION("tpa.destination", "&6&l<player>"),
 		TPA_DESTINATION_HOVER("tpa.destinationHover", "&cMonde : &6<world>[RT]&cX : &6<x>[RT]&cY : &6<y>[RT]&cZ : &6<z>"),
 		TPA_STAFF_QUESTION("tpa.staffQuestion", "&7Votre demande a été envoyée à &6<player>&7."),
-		TPA_STAFF_ACCEPT("tpa.staffAccept", "&7Votre demande de téléportation a été acceptée par &6<player>&7. &7Votre téléportation commencera dans &6<delay>&7. Ne bougez pas."),
+		TPA_STAFF_ACCEPT("tpa.staffAccept", "&6<player> &7souhaite se téléporter vers vous : <accept> <deny>[RT]&7Cette demande de téléportation expira dans <delay>."),
 		TPA_STAFF_DENY("tpa.staffDeny", "&7Votre demande de téléportation a été refusée par &6<player>&7."),
 		TPA_STAFF_EXPIRE("tpa.staffExpire", "&7Votre demande de téléportation à &6<player> vient d'expirée&7."),
 		TPA_STAFF_TELEPORT("tpa.staffTeleport", "&7Vous avez été téléporté vers &6<destination>&7."),
