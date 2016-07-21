@@ -150,11 +150,17 @@ public class EETeleportationDeny extends ECommand<EverEssentials> {
 			if(!teleports.get().isExpire()) {
 				player.removeTeleportAsk(player_request.getUniqueId());
 				
-				player.sendMessage(EEMessages.PREFIX.get() + EEMessages.TPAHERE_PLAYER_DENY.get()
-						.replaceAll("<player>", player_request.getName()));
-				player_request.sendMessage(EEMessages.PREFIX.get() + EEMessages.TPA_STAFF_DENY.get()
-						.replaceAll("<player>", player.getName()));
-				
+				if(teleports.get().getType().equals(Type.TPA)) {
+					player.sendMessage(EEMessages.PREFIX.get() + EEMessages.TPAHERE_PLAYER_DENY.get()
+							.replaceAll("<player>", player_request.getName()));
+					player_request.sendMessage(EEMessages.PREFIX.get() + EEMessages.TPA_STAFF_DENY.get()
+							.replaceAll("<player>", player.getName()));
+				} else if(teleports.get().getType().equals(Type.TPAHERE)) {
+					player.sendMessage(EEMessages.PREFIX.get() + EEMessages.TPAHERE_PLAYER_DENY.get()
+							.replaceAll("<player>", player_request.getName()));
+					player_request.sendMessage(EEMessages.PREFIX.get() + EEMessages.TPA_STAFF_DENY.get()
+							.replaceAll("<player>", player.getName()));
+				}				
 			// La demande a expiré
 			} else {
 				player.sendMessage(EEMessages.PREFIX.get() + EEMessages.TPA_PLAYER_EXPIRE.get()
