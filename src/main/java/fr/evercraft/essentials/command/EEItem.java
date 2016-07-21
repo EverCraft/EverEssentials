@@ -23,6 +23,7 @@ import java.util.Optional;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
+import org.spongepowered.api.data.key.Key;
 import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.text.Text;
@@ -72,13 +73,16 @@ public class EEItem extends EReloadCommand<EverEssentials> {
 		List<String> suggests = new ArrayList<String>();
 		if(args.size() == 1){
 			for(ItemType type : this.items){
-				suggests.add(type.getName().replaceAll("minecraft:", ""));
+				suggests.add(type.getId().replaceAll("minecraft:", ""));
 			}
 		} else if(args.size() == 2){
-			suggests.add("1");
 			Optional<ItemType> optItem = UtilsItemTypes.getItemType(args.get(0));
 			if(optItem.isPresent()){
-				suggests.add(String.valueOf(optItem.get().getMaxStackQuantity()));
+				ItemStack item = ItemStack.of(optItem.get(), 1);
+				Optional<Key<?>> optKey = UtilsItemTypes.getProperty(item);
+				if(optKey.isPresent()){
+					 // item.get(Keys.a)
+				}
 			}
 		} else if(args.size() == 3){
 			
