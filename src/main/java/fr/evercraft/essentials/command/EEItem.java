@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
+import org.spongepowered.api.CatalogType;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.item.ItemType;
@@ -36,6 +37,7 @@ import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.EReloadCommand;
 import fr.evercraft.everapi.server.player.EPlayer;
+import fr.evercraft.everapi.sponge.UtilsItemStack;
 import fr.evercraft.everapi.sponge.UtilsItemTypes;
 import fr.evercraft.everapi.text.ETextBuilder;
 
@@ -73,6 +75,7 @@ public class EEItem extends EReloadCommand<EverEssentials> {
 		if(args.size() == 1){
 			for(ItemType type : this.items){
 				suggests.add(type.getName().replaceAll("minecraft:", ""));
+				suggests.add(type.getName());
 			}
 		} else if(args.size() == 2){
 			suggests.add("1");
@@ -81,7 +84,15 @@ public class EEItem extends EReloadCommand<EverEssentials> {
 				suggests.add(String.valueOf(optItem.get().getMaxStackQuantity()));
 			}
 		} else if(args.size() == 3){
-			
+			Optional<ItemStack> optItem = UtilsItemStack.getItem(args.get(0));
+			if(optItem.isPresent()){
+				Optional<Class<? extends CatalogType>> catalogType = UtilsItemTypes.getCatalogType(optItem.get());
+				if(catalogType.isPresent()) {
+					for(CatalogType type : this.plugin.getGame().getRegistry().getAllOf(catalogType.get())){
+						suggests.add(type.getId());
+					}
+				}
+			}
 		}
 		return suggests;
 	}
