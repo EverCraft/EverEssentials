@@ -159,20 +159,19 @@ public class EETeleportationAccept extends ECommand<EverEssentials> {
 						player_request.sendMessage(EEMessages.PREFIX.get() + EEMessages.TPA_STAFF_ACCEPT.get()
 								.replaceAll("<player>", player.getName())
 								.replaceAll("<delay>", delay_format));
-						player_request.sendMessage(EEMessages.PREFIX.get() + EEMessages.TELEPORT_DELAY.get()
-								.replaceAll("<delay>", delay_format));
 						player.sendMessage(EEMessages.PREFIX.get() + EEMessages.TPA_PLAYER_ACCEPT.get()
 								.replaceAll("<player>", player_request.getName())
 								.replaceAll("<delay>", delay_format));
 					}
 					final Transform<World> location = player.getTransform();
-					player.setTeleport(delay, () -> this.teleportAsk(player_request, player, location));
+					player_request.setTeleport(delay, () -> this.teleportAsk(player_request, player, location));
 				} else {
 					if(delay > 0) {
 						player_request.sendMessage(EEMessages.PREFIX.get() + EEMessages.TPAHERE_STAFF_ACCEPT.get()
 								.replaceAll("<player>", player.getName())
 								.replaceAll("<delay>", delay_format));
-						player_request.sendMessage(EEMessages.PREFIX.get() + EEMessages.TELEPORT_DELAY.get()
+						player.sendMessage(EEMessages.PREFIX.get() + EEMessages.TELEPORT_DELAY.get()
+								.replaceAll("<player>", player_request.getName())
 								.replaceAll("<delay>", delay_format));
 					}
 					final Transform<World> location = player_request.getTransform();

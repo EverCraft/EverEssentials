@@ -168,17 +168,22 @@ public class EEPlayerListeners {
 	
 	@Listener
 	public void onPlayerMove(MoveEntityEvent event) {
-		if(event.getTargetEntity() instanceof Player && 
-				(event.getToTransform().getPitch() != event.getFromTransform().getPitch() || event.getToTransform().getYaw() != event.getFromTransform().getYaw())) {
+		if(event.getTargetEntity() instanceof Player) {
 			Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer((Player) event.getTargetEntity());
 			if(optPlayer.isPresent()) {
 				EPlayer player = optPlayer.get();
 				
 				// AFK
-				player.updateLastActivated();
+				if(event.getToTransform().getPitch() != event.getFromTransform().getPitch() || event.getToTransform().getYaw() != event.getFromTransform().getYaw()) {
+					player.updateLastActivated();
+				}
 				
 				// Teleport
-				if(player.hasTeleport()) {
+				if(player.hasTeleport() && (!event.getFromTransform().getExtent().equals(event.getToTransform().getExtent()) ||
+						Math.round(event.getFromTransform().getPosition().getX()) != Math.round(event.getToTransform().getPosition().getX()) ||
+						Math.round(event.getFromTransform().getPosition().getY()) != Math.round(event.getToTransform().getPosition().getY()) ||
+						Math.round(event.getFromTransform().getPosition().getZ()) != Math.round(event.getToTransform().getPosition().getZ()))) {
+
 					player.cancelTeleport();
 					player.sendMessage(EEMessages.PREFIX.get() + EEMessages.TELEPORT_ERROR_DELAY.get());
 				}

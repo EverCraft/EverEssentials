@@ -172,12 +172,20 @@ public class EEConfig extends EConfig {
 		return this.get("newbies-spawnpoint").getString("newbies");
 	}
 
+	/**
+	 * Retourne le délais de téléportation
+	 * @return En seconde
+	 */
 	public long getTeleportDelay() {
 		return this.get("teleport-delay").getLong(0) * 1000;
 	}
 	
+	/**
+	 * Retourne le délais d'une demande tpa
+	 * @return En seconde
+	 */
 	public long getTpaAcceptCancellation() {
-		return this.get("tpa-accept-cancellation").getLong(-1);
+		return this.get("tpa-accept-cancellation").getLong(-1) * 1000;
 	}
 	
 	public boolean hasTeleportDelay() {

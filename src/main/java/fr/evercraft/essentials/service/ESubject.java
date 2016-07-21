@@ -671,11 +671,11 @@ public class ESubject implements EssentialsSubject {
 	@Override
 	public boolean addTeleportAsk(UUID uuid, long delay) {
 		TeleportRequest teleport = this.teleports.get(uuid);
-		if(teleport == null) {
-			this.teleports.put(uuid, new TeleportRequest(Type.TPA, System.currentTimeMillis() + delay));
+		if(teleport == null || teleport.isExpire()) {
+			this.teleports.put(uuid, new TeleportRequest(Type.TPA, delay));
 			return true;
 		} else {
-			teleport.setTime(delay);
+			teleport.setDelay(delay);
 		}
 		return false;
 	}
@@ -683,11 +683,11 @@ public class ESubject implements EssentialsSubject {
 	@Override
 	public boolean addTeleportAskHere(UUID uuid, long delay) {
 		TeleportRequest teleport = this.teleports.get(uuid);
-		if(teleport == null) {
-			this.teleports.put(uuid, new TeleportRequest(Type.TPAHERE, System.currentTimeMillis() + delay));
+		if(teleport == null || teleport.isExpire()) {
+			this.teleports.put(uuid, new TeleportRequest(Type.TPAHERE, delay));
 			return true;
 		} else {
-			teleport.setTime(delay);
+			teleport.setDelay(delay);
 		}
 		return false;
 	}
@@ -721,8 +721,9 @@ public class ESubject implements EssentialsSubject {
 	@Override
 	public boolean runTeleport() {
 		if(this.teleport.isPresent()) {
-			this.teleport.get().run();
+			Teleport teleport = this.teleport.get();
 			this.teleport = Optional.empty();
+			teleport.run();
 			return true;
 		}
 		return false;

@@ -88,17 +88,22 @@ public class EETeleportationAskHere extends ECommand<EverEssentials> {
 		}
 		return resultat;
 	}
-	
+
 	private boolean commandTeleportation(EPlayer player, EPlayer destination) {
 		if(!player.equals(destination)) {
 			if(destination.isToggle()) {
-				if(destination.addTeleportAsk(player.getUniqueId(), this.plugin.getConfigs().getTpaAcceptCancellation())) {
+				long delay = this.plugin.getConfigs().getTpaAcceptCancellation();
+				String delay_format = this.plugin.getEverAPI().getManagerUtils().getDate().formatDateDiff(System.currentTimeMillis() + delay);
+				
+				if(destination.addTeleportAskHere(player.getUniqueId(), delay)) {
 					player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.TPAHERE_STAFF_QUESTION.get()
-							.replaceAll("<player>", destination.getName())));
+							.replaceAll("<player>", destination.getName())
+							.replaceAll("<delay>", delay_format)));
 					
 					destination.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.getText())
 									.append(EEMessages.TPAHERE_PLAYER_QUESTION.get()
-										.replaceAll("<player>", player.getName()))
+										.replaceAll("<player>", player.getName())
+										.replaceAll("<delay>", delay_format))
 									.replace("<accept>", EETeleportationAsk.getButtonAccept(player.getName()))
 									.replace("<deny>", EETeleportationAsk.getButtonDeny(player.getName()))
 									.build());
