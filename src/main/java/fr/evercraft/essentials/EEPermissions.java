@@ -216,6 +216,8 @@ public enum EEPermissions implements EnumPermission {
 	WHITELIST("whitelist.command"),
 	WHITELIST_MANAGE("whitelist.manage"),
 	
+	WORLDBORDER("worldborder.command"),
+	
 	WORLDS("worlds.command"),
 	WORLDS_OTHERS("worlds.others"),
 	
