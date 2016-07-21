@@ -73,8 +73,7 @@ public class EEWorldborderInfo extends ESubCommand<EverEssentials> {
 		boolean resultat = false;
 		if(args.size() == 0) {
 			if(source instanceof EPlayer) {
-				EPlayer player = (EPlayer) source;
-				resultat = commandWorldborder(player);
+				resultat = commandWorldborder(source, ((EPlayer) source).getWorld());
 			} else {
 				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
 			}
@@ -85,9 +84,20 @@ public class EEWorldborderInfo extends ESubCommand<EverEssentials> {
 		}
 		return resultat;
 	}
-
-	private boolean commandWorldborder(final EPlayer player) {
-		World world = player.getWorld();
+	
+	private boolean commandWorldborder(final CommandSource source, final String world_name) {
+		Optional<World> optWorld = this.plugin.getEServer().getWorld(world_name);
+		if(optWorld.isPresent()) {
+			this.commandWorldborder(source, optWorld.get());
+		} else {
+			source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.WORLD_NOT_FOUND.get()
+				.replaceAll("<world>", world_name)));
+			return false;
+		}
+		return true;
+	}
+	
+	private boolean commandWorldborder(final CommandSource source, final World world) {
 		List<Text> lists = new ArrayList<Text>();
 		lists.add(getLocation(world));
 		lists.add(getBorder(world));
@@ -97,29 +107,7 @@ public class EEWorldborderInfo extends ESubCommand<EverEssentials> {
 				.replaceAll("<world>", world.getName()))
 					.toBuilder()
 				.onClick(TextActions.runCommand("/" + this.getName()))
-					.build(), lists, player);
-		return true;
-	}
-	
-	private boolean commandWorldborder(final CommandSource source, final String world_name) {
-		Optional<World> optWorld = this.plugin.getEServer().getWorld(world_name);
-		if(optWorld.isPresent()) {
-			World world = optWorld.get();
-			List<Text> lists = new ArrayList<Text>();
-			lists.add(getLocation(world));
-			lists.add(getBorder(world));
-			lists.add(getDamageThreshold(world));
-			lists.add(getDamageAmount(world));
-			this.plugin.getEverAPI().getManagerService().getEPagination().sendTo(EChat.of(EEMessages.WORLDBORDER_INFO_TITLE.get()
-					.replaceAll("<world>", world.getName()))
-						.toBuilder()
-					.onClick(TextActions.runCommand("/" + this.getName()))
-						.build(), lists, source);
-		} else {
-			source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.WORLD_NOT_FOUND.get()
-				.replaceAll("<world>", world_name)));
-			return false;
-		}
+					.build(), lists, source);
 		return true;
 	}
 	
