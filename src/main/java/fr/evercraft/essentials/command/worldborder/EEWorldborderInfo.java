@@ -16,11 +16,8 @@
  */
 package fr.evercraft.essentials.command.worldborder;
 
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Optional;
 
 import org.spongepowered.api.command.CommandException;
@@ -34,6 +31,7 @@ import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.everapi.EAMessage.EAMessages;
+import fr.evercraft.everapi.java.UtilsDouble;
 import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ESubCommand;
 import fr.evercraft.everapi.server.player.EPlayer;
@@ -124,31 +122,31 @@ public class EEWorldborderInfo extends ESubCommand<EverEssentials> {
 	
 	public Text getBorder(final World world){
 		return ETextBuilder.toBuilder(EEMessages.WORLDBORDER_INFO_BORDER.get())
-				.replace("<nb>", getString(world.getWorldBorder().getDiameter()))
+				.replace("<nb>", UtilsDouble.getString(world.getWorldBorder().getDiameter()))
 				.build();
 	}
 	
 	public Text getDamageThreshold(final World world){
 		return ETextBuilder.toBuilder(EEMessages.WORLDBORDER_INFO_BUFFER.get())
-				.replace("<nb>", String.valueOf(world.getWorldBorder().getDamageThreshold()))
+				.replace("<nb>", UtilsDouble.getString(world.getWorldBorder().getDamageThreshold()))
 				.build();
 	}
 	
 	public Text getDamageAmount(final World world){
 		return ETextBuilder.toBuilder(EEMessages.WORLDBORDER_INFO_DAMAGE.get())
-				.replace("<nb>", String.valueOf(world.getWorldBorder().getDamageAmount()))
+				.replace("<nb>", UtilsDouble.getString(world.getWorldBorder().getDamageAmount()))
 				.build();
 	}
 	
 	public Text getWarningDistance(final World world){
 		return ETextBuilder.toBuilder(EEMessages.WORLDBORDER_INFO_WARNING_DISTANCE.get())
-				.replace("<nb>", String.valueOf(world.getWorldBorder().getWarningDistance()))
+				.replace("<nb>", UtilsDouble.getString(world.getWorldBorder().getWarningDistance()))
 				.build();
 	}
 	
 	public Text getWarningTime(final World world){
 		return ETextBuilder.toBuilder(EEMessages.WORLDBORDER_INFO_WARNING_TIME.get())
-				.replace("<nb>", String.valueOf(world.getWorldBorder().getWarningTime()))
+				.replace("<nb>", UtilsDouble.getString(world.getWorldBorder().getWarningTime()))
 				.build();
 	}
 	
@@ -162,12 +160,5 @@ public class EEWorldborderInfo extends ESubCommand<EverEssentials> {
 						.replaceAll("<z>", String.valueOf(Math.floor(world.getWorldBorder().getCenter().getZ())))
 						.replaceAll("<world>", world.getName()))))
 				.build();
-	}
-	
-	private String getString(double value) {
-		DecimalFormatSymbols dfs = new DecimalFormatSymbols(Locale.FRANCE);
-		dfs.setGroupingSeparator(' ');
-		DecimalFormat decimalPrintFormat = new DecimalFormat("#,##0.0####", dfs);
-		return decimalPrintFormat.format(value);
 	}
 }
