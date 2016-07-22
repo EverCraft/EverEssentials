@@ -732,6 +732,10 @@ public class EEMessage extends EMessage {
 		WORLDBORDER_INFO_BORDER("worldborder.info.border", "    &6&l➤  &6La bordure est de &a<nb> &6bloc(s)"),
 		WORLDBORDER_INFO_BUFFER("worldborder.info.buffer", "    &6&l➤  &6Distance avant de subir des dégat(s) : &a<nb> &6bloc(s)"),
 		WORLDBORDER_INFO_DAMAGE("worldborder.info.damage", "    &6&l➤  &6Dégat(s) : &a<nb> &6coeur(s)"),
+		WORLDBORDER_INFO_WARNING_TIME("worldborder.info.warningTime", "    &6&l➤  &6Avertissement du rétrecissement de la bordure : &a<nb> &6seconde(s)"),
+		WORLDBORDER_INFO_WARNING_DISTANCE("worldborder.info.warningDistance", "    &6&l➤  &6Avertissement de la bordure : &a<nb> &6bloc(s)"),
+		
+		WORLDBORDER_SET_DESCRIPTION("worldborder.set.description", "Défini la bordure d'un monde"),
 		
 		WORLDS_DESCRIPTION("worlds.description", "Téléporte le joueur dans le monde de votre choix"),
 		WORLDS_END_DESCRIPTION("worlds.endDescription", "Vous téléporte dans le monde du néant"),

@@ -16,6 +16,7 @@
  */
 package fr.evercraft.essentials.command.worldborder;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -38,7 +39,7 @@ import fr.evercraft.everapi.text.ETextBuilder;
 
 public class EEWorldborderInfo extends ESubCommand<EverEssentials> {
 	public EEWorldborderInfo(final EverEssentials plugin, final EEWorldborder command) {
-        super(plugin, command, "information");
+        super(plugin, command, "info");
     }
 	
 	public boolean testPermission(final CommandSource source) {
@@ -103,6 +104,8 @@ public class EEWorldborderInfo extends ESubCommand<EverEssentials> {
 		lists.add(getBorder(world));
 		lists.add(getDamageThreshold(world));
 		lists.add(getDamageAmount(world));
+		lists.add(getWarningDistance(world));
+		lists.add(getWarningTime(world));
 		this.plugin.getEverAPI().getManagerService().getEPagination().sendTo(EChat.of(EEMessages.WORLDBORDER_INFO_TITLE.get()
 				.replaceAll("<world>", world.getName()))
 					.toBuilder()
@@ -119,7 +122,7 @@ public class EEWorldborderInfo extends ESubCommand<EverEssentials> {
 	
 	public Text getBorder(final World world){
 		return ETextBuilder.toBuilder(EEMessages.WORLDBORDER_INFO_BORDER.get())
-				.replace("<nb>", String.valueOf(world.getWorldBorder().getDiameter()))
+				.replace("<nb>", getString(world.getWorldBorder().getDiameter()))
 				.build();
 	}
 	
@@ -135,6 +138,18 @@ public class EEWorldborderInfo extends ESubCommand<EverEssentials> {
 				.build();
 	}
 	
+	public Text getWarningDistance(final World world){
+		return ETextBuilder.toBuilder(EEMessages.WORLDBORDER_INFO_WARNING_DISTANCE.get())
+				.replace("<nb>", String.valueOf(world.getWorldBorder().getWarningDistance()))
+				.build();
+	}
+	
+	public Text getWarningTime(final World world){
+		return ETextBuilder.toBuilder(EEMessages.WORLDBORDER_INFO_WARNING_TIME.get())
+				.replace("<nb>", String.valueOf(world.getWorldBorder().getWarningTime()))
+				.build();
+	}
+	
 	public Text getButtonLocation(final World world){
 		return EChat.of(EEMessages.WORLDBORDER_INFO_LOCATION_POSITION.get()
 					.replaceAll("<x>", String.valueOf(Math.floor(world.getWorldBorder().getCenter().getX())))
@@ -145,5 +160,10 @@ public class EEWorldborderInfo extends ESubCommand<EverEssentials> {
 						.replaceAll("<z>", String.valueOf(Math.floor(world.getWorldBorder().getCenter().getZ())))
 						.replaceAll("<world>", world.getName()))))
 				.build();
+	}
+	
+	private String getString(double value){
+		DecimalFormat decimalPrintFormat = new DecimalFormat("#,##0.0####");
+		return decimalPrintFormat.format(value).toString();
 	}
 }
