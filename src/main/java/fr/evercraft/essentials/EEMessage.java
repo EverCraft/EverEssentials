@@ -730,7 +730,7 @@ public class EEMessage extends EMessage {
 		WORLDBORDER_INFO_LOCATION_POSITION("worldborder.info.locationPosition", "&6(&c<x>&6, &c<z>&6, &c<world>&6)"),
 		WORLDBORDER_INFO_LOCATION_POSITION_HOVER("worldborder.info.locationPositionHover", "&cMonde : &6<world>[RT]&cX : &6<x>[RT]&cZ : &6<z>"),
 		WORLDBORDER_INFO_BORDER("worldborder.info.border", "    &6&l➤  &6La bordure est de &a<nb> &6bloc(s)"),
-		WORLDBORDER_INFO_BUFFER("worldborder.info.buffer", "    &6&l➤  &6Augmentation des dégats tous les &a<nb> &6bloc(s)"),
+		WORLDBORDER_INFO_BUFFER("worldborder.info.buffer", "    &6&l➤  &6Distance avant de subir des dégat(s) : &a<nb> &6bloc(s)"),
 		WORLDBORDER_INFO_DAMAGE("worldborder.info.damage", "    &6&l➤  &6Dégat(s) : &a<nb> &6coeur(s)"),
 		
 		WORLDS_DESCRIPTION("worlds.description", "Téléporte le joueur dans le monde de votre choix"),
