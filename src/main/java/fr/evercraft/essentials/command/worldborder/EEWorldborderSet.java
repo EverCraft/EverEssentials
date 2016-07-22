@@ -18,11 +18,14 @@ package fr.evercraft.essentials.command.worldborder;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
+import org.spongepowered.api.world.World;
+
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.essentials.EEMessage.EEMessages;
@@ -66,30 +69,36 @@ public class EEWorldborderSet extends ESubCommand<EverEssentials> {
 	public boolean subExecute(final CommandSource source, final List<String> args) {
 		// Résultat de la commande :
 		boolean resultat = false;
-		if(args.size() == 0) {
+		if(args.size() == 1) {
 			if(source instanceof EPlayer) {
-				// resultat = commandWorldborder(source, ((EPlayer) source).getWorld());
+				resultat = commandWorldborderSet(source, ((EPlayer) source).getWorld(), args.get(0));
 			} else {
 				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
 			}
-		} else if(args.size() == 1){
+		} else if(args.size() == 2){
+			if(source instanceof EPlayer) {
 			// resultat = commandWorldborder(source, args.get(0));
+			}
+		} else if(args.size() == 3){
+			
 		} else {
 			source.sendMessage(this.help(source));
 		}
 		return resultat;
 	}
-	/*
-	private boolean commandWorldborder(final CommandSource source, final String world_name) {
-		Optional<World> optWorld = this.plugin.getEServer().getWorld(world_name);
-		if(optWorld.isPresent()) {
-			this.commandWorldborder(source, optWorld.get());
-		} else {
-			source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.WORLD_NOT_FOUND.get()
-				.replaceAll("<world>", world_name)));
+
+	private boolean commandWorldborderSet(CommandSource source, World world, String arg) {
+		try {
+			int diameter = Integer.parseInt(arg);
+			world.getWorldBorder().setDiameter(diameter);
+			source.sendMessage(EChat.of(EEMessages.PREFIX + EEMessages.WORLDBORDER_SET_BORDER.get()
+					.replaceAll("<world>", world.getName())
+					.replaceAll("<nb>", String.valueOf(diameter))));
+			return true;
+		} catch (NumberFormatException e) {
+			source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.IS_NOT_NUMBER.get()
+					.replaceAll("<number>", arg)));
 			return false;
 		}
-		return true;
 	}
-	*/
 }
