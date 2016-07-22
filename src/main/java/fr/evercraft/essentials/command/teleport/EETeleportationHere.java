@@ -112,7 +112,7 @@ public class EETeleportationHere extends ECommand<EverEssentials> {
 				staff.sendMessage(EEMessages.PREFIX.get() + EAMessages.NO_PERMISSION_WORLD_OTHERS.get());
 			}
 		} else {
-			player.teleportSafe(player.getTransform());
+			player.reposition();
 			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.TPHERE_EQUALS.get());
 		}
 		return false;

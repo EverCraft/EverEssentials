@@ -546,7 +546,7 @@ public class EEMessage extends EMessage {
 		TPAHERE_ERROR_LOCATION("tpahere.errorLocation", "&cImpossible de trouver une position pour réaliser une téléportation."),
 		
 		TPA_PLAYER_LIST_TITLE("tpa.playerListTitle", "&aListe des demandes de téléportation"),
-		TPA_PLAYER_LIST_LINE("tpa.playerListLine", "    &6&l➤  &6<player> &7: <teleport> <delete>"),
+		TPA_PLAYER_LIST_LINE("tpa.playerListLine", "    &6&l➤  &6<player> &7: <accept> <deny>"),
 		TPA_PLAYER_LIST_EMPTY("tpa.playerListEmpty", "&7Aucune demande"),
 		
 		TPACCEPT_DESCRIPTION("tpaccept.description", "Permet d'accepter une demande de téléportation"),
