@@ -25,6 +25,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.spongepowered.api.scheduler.Task;
 
+import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.everapi.server.player.EPlayer;
@@ -97,12 +98,12 @@ public class EScheduler {
 			}
 			
 			// AFK
-			if(this.afk && !player.isAFK() && player.getLastActivated() + this.afk_time <= current_time) {
+			if(this.afk && !(player.isAfk() || player.isAfkAutoFake()) && player.getLastActivated() + this.afk_time <= current_time) {
 				players.add(player.getUniqueId());
 			}
 			
 			// AFK Kick
-			if(this.afk_kick  && player.getLastActivated() + this.afk_kick_time <= current_time) {
+			if(this.afk_kick && !player.isAfkKickFake() && player.getLastActivated() + this.afk_kick_time <= current_time) {
 				players.add(player.getUniqueId());
 			}
 		}
@@ -130,19 +131,27 @@ public class EScheduler {
 				}
 				
 				// AFK
-				if(this.afk && !player.isAFK() && player.getLastActivated() + this.afk_time <= current_time) {
-					player.setAFK(true);
-					
-					if(EEMessages.AFK_ALL_ENABLE.has()) {
-						player.broadcast(EEMessages.PREFIX.getText().concat(player.replaceVariable(EEMessages.AFK_ALL_ENABLE.get())));
+				if(this.afk && !(player.isAfk() || player.isAfkAutoFake()) && player.getLastActivated() + this.afk_time <= current_time) {
+					if(player.hasPermission(EEPermissions.AFK_BYPASS_AUTO.get())) {
+						player.setAfkAutoFake(true);
 					} else {
-						player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.AFK_PLAYER_ENABLE.getText()));
+						player.setAfk(true);
+						
+						if(EEMessages.AFK_ALL_ENABLE.has()) {
+							player.broadcast(EEMessages.PREFIX.getText().concat(player.replaceVariable(EEMessages.AFK_ALL_ENABLE.get())));
+						} else {
+							player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.AFK_PLAYER_ENABLE.getText()));
+						}
 					}
 				}
 				
 				// AFK Kick
-				if(this.afk_kick  && player.getLastActivated() + this.afk_kick_time <= current_time) {
-					player.kick(EEMessages.AFK_KICK.getText());
+				if(this.afk_kick && !player.isAfkKickFake() && player.getLastActivated() + this.afk_kick_time <= current_time) {
+					if(player.hasPermission(EEPermissions.AFK_BYPASS_KICK.get())) {
+						player.setAfkKickFake(true);
+					} else {
+						player.kick(EEMessages.AFK_KICK.getText());
+					}
 				}
 			}
 		}

@@ -286,7 +286,7 @@ public class EEWhois extends ECommand<EverEssentials> {
 	}
 	
 	public Text getAFK(final EPlayer player){
-		if(player.isAFK()) {
+		if(player.isAfk()) {
 			return EChat.of(EEMessages.WHOIS_AFK_ENABLE.get());
 		} else {
 			return EChat.of(EEMessages.WHOIS_AFK_DISABLE.get());

@@ -70,6 +70,9 @@ public class ESubject implements EssentialsSubject {
 	private boolean afk;
 	private long last_activated;
 	
+	private boolean afk_auto_fake;
+	private boolean afk_kick_fake;
+	
 	private final LinkedHashMap<UUID, TeleportRequest> teleports;
 	
 	private Optional<Teleport> teleport;
@@ -95,8 +98,11 @@ public class ESubject implements EssentialsSubject {
 		this.afk = false;
 		this.updateLastActivated();
 		
-		this.teleports = new LinkedHashMap<UUID, TeleportRequest>();
+		this.afk_auto_fake = false;
+		this.afk_kick_fake = false;
 		
+		
+		this.teleports = new LinkedHashMap<UUID, TeleportRequest>();
 		this.teleport = Optional.empty();
 		
 		reloadData();
@@ -113,6 +119,7 @@ public class ESubject implements EssentialsSubject {
 		Optional<EPlayer> optPlayer = this.getEPlayer();
 		if(optPlayer.isPresent()) {
 			EPlayer player = optPlayer.get();
+			
 			if(player.get(Keys.INVISIBLE).orElse(false) != vanish) {
 				player.offer(Keys.INVISIBLE, vanish);
 			}
@@ -334,14 +341,42 @@ public class ESubject implements EssentialsSubject {
 	 */
 	
 	@Override
-	public boolean isAFK() {
+	public boolean isAfk() {
 		return this.afk;
 	}
 
 	@Override
-	public boolean setAFK(final boolean afk) {
+	public boolean setAfk(final boolean afk) {
 		if(this.afk != afk) {
 			this.afk = afk;
+			return true;
+		}
+		return false;
+	}
+	
+	@Override
+	public boolean isAfkAutoFake() {
+		return this.afk_auto_fake;
+	}
+	
+	@Override
+	public boolean setAfkAutoFake(final boolean afk) {
+		if(this.afk_auto_fake != afk) {
+			this.afk_auto_fake = afk;
+			return true;
+		}
+		return false;
+	}
+	
+	@Override
+	public boolean isAfkKickFake() {
+		return this.afk_kick_fake;
+	}
+	
+	@Override
+	public boolean setAfkKickFake(final boolean afk) {
+		if(this.afk_kick_fake != afk) {
+			this.afk_kick_fake = afk;
 			return true;
 		}
 		return false;
@@ -351,7 +386,7 @@ public class ESubject implements EssentialsSubject {
 	public void updateLastActivated() {
 		this.last_activated = System.currentTimeMillis();
 		if(this.afk) {
-			this.setAFK(false);
+			this.setAfk(false);
 			
 			Optional<EPlayer> player = this.plugin.getEServer().getEPlayer(this.identifier);
 			if(player.isPresent()) {
@@ -362,6 +397,8 @@ public class ESubject implements EssentialsSubject {
 				}
 			}
 		}
+		this.afk_auto_fake = false;
+		this.afk_kick_fake = false;
 	}
 	
 	@Override

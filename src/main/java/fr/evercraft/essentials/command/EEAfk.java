@@ -130,8 +130,8 @@ public class EEAfk extends ECommand<EverEssentials> {
 	}
 	
 	public boolean commandAfk(final EPlayer player) {
-		boolean vanish = player.isAFK();
-		player.setAFK(!vanish);
+		boolean vanish = player.isAfk();
+		player.setAfk(!vanish);
 		// Si le Afk est déjà activé
 		if(vanish){
 			if(EEMessages.AFK_ALL_DISABLE.has()) {
@@ -157,8 +157,8 @@ public class EEAfk extends ECommand<EverEssentials> {
 	public boolean commandAfkOthers(final CommandSource staff, final EPlayer player) throws CommandException {
 		// La source et le joueur sont différent
 		if(!player.equals(staff)){
-			boolean vanish = player.isAFK();
-			player.setAFK(!vanish);
+			boolean vanish = player.isAfk();
+			player.setAfk(!vanish);
 			// Si le vanish est déjà activé
 			if(vanish){
 				if(EEMessages.AFK_ALL_DISABLE.has()) {
@@ -190,7 +190,7 @@ public class EEAfk extends ECommand<EverEssentials> {
 	}
 	
 	public boolean commandAfkOthers(final CommandSource staff, final EPlayer player, final boolean etat) throws CommandException {
-		boolean vanish = player.isAFK();
+		boolean vanish = player.isAfk();
 		// La source et le joueur sont différent
 		if(!player.equals(staff)){
 			if(etat) {
@@ -200,7 +200,7 @@ public class EEAfk extends ECommand<EverEssentials> {
 							.replaceAll("<player>", player.getName())));
 				// Afk est désactivé
 				} else {
-					player.setAFK(etat);
+					player.setAfk(etat);
 					if(EEMessages.AFK_ALL_ENABLE.has()) {
 						player.broadcast(EEMessages.PREFIX.getText().concat(
 								this.plugin.getChat().replaceFormat(player, 
@@ -215,7 +215,7 @@ public class EEAfk extends ECommand<EverEssentials> {
 			} else {
 				// Si le Afk est déjà activé
 				if(vanish){
-					player.setAFK(etat);
+					player.setAfk(etat);
 					if(EEMessages.AFK_ALL_DISABLE.has()) {
 						player.broadcast(EEMessages.PREFIX.getText().concat(
 								this.plugin.getChat().replaceFormat(player, 
@@ -240,7 +240,7 @@ public class EEAfk extends ECommand<EverEssentials> {
 					player.sendMessage(EEMessages.PREFIX.get() + EEMessages.AFK_PLAYER_ENABLE_ERROR.get());
 				// Afk est désactivé
 				} else {
-					player.setAFK(etat);
+					player.setAfk(etat);
 					if(EEMessages.AFK_ALL_ENABLE.has()) {
 						player.broadcast(EEMessages.PREFIX.getText().concat(
 								this.plugin.getChat().replaceFormat(player, 
@@ -253,7 +253,7 @@ public class EEAfk extends ECommand<EverEssentials> {
 			} else {
 				// Si le vanish est déjà activé
 				if(vanish){
-					player.setAFK(etat);
+					player.setAfk(etat);
 					if(EEMessages.AFK_ALL_DISABLE.has()) {
 						player.broadcast(EEMessages.PREFIX.getText().concat(
 								this.plugin.getChat().replaceFormat(player, 

@@ -167,7 +167,7 @@ public class EEList extends ECommand<EverEssentials> {
 			for(EPlayer player : group.getValue().values()) {
 				String text = style_player;
 				
-				if(player.isAFK()) {
+				if(player.isAfk()) {
 					text = text.replaceAll("<afk>", style_afk);
 				} else {
 					text = text.replaceAll("<afk>", "");

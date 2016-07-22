@@ -29,6 +29,8 @@ public enum EEPermissions implements EnumPermission {
 	
 	AFK("afk.command"),
 	AFK_OTHERS("afk.others"),
+	AFK_BYPASS_AUTO("afk.bypass.auto"),
+	AFK_BYPASS_KICK("afk.bypass.kick"),
 	
 	BACK("back.command"),
 	
