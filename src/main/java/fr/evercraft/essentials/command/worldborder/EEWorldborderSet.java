@@ -18,6 +18,7 @@ package fr.evercraft.essentials.command.worldborder;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
@@ -60,8 +61,8 @@ public class EEWorldborderSet extends ESubCommand<EverEssentials> {
 	}
 
 	public Text help(final CommandSource source) {
-		return Text.builder("/" + this.getName())
-					.onClick(TextActions.suggestCommand("/" + this.getName() + "<taille en bloc(s)> [temps en seconde(s)] [monde]"))
+		return Text.builder("/" + this.getName() + "<taille en bloc(s)> [temps en seconde(s)] [monde]")
+					.onClick(TextActions.suggestCommand("/" + this.getName()))
 					.color(TextColors.RED)
 					.build();
 	}
@@ -69,18 +70,27 @@ public class EEWorldborderSet extends ESubCommand<EverEssentials> {
 	public boolean subExecute(final CommandSource source, final List<String> args) {
 		// Résultat de la commande :
 		boolean resultat = false;
-		if(args.size() == 1) {
+		if(args.size() == 0){
+			source.sendMessage(this.help(source));
+		} else if(args.size() == 1){
 			if(source instanceof EPlayer) {
 				resultat = commandWorldborderSet(source, ((EPlayer) source).getWorld(), args.get(0));
 			} else {
 				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
 			}
 		} else if(args.size() == 2){
-			if(source instanceof EPlayer) {
-			// resultat = commandWorldborder(source, args.get(0));
+			Optional<World> optWorld = this.plugin.getEServer().getWorld(args.get(1));
+			if(optWorld.isPresent()){
+				resultat = commandWorldborderSet(source, optWorld.get(), args.get(0));
+			} else {
+				if(source instanceof EPlayer) {
+					commandWorldborderSet(source, ((EPlayer) source).getWorld(), args);
+				} else {
+					source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
+				}
 			}
 		} else if(args.size() == 3){
-			
+			commandWorldborderSet(source, args);
 		} else {
 			source.sendMessage(this.help(source));
 		}
@@ -91,13 +101,67 @@ public class EEWorldborderSet extends ESubCommand<EverEssentials> {
 		try {
 			int diameter = Integer.parseInt(arg);
 			world.getWorldBorder().setDiameter(diameter);
-			source.sendMessage(EChat.of(EEMessages.PREFIX + EEMessages.WORLDBORDER_SET_BORDER.get()
+			source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.WORLDBORDER_SET_BORDER.get()
 					.replaceAll("<world>", world.getName())
 					.replaceAll("<nb>", String.valueOf(diameter))));
 			return true;
 		} catch (NumberFormatException e) {
 			source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.IS_NOT_NUMBER.get()
 					.replaceAll("<number>", arg)));
+			return false;
+		}
+	}
+	
+	private boolean commandWorldborderSet(CommandSource source, World world, List<String> args) {
+		try {
+			int diameter = Integer.parseInt(args.get(0));
+			int time = Integer.parseInt(args.get(1));
+			String message;
+			world.getWorldBorder().setDiameter(world.getWorldBorder().getDiameter(), diameter, time);
+			if(world.getWorldBorder().getDiameter() > diameter){
+				message = EEMessages.WORLDBORDER_SET_BORDER_DECREASE.get();
+			} else {
+				message = EEMessages.WORLDBORDER_SET_BORDER_INCREASE.get();
+			}
+			source.sendMessage(EChat.of(EEMessages.PREFIX.get() + message
+					.replaceAll("<world>", world.getName())
+					.replaceAll("<nb>", String.valueOf(diameter))
+					.replaceAll("<time>", String.valueOf(time))));
+			return true;
+		} catch (NumberFormatException e) {
+			source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.IS_NOT_NUMBER.get()
+					.replaceAll("<number>", e.getMessage())));
+			return false;
+		}
+	}
+	
+	private boolean commandWorldborderSet(CommandSource source, List<String> args) {
+		try {
+			int diameter = Integer.parseInt(args.get(0));
+			int time = Integer.parseInt(args.get(1));
+			String message;
+			Optional<World> optWorld = this.plugin.getEServer().getWorld(args.get(2));
+			if(optWorld.isPresent()){
+				World world = optWorld.get();
+				world.getWorldBorder().setDiameter(world.getWorldBorder().getDiameter(), diameter, time);
+				if(world.getWorldBorder().getDiameter() > diameter){
+					message = EEMessages.WORLDBORDER_SET_BORDER_DECREASE.get();
+				} else {
+					message = EEMessages.WORLDBORDER_SET_BORDER_INCREASE.get();
+				}
+				source.sendMessage(EChat.of(EEMessages.PREFIX.get() + message
+						.replaceAll("<world>", world.getName())
+						.replaceAll("<nb>", String.valueOf(diameter))
+						.replaceAll("<time>", String.valueOf(time))));
+				return true;
+			} else {
+				source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.WORLD_NOT_FOUND.get()
+					.replaceAll("<world>", args.get(2))));
+				return false;
+			}
+		} catch (NumberFormatException e) {
+			source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.IS_NOT_NUMBER.get()
+					.replaceAll("<number>", e.getMessage())));
 			return false;
 		}
 	}
