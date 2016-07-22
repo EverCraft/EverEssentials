@@ -158,8 +158,8 @@ public class EEExp extends ECommand<EverEssentials> {
 			return true;
 		} catch (NumberFormatException e) {
 			player.sendMessage(EEMessages.PREFIX.get() + EAMessages.IS_NOT_NUMBER.get().replaceAll("<number>", level));
+			return false;
 		}
-		return false;
 	}
 	
 	private boolean commandGiveExp(final EPlayer player, final String experience) {
@@ -171,8 +171,8 @@ public class EEExp extends ECommand<EverEssentials> {
 			return true;
 		} catch (NumberFormatException e) {
 			player.sendMessage(EEMessages.PREFIX.get() + EAMessages.IS_NOT_NUMBER.get().replaceAll("<number>", experience));
+			return false;
 		}
-		return false;
 	}
 
 	private boolean commandSetLevel(final EPlayer player, final String level) {
@@ -184,8 +184,8 @@ public class EEExp extends ECommand<EverEssentials> {
 			return true;
 		} catch (NumberFormatException e) {
 			player.sendMessage(EEMessages.PREFIX.get() + EAMessages.IS_NOT_NUMBER.get().replaceAll("<number>", level));
+			return false;
 		}
-		return false;
 	}
 	
 	private boolean commandSetExp(final EPlayer player, final String experience) {
@@ -197,8 +197,8 @@ public class EEExp extends ECommand<EverEssentials> {
 			return true;
 		} catch (NumberFormatException e) {
 			player.sendMessage(EEMessages.PREFIX.get() + EAMessages.IS_NOT_NUMBER.get().replaceAll("<number>", experience));
+			return false;
 		}
-		return false;
 	}
 	
 	private boolean commandOthersGiveLevel(final CommandSource staff, final EPlayer player, final String level) {
@@ -215,8 +215,8 @@ public class EEExp extends ECommand<EverEssentials> {
 		} catch (NumberFormatException e) {
 			staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.IS_NOT_NUMBER.get()
 					.replaceAll("<number>", level)));
+			return false;
 		}
-		return false;
 	}
 	
 	private boolean commandOthersGiveExp(final CommandSource staff, final EPlayer player, final String experience) {
@@ -233,8 +233,8 @@ public class EEExp extends ECommand<EverEssentials> {
 		} catch (NumberFormatException e) {
 			staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.IS_NOT_NUMBER.get()
 					.replaceAll("<number>", experience)));
+			return false;
 		}
-		return false;
 	}
 
 	private boolean commandOthersSetLevel(final CommandSource staff, final EPlayer player, final String level) {
@@ -251,8 +251,8 @@ public class EEExp extends ECommand<EverEssentials> {
 		} catch (NumberFormatException e) {
 			staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.IS_NOT_NUMBER.get()
 					.replaceAll("<number>", level)));
+			return false;
 		}
-		return false;
 	}
 	
 	private boolean commandOthersSetExp(final CommandSource staff, final EPlayer player, final String experience) {
@@ -269,7 +269,7 @@ public class EEExp extends ECommand<EverEssentials> {
 		} catch (NumberFormatException e) {
 			staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.IS_NOT_NUMBER.get()
 					.replaceAll("<number>", experience)));
+			return false;
 		}
-		return false;
 	}
 }
