@@ -182,6 +182,9 @@ public enum EEPermissions implements EnumPermission {
 	TPA("tpa.command"),
 	TPAHERE("tpahere.command"),
 	
+	TPAALL("tpaall.command"),
+	TPAALL_OTHERS("tpaall.others"),
+	
 	TPALL("tpall.command"),
 	TPALL_OTHERS("tpall.others"),
 	
@@ -189,6 +192,9 @@ public enum EEPermissions implements EnumPermission {
 	TPPOS_OTHERS("tppos.others"),
 	
 	TIME("time.command"),
+	
+	TELEPORT_BYPASS_TIME("teleport.bypass.time"),
+	TELEPORT_BYPASS_MOVE("teleport.bypass.move"),
 	
 	TOGGLE("toggle.command"),
 	

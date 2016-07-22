@@ -17,9 +17,9 @@
 package fr.evercraft.essentials;
 
 import ninja.leaping.configurate.ConfigurationNode;
-
 import fr.evercraft.everapi.plugin.file.EConfig;
 import fr.evercraft.everapi.plugin.file.EMessage;
+import fr.evercraft.everapi.server.player.EPlayer;
 
 public class EEConfig extends EConfig {
 	
@@ -177,6 +177,13 @@ public class EEConfig extends EConfig {
 	 * @return En seconde
 	 */
 	public long getTeleportDelay() {
+		return this.get("teleport-delay").getLong(0) * 1000;
+	}
+	
+	public long getTeleportDelay(EPlayer player) {
+		if(player.hasPermission(EEPermissions.TELEPORT_BYPASS_TIME.get())) {
+			return 0;
+		}
 		return this.get("teleport-delay").getLong(0) * 1000;
 	}
 	

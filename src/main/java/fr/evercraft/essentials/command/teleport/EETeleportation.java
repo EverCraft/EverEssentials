@@ -134,7 +134,7 @@ public class EETeleportation extends ECommand<EverEssentials> {
 				player.sendMessage(EEMessages.PREFIX.get() + EAMessages.NO_PERMISSION_WORLD.get());
 			}
 		} else {
-			player.teleportSafe(player.getTransform());
+			player.reposition();
 			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.TP_PLAYER_EQUALS.get());
 		}
 		return false;
@@ -143,8 +143,8 @@ public class EETeleportation extends ECommand<EverEssentials> {
 	private boolean commandTeleportation(CommandSource staff, EPlayer player, EPlayer destination) {
 		if(player.getWorld().equals(destination.getWorld()) || this.plugin.getManagerServices().getEssentials().hasPermissionWorld(player, destination.getWorld())) {
 			if(destination.equals(player)) {
-				if(destination.equals(staff)){
-					player.teleportSafe(player.getTransform());
+				if(destination.equals(staff)) {
+					player.reposition();
 					player.sendMessage(EEMessages.PREFIX.get() + EEMessages.TP_PLAYER_EQUALS.get());
 					return true;
 				} else {
@@ -205,11 +205,15 @@ public class EETeleportation extends ECommand<EverEssentials> {
 		return false;
 	}
 	
-	private boolean teleport(EPlayer player, EPlayer destination){
-		if(destination.isFlying()) {
-			return player.teleportSafe(destination.getTransform());
+	private boolean teleport(EPlayer player, EPlayer destination) {
+		if(player.equals(destination)) {
+			player.reposition();
 		} else {
-			player.setTransform(destination.getTransform());
+			if(destination.isFlying()) {
+				return player.teleportSafe(destination.getTransform());
+			} else {
+				player.setTransform(destination.getTransform());
+			}
 		}
 		return true;
 	}

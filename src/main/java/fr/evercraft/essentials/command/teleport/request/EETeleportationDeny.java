@@ -111,13 +111,13 @@ public class EETeleportationDeny extends ECommand<EverEssentials> {
 			
 			if(player_request.isPresent()) {
 				one_player = player_request;
-				if(teleport.getValue().equals(Type.TPA)) {
+				if(teleport.getValue().getType().equals(Type.TPA)) {
 					lists.add(ETextBuilder.toBuilder(EEMessages.TPA_PLAYER_LIST_LINE.get()
 							.replaceAll("<player>", player_request.get().getName()))
 						.replace("<accept>", EETeleportationAsk.getButtonAccept(player_request.get().getName()))
 						.replace("<deny>", EETeleportationAsk.getButtonDeny(player_request.get().getName()))
 						.build());
-				} else if(teleport.getValue().equals(Type.TPAHERE)) {
+				} else if(teleport.getValue().getType().equals(Type.TPAHERE)) {
 					lists.add(ETextBuilder.toBuilder(EEMessages.TPA_PLAYER_LIST_LINE.get()
 							.replaceAll("<player>", player_request.get().getName()))
 						.replace("<accept>", EETeleportationAskHere.getButtonAccept(player_request.get().getName()))

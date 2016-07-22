@@ -111,13 +111,13 @@ public class EETeleportationAccept extends ECommand<EverEssentials> {
 			
 			if(player_request.isPresent()) {
 				one_player = player_request;
-				if(teleport.getValue().equals(Type.TPA)) {
+				if(teleport.getValue().getType().equals(Type.TPA)) {
 					lists.add(ETextBuilder.toBuilder(EEMessages.TPA_PLAYER_LIST_LINE.get()
 							.replaceAll("<player>", player_request.get().getName()))
 						.replace("<accept>", EETeleportationAsk.getButtonAccept(player_request.get().getName()))
 						.replace("<deny>", EETeleportationAsk.getButtonDeny(player_request.get().getName()))
 						.build());
-				} else if(teleport.getValue().equals(Type.TPAHERE)) {
+				} else if(teleport.getValue().getType().equals(Type.TPAHERE)) {
 					lists.add(ETextBuilder.toBuilder(EEMessages.TPA_PLAYER_LIST_LINE.get()
 							.replaceAll("<player>", player_request.get().getName()))
 						.replace("<accept>", EETeleportationAskHere.getButtonAccept(player_request.get().getName()))
@@ -148,13 +148,13 @@ public class EETeleportationAccept extends ECommand<EverEssentials> {
 		// Il y a une demande de téléportation
 		if(teleports.isPresent()) {
 			// La demande est toujours valide
-			if(!teleports.get().isExpire()) {
-				long delay = this.plugin.getConfigs().getTeleportDelay();
-				String delay_format = this.plugin.getEverAPI().getManagerUtils().getDate().formatDateDiff(System.currentTimeMillis() + delay);
-				
+			if(!teleports.get().isExpire()) {				
 				player.removeTeleportAsk(player_request.getUniqueId());
 				
-				if(teleports.get().getType().equals(TeleportRequest.Type.TPA)) {
+				if(teleports.get().getType().equals(Type.TPA)) {
+					long delay = this.plugin.getConfigs().getTeleportDelay(player_request);
+					String delay_format = this.plugin.getEverAPI().getManagerUtils().getDate().formatDateDiff(System.currentTimeMillis() + delay);
+					
 					if(delay > 0) {
 						player_request.sendMessage(EEMessages.PREFIX.get() + EEMessages.TPA_STAFF_ACCEPT.get()
 								.replaceAll("<player>", player.getName())
@@ -163,9 +163,13 @@ public class EETeleportationAccept extends ECommand<EverEssentials> {
 								.replaceAll("<player>", player_request.getName())
 								.replaceAll("<delay>", delay_format));
 					}
+					
 					final Transform<World> location = player.getTransform();
 					player_request.setTeleport(delay, () -> this.teleportAsk(player_request, player, location));
-				} else {
+				} else if(teleports.get().getType().equals(Type.TPAHERE)) {
+					long delay = this.plugin.getConfigs().getTeleportDelay(player);
+					String delay_format = this.plugin.getEverAPI().getManagerUtils().getDate().formatDateDiff(System.currentTimeMillis() + delay);
+					
 					if(delay > 0) {
 						player_request.sendMessage(EEMessages.PREFIX.get() + EEMessages.TPAHERE_STAFF_ACCEPT.get()
 								.replaceAll("<player>", player.getName())
@@ -174,6 +178,7 @@ public class EETeleportationAccept extends ECommand<EverEssentials> {
 								.replaceAll("<player>", player_request.getName())
 								.replaceAll("<delay>", delay_format));
 					}
+					
 					final Transform<World> location = player_request.getTransform();
 					player.setTeleport(delay, () -> this.teleportAskHere(player_request, player, location));
 				}
