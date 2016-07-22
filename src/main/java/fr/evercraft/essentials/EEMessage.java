@@ -736,6 +736,9 @@ public class EEMessage extends EMessage {
 		WORLDBORDER_INFO_WARNING_DISTANCE("worldborder.info.warningDistance", "    &6&l➤  &6Avertissement de la bordure : &a<nb> &6bloc(s)"),
 		
 		WORLDBORDER_SET_DESCRIPTION("worldborder.set.description", "Défini la bordure d'un monde"),
+		WORLDBORDER_SET_BORDER("worldborder.set.border", "&7La taille de la bordure du monde &6<world> &7a été défini à &6<nb> &7bloc(s) de large."),
+		WORLDBORDER_SET_BORDER_INCREASE("worldborder.set.borderIncrease", "&7La taille de la bordure du monde &6<world> &7a été défini à &6<nb> &7bloc(s) de large."),
+		WORLDBORDER_SET_BORDER_DECREASE("worldborder.set.borderDecrease", "&7La taille de la bordure du monde &6<world> &7a été défini à &6<nb> &7bloc(s) de large."),
 		
 		WORLDS_DESCRIPTION("worlds.description", "Téléporte le joueur dans le monde de votre choix"),
 		WORLDS_END_DESCRIPTION("worlds.endDescription", "Vous téléporte dans le monde du néant"),
