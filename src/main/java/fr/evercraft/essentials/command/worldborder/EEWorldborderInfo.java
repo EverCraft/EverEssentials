@@ -164,6 +164,6 @@ public class EEWorldborderInfo extends ESubCommand<EverEssentials> {
 	
 	private String getString(double value){
 		DecimalFormat decimalPrintFormat = new DecimalFormat("#,##0.0####");
-		return decimalPrintFormat.format(value).toString();
+		return decimalPrintFormat.format(value);
 	}
 }
