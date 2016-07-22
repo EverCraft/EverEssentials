@@ -50,18 +50,29 @@ public class EEWorldborderSet extends ESubCommand<EverEssentials> {
 	
 	public List<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		List<String> suggests = new ArrayList<String>();
-		if(args.size() == 0){
+		if(args.size() == 1){
 			suggests.add("100");
 			suggests.add("1000");
-		} else if(args.size() == 1){
+		} else if(args.size() == 2){
 			suggests.add("30");
 			suggests.add("60");
+			for (World world : this.plugin.getEServer().getWorlds()) {
+				if(this.plugin.getManagerServices().getEssentials().hasPermissionWorld(source, world)) {
+					suggests.add(world.getProperties().getWorldName());
+				}
+			}
+		} else if(args.size() == 3){
+			for (World world : this.plugin.getEServer().getWorlds()) {
+				if(this.plugin.getManagerServices().getEssentials().hasPermissionWorld(source, world)) {
+					suggests.add(world.getProperties().getWorldName());
+				}
+			}
 		}
 		return suggests;
 	}
 
 	public Text help(final CommandSource source) {
-		return Text.builder("/" + this.getName() + "<taille en bloc(s)> [temps en seconde(s)] [monde]")
+		return Text.builder("/" + this.getName() + " <taille en bloc(s)> [temps en seconde(s)] [monde]")
 					.onClick(TextActions.suggestCommand("/" + this.getName()))
 					.color(TextColors.RED)
 					.build();
@@ -99,7 +110,7 @@ public class EEWorldborderSet extends ESubCommand<EverEssentials> {
 
 	private boolean commandWorldborderSet(CommandSource source, World world, String arg) {
 		try {
-			int diameter = Integer.parseInt(arg);
+			double diameter = Integer.parseInt(arg);
 			world.getWorldBorder().setDiameter(diameter);
 			source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.WORLDBORDER_SET_BORDER.get()
 					.replaceAll("<world>", world.getName())
@@ -114,10 +125,10 @@ public class EEWorldborderSet extends ESubCommand<EverEssentials> {
 	
 	private boolean commandWorldborderSet(CommandSource source, World world, List<String> args) {
 		try {
-			int diameter = Integer.parseInt(args.get(0));
-			int time = Integer.parseInt(args.get(1));
+			double diameter = Integer.parseInt(args.get(0));
+			double time = Integer.parseInt(args.get(1));
 			String message;
-			world.getWorldBorder().setDiameter(world.getWorldBorder().getDiameter(), diameter, time);
+			world.getWorldBorder().setDiameter(world.getWorldBorder().getDiameter(), diameter, (long) (time * 1000));
 			if(world.getWorldBorder().getDiameter() > diameter){
 				message = EEMessages.WORLDBORDER_SET_BORDER_DECREASE.get();
 			} else {
@@ -137,13 +148,13 @@ public class EEWorldborderSet extends ESubCommand<EverEssentials> {
 	
 	private boolean commandWorldborderSet(CommandSource source, List<String> args) {
 		try {
-			int diameter = Integer.parseInt(args.get(0));
-			int time = Integer.parseInt(args.get(1));
+			double diameter = Integer.parseInt(args.get(0));
+			double time = Integer.parseInt(args.get(1));
 			String message;
 			Optional<World> optWorld = this.plugin.getEServer().getWorld(args.get(2));
 			if(optWorld.isPresent()){
 				World world = optWorld.get();
-				world.getWorldBorder().setDiameter(world.getWorldBorder().getDiameter(), diameter, time);
+				world.getWorldBorder().setDiameter(world.getWorldBorder().getDiameter(), diameter, (long) (time * 1000));
 				if(world.getWorldBorder().getDiameter() > diameter){
 					message = EEMessages.WORLDBORDER_SET_BORDER_DECREASE.get();
 				} else {

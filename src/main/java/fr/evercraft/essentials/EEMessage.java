@@ -730,6 +730,7 @@ public class EEMessage extends EMessage {
 		WORLDBORDER_DESCRIPTION("worldborder.description", "Gère la bordure des mondes"),
 		
 		WORLDBORDER_INFO_DESCRIPTION("worldborder.info.description", "Affiche les informations sur la bordure d'un monde"),
+		
 		WORLDBORDER_INFO_TITLE("worldborder.info.title", "&6Monde : <world>"),
 		WORLDBORDER_INFO_LOCATION("worldborder.info.location", "    &6&l➤  &6Centre : <position>"),
 		WORLDBORDER_INFO_LOCATION_POSITION("worldborder.info.locationPosition", "&6(&c<x>&6, &c<z>&6, &c<world>&6)"),
@@ -744,6 +745,9 @@ public class EEMessage extends EMessage {
 		WORLDBORDER_SET_BORDER("worldborder.set.border", "&7La taille de la bordure du monde &6<world> &7a été défini à &6<nb> &7bloc(s) de large."),
 		WORLDBORDER_SET_BORDER_INCREASE("worldborder.set.borderIncrease", "&7Agrandissement de la bordure du monde &6<world> &7à <nb> bloc(s) de large en &6<time> &7seconde(s)."),
 		WORLDBORDER_SET_BORDER_DECREASE("worldborder.set.borderDecrease", "&7Rétrécissement de la bordure du monde &6<world> &7à <nb> bloc(s) de large en &6<time> &7seconde(s)."),
+		
+		WORLDBORDER_CENTER_DESCRIPTION("worldborder.center.description", "Défini le centre de la bordure d'un monde"),
+		WORLDBORDER_CENTER_MESSAGE("worldborder.center.message", "&7Le centre de la bordure du monde &6<world> &7a été défini en &6X: <x> Z: <z>&7."),
 		
 		WORLDS_DESCRIPTION("worlds.description", "Téléporte le joueur dans le monde de votre choix"),
 		WORLDS_END_DESCRIPTION("worlds.endDescription", "Vous téléporte dans le monde du néant"),
