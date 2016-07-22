@@ -179,7 +179,7 @@ public class EETeleportationAccept extends ECommand<EverEssentials> {
 								.replaceAll("<delay>", delay_format));
 					}
 					
-					final Transform<World> location = player_request.getTransform();
+					final Transform<World> location = teleports.get().getLocation().orElse(player_request.getTransform());
 					player.setTeleport(delay, () -> this.teleportAskHere(player_request, player, location));
 				}
 				
@@ -197,7 +197,7 @@ public class EETeleportationAccept extends ECommand<EverEssentials> {
 	}
 	
 	public void teleportAsk(final EPlayer player_request, final EPlayer player, final Transform<World> teleport) {
-		if(player_request.setTransform(teleport)) {
+		if(player_request.teleportSafe(teleport)) {
 			player_request.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.getText())
 					.append(EEMessages.TPA_STAFF_TELEPORT.get()
 						.replaceAll("<player>", player.getName()))
@@ -208,13 +208,13 @@ public class EETeleportationAccept extends ECommand<EverEssentials> {
 					.replace("<player>", EETeleportationAsk.getButtonPosition(player_request.getName(), teleport.getLocation()))
 					.build());
 		} else {
-			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.TPA_ERROR_LOCATION.get()
+			player_request.sendMessage(EEMessages.PREFIX.get() + EEMessages.TPA_ERROR_LOCATION.get()
 						.replaceAll("<player>", player_request.getName()));
 		}
 	}
 	
 	public void teleportAskHere(final EPlayer player_request, final EPlayer player, final Transform<World> teleport) {
-		if(player.setTransform(teleport)) {
+		if(player.teleportSafe(teleport)) {
 			player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.getText())
 					.append(EEMessages.TPAHERE_PLAYER_TELEPORT.get()
 						.replaceAll("<player>", player.getName()))

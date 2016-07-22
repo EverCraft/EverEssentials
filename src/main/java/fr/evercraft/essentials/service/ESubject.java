@@ -31,6 +31,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 
+import javax.annotation.Nullable;
+
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.Transform;
 import org.spongepowered.api.world.World;
@@ -718,13 +720,14 @@ public class ESubject implements EssentialsSubject {
 	}
 	
 	@Override
-	public boolean addTeleportAskHere(UUID uuid, long delay) {
+	public boolean addTeleportAskHere(UUID uuid, long delay, @Nullable Transform<World> location) {
 		TeleportRequest teleport = this.teleports.get(uuid);
 		if(teleport == null || teleport.isExpire()) {
-			this.teleports.put(uuid, new TeleportRequest(Type.TPAHERE, delay));
+			this.teleports.put(uuid, new TeleportRequest(Type.TPAHERE, delay, location));
 			return true;
 		} else {
 			teleport.setDelay(delay);
+			teleport.setLocation(location);
 		}
 		return false;
 	}

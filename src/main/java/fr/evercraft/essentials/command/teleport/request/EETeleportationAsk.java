@@ -96,9 +96,9 @@ public class EETeleportationAsk extends ECommand<EverEssentials> {
 				String delay_format = this.plugin.getEverAPI().getManagerUtils().getDate().formatDateDiff(System.currentTimeMillis() + delay);
 				
 				if(destination.addTeleportAsk(player.getUniqueId(), delay)) {
-					player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.TPA_STAFF_QUESTION.get()
+					player.sendMessage(EEMessages.PREFIX.get() + EEMessages.TPA_STAFF_QUESTION.get()
 							.replaceAll("<player>", destination.getName())
-							.replaceAll("<delay>", delay_format)));
+							.replaceAll("<delay>", delay_format));
 					
 					destination.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.getText())
 									.append(EEMessages.TPA_PLAYER_QUESTION.get()
@@ -108,15 +108,15 @@ public class EETeleportationAsk extends ECommand<EverEssentials> {
 									.replace("<deny>", EETeleportationAsk.getButtonDeny(player.getName()))
 									.build());
 				} else {
-					player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.TPA_ERROR_DELAY.get()
-							.replaceAll("<player>", destination.getName())));
+					player.sendMessage(EEMessages.PREFIX.get() + EEMessages.TPA_ERROR_DELAY.get()
+							.replaceAll("<player>", destination.getName()));
 				}
 			} else {
-				player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.TOGGLE_DISABLED.get()
-						.replaceAll("<player>", destination.getName())));
+				player.sendMessage(EEMessages.PREFIX.get() + EEMessages.TOGGLE_DISABLED.get()
+						.replaceAll("<player>", destination.getName()));
 			}
 		} else {
-			player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.TPA_ERROR_EQUALS.get()));
+			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.TPA_ERROR_EQUALS.get());
 		}
 		return false;
 	}

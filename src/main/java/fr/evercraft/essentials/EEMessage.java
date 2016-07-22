@@ -504,7 +504,7 @@ public class EEMessage extends EMessage {
 		TPA_DESTINATION("tpa.destination", "&6&l<player>"),
 		TPA_DESTINATION_HOVER("tpa.destinationHover", "&cMonde : &6<world>[RT]&cX : &6<x>[RT]&cY : &6<y>[RT]&cZ : &6<z>"),
 		TPA_STAFF_QUESTION("tpa.staffQuestion", "&7Votre demande a été envoyée à &6<player>&7."),
-		TPA_STAFF_ACCEPT("tpa.staffAccept", "&6<player> &7souhaite se téléporter vers vous : <accept> <deny>[RT]&7Cette demande de téléportation expira dans <delay>."),
+		TPA_STAFF_ACCEPT("tpa.staffAccept", "&7Votre demande de téléportation a été acceptée par &6<player>&7."),
 		TPA_STAFF_DENY("tpa.staffDeny", "&7Votre demande de téléportation a été refusée par &6<player>&7."),
 		TPA_STAFF_EXPIRE("tpa.staffExpire", "&7Votre demande de téléportation à &6<player> vient d'expirée&7."),
 		TPA_STAFF_TELEPORT("tpa.staffTeleport", "&7Vous avez été téléporté vers &6<destination>&7."),
@@ -548,6 +548,11 @@ public class EEMessage extends EMessage {
 		TPA_PLAYER_LIST_TITLE("tpa.playerListTitle", "&aListe des demandes de téléportation"),
 		TPA_PLAYER_LIST_LINE("tpa.playerListLine", "    &6&l➤  &6<player> &7: <accept> <deny>"),
 		TPA_PLAYER_LIST_EMPTY("tpa.playerListEmpty", "&7Aucune demande"),
+		
+		TPAALL_DESCRIPTION("tpaall.description", "Envoie une demande de téléportation à tous les joueurs"),
+		TPAALL_PLAYER("tpaall.player", "&7Vos demande de téléportation ont bien été envoyé à tous les joueurs."),
+		TPAALL_OTHERS("tpaall.others", "&7Votre demande pour téléporter tous les joueurs à <players> a bien été envoyé."),
+		TPAALL_ERROR("tpaall.error", "&cIl y a aucun autre joueur sur le serveur."),
 		
 		TPACCEPT_DESCRIPTION("tpaccept.description", "Permet d'accepter une demande de téléportation"),
 		TPACCEPT_PLAYER("tpaccept.player", "&7Vous avez accepté la demande de téléportation de &6<player>&7."),

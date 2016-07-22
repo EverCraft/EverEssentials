@@ -22,18 +22,14 @@ import java.util.Optional;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
-import org.spongepowered.api.entity.Transform;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
-import org.spongepowered.api.world.Location;
-import org.spongepowered.api.world.World;
 
 import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
-import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ECommand;
 import fr.evercraft.everapi.server.player.EPlayer;
 import fr.evercraft.everapi.text.ETextBuilder;
@@ -49,21 +45,25 @@ public class EETeleportationAskAll extends ECommand<EverEssentials> {
 	}
 
 	public Text description(final CommandSource source) {
-		return EEMessages.TPALL_DESCRIPTION.getText();
+		return EEMessages.TPAALL_DESCRIPTION.getText();
 	}
 
 	public Text help(final CommandSource source) {
-		if(source.hasPermission(EEPermissions.TPALL_OTHERS.get())){
-			return Text.builder("/tpall [joueur]").onClick(TextActions.suggestCommand("/tpall "))
-					.color(TextColors.RED).build();
+		if(source.hasPermission(EEPermissions.TPAALL_OTHERS.get())){
+			return Text.builder("/tpaall [joueur]")
+					.onClick(TextActions.suggestCommand("/tpaall "))
+					.color(TextColors.RED)
+					.build();
 		} 
-		return Text.builder("/tpall").onClick(TextActions.suggestCommand("/tpall"))
-					.color(TextColors.RED).build();
+		return Text.builder("/tpaall")
+					.onClick(TextActions.suggestCommand("/tpaall"))
+					.color(TextColors.RED)
+					.build();
 	}
 	
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		List<String> suggests = new ArrayList<String>();
-		if(args.size() == 1 && source.hasPermission(EEPermissions.TPALL_OTHERS.get())){
+		if(args.size() == 1 && source.hasPermission(EEPermissions.TPAALL_OTHERS.get())){
 			suggests = null;
 		}
 		return suggests;
@@ -83,7 +83,7 @@ public class EETeleportationAskAll extends ECommand<EverEssentials> {
 			}
 		} else if(args.size() == 1) {
 			// Si il a la permission
-			if(source.hasPermission(EEPermissions.TPALL_OTHERS.get())) {
+			if(source.hasPermission(EEPermissions.TPAALL_OTHERS.get())) {
 				Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(args.get(0));
 				// Le joueur existe
 				if(optPlayer.isPresent()){
@@ -104,81 +104,34 @@ public class EETeleportationAskAll extends ECommand<EverEssentials> {
 	}
 	
 	private boolean commandTeleportationAll(EPlayer staff) {
-		Optional<Transform<World>> optTransform = teleport(staff);
-		if(optTransform.isPresent()) {
+		if(this.plugin.getEServer().getOnlinePlayers().size() > 1) {
 			for(EPlayer player : this.plugin.getEServer().getOnlineEPlayers()) {
 				if(!staff.equals(player)) {
-					if(player.getWorld().equals(optTransform.get().getExtent()) || 
-							this.plugin.getManagerServices().getEssentials().hasPermissionWorld(player, optTransform.get().getExtent())) {
-						player.setTransform(optTransform.get());
-						player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
-								.append(EEMessages.TPALL_PLAYER.get()
-										.replaceAll("<staff>", staff.getName()))
-								.replace("<destination>", getButtonPosition(staff.getName(), player.getLocation()))
-								.build());
+					if(player.isToggle()) {
+						long delay = this.plugin.getConfigs().getTpaAcceptCancellation();
+						String delay_format = this.plugin.getEverAPI().getManagerUtils().getDate().formatDateDiff(System.currentTimeMillis() + delay);
+						
+						if(player.addTeleportAskHere(staff.getUniqueId(), delay, staff.getTransform())) {							
+							player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.getText())
+										.append(EEMessages.TPAHERE_PLAYER_QUESTION.get()
+											.replaceAll("<player>", staff.getName())
+											.replaceAll("<delay>", delay_format))
+										.replace("<accept>", EETeleportationAsk.getButtonAccept(staff.getName()))
+										.replace("<deny>", EETeleportationAsk.getButtonDeny(staff.getName()))
+										.build());
+						}
 					}
 				}
 			}
-			staff.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
-					.append(EEMessages.TPALL_STAFF.get())
-					.replace("<destination>", getButtonPosition(staff.getName(), optTransform.get().getLocation()))
-					.build());
+			staff.sendMessage(EEMessages.PREFIX.get() + EEMessages.TPAALL_PLAYER.get());
 			return true;
 		} else {
-			staff.sendMessage(EEMessages.PREFIX.get() + EEMessages.TPALL_ERROR.get());
+			staff.sendMessage(EEMessages.PREFIX.get() + EEMessages.TPAALL_ERROR.get());
 		}
 		return false;
 	}
 
 	private boolean commandTeleportationAllOthers(CommandSource staff, EPlayer destination) {
-		if(!destination.equals(staff)) {
-			Optional<Transform<World>> optTransform = teleport(destination);
-			if(optTransform.isPresent()) {
-				for(EPlayer player : this.plugin.getEServer().getOnlineEPlayers()) {
-					if(!destination.equals(player)) {
-						if(player.getWorld().equals(optTransform.get().getExtent()) || 
-								this.plugin.getManagerServices().getEssentials().hasPermissionWorld(player, optTransform.get().getExtent())) {
-							player.setTransform(optTransform.get());
-							if(!player.equals(staff)) {
-								player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
-										.append(EEMessages.TPALL_OTHERS_PLAYER.get()
-												.replaceAll("<staff>", staff.getName()))
-										.replace("<destination>", getButtonPosition(destination.getName(), optTransform.get().getLocation()))
-										.build());
-							}
-						}
-					}
-				}
-				staff.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
-						.append(EEMessages.TPALL_OTHERS_STAFF.get()
-								.replaceAll("<staff>", staff.getName()))
-						.replace("<destination>", getButtonPosition(destination.getName(), optTransform.get().getLocation()))
-						.build());
-				return true;
-			} else {
-				staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.TPALL_ERROR.get()));
-			}
-		} else {
-			return commandTeleportationAll(destination);
-		}
 		return false;
-	}
-	
-	private Optional<Transform<World>> teleport(EPlayer destination){
-		if(destination.isFlying()) {
-			return this.plugin.getEverAPI().getManagerUtils().getLocation().getBlockSafe(destination.getTransform());
-		} else {
-			return Optional.of(destination.getTransform());
-		}
-	}
-	
-	public Text getButtonPosition(final String player, final Location<World> location){
-		return EChat.of(EEMessages.TPALL_DESTINATION.get().replaceAll("<player>", player)).toBuilder()
-					.onHover(TextActions.showText(EChat.of(EEMessages.TPALL_DESTINATION_HOVER.get()
-							.replaceAll("<world>", location.getExtent().getName())
-							.replaceAll("<x>", String.valueOf(location.getBlockX()))
-							.replaceAll("<y>", String.valueOf(location.getBlockY()))
-							.replaceAll("<z>", String.valueOf(location.getBlockZ())))))
-					.build();
 	}
 }

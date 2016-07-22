@@ -115,6 +115,7 @@ public class EEManagerCommands extends TreeMap<String, ECommand<EverEssentials>>
 		register(new EETeleportationHere(this.plugin));
 		register(new EETeleportationPosition(this.plugin));
 		register(new EETeleportationAsk(this.plugin));
+		register(new EETeleportationAskAll(this.plugin));
 		register(new EETeleportationAskHere(this.plugin));
 		register(new EETeleportationAccept(this.plugin));
 		register(new EETeleportationDeny(this.plugin));
