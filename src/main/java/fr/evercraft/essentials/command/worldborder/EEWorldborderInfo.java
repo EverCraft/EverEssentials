@@ -17,8 +17,10 @@
 package fr.evercraft.essentials.command.worldborder;
 
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 import org.spongepowered.api.command.CommandException;
@@ -162,8 +164,10 @@ public class EEWorldborderInfo extends ESubCommand<EverEssentials> {
 				.build();
 	}
 	
-	private String getString(double value){
-		DecimalFormat decimalPrintFormat = new DecimalFormat("#,##0.0####");
-		return decimalPrintFormat.format(value).toString();
+	private String getString(double value) {
+		DecimalFormatSymbols dfs = new DecimalFormatSymbols(Locale.FRANCE);
+		dfs.setGroupingSeparator(' ');
+		DecimalFormat decimalPrintFormat = new DecimalFormat("#,##0.0####", dfs);
+		return decimalPrintFormat.format(value);
 	}
 }
