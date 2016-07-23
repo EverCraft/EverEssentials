@@ -72,18 +72,11 @@ public class EEWorldborderAdd extends ESubCommand<EverEssentials> {
 	}
 
 	public Text help(final CommandSource source) {
-		/*
-		return Text.builder("/" + this.getName() + " <bloc(s)> [seconde(s)] [monde]")
+		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_BLOCK.get() + "> [" + EAMessages.ARGS_SECONDS.get() + "] "
+						+ "[" + EAMessages.ARGS_WORLD.get() + "]")
 					.onClick(TextActions.suggestCommand("/" + this.getName()))
 					.color(TextColors.RED)
 					.build();
-					*/
-		return Text.builder("/" + this.getName())
-				.append(Text.builder(" <" + EAMessages.ARGS_BLOCK.get() + "> [" + EAMessages.ARGS_SECONDS.get() 
-						+ "] [" + EAMessages.ARGS_WORLD.get() + "}").build())
-				.onClick(TextActions.suggestCommand("/" + this.getName()))
-				.color(TextColors.RED)
-				.build();
 	}
 	
 	public boolean subExecute(final CommandSource source, final List<String> args) {

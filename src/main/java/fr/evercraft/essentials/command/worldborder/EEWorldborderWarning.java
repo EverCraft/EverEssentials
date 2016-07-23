@@ -68,21 +68,21 @@ public class EEWorldborderWarning extends ESubCommand<EverEssentials> {
 	}
 
 	public Text help(final CommandSource source) {
-		return Text.builder("/" + this.getName() + " <time|distance> <valeur>")
+		return Text.builder("/" + this.getName() + " <time|distance> <" + EAMessages.ARGS_VALUE.get() + ">")
 					.onClick(TextActions.suggestCommand("/" + this.getName()))
 					.color(TextColors.RED)
 					.build();
 	}
 	
 	public Text helpTime(final CommandSource source) {
-		return Text.builder("/" + this.getName() + " time <seconde(s)> [monde]")
+		return Text.builder("/" + this.getName() + " time <" + EAMessages.ARGS_SECONDS.get() + "> [" + EAMessages.ARGS_WORLD.get() + "]")
 					.onClick(TextActions.suggestCommand("/" + this.getName()))
 					.color(TextColors.RED)
 					.build();
 	}
 	
 	public Text helpDistance(final CommandSource source) {
-		return Text.builder("/" + this.getName() + " distance <distance> [monde]")
+		return Text.builder("/" + this.getName() + " distance <" + EAMessages.ARGS_DISTANCE.get() + "> [" + EAMessages.ARGS_WORLD.get() + "]")
 					.onClick(TextActions.suggestCommand("/" + this.getName()))
 					.color(TextColors.RED)
 					.build();
