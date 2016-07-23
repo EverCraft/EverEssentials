@@ -51,6 +51,7 @@ import fr.evercraft.everapi.services.essentials.Mail;
 import fr.evercraft.everapi.services.essentials.TeleportDelay;
 import fr.evercraft.everapi.services.essentials.TeleportRequest;
 import fr.evercraft.everapi.services.essentials.TeleportRequest.Type;
+import fr.evercraft.everapi.services.essentials.event.AfkEvent;
 import fr.evercraft.everapi.services.essentials.event.VanishEvent;
 
 public class ESubject implements EssentialsSubject {
@@ -349,9 +350,27 @@ public class ESubject implements EssentialsSubject {
 
 	@Override
 	public boolean setAfk(final boolean afk) {
+		return this.setAfk(afk, AfkEvent.Action.PLUGIN);
+	}
+	
+	public boolean setAfkAuto(final boolean afk) {
+		return this.setAfk(afk, AfkEvent.Action.AUTO);
+	}
+	
+	public boolean setAfkCommand(final boolean afk) {
+		return this.setAfk(afk, AfkEvent.Action.COMMAND);
+	}
+	
+	public boolean setAfk(final boolean afk, final AfkEvent.Action action) {
 		if(this.afk != afk) {
 			this.afk = afk;
-			return true;
+			
+			// Event
+			if(this.plugin.getManagerEvent().post(this.getUniqueId(), this.afk, action)) {
+				this.afk = !afk;
+			} else {
+				return true;
+			}
 		}
 		return false;
 	}
@@ -388,7 +407,7 @@ public class ESubject implements EssentialsSubject {
 	public void updateLastActivated() {
 		this.last_activated = System.currentTimeMillis();
 		if(this.afk) {
-			this.setAfk(false);
+			this.setAfk(false, AfkEvent.Action.PLAYER);
 			
 			Optional<EPlayer> player = this.plugin.getEServer().getEPlayer(this.identifier);
 			if(player.isPresent()) {

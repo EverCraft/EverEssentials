@@ -45,7 +45,6 @@ import org.spongepowered.api.event.network.ClientConnectionEvent;
 
 import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EverEssentials;
-import fr.evercraft.essentials.service.ESubject;
 import fr.evercraft.everapi.server.player.EPlayer;
 import fr.evercraft.everapi.services.essentials.TeleportDelay;
 import fr.evercraft.everapi.sponge.UtilsPainting;
@@ -133,10 +132,12 @@ public class EEPlayerListeners {
 	@Listener
 	public void onPlayerDeath(DestructEntityEvent.Death event) {
 		if (event.getTargetEntity() instanceof Player) {
-			ESubject subject = this.plugin.getManagerServices().getEssentials().get(event.getTargetEntity().getUniqueId());
-			if (subject != null) {
-				// Save Back
-				subject.setBack(event.getTargetEntity().getTransform());
+			Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer((Player) event.getTargetEntity());
+			
+			if(optPlayer.isPresent()) {
+				EPlayer player = optPlayer.get();
+				
+				player.setBack();
 			}
 		}
 	}
@@ -232,10 +233,15 @@ public class EEPlayerListeners {
 	@Listener
 	public void onPlayerHeal(HealEntityEvent event) {
 		if (event.getTargetEntity() instanceof Player && event.getBaseHealAmount() > event.getFinalHealAmount()) {
-			ESubject subject = this.plugin.getManagerServices().getEssentials().get(event.getTargetEntity().getUniqueId());
-			if (subject != null && subject.isGod()) {
-				event.setCancelled(true);
-				this.plugin.getEServer().broadcast("EverEssentials : Test HealEntityEvent");
+			Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer((Player) event.getTargetEntity());
+			
+			if(optPlayer.isPresent()) {
+				EPlayer player = optPlayer.get();
+				
+				if(player.isGod()) {
+					event.setCancelled(true);
+					this.plugin.getEServer().broadcast("EverEssentials : Test HealEntityEvent");
+				}
 			}
 		}
 	}

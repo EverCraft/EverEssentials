@@ -106,9 +106,9 @@ public class EEHome extends ECommand<EverEssentials> {
 	}
 	
 	public boolean commandHomeList(final EPlayer player) throws CommandException {
-		ESubject subject = this.plugin.getManagerServices().getEssentials().get(player.getUniqueId());
-		if(subject != null) {
-			Map<String, LocationSQL> homes = subject.getAllHomes();
+		Optional<ESubject> subject = this.plugin.getManagerServices().getEssentials().getSubject(player.getUniqueId());
+		if(subject.isPresent()) {
+			Map<String, LocationSQL> homes = subject.get().getAllHomes();
 			// Le joueur n'as pas de home
 			if(homes.size() == 0) {
 				player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.HOME_EMPTY.getText()));

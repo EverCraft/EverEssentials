@@ -31,6 +31,7 @@ import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.everapi.server.player.EPlayer;
 import fr.evercraft.everapi.services.essentials.TeleportDelay;
 import fr.evercraft.everapi.services.essentials.TeleportRequest;
+import fr.evercraft.everapi.services.essentials.TeleportRequest.Type;
 
 
 public class EScheduler {
@@ -89,7 +90,7 @@ public class EScheduler {
 			// Teleport Ask
 			for(Entry<UUID, TeleportRequest> teleport : player.getAllTeleportsAsk().entrySet()) {
 				if(!teleport.getValue().isExpire() && teleport.getValue().getTime().isPresent() &&  teleport.getValue().getTime().get() <= current_time) {
-					teleport.getValue().setExpire(true);
+					players.add(player.getUniqueId());
 				}
 			}
 			
@@ -125,6 +126,25 @@ public class EScheduler {
 			Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(uuid);
 			if(optPlayer.isPresent()) {
 				EPlayer player = optPlayer.get();
+				
+				// Teleport Ask
+				for(Entry<UUID, TeleportRequest> teleport : player.getAllTeleportsAsk().entrySet()) {
+					if(!teleport.getValue().isExpire() && teleport.getValue().getTime().isPresent() &&  teleport.getValue().getTime().get() <= current_time) {
+						teleport.getValue().setExpire(true);
+						
+						Optional<EPlayer> others = this.plugin.getEServer().getEPlayer(teleport.getKey());
+						if(others.isPresent()) {
+							if(teleport.getValue().getType().equals(Type.TPA)) {
+								others.get().sendMessage(EEMessages.PREFIX.get() + EEMessages.TPA_STAFF_EXPIRE.get()
+										.replaceAll("<player>", player.getName()));
+							} else if(teleport.getValue().getType().equals(Type.TPAHERE)) {
+								others.get().sendMessage(EEMessages.PREFIX.get() + EEMessages.TPAHERE_STAFF_EXPIRE.get()
+										.replaceAll("<player>", player.getName()));
+							}
+						}
+					}
+				}
+				
 				// Teleport Delay
 				Optional<TeleportDelay> teleport = player.getTeleportDelay();
 				if(teleport.isPresent() && teleport.get().getTime() <= current_time) {
@@ -136,12 +156,17 @@ public class EScheduler {
 					if(player.hasPermission(EEPermissions.AFK_BYPASS_AUTO.get())) {
 						player.setAfkAutoFake(true);
 					} else {
-						player.setAfk(true);
-						
-						if(EEMessages.AFK_ALL_ENABLE.has()) {
-							player.broadcast(EEMessages.PREFIX.getText().concat(player.replaceVariable(EEMessages.AFK_ALL_ENABLE.get())));
-						} else {
-							player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.AFK_PLAYER_ENABLE.getText()));
+						Optional<ESubject> subject = this.plugin.getManagerServices().getEssentials().getSubject(player.getUniqueId());
+						if(subject.isPresent()) {
+							if(subject.get().setAfkAuto(true)) {
+								if(EEMessages.AFK_ALL_ENABLE.has()) {
+									player.broadcast(EEMessages.PREFIX.getText().concat(player.replaceVariable(EEMessages.AFK_ALL_ENABLE.get())));
+								} else {
+									player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.AFK_PLAYER_ENABLE.getText()));
+								}
+							} else {
+								player.setAfkAutoFake(true);
+							}
 						}
 					}
 				}

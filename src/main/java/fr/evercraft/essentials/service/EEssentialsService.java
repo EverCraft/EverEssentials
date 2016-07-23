@@ -40,6 +40,7 @@ import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.java.Chronometer;
 import fr.evercraft.everapi.services.essentials.EssentialsService;
+import fr.evercraft.everapi.services.essentials.EssentialsSubject;
 
 public class EEssentialsService implements EssentialsService {
 	private final EverEssentials plugin;
@@ -84,23 +85,25 @@ public class EEssentialsService implements EssentialsService {
 	}
 
 	@Override
-	public ESubject get(UUID uuid) {
+	public Optional<EssentialsSubject> get(UUID uuid) {
+		return Optional.ofNullable(this.getSubject(uuid).orElse(null));
+	}
+	
+	public Optional<ESubject> getSubject(UUID uuid) {
 		Preconditions.checkNotNull(uuid, "uuid");
-		
 		try {
 			if(!this.subjects.containsKey(uuid)) {
-				return this.cache.get(uuid);
+				return Optional.of(this.cache.get(uuid));
 	    	}
-	    	return this.subjects.get(uuid);
+	    	return Optional.ofNullable(this.subjects.get(uuid));
 		} catch (ExecutionException e) {
 			this.plugin.getLogger().warn("Error : Loading user (identifier='" + uuid + "';message='" + e.getMessage() + "')");
-			return null;
+			return Optional.empty();
 		}
 	}
 	
 	public Optional<ESubject> getOnline(UUID uuid) {
 		Preconditions.checkNotNull(uuid, "uuid");
-		
 		return Optional.ofNullable(this.subjects.get(uuid));
 	}
 	

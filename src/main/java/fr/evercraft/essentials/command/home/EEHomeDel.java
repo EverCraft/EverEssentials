@@ -105,9 +105,9 @@ public class EEHomeDel extends ECommand<EverEssentials> {
 	
 	public boolean commandDeleteHome(final EPlayer player, final String home_name) {
 		String name = EChat.fixLength(home_name, this.plugin.getEverAPI().getConfigs().get("maxCaractere").getInt(16));
-		ESubject subject = this.plugin.getManagerServices().getEssentials().get(player.getUniqueId());
-		if(subject != null) {
-			Optional<LocationSQL> home = subject.getHomeLocation(name);
+		Optional<ESubject> subject = this.plugin.getManagerServices().getEssentials().getSubject(player.getUniqueId());
+		if(subject.isPresent()) {
+			Optional<LocationSQL> home = subject.get().getHomeLocation(name);
 			// Le joueur a bien un home qui porte ce nom
 			if(home.isPresent()) {
 				player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
@@ -127,9 +127,9 @@ public class EEHomeDel extends ECommand<EverEssentials> {
 	
 	public boolean commandDeleteHomeConfirmation(final EPlayer player, final String home_name) {
 		String name = EChat.fixLength(home_name, this.plugin.getEverAPI().getConfigs().get("maxCaractere").getInt(16));
-		ESubject subject = this.plugin.getManagerServices().getEssentials().get(player.getUniqueId());
-		if(subject != null) {
-			Optional<LocationSQL> home = subject.getHomeLocation(name);
+		Optional<ESubject> subject = this.plugin.getManagerServices().getEssentials().getSubject(player.getUniqueId());
+		if(subject.isPresent()) {
+			Optional<LocationSQL> home = subject.get().getHomeLocation(name);
 			// Le joueur a bien un home qui porte ce nom
 			if(home.isPresent()) {
 				// Si le home a bien été supprimer

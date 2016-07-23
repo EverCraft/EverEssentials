@@ -152,35 +152,9 @@ public class EETeleportationAccept extends ECommand<EverEssentials> {
 				player.removeTeleportAsk(player_request.getUniqueId());
 				
 				if(teleports.get().getType().equals(Type.TPA)) {
-					long delay = this.plugin.getConfigs().getTeleportDelay(player_request);
-					String delay_format = this.plugin.getEverAPI().getManagerUtils().getDate().formatDateDiff(System.currentTimeMillis() + delay);
-					
-					if(delay > 0) {
-						player_request.sendMessage(EEMessages.PREFIX.get() + EEMessages.TPA_STAFF_ACCEPT.get()
-								.replaceAll("<player>", player.getName())
-								.replaceAll("<delay>", delay_format));
-						player.sendMessage(EEMessages.PREFIX.get() + EEMessages.TPA_PLAYER_ACCEPT.get()
-								.replaceAll("<player>", player_request.getName())
-								.replaceAll("<delay>", delay_format));
-					}
-					
-					final Transform<World> location = player.getTransform();
-					player_request.setTeleport(delay, () -> this.teleportAsk(player_request, player, location), player_request.hasPermission(EEPermissions.TELEPORT_BYPASS_MOVE.get()));
+					this.commandTeleportationAcceptAsk(player, player_request, teleports.get());
 				} else if(teleports.get().getType().equals(Type.TPAHERE)) {
-					long delay = this.plugin.getConfigs().getTeleportDelay(player);
-					String delay_format = this.plugin.getEverAPI().getManagerUtils().getDate().formatDateDiff(System.currentTimeMillis() + delay);
-					
-					if(delay > 0) {
-						player_request.sendMessage(EEMessages.PREFIX.get() + EEMessages.TPAHERE_STAFF_ACCEPT.get()
-								.replaceAll("<player>", player.getName())
-								.replaceAll("<delay>", delay_format));
-						player.sendMessage(EEMessages.PREFIX.get() + EEMessages.TPAHERE_PLAYER_ACCEPT.get()
-								.replaceAll("<player>", player_request.getName())
-								.replaceAll("<delay>", delay_format));
-					}
-					
-					final Transform<World> location = teleports.get().getLocation().orElse(player_request.getTransform());
-					player.setTeleport(delay, () -> this.teleportAskHere(player_request, player, location), player_request.hasPermission(EEPermissions.TELEPORT_BYPASS_MOVE.get()));
+					this.commandTeleportationAcceptAskHere(player, player_request, teleports.get());
 				}
 				
 			// La demande a expiré
@@ -192,6 +166,52 @@ public class EETeleportationAccept extends ECommand<EverEssentials> {
 		} else {
 			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.TPA_PLAYER_EMPTY.get()
 					.replaceAll("<player>", player_request.getName()));
+		}
+		return false;
+	}
+	
+	private boolean commandTeleportationAcceptAsk(final EPlayer player, final EPlayer player_request, final TeleportRequest teleport) {
+		long delay = this.plugin.getConfigs().getTeleportDelay(player_request);
+		String delay_format = this.plugin.getEverAPI().getManagerUtils().getDate().formatDateDiff(System.currentTimeMillis() + delay);
+		
+		final Transform<World> location = player.getTransform();
+		
+		if(player_request.getWorld().equals(location.getExtent()) || this.plugin.getManagerServices().getEssentials().hasPermissionWorld(player_request, location.getExtent())) {
+			if(delay > 0) {
+				player_request.sendMessage(EEMessages.PREFIX.get() + EEMessages.TPA_STAFF_ACCEPT.get()
+						.replaceAll("<player>", player.getName())
+						.replaceAll("<delay>", delay_format));
+				player.sendMessage(EEMessages.PREFIX.get() + EEMessages.TPA_PLAYER_ACCEPT.get()
+						.replaceAll("<player>", player_request.getName())
+						.replaceAll("<delay>", delay_format));
+			}
+			
+			player_request.setTeleport(delay, () -> this.teleportAsk(player_request, player, location), player_request.hasPermission(EEPermissions.TELEPORT_BYPASS_MOVE.get()));
+		} else {
+			player_request.sendMessage(EEMessages.PREFIX.get() + EAMessages.NO_PERMISSION_WORLD.get());
+		}
+		return false;
+	}
+	
+	private boolean commandTeleportationAcceptAskHere(final EPlayer player, final EPlayer player_request, final TeleportRequest teleport) {
+		long delay = this.plugin.getConfigs().getTeleportDelay(player);
+		String delay_format = this.plugin.getEverAPI().getManagerUtils().getDate().formatDateDiff(System.currentTimeMillis() + delay);
+		
+		final Transform<World> location = teleport.getLocation().orElse(player_request.getTransform());
+		
+		if(player.getWorld().equals(location.getExtent()) || this.plugin.getManagerServices().getEssentials().hasPermissionWorld(player, location.getExtent())) {
+			if(delay > 0) {
+				player_request.sendMessage(EEMessages.PREFIX.get() + EEMessages.TPAHERE_STAFF_ACCEPT.get()
+						.replaceAll("<player>", player.getName())
+						.replaceAll("<delay>", delay_format));
+				player.sendMessage(EEMessages.PREFIX.get() + EEMessages.TPAHERE_PLAYER_ACCEPT.get()
+						.replaceAll("<player>", player_request.getName())
+						.replaceAll("<delay>", delay_format));
+			}
+			
+			player.setTeleport(delay, () -> this.teleportAskHere(player_request, player, location), player_request.hasPermission(EEPermissions.TELEPORT_BYPASS_MOVE.get()));
+		} else {
+			player.sendMessage(EEMessages.PREFIX.get() + EAMessages.NO_PERMISSION_WORLD.get());
 		}
 		return false;
 	}

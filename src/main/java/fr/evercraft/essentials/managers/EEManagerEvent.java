@@ -16,6 +16,9 @@
  */
 package fr.evercraft.essentials.managers;
 
+import java.util.Optional;
+import java.util.UUID;
+
 import org.spongepowered.api.event.cause.Cause;
 
 import fr.evercraft.essentials.EverEssentials;
@@ -24,6 +27,7 @@ import fr.evercraft.essentials.event.EAfkEnableEvent;
 import fr.evercraft.everapi.server.player.EPlayer;
 import fr.evercraft.everapi.services.essentials.event.AfkEvent;
 import fr.evercraft.everapi.services.essentials.event.VanishEvent;
+
 public class EEManagerEvent {
 	private EverEssentials plugin;
 	
@@ -35,18 +39,30 @@ public class EEManagerEvent {
 		return Cause.source(this.plugin).build();
 	}
 	
+	/*
+	 * Afk
+	 */
+	
+	public boolean post(UUID uuid, boolean value, AfkEvent.Action action) {
+		Optional<EPlayer> player = this.plugin.getEServer().getEPlayer(uuid);
+		if(player.isPresent()) {
+			return this.post(player.get(), value, action);
+		}
+		return false;
+	}
+	
 	public boolean post(final EPlayer player, final boolean value, final AfkEvent.Action action) {
 		if(value) {
-			this.plugin.getLogger().debug("Event AfkEvent.Enable : (Action='" + action.name() +"')");
+			this.plugin.getLogger().debug("Event AfkEvent.Enable : (UUID='" + player.getIdentifier() + "';value='" + value + "';Action='" + action.name() +"')");
 			return this.plugin.getGame().getEventManager().post(new EAfkEnableEvent(player, action, this.getCause()));
 		} else {
-			this.plugin.getLogger().debug("Event AfkEvent.Disable : (Action='" + action.name() +"')");
+			this.plugin.getLogger().debug("Event AfkEvent.Disable : (UUID='" + player.getIdentifier() + "';value='" + value + "';Action='" + action.name() +"')");
 			return this.plugin.getGame().getEventManager().post(new EAfkDisableEvent(player, action, this.getCause()));
 		}
 	}
 	
 	public boolean post(final EPlayer player, final VanishEvent.Action action) {
-		this.plugin.getLogger().debug("Event PermUserEvent : (Identifier='" + player.getIdentifier() + "';Action='" + action.name() +"')");
+		this.plugin.getLogger().debug("Event PermUserEvent : (UUID='" + player.getIdentifier() + "';Action='" + action.name() +"')");
 		return this.plugin.getGame().getEventManager().post(new VanishEvent(this.plugin, player, action));
 	}
 }

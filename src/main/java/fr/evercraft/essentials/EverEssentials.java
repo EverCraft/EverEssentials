@@ -22,6 +22,7 @@ import org.spongepowered.api.plugin.Plugin;
 import fr.evercraft.essentials.command.sub.EEReload;
 import fr.evercraft.essentials.listeners.EEPlayerListeners;
 import fr.evercraft.essentials.managers.EEManagerCommands;
+import fr.evercraft.essentials.managers.EEManagerEvent;
 import fr.evercraft.essentials.managers.EEManagerServices;
 import fr.evercraft.essentials.service.EScheduler;
 import fr.evercraft.everapi.exception.PluginDisableException;
@@ -46,6 +47,7 @@ public class EverEssentials extends EPlugin {
 	
 	private EEManagerServices managerServices;
 	private EEManagerCommands managerCommands;
+	private EEManagerEvent managerEvent;
 	
 	private EScheduler scheduler;
 	
@@ -72,6 +74,7 @@ public class EverEssentials extends EPlugin {
 		command.add(new EEReload(this, command));
 		
 		this.managerCommands = new EEManagerCommands(this);
+		this.managerEvent = new EEManagerEvent(this);
 		
 		// Listeners
 		this.getGame().getEventManager().registerListeners(this, new EEPlayerListeners(this));
@@ -114,6 +117,14 @@ public class EverEssentials extends EPlugin {
 		return this.rules;
 	}
 
+	public EEDataBase getDataBases() {
+		return this.databases;
+	}
+
+	public EScheduler getScheduler() {
+		return this.scheduler;
+	}
+	
 	public EEManagerCommands getManagerCommands() {
 		return this.managerCommands;
 	}
@@ -122,11 +133,7 @@ public class EverEssentials extends EPlugin {
 		return this.managerServices;
 	}
 
-	public EEDataBase getDataBases() {
-		return this.databases;
-	}
-
-	public EScheduler getScheduler() {
-		return this.scheduler;
+	public EEManagerEvent getManagerEvent() {
+		return this.managerEvent;
 	}
 }

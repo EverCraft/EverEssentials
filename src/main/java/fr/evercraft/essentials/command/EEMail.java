@@ -36,11 +36,11 @@ import org.spongepowered.api.text.format.TextColors;
 import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
-import fr.evercraft.essentials.service.ESubject;
 import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ECommand;
 import fr.evercraft.everapi.server.player.EPlayer;
+import fr.evercraft.everapi.services.essentials.EssentialsSubject;
 import fr.evercraft.everapi.services.essentials.Mail;
 import fr.evercraft.everapi.text.ETextBuilder;
 
@@ -387,9 +387,9 @@ public class EEMail extends ECommand<EverEssentials> {
 	 */
 	
 	private boolean commandSend(CommandSource staff, User player, String message) {
-		ESubject subject = this.plugin.getManagerServices().getEssentials().get(player.getUniqueId());
-		if(subject != null) {
-			if(subject.addMail(staff.getIdentifier(), message)) {
+		Optional<EssentialsSubject> subject = this.plugin.getManagerServices().getEssentials().get(player.getUniqueId());
+		if(subject.isPresent()) {
+			if(subject.get().addMail(staff.getIdentifier(), message)) {
 				if(staff.getIdentifier().equals(player.getIdentifier())) {
 					staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.MAIL_SEND.get()
 						.replaceAll("<player>", player.getName())));

@@ -16,6 +16,8 @@
  */
 package fr.evercraft.essentials;
 
+import java.util.Arrays;
+
 import ninja.leaping.configurate.ConfigurationNode;
 import fr.evercraft.everapi.plugin.file.EConfig;
 import fr.evercraft.everapi.plugin.file.EMessage;
@@ -74,7 +76,7 @@ public class EEConfig extends EConfig {
 								  		"After this timeout in seconds, the user will be set as afk.",
 								  		"This feature requires the player to have everessentials.afk.auto node.",
 								  		"Set to -1 for no timeout.");
-		addDefault("afk-auto-kick", 120, 
+		addDefault("afk-auto-kick", 10, 
 										"Auto-AFK Kick",
 										"After this timeout in seconds, the user will be kicked from the server.",
 										"everessentials.afk.kickexempt node overrides this feature.",
@@ -93,7 +95,7 @@ public class EEConfig extends EConfig {
 		addDefault("butcher-max-radius", 1000);
 		
 		// Blacklist item
-		addDefault("blacklist", "minecraft:dirt", "minecraft:sand");
+		addDefault("blacklist", Arrays.asList("minecraft:dirt", "minecraft:sand"));
 		
 		// Warp
 		addDefault("warp-permission", true, "Set this true to enable permission per warp.");

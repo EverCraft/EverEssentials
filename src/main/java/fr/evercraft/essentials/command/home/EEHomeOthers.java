@@ -136,9 +136,9 @@ public class EEHomeOthers extends ECommand<EverEssentials> {
 	}
 	
 	public boolean commandHomeList(final CommandSource staff, final EPlayer player){
-		ESubject subject = this.plugin.getManagerServices().getEssentials().get(player.getUniqueId());
-		if(subject != null) {
-			Map<String, LocationSQL> homes = subject.getAllHomes();
+		Optional<ESubject> subject = this.plugin.getManagerServices().getEssentials().getSubject(player.getUniqueId());
+		if(subject.isPresent()) {
+			Map<String, LocationSQL> homes = subject.get().getAllHomes();
 			// Le joueur n'as pas de home
 			if(homes.size() == 0){
 				staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.HOMEOTHERS_EMPTY.get().replaceAll("<player>", player.getName())));
@@ -188,9 +188,9 @@ public class EEHomeOthers extends ECommand<EverEssentials> {
 	
 	public boolean commandHomeDelete(final CommandSource staff, final EPlayer player, final String home_name){
 		String name = EChat.fixLength(home_name, this.plugin.getEverAPI().getConfigs().get("maxCaractere").getInt(16));
-		ESubject subject = this.plugin.getManagerServices().getEssentials().get(player.getUniqueId());
-		if(subject != null) {
-			Optional<LocationSQL> home = subject.getHomeLocation(name);
+		Optional<ESubject> subject = this.plugin.getManagerServices().getEssentials().getSubject(player.getUniqueId());
+		if(subject.isPresent()) {
+			Optional<LocationSQL> home = subject.get().getHomeLocation(name);
 			// Le joueur a bien un home qui porte ce nom
 			if(home.isPresent()) {
 				staff.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.getText())
@@ -213,9 +213,9 @@ public class EEHomeOthers extends ECommand<EverEssentials> {
 	
 	public boolean commandHomeDeleteConfirmation(final CommandSource staff, final EPlayer player, final String home_name){
 		String name = EChat.fixLength(home_name, this.plugin.getEverAPI().getConfigs().get("maxCaractere").getInt(16));
-		ESubject subject = this.plugin.getManagerServices().getEssentials().get(player.getUniqueId());
-		if(subject != null) {
-			Optional<LocationSQL> home = subject.getHomeLocation(name);
+		Optional<ESubject> subject = this.plugin.getManagerServices().getEssentials().getSubject(player.getUniqueId());
+		if(subject.isPresent()) {
+			Optional<LocationSQL> home = subject.get().getHomeLocation(name);
 			// Le joueur a bien un home qui porte ce nom
 			if(home.isPresent()) {
 				// Si le home a bien été supprimer
