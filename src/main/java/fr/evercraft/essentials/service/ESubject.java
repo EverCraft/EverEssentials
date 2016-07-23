@@ -43,12 +43,12 @@ import com.google.common.collect.ImmutableSet;
 
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.essentials.EEMessage.EEMessages;
-import fr.evercraft.essentials.service.teleport.Teleport;
 import fr.evercraft.everapi.exception.ServerDisableException;
 import fr.evercraft.everapi.server.location.LocationSQL;
 import fr.evercraft.everapi.server.player.EPlayer;
 import fr.evercraft.everapi.services.essentials.EssentialsSubject;
 import fr.evercraft.everapi.services.essentials.Mail;
+import fr.evercraft.everapi.services.essentials.TeleportDelay;
 import fr.evercraft.everapi.services.essentials.TeleportRequest;
 import fr.evercraft.everapi.services.essentials.TeleportRequest.Type;
 import fr.evercraft.everapi.services.essentials.event.VanishEvent;
@@ -77,7 +77,7 @@ public class ESubject implements EssentialsSubject {
 	
 	private final LinkedHashMap<UUID, TeleportRequest> teleports;
 	
-	private Optional<Teleport> teleport;
+	private Optional<TeleportDelay> teleport;
 
 	public ESubject(final EverEssentials plugin, final UUID uuid) {
 		Preconditions.checkNotNull(plugin, "plugin");
@@ -754,14 +754,35 @@ public class ESubject implements EssentialsSubject {
 	 */
 	
 	@Override
-	public boolean hasTeleport() {
+	public boolean hasTeleportDelay() {
 		return this.teleport.isPresent();
 	}
 	
 	@Override
-	public boolean runTeleport() {
+	public Optional<TeleportDelay> getTeleportDelay() {
+		return this.teleport;
+	}
+	
+	@Override
+	public boolean setTeleport(Runnable runnable, boolean canMove) {
+		return this.setTeleport(System.currentTimeMillis() + this.plugin.getConfigs().getTeleportDelay(), runnable, canMove);
+	}
+	
+	@Override
+	public boolean setTeleport(long delay, Runnable runnable, boolean canMove) {
+		Preconditions.checkNotNull(runnable, "runnable");
+		
+		if(!this.teleport.isPresent()) {
+			this.teleport = Optional.of(new TeleportDelay(delay, runnable, canMove));
+			return true;
+		}
+		return false;
+	}
+	
+	@Override
+	public boolean runTeleportDelay() {
 		if(this.teleport.isPresent()) {
-			Teleport teleport = this.teleport.get();
+			TeleportDelay teleport = this.teleport.get();
 			this.teleport = Optional.empty();
 			teleport.run();
 			return true;
@@ -770,36 +791,12 @@ public class ESubject implements EssentialsSubject {
 	}
 	
 	@Override
-	public boolean cancelTeleport() {
+	public boolean cancelTeleportDelay() {
 		if(this.teleport.isPresent()) {
 			this.teleport = Optional.empty();
 			return true;
 		}
 		return false;
-	}
-	
-	@Override
-	public boolean setTeleport(Runnable runnable) {
-		return this.setTeleport(System.currentTimeMillis() + this.plugin.getConfigs().getTeleportDelay(), runnable);
-	}
-	
-	@Override
-	public boolean setTeleport(long delay, Runnable runnable) {
-		Preconditions.checkNotNull(delay, "delay");
-		Preconditions.checkNotNull(runnable, "runnable");
-		
-		if(!this.teleport.isPresent()) {
-			this.teleport = Optional.of(new Teleport(delay, runnable));
-			return true;
-		}
-		return false;
-	}
-	
-	public Optional<Long> getTeleport() {
-		if(this.teleport.isPresent()) {
-			return Optional.of(this.teleport.get().getTime());
-		}
-		return Optional.empty();
 	}
 	
 	/*

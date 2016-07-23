@@ -29,6 +29,7 @@ import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.everapi.server.player.EPlayer;
+import fr.evercraft.everapi.services.essentials.TeleportDelay;
 import fr.evercraft.everapi.services.essentials.TeleportRequest;
 
 
@@ -93,7 +94,7 @@ public class EScheduler {
 			}
 			
 			// Teleport Delay
-			if(player.getTeleport().isPresent() && player.getTeleport().get() <= current_time) {
+			if(player.getTeleportDelay().isPresent() && player.getTeleportDelay().get().getTime() <= current_time) {
 				players.add(player.getUniqueId());
 			}
 			
@@ -125,9 +126,9 @@ public class EScheduler {
 			if(optPlayer.isPresent()) {
 				EPlayer player = optPlayer.get();
 				// Teleport Delay
-				Optional<Long> teleport = player.getTeleport();
-				if(teleport.isPresent() && teleport.get() <= current_time) {
-					player.runTeleport();
+				Optional<TeleportDelay> teleport = player.getTeleportDelay();
+				if(teleport.isPresent() && teleport.get().getTime() <= current_time) {
+					player.runTeleportDelay();
 				}
 				
 				// AFK

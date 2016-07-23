@@ -551,8 +551,11 @@ public class EEMessage extends EMessage {
 		
 		TPAALL_DESCRIPTION("tpaall.description", "Envoie une demande de téléportation à tous les joueurs"),
 		TPAALL_PLAYER("tpaall.player", "&7Vos demande de téléportation ont bien été envoyé à tous les joueurs."),
-		TPAALL_OTHERS("tpaall.others", "&7Votre demande pour téléporter tous les joueurs à <players> a bien été envoyé."),
-		TPAALL_ERROR("tpaall.error", "&cIl y a aucun autre joueur sur le serveur."),
+		TPAALL_OTHERS_STAFF("tpaall.othersStaff", "&7Votre demande pour téléporter tous les joueurs à &6<player> &7a bien été envoyé."),
+		TPAALL_OTHERS_PLAYER("tpaall.othersPlayer", "&6<staff> &7a envoyé une demande de téléportation vers vous à tous les joueurs."),
+		TPAALL_ERROR_EMPTY("tpaall.errorEmpty", "&cIl y a aucun autre joueur sur le serveur."),
+		TPAALL_ERROR_PLAYER_LOCATION("tpaall.errorPlayerLocation", "&cImpossible de trouver une position pour téléporter les joueurs."),
+		TPAALL_ERROR_OTHERS_LOCATION("tpaall.errorOthersLocation", "&cImpossible de trouver une position pour téléporter les joueurs sur &6<player>&c."),
 		
 		TPACCEPT_DESCRIPTION("tpaccept.description", "Permet d'accepter une demande de téléportation"),
 		TPACCEPT_PLAYER("tpaccept.player", "&7Vous avez accepté la demande de téléportation de &6<player>&7."),

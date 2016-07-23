@@ -47,6 +47,7 @@ import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.essentials.service.ESubject;
 import fr.evercraft.everapi.server.player.EPlayer;
+import fr.evercraft.everapi.services.essentials.TeleportDelay;
 import fr.evercraft.everapi.sponge.UtilsPainting;
 
 public class EEPlayerListeners {
@@ -179,12 +180,13 @@ public class EEPlayerListeners {
 				}
 				
 				// Teleport
-				if(player.hasTeleport() && (!event.getFromTransform().getExtent().equals(event.getToTransform().getExtent()) ||
+				Optional<TeleportDelay> teleport = player.getTeleportDelay();
+				if(teleport.isPresent() && !teleport.get().canMove() && (!event.getFromTransform().getExtent().equals(event.getToTransform().getExtent()) ||
 						Math.round(event.getFromTransform().getPosition().getX()) != Math.round(event.getToTransform().getPosition().getX()) ||
 						Math.round(event.getFromTransform().getPosition().getY()) != Math.round(event.getToTransform().getPosition().getY()) ||
 						Math.round(event.getFromTransform().getPosition().getZ()) != Math.round(event.getToTransform().getPosition().getZ()))) {
 
-					player.cancelTeleport();
+					player.cancelTeleportDelay();
 					player.sendMessage(EEMessages.PREFIX.get() + EEMessages.TELEPORT_ERROR_DELAY.get());
 				}
 			}

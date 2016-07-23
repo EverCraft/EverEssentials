@@ -165,7 +165,7 @@ public class EETeleportationAccept extends ECommand<EverEssentials> {
 					}
 					
 					final Transform<World> location = player.getTransform();
-					player_request.setTeleport(delay, () -> this.teleportAsk(player_request, player, location));
+					player_request.setTeleport(delay, () -> this.teleportAsk(player_request, player, location), player_request.hasPermission(EEPermissions.TELEPORT_BYPASS_MOVE.get()));
 				} else if(teleports.get().getType().equals(Type.TPAHERE)) {
 					long delay = this.plugin.getConfigs().getTeleportDelay(player);
 					String delay_format = this.plugin.getEverAPI().getManagerUtils().getDate().formatDateDiff(System.currentTimeMillis() + delay);
@@ -180,7 +180,7 @@ public class EETeleportationAccept extends ECommand<EverEssentials> {
 					}
 					
 					final Transform<World> location = teleports.get().getLocation().orElse(player_request.getTransform());
-					player.setTeleport(delay, () -> this.teleportAskHere(player_request, player, location));
+					player.setTeleport(delay, () -> this.teleportAskHere(player_request, player, location), player_request.hasPermission(EEPermissions.TELEPORT_BYPASS_MOVE.get()));
 				}
 				
 			// La demande a expiré
