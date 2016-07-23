@@ -45,7 +45,7 @@ public class EEWorldborderAdd extends ESubCommand<EverEssentials> {
 	}
 
 	public Text description(final CommandSource source) {
-		return EChat.of(EEMessages.WORLDBORDER_SET_DESCRIPTION.get());
+		return EChat.of(EEMessages.WORLDBORDER_ADD_DESCRIPTION.get());
 	}
 	
 	public List<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
@@ -112,7 +112,7 @@ public class EEWorldborderAdd extends ESubCommand<EverEssentials> {
 		try {
 			double diameter =  world.getWorldBorder().getDiameter() + Integer.parseInt(arg);
 			world.getWorldBorder().setDiameter(diameter);
-			source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.WORLDBORDER_SET_BORDER.get()
+			source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.WORLDBORDER_ADD_BORDER.get()
 					.replaceAll("<world>", world.getName())
 					.replaceAll("<nb>", String.valueOf(diameter))));
 			return true;
@@ -130,9 +130,9 @@ public class EEWorldborderAdd extends ESubCommand<EverEssentials> {
 			String message;
 			world.getWorldBorder().setDiameter(world.getWorldBorder().getDiameter(), diameter, (long) (time * 1000));
 			if(world.getWorldBorder().getDiameter() > diameter){
-				message = EEMessages.WORLDBORDER_SET_BORDER_DECREASE.get();
+				message = EEMessages.WORLDBORDER_ADD_BORDER_DECREASE.get();
 			} else {
-				message = EEMessages.WORLDBORDER_SET_BORDER_INCREASE.get();
+				message = EEMessages.WORLDBORDER_ADD_BORDER_INCREASE.get();
 			}
 			source.sendMessage(EChat.of(EEMessages.PREFIX.get() + message
 					.replaceAll("<world>", world.getName())
@@ -156,9 +156,9 @@ public class EEWorldborderAdd extends ESubCommand<EverEssentials> {
 				double diameter = world.getWorldBorder().getDiameter() + Integer.parseInt(args.get(0));
 				world.getWorldBorder().setDiameter(world.getWorldBorder().getDiameter(), diameter, (long) (time * 1000));
 				if(world.getWorldBorder().getDiameter() > diameter){
-					message = EEMessages.WORLDBORDER_SET_BORDER_DECREASE.get();
+					message = EEMessages.WORLDBORDER_ADD_BORDER_DECREASE.get();
 				} else {
-					message = EEMessages.WORLDBORDER_SET_BORDER_INCREASE.get();
+					message = EEMessages.WORLDBORDER_ADD_BORDER_INCREASE.get();
 				}
 				source.sendMessage(EChat.of(EEMessages.PREFIX.get() + message
 						.replaceAll("<world>", world.getName())
