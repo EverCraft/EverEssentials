@@ -37,6 +37,7 @@ import fr.evercraft.essentials.command.worldborder.EEWorldborderCenter;
 import fr.evercraft.essentials.command.worldborder.EEWorldborderDamage;
 import fr.evercraft.essentials.command.worldborder.EEWorldborderInfo;
 import fr.evercraft.essentials.command.worldborder.EEWorldborderSet;
+import fr.evercraft.essentials.command.worldborder.EEWorldborderWarning;
 import fr.evercraft.everapi.plugin.command.ECommand;
 import fr.evercraft.everapi.plugin.command.EReloadCommand;
 
@@ -164,6 +165,7 @@ public class EEManagerCommands extends TreeMap<String, ECommand<EverEssentials>>
 		border.add(new EEWorldborderCenter(this.plugin, border));
 		border.add(new EEWorldborderAdd(this.plugin, border));
 		border.add(new EEWorldborderDamage(this.plugin, border));
+		border.add(new EEWorldborderWarning(this.plugin, border));
 		register(border);
 	}
 	

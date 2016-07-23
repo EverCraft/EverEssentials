@@ -759,8 +759,12 @@ public class EEMessage extends EMessage {
 		
 		WORLDBORDER_DAMAGE_DESCRIPTION("worldborder.damage.description", "Configure des dégats infligés aux entités en dehors de la bordure d'un monde"),
 		WORLDBORDER_DAMAGE_AMOUNT("worldborder.damage.amount", "&7La quantité de dégâts causés par la bordure dans le monde &6<world> &7a été défini à &6<nb>&7."),
-		WORLDBORDER_DAMAGE_BUFFER("worldborder.damage.buffer", "&7la zone de tolérance de la bordure du monde &6<world> &7a été défini à &6<nb>&7."),
+		WORLDBORDER_DAMAGE_BUFFER("worldborder.damage.buffer", "&7La zone de tolérance de la bordure du monde &6<world> &7a été défini à &6<nb>&7."),
 		
+		WORLDBORDER_WARNING_DESCRIPTION("worldborder.warning.description", "Configure l'écran d'avertissement pour les joueurs qui s'approche de la bordure d'un monde"),
+		WORLDBORDER_WARNING_TIME("worldborder.warning.time", "&7L'avertissement de la bordure du monde &6<world> &7a été défini à &6<nb> &7seconde(s)."),
+		WORLDBORDER_WARNING_DISTANCE("worldborder.warning.distance", "&7L'avertissement de la bordure du monde &6<world> &7a été défini à &6<nb> &7bloc(s) de distance."),
+			
 		WORLDS_DESCRIPTION("worlds.description", "Téléporte le joueur dans le monde de votre choix"),
 		WORLDS_END_DESCRIPTION("worlds.endDescription", "Vous téléporte dans le monde du néant"),
 		WORLDS_NETHER_DESCRIPTION("worlds.netherDescription", "Vous téléporte dans le monde de l'enfer"),
