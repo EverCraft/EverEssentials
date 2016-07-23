@@ -68,21 +68,21 @@ public class EEWorldborderDamage extends ESubCommand<EverEssentials> {
 	}
 
 	public Text help(final CommandSource source) {
-		return Text.builder("/" + this.getName() + " <buffer|amount> ...")
+		return Text.builder("/" + this.getName() + " <buffer|amount> <valeur>")
 					.onClick(TextActions.suggestCommand("/" + this.getName()))
 					.color(TextColors.RED)
 					.build();
 	}
 	
 	public Text helpAmount(final CommandSource source) {
-		return Text.builder("/" + this.getName() + " amount <dégâts par bloc> [monde]")
+		return Text.builder("/" + this.getName() + " amount <dégât(s)> [monde]")
 					.onClick(TextActions.suggestCommand("/" + this.getName()))
 					.color(TextColors.RED)
 					.build();
 	}
 	
 	public Text helpBuffer(final CommandSource source) {
-		return Text.builder("/" + this.getName() + " buffer <taille en blocs> [monde]")
+		return Text.builder("/" + this.getName() + " buffer <bloc(s)> [monde]")
 					.onClick(TextActions.suggestCommand("/" + this.getName()))
 					.color(TextColors.RED)
 					.build();

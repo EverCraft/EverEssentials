@@ -68,7 +68,7 @@ public class EEWorldborderWarning extends ESubCommand<EverEssentials> {
 	}
 
 	public Text help(final CommandSource source) {
-		return Text.builder("/" + this.getName() + " <time|distance> ...")
+		return Text.builder("/" + this.getName() + " <time|distance> <valeur>")
 					.onClick(TextActions.suggestCommand("/" + this.getName()))
 					.color(TextColors.RED)
 					.build();

@@ -72,7 +72,7 @@ public class EEWorldborderAdd extends ESubCommand<EverEssentials> {
 	}
 
 	public Text help(final CommandSource source) {
-		return Text.builder("/" + this.getName() + " <taille en bloc(s)> [temps en seconde(s)] [monde]")
+		return Text.builder("/" + this.getName() + " <bloc(s)> [seconde(s)] [monde]")
 					.onClick(TextActions.suggestCommand("/" + this.getName()))
 					.color(TextColors.RED)
 					.build();

@@ -731,9 +731,7 @@ public class EEMessage extends EMessage {
 		WHOIS_TOGGLE_DISABLE("whois.toggleDisable", "    &6&l➤  &6Requêtes de téléportation : &cDésactivé"),
 		
 		WORLDBORDER_DESCRIPTION("worldborder.description", "Gère la bordure des mondes"),
-		
 		WORLDBORDER_INFO_DESCRIPTION("worldborder.info.description", "Affiche les informations sur la bordure d'un monde"),
-		
 		WORLDBORDER_INFO_TITLE("worldborder.info.title", "&6Monde : <world>"),
 		WORLDBORDER_INFO_LOCATION("worldborder.info.location", "    &6&l➤  &6Centre : <position>"),
 		WORLDBORDER_INFO_LOCATION_POSITION("worldborder.info.locationPosition", "&6(&c<x>&6, &c<z>&6, &c<world>&6)"),
@@ -743,24 +741,19 @@ public class EEMessage extends EMessage {
 		WORLDBORDER_INFO_DAMAGE("worldborder.info.damage", "    &6&l➤  &6Dégat(s) : &a<nb> &6coeur(s)"),
 		WORLDBORDER_INFO_WARNING_TIME("worldborder.info.warningTime", "    &6&l➤  &6Avertissement du rétrecissement de la bordure : &a<nb> &6seconde(s)"),
 		WORLDBORDER_INFO_WARNING_DISTANCE("worldborder.info.warningDistance", "    &6&l➤  &6Avertissement de la bordure : &a<nb> &6bloc(s)"),
-		
 		WORLDBORDER_SET_DESCRIPTION("worldborder.set.description", "Défini la bordure d'un monde"),
 		WORLDBORDER_SET_BORDER("worldborder.set.border", "&7La taille de la bordure du monde &6<world> &7a été défini à &6<nb> &7bloc(s) de large."),
 		WORLDBORDER_SET_BORDER_INCREASE("worldborder.set.borderIncrease", "&7Agrandissement de la bordure du monde &6<world> &7à <nb> bloc(s) de large en &6<time> &7seconde(s)."),
 		WORLDBORDER_SET_BORDER_DECREASE("worldborder.set.borderDecrease", "&7Rétrécissement de la bordure du monde &6<world> &7à <nb> bloc(s) de large en &6<time> &7seconde(s)."),
-		
 		WORLDBORDER_CENTER_DESCRIPTION("worldborder.center.description", "Défini le centre de la bordure d'un monde"),
 		WORLDBORDER_CENTER_MESSAGE("worldborder.center.message", "&7Le centre de la bordure du monde &6<world> &7a été défini en &6X: <x> Z: <z>&7."),
-		
-		WORLDBORDER_ADD_DESCRIPTION("worldborder.add.description", "Ajoute ou retire des bloc(s) à la bordure d'un monde"),
+		WORLDBORDER_ADD_DESCRIPTION("worldborder.add.description", "Augmente ou diminue la taille de la bordure d'un monde"),
 		WORLDBORDER_ADD_BORDER("worldborder.add.border", "&7La taille de la bordure du monde &6<world> &7a été défini à &6<nb> &7bloc(s) de large."),
 		WORLDBORDER_ADD_BORDER_INCREASE("worldborder.add.borderIncrease", "&7Agrandissement de la bordure du monde &6<world> &7à <nb> bloc(s) de large en &6<time> &7seconde(s)."),
 		WORLDBORDER_ADD_BORDER_DECREASE("worldborder.add.borderDecrease", "&7Rétrécissement de la bordure du monde &6<world> &7à <nb> bloc(s) de large en &6<time> &7seconde(s)."),
-		
-		WORLDBORDER_DAMAGE_DESCRIPTION("worldborder.damage.description", "Configure des dégats infligés aux entités en dehors de la bordure d'un monde"),
+		WORLDBORDER_DAMAGE_DESCRIPTION("worldborder.damage.description", "Configure les dégats infligés aux entités en dehors de la bordure d'un monde"),
 		WORLDBORDER_DAMAGE_AMOUNT("worldborder.damage.amount", "&7La quantité de dégâts causés par la bordure dans le monde &6<world> &7a été défini à &6<nb>&7."),
 		WORLDBORDER_DAMAGE_BUFFER("worldborder.damage.buffer", "&7La zone de tolérance de la bordure du monde &6<world> &7a été défini à &6<nb>&7."),
-		
 		WORLDBORDER_WARNING_DESCRIPTION("worldborder.warning.description", "Configure l'écran d'avertissement pour les joueurs qui s'approche de la bordure d'un monde"),
 		WORLDBORDER_WARNING_TIME("worldborder.warning.time", "&7L'avertissement de la bordure du monde &6<world> &7a été défini à &6<nb> &7seconde(s)."),
 		WORLDBORDER_WARNING_DISTANCE("worldborder.warning.distance", "&7L'avertissement de la bordure du monde &6<world> &7a été défini à &6<nb> &7bloc(s) de distance."),
