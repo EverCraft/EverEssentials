@@ -16,14 +16,33 @@
  */
 package fr.evercraft.essentials.managers;
 
+import org.spongepowered.api.event.cause.Cause;
+
 import fr.evercraft.essentials.EverEssentials;
+import fr.evercraft.essentials.event.EAfkDisableEvent;
+import fr.evercraft.essentials.event.EAfkEnableEvent;
 import fr.evercraft.everapi.server.player.EPlayer;
+import fr.evercraft.everapi.services.essentials.event.AfkEvent;
 import fr.evercraft.everapi.services.essentials.event.VanishEvent;
-public class EPManagerEvent {
+public class EEManagerEvent {
 	private EverEssentials plugin;
 	
-	public EPManagerEvent(final EverEssentials plugin) {
+	public EEManagerEvent(final EverEssentials plugin) {
 		this.plugin = plugin;
+	}
+	
+	public Cause getCause() {
+		return Cause.source(this.plugin).build();
+	}
+	
+	public boolean post(final EPlayer player, final boolean value, final AfkEvent.Action action) {
+		if(value) {
+			this.plugin.getLogger().debug("Event AfkEvent.Enable : (Action='" + action.name() +"')");
+			return this.plugin.getGame().getEventManager().post(new EAfkEnableEvent(player, action, this.getCause()));
+		} else {
+			this.plugin.getLogger().debug("Event AfkEvent.Disable : (Action='" + action.name() +"')");
+			return this.plugin.getGame().getEventManager().post(new EAfkDisableEvent(player, action, this.getCause()));
+		}
 	}
 	
 	public boolean post(final EPlayer player, final VanishEvent.Action action) {
