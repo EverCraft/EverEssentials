@@ -736,7 +736,7 @@ public class EEMessage extends EMessage {
 		WORLDBORDER_INFO_LOCATION_POSITION("worldborder.info.locationPosition", "&6(&c<x>&6, &c<z>&6, &c<world>&6)"),
 		WORLDBORDER_INFO_LOCATION_POSITION_HOVER("worldborder.info.locationPositionHover", "&cMonde : &6<world>[RT]&cX : &6<x>[RT]&cZ : &6<z>"),
 		WORLDBORDER_INFO_BORDER("worldborder.info.border", "    &6&l➤  &6La bordure est de &a<nb> &6bloc(s)"),
-		WORLDBORDER_INFO_BUFFER("worldborder.info.buffer", "    &6&l➤  &6Distance avant de subir des dégat(s) : &a<nb> &6bloc(s)"),
+		WORLDBORDER_INFO_BUFFER("worldborder.info.buffer", "    &6&l➤  &6Zone de tolérance : &a<nb> &6bloc(s)"),
 		WORLDBORDER_INFO_DAMAGE("worldborder.info.damage", "    &6&l➤  &6Dégat(s) : &a<nb> &6coeur(s)"),
 		WORLDBORDER_INFO_WARNING_TIME("worldborder.info.warningTime", "    &6&l➤  &6Avertissement du rétrecissement de la bordure : &a<nb> &6seconde(s)"),
 		WORLDBORDER_INFO_WARNING_DISTANCE("worldborder.info.warningDistance", "    &6&l➤  &6Avertissement de la bordure : &a<nb> &6bloc(s)"),
@@ -748,6 +748,15 @@ public class EEMessage extends EMessage {
 		
 		WORLDBORDER_CENTER_DESCRIPTION("worldborder.center.description", "Défini le centre de la bordure d'un monde"),
 		WORLDBORDER_CENTER_MESSAGE("worldborder.center.message", "&7Le centre de la bordure du monde &6<world> &7a été défini en &6X: <x> Z: <z>&7."),
+		
+		WORLDBORDER_ADD_DESCRIPTION("worldborder.add.description", "Ajoute ou retire des bloc(s) à la bordure d'un monde"),
+		WORLDBORDER_ADD_BORDER("worldborder.add.border", "&7La taille de la bordure du monde &6<world> &7a été défini à &6<nb> &7bloc(s) de large."),
+		WORLDBORDER_ADD_BORDER_INCREASE("worldborder.add.borderIncrease", "&7Agrandissement de la bordure du monde &6<world> &7à <nb> bloc(s) de large en &6<time> &7seconde(s)."),
+		WORLDBORDER_ADD_BORDER_DECREASE("worldborder.add.borderDecrease", "&7Rétrécissement de la bordure du monde &6<world> &7à <nb> bloc(s) de large en &6<time> &7seconde(s)."),
+		
+		WORLDBORDER_DAMAGE_DESCRIPTION("worldborder.damage.description", "Configure des dégats infligés aux entités en dehors de la bordure d'un monde"),
+		WORLDBORDER_DAMAGE_AMOUNT("worldborder.damage.amount", "&7La quantité de dégâts causés par la bordure dans le monde &6<world> &7a été défini à &6<nb>&7."),
+		WORLDBORDER_DAMAGE_BUFFER("worldborder.damage.buffer", "&7la zone de tolérance de la bordure du monde &6<world> &7a été défini à &6<nb>&7."),
 		
 		WORLDS_DESCRIPTION("worlds.description", "Téléporte le joueur dans le monde de votre choix"),
 		WORLDS_END_DESCRIPTION("worlds.endDescription", "Vous téléporte dans le monde du néant"),
