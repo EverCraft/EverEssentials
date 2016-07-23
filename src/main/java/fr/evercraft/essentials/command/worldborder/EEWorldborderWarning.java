@@ -45,7 +45,7 @@ public class EEWorldborderWarning extends ESubCommand<EverEssentials> {
 	}
 
 	public Text description(final CommandSource source) {
-		return EChat.of(EEMessages.WORLDBORDER_DAMAGE_DESCRIPTION.get());
+		return EChat.of(EEMessages.WORLDBORDER_WARNING_DESCRIPTION.get());
 	}
 	
 	public List<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
