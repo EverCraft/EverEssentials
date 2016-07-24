@@ -24,8 +24,17 @@ import fr.evercraft.everapi.services.essentials.Mail;
 
 public class EMailReadEvent extends EMailEvent implements MailEvent.Read {	
 
+	private final Mail mail;
+	
     public EMailReadEvent(final EPlayer player, final Mail mail, final Cause cause) {
-    	super(player, mail, Action.READ, cause);
+    	super(player, Action.READ, cause);
+    	
+    	this.mail = mail;
     }
+
+	@Override
+	public Mail getMail() {
+		return this.mail;
+	}
 }
 

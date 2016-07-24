@@ -16,16 +16,32 @@
  */
 package fr.evercraft.essentials.event;
 
+import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.event.cause.Cause;
 
 import fr.evercraft.everapi.event.MailEvent;
 import fr.evercraft.everapi.server.player.EPlayer;
-import fr.evercraft.everapi.services.essentials.Mail;
 
 public class EMailAddEvent extends EMailEvent implements MailEvent.Add {	
 
-    public EMailAddEvent(final EPlayer player, final Mail mail, final Cause cause) {
-    	super(player, mail, Action.ADD, cause);
+	private final CommandSource source;
+	private final String message;
+	
+    public EMailAddEvent(final EPlayer player, final CommandSource source, final String message, final Cause cause) {
+    	super(player, Action.ADD, cause);
+    	
+    	this.source = source;
+    	this.message = message;
+    }
+    
+    @Override
+	public CommandSource getTo() {
+		return this.source;
+	}
+    
+    @Override
+    public String getMessage() {
+        return this.message;
     }
 }
 

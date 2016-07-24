@@ -596,31 +596,6 @@ public class EEDataBase extends EDataBase<EverEssentials> {
 	    }
 	}
 
-	public void clearMails(String identifier) {
-		Connection connection = null;
-		PreparedStatement preparedStatement = null;
-    	try {
-    		connection = this.getConnection();
-    		String query = 	  "DELETE " 
-		    				+ "FROM `" + this.getTableMails() + "` "
-		    				+ "WHERE `player` = ? ;";
-			preparedStatement = connection.prepareStatement(query);
-			preparedStatement.setString(1, identifier);
-			
-			preparedStatement.execute();
-			this.plugin.getLogger().debug("Removes all mail from the database : (player='" + identifier + "')");
-    	} catch (SQLException e) {
-    		this.plugin.getLogger().warn("Error during the deletion of all mail database (player='" + identifier + "') : " + e.getMessage());
-		} catch (ServerDisableException e) {
-			e.execute();
-		} finally {
-			try {
-				if (preparedStatement != null) preparedStatement.close();
-				if (connection != null) connection.close();
-			} catch (SQLException e) {}
-	    }
-	}
-
 	public void sendAllMail(String identifier, String message) {
 		Connection connection = null;
 		PreparedStatement preparedStatement = null;

@@ -389,7 +389,7 @@ public class EEMail extends ECommand<EverEssentials> {
 	private boolean commandSend(CommandSource staff, User player, String message) {
 		Optional<EssentialsSubject> subject = this.plugin.getManagerServices().getEssentials().get(player.getUniqueId());
 		if(subject.isPresent()) {
-			if(subject.get().addMail(staff.getIdentifier(), message)) {
+			if(subject.get().addMail(staff, message)) {
 				if(staff.getIdentifier().equals(player.getIdentifier())) {
 					staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.MAIL_SEND.get()
 						.replaceAll("<player>", player.getName())));

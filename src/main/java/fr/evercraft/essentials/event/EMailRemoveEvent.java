@@ -24,8 +24,17 @@ import fr.evercraft.everapi.services.essentials.Mail;
 
 public class EMailRemoveEvent extends EMailEvent implements MailEvent.Remove {	
 
+	private final Mail mail;
+	
     public EMailRemoveEvent(final EPlayer player, final Mail mail, final Cause cause) {
-    	super(player, mail, Action.REMOVE, cause);
+    	super(player, Action.REMOVE, cause);
+    	
+    	this.mail = mail;
     }
+
+	@Override
+	public Mail getMail() {
+		return this.mail;
+	}
 }
 

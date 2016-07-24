@@ -18,13 +18,13 @@ package fr.evercraft.essentials.event;
 
 import org.spongepowered.api.event.cause.Cause;
 
-import fr.evercraft.everapi.event.FlyEvent;
+import fr.evercraft.everapi.event.ToogleEvent;
 import fr.evercraft.everapi.server.player.EPlayer;
 
-public class EFlyDisableEvent extends EFlyEvent implements FlyEvent.Disable {	
+public class EToogleEnableEvent extends EToogleEvent implements ToogleEvent.Enable {	
 
-    public EFlyDisableEvent(final EPlayer player, final Cause cause) {
-    	super(player, false, cause);
+    public EToogleEnableEvent(final EPlayer player, final Cause cause) {
+    	super(player, true, cause);
     }
 }
 

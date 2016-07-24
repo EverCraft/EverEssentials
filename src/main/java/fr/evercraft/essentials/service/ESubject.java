@@ -20,8 +20,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
@@ -33,6 +35,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 
 import javax.annotation.Nullable;
 
+import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.Transform;
 import org.spongepowered.api.world.World;
@@ -44,6 +47,7 @@ import com.google.common.collect.ImmutableSet;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.everapi.event.AfkEvent;
+import fr.evercraft.everapi.event.MailEvent;
 import fr.evercraft.everapi.exception.ServerDisableException;
 import fr.evercraft.everapi.server.location.LocationSQL;
 import fr.evercraft.everapi.server.player.EPlayer;
@@ -332,8 +336,8 @@ public class ESubject implements EssentialsSubject {
 				player.get().offer(Keys.INVISIBLE, !vanish);
 			} else {
 				this.plugin.getThreadAsync().execute(() -> this.plugin.getDataBases().setVanish(this.getIdentifier(), vanish));
+				return true;
 			}
-			return true;
 		}
 		return false;
 	}
@@ -439,8 +443,13 @@ public class ESubject implements EssentialsSubject {
 	public boolean setGod(final boolean god) {		
 		if(this.god != god) {
 			this.god = god;
-			this.plugin.getThreadAsync().execute(() -> this.plugin.getDataBases().setGod(this.getIdentifier(), god));
-			return true;
+			
+			if(this.plugin.getManagerEvent().god(this.getUniqueId(), god)) {
+				this.god = !god;
+			} else {
+				this.plugin.getThreadAsync().execute(() -> this.plugin.getDataBases().setGod(this.getIdentifier(), god));
+				return true;
+			}
 		}
 		return false;
 	}
@@ -458,8 +467,13 @@ public class ESubject implements EssentialsSubject {
 	public boolean setToggle(final boolean toggle) {		
 		if(this.toggle != toggle) {
 			this.toggle = toggle;
-			this.plugin.getThreadAsync().execute(() -> this.plugin.getDataBases().setToggle(this.getIdentifier(), toggle));
-			return true;
+			
+			if(this.plugin.getManagerEvent().toggle(this.getUniqueId(), toggle)) {
+				this.toggle = !toggle;
+			} else {
+				this.plugin.getThreadAsync().execute(() -> this.plugin.getDataBases().setToggle(this.getIdentifier(), toggle));
+				return true;
+			}
 		}
 		return false;
 	}
@@ -674,12 +688,15 @@ public class ESubject implements EssentialsSubject {
 	}
 
 	@Override
-	public boolean addMail(String to, String message) {
+	public boolean addMail(CommandSource to, String message) {
 		Preconditions.checkNotNull(to, "to");
 		Preconditions.checkNotNull(message, "message");
 		
-		this.plugin.getThreadAsync().execute(() -> this.plugin.getDataBases().sendMail(this, to, message));
-		return true;
+		if(!this.plugin.getManagerEvent().mail(this.getUniqueId(), to, message)) {
+			this.plugin.getThreadAsync().execute(() -> this.plugin.getDataBases().sendMail(this, to.getIdentifier(), message));
+			return true;
+		}
+		return false;
 	}
 
 	@Override
@@ -687,8 +704,13 @@ public class ESubject implements EssentialsSubject {
 		final Optional<Mail> mail = this.getMail(id);
 		if(mail.isPresent()) {
 			this.mails.remove(mail.get());
-			this.plugin.getThreadAsync().execute(() -> this.plugin.getDataBases().removeMails(this.getIdentifier(), mail.get().getID()));
-			return mail;
+			
+			if(this.plugin.getManagerEvent().mail(this.getUniqueId(), mail.get(), MailEvent.Action.REMOVE)) {
+				this.mails.add(mail.get());
+			} else {
+				this.plugin.getThreadAsync().execute(() -> this.plugin.getDataBases().removeMails(this.getIdentifier(), mail.get().getID()));
+				return mail;
+			}
 		}
 		return Optional.empty();
 	}
@@ -696,9 +718,17 @@ public class ESubject implements EssentialsSubject {
 	@Override
 	public boolean clearMails() {
 		if(!this.mails.isEmpty()) {
+			List<Mail> mails = new ArrayList<Mail>(this.mails);
 			this.mails.clear();
-			this.plugin.getThreadAsync().execute(() -> this.plugin.getDataBases().clearMails(this.getIdentifier()));
-			return true;
+			
+			for(Mail mail : mails) {
+				if(this.plugin.getManagerEvent().mail(this.getUniqueId(), mail, MailEvent.Action.REMOVE)) {
+					this.mails.add(mail);
+				} else {
+					this.plugin.getThreadAsync().execute(() -> this.plugin.getDataBases().removeMails(this.getIdentifier(), mail.getID()));
+				}
+			}
+			return this.mails.isEmpty() || this.mails.size() < mails.size();
 		}
 		return false;
 	}
@@ -709,7 +739,12 @@ public class ESubject implements EssentialsSubject {
 		if(mail.isPresent()) {
 			if(!mail.get().isRead()) {
 				mail.get().setRead(true);
-				this.plugin.getThreadAsync().execute(() -> this.plugin.getDataBases().updateMail(mail.get()));
+				
+				if(this.plugin.getManagerEvent().mail(this.getUniqueId(), mail.get(), MailEvent.Action.READ)) {
+					mail.get().setRead(false);
+				} else {
+					this.plugin.getThreadAsync().execute(() -> this.plugin.getDataBases().updateMail(mail.get()));
+				}
 			}
 			return mail;
 		}

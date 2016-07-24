@@ -20,20 +20,17 @@ import org.spongepowered.api.event.cause.Cause;
 
 import fr.evercraft.everapi.event.MailEvent;
 import fr.evercraft.everapi.server.player.EPlayer;
-import fr.evercraft.everapi.services.essentials.Mail;
 
 public class EMailEvent implements MailEvent {	
 	
     private final EPlayer player;
-    private final Mail mail;
     private final Action action;
     
     private final Cause cause;
     private boolean cancel;
 
-    public EMailEvent(final EPlayer player, final Mail mail, final Action action, final Cause cause) {
+    public EMailEvent(final EPlayer player, final Action action, final Cause cause) {
     	this.player = player;
-        this.mail = mail;
         this.action = action;
         
         this.cause = cause;
@@ -43,11 +40,6 @@ public class EMailEvent implements MailEvent {
     @Override
     public EPlayer getPlayer() {
         return this.player;
-    }
-    
-    @Override
-    public Mail getMail() {
-        return this.mail;
     }
     
     @Override
