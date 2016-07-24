@@ -18,13 +18,14 @@ package fr.evercraft.essentials.event;
 
 import org.spongepowered.api.event.cause.Cause;
 
-import fr.evercraft.everapi.event.AfkEvent;
+import fr.evercraft.everapi.event.MailEvent;
 import fr.evercraft.everapi.server.player.EPlayer;
+import fr.evercraft.everapi.services.essentials.Mail;
 
-public class EAfkEnableEvent extends EAfkEvent implements AfkEvent.Enable {	
+public class EMailAddEvent extends EMailEvent implements MailEvent.Add {	
 
-    public EAfkEnableEvent(final EPlayer player, final Action action, final Cause cause) {
-    	super(player, true, action, cause);
+    public EMailAddEvent(final EPlayer player, final Mail mail, final Cause cause) {
+    	super(player, mail, Action.ADD, cause);
     }
 }
 

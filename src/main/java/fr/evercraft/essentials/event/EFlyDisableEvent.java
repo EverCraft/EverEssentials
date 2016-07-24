@@ -18,13 +18,13 @@ package fr.evercraft.essentials.event;
 
 import org.spongepowered.api.event.cause.Cause;
 
-import fr.evercraft.everapi.event.AfkEvent;
+import fr.evercraft.everapi.event.FlyEvent;
 import fr.evercraft.everapi.server.player.EPlayer;
 
-public class EAfkEnableEvent extends EAfkEvent implements AfkEvent.Enable {	
+public class EFlyDisableEvent extends EFlyEvent implements FlyEvent.Disable {	
 
-    public EAfkEnableEvent(final EPlayer player, final Action action, final Cause cause) {
-    	super(player, true, action, cause);
+    public EFlyDisableEvent(final EPlayer player, final Cause cause) {
+    	super(player, false, cause);
     }
 }
 

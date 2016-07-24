@@ -18,13 +18,48 @@ package fr.evercraft.essentials.event;
 
 import org.spongepowered.api.event.cause.Cause;
 
-import fr.evercraft.everapi.event.AfkEvent;
+import fr.evercraft.everapi.event.VanishEvent;
 import fr.evercraft.everapi.server.player.EPlayer;
 
-public class EAfkEnableEvent extends EAfkEvent implements AfkEvent.Enable {	
+public class EVanishEvent implements VanishEvent {	
+	
+    private final EPlayer player;
+    private final boolean value;
+    
+    private final Cause cause;
+    private boolean cancel;
 
-    public EAfkEnableEvent(final EPlayer player, final Action action, final Cause cause) {
-    	super(player, true, action, cause);
+    public EVanishEvent(final EPlayer player, final boolean value, final Cause cause) {
+    	this.player = player;
+        this.value = value;
+        
+        this.cause = cause;
+        this.cancel = false;
     }
+
+    @Override
+    public EPlayer getPlayer() {
+        return this.player;
+    }
+    
+    @Override
+    public boolean getValue() {
+        return this.value;
+    }
+    
+    @Override
+	public Cause getCause() {
+		return this.cause;
+	}
+
+	@Override
+	public boolean isCancelled() {
+		return this.cancel;
+	}
+
+	@Override
+	public void setCancelled(boolean cancel) {
+		this.cancel = cancel;
+	}
 }
 

@@ -43,6 +43,7 @@ import com.google.common.collect.ImmutableSet;
 
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.essentials.EEMessage.EEMessages;
+import fr.evercraft.everapi.event.AfkEvent;
 import fr.evercraft.everapi.exception.ServerDisableException;
 import fr.evercraft.everapi.server.location.LocationSQL;
 import fr.evercraft.everapi.server.player.EPlayer;
@@ -51,8 +52,6 @@ import fr.evercraft.everapi.services.essentials.Mail;
 import fr.evercraft.everapi.services.essentials.TeleportDelay;
 import fr.evercraft.everapi.services.essentials.TeleportRequest;
 import fr.evercraft.everapi.services.essentials.TeleportRequest.Type;
-import fr.evercraft.everapi.services.essentials.event.AfkEvent;
-import fr.evercraft.everapi.services.essentials.event.VanishEvent;
 
 public class ESubject implements EssentialsSubject {
 	
@@ -327,12 +326,12 @@ public class ESubject implements EssentialsSubject {
 		if(this.vanish != vanish && player.isPresent()) {
 			this.vanish = vanish;
 			player.get().offer(Keys.INVISIBLE, vanish);
-			this.plugin.getThreadAsync().execute(() -> this.plugin.getDataBases().setVanish(this.getIdentifier(), vanish));
 			
-			if(vanish) {
-				this.plugin.getGame().getEventManager().post(new VanishEvent(this.plugin, player.get(), VanishEvent.Action.ADD));
+			if(this.plugin.getManagerEvent().vanish(player.get(), this.vanish)) {
+				this.vanish = !vanish;
+				player.get().offer(Keys.INVISIBLE, !vanish);
 			} else {
-				this.plugin.getGame().getEventManager().post(new VanishEvent(this.plugin, player.get(), VanishEvent.Action.REMOVE));
+				this.plugin.getThreadAsync().execute(() -> this.plugin.getDataBases().setVanish(this.getIdentifier(), vanish));
 			}
 			return true;
 		}
@@ -366,7 +365,7 @@ public class ESubject implements EssentialsSubject {
 			this.afk = afk;
 			
 			// Event
-			if(this.plugin.getManagerEvent().post(this.getUniqueId(), this.afk, action)) {
+			if(this.plugin.getManagerEvent().afk(this.getUniqueId(), this.afk, action)) {
 				this.afk = !afk;
 			} else {
 				return true;

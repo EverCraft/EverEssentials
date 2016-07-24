@@ -24,9 +24,10 @@ import org.spongepowered.api.event.cause.Cause;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.essentials.event.EAfkDisableEvent;
 import fr.evercraft.essentials.event.EAfkEnableEvent;
+import fr.evercraft.essentials.event.EVanishDisableEvent;
+import fr.evercraft.essentials.event.EVanishEnableEvent;
+import fr.evercraft.everapi.event.AfkEvent;
 import fr.evercraft.everapi.server.player.EPlayer;
-import fr.evercraft.everapi.services.essentials.event.AfkEvent;
-import fr.evercraft.everapi.services.essentials.event.VanishEvent;
 
 public class EEManagerEvent {
 	private EverEssentials plugin;
@@ -43,15 +44,15 @@ public class EEManagerEvent {
 	 * Afk
 	 */
 	
-	public boolean post(UUID uuid, boolean value, AfkEvent.Action action) {
+	public boolean afk(UUID uuid, boolean value, AfkEvent.Action action) {
 		Optional<EPlayer> player = this.plugin.getEServer().getEPlayer(uuid);
 		if(player.isPresent()) {
-			return this.post(player.get(), value, action);
+			return this.afk(player.get(), value, action);
 		}
 		return false;
 	}
 	
-	public boolean post(final EPlayer player, final boolean value, final AfkEvent.Action action) {
+	public boolean afk(final EPlayer player, final boolean value, final AfkEvent.Action action) {
 		if(value) {
 			this.plugin.getLogger().debug("Event AfkEvent.Enable : (UUID='" + player.getIdentifier() + "';value='" + value + "';Action='" + action.name() +"')");
 			return this.plugin.getGame().getEventManager().post(new EAfkEnableEvent(player, action, this.getCause()));
@@ -61,8 +62,21 @@ public class EEManagerEvent {
 		}
 	}
 	
-	public boolean post(final EPlayer player, final VanishEvent.Action action) {
-		this.plugin.getLogger().debug("Event PermUserEvent : (UUID='" + player.getIdentifier() + "';Action='" + action.name() +"')");
-		return this.plugin.getGame().getEventManager().post(new VanishEvent(this.plugin, player, action));
+	public boolean vanish(UUID uuid, boolean value) {
+		Optional<EPlayer> player = this.plugin.getEServer().getEPlayer(uuid);
+		if(player.isPresent()) {
+			return this.vanish(player.get(), value);
+		}
+		return false;
+	}
+	
+	public boolean vanish(final EPlayer player, final boolean value) {
+		if(value) {
+			this.plugin.getLogger().debug("Event VanishEvent.Enable : (UUID='" + player.getIdentifier() + "';value='" + value + "')");
+			return this.plugin.getGame().getEventManager().post(new EVanishEnableEvent(player, this.getCause()));
+		} else {
+			this.plugin.getLogger().debug("Event VanishEvent.Disable : (UUID='" + player.getIdentifier() + "';value='" + value + "')");
+			return this.plugin.getGame().getEventManager().post(new EVanishDisableEvent(player, this.getCause()));
+		}
 	}
 }

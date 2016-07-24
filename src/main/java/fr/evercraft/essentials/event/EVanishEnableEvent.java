@@ -18,13 +18,13 @@ package fr.evercraft.essentials.event;
 
 import org.spongepowered.api.event.cause.Cause;
 
-import fr.evercraft.everapi.event.AfkEvent;
+import fr.evercraft.everapi.event.VanishEvent;
 import fr.evercraft.everapi.server.player.EPlayer;
 
-public class EAfkEnableEvent extends EAfkEvent implements AfkEvent.Enable {	
+public class EVanishEnableEvent extends EVanishEvent implements VanishEvent.Enable {	
 
-    public EAfkEnableEvent(final EPlayer player, final Action action, final Cause cause) {
-    	super(player, true, action, cause);
+    public EVanishEnableEvent(final EPlayer player, final Cause cause) {
+    	super(player, true, cause);
     }
 }
 
