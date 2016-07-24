@@ -554,12 +554,12 @@ public class EEMessage extends EMessage {
 		TPA_PLAYER_LIST_EMPTY("tpa.playerListEmpty", "&7Aucune demande"),
 		
 		TPAALL_DESCRIPTION("tpaall.description", "Envoie une demande de téléportation à tous les joueurs"),
-		TPAALL_PLAYER("tpaall.player", "&7Vos demande de téléportation ont bien été envoyé à tous les joueurs."),
-		TPAALL_OTHERS_STAFF("tpaall.othersStaff", "&7Votre demande pour téléporter tous les joueurs à &6<player> &7a bien été envoyé."),
+		TPAALL_PLAYER("tpaall.player", "&7Votre demande de téléportation a bien été envoyée à tous les joueurs."),
+		TPAALL_OTHERS_STAFF("tpaall.othersStaff", "&7Votre demande pour téléporter tous les joueurs à &6<player> &7a bien été envoyée."),
 		TPAALL_OTHERS_PLAYER("tpaall.othersPlayer", "&6<staff> &7a envoyé une demande de téléportation vers vous à tous les joueurs."),
-		TPAALL_ERROR_EMPTY("tpaall.errorEmpty", "&cIl y a aucun autre joueur sur le serveur."),
-		TPAALL_ERROR_PLAYER_LOCATION("tpaall.errorPlayerLocation", "&cImpossible de trouver une position pour téléporter les joueurs."),
-		TPAALL_ERROR_OTHERS_LOCATION("tpaall.errorOthersLocation", "&cImpossible de trouver une position pour téléporter les joueurs sur &6<player>&c."),
+		TPAALL_ERROR_EMPTY("tpaall.errorEmpty", "&cErreur : Aucun joueur à téléporter."),
+		TPAALL_ERROR_PLAYER_LOCATION("tpaall.errorPlayerLocation", "&cErreur : Impossible de trouver une position pour téléporter les joueurs."),
+		TPAALL_ERROR_OTHERS_LOCATION("tpaall.errorOthersLocation", "&cErreur : Impossible de trouver une position pour téléporter les joueurs sur &6<player>&c."),
 		
 		TPACCEPT_DESCRIPTION("tpaccept.description", "Permet d'accepter une demande de téléportation"),
 		TPACCEPT_PLAYER("tpaccept.player", "&7Vous avez accepté la demande de téléportation de &6<player>&7."),
@@ -567,7 +567,7 @@ public class EEMessage extends EMessage {
 		TPDENY_DESCRIPTION("tpaccept.description", "Permet de refuser une demande de téléportation"),
 		TPDENY_PLAYER("tpaccept.player", "&7Vous avez refusé la demande de téléportation de &6<player>&7."),
 		
-		TIME_DESCRIPTION("time.description", "Gère l'heure sur les mondes"),
+		TIME_DESCRIPTION("time.description", "Gère l'heure sur un monde"),
 		TIME_FORMAT("time.format", "&6<hours>h<minutes>"),
 		TIME_INFORMATION("time.information", "&7Il est actuellement &6<hours> &7dans le monde &6<world>&7."),
 		TIME_SET_WORLD("time.setWorld", "&7Il est désormais &6<hours> &7dans le monde &6<world>&7."),
