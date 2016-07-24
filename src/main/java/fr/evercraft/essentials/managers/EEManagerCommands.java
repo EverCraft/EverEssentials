@@ -21,6 +21,11 @@ import java.util.TreeMap;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.essentials.command.*;
 import fr.evercraft.essentials.command.home.*;
+import fr.evercraft.essentials.command.mail.EEMail;
+import fr.evercraft.essentials.command.mail.EEMailClear;
+import fr.evercraft.essentials.command.mail.EEMailDelete;
+import fr.evercraft.essentials.command.mail.EEMailRead;
+import fr.evercraft.essentials.command.mail.EEMailSend;
 import fr.evercraft.essentials.command.repair.*;
 import fr.evercraft.essentials.command.spawn.*;
 import fr.evercraft.essentials.command.teleport.*;
@@ -88,7 +93,7 @@ public class EEManagerCommands extends TreeMap<String, ECommand<EverEssentials>>
 		register(new EEKill(this.plugin));
 		register(new EELag(this.plugin));
 		register(new EEList(this.plugin));
-		register(new EEMail(this.plugin));
+		// register(new EEMail(this.plugin));
 		register(new EEMe(this.plugin));
 		register(new EEMojang(this.plugin));
 		register(new EEMore(this.plugin));
@@ -143,7 +148,13 @@ public class EEManagerCommands extends TreeMap<String, ECommand<EverEssentials>>
 		register(new EEWorldsEnd(this.plugin));
 		register(new EEWorldsNether(this.plugin));
 		
-		// Commands		
+		// Commands	
+		EEMail mail = new EEMail(this.plugin);
+		mail.add(new EEMailClear(this.plugin, mail));
+		mail.add(new EEMailDelete(this.plugin, mail));
+		mail.add(new EEMailRead(this.plugin, mail));
+		mail.add(new EEMailSend(this.plugin, mail));
+		
 		EEToggle toggle = new EEToggle(this.plugin);
 		toggle.add(new EEToggleOn(this.plugin, toggle));
 		toggle.add(new EEToggleOff(this.plugin, toggle));
@@ -159,14 +170,14 @@ public class EEManagerCommands extends TreeMap<String, ECommand<EverEssentials>>
 		whitelist.add(new EEWhitelistList(this.plugin, whitelist));
 		register(whitelist);
 		
-		EEWorldborder border = new EEWorldborder(this.plugin);
-		border.add(new EEWorldborderInfo(this.plugin, border));
-		border.add(new EEWorldborderSet(this.plugin, border));
-		border.add(new EEWorldborderCenter(this.plugin, border));
-		border.add(new EEWorldborderAdd(this.plugin, border));
-		border.add(new EEWorldborderDamage(this.plugin, border));
-		border.add(new EEWorldborderWarning(this.plugin, border));
-		register(border);
+		EEWorldborder world = new EEWorldborder(this.plugin);
+		world.add(new EEWorldborderInfo(this.plugin, world));
+		world.add(new EEWorldborderSet(this.plugin, world));
+		world.add(new EEWorldborderCenter(this.plugin, world));
+		world.add(new EEWorldborderAdd(this.plugin, world));
+		world.add(new EEWorldborderDamage(this.plugin, world));
+		world.add(new EEWorldborderWarning(this.plugin, world));
+		register(world);
 	}
 	
 	public void reload(){

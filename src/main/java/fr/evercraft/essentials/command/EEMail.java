@@ -305,7 +305,7 @@ public class EEMail extends ECommand<EverEssentials> {
 			Optional<Mail> mail = player.getMail(Integer.parseInt(id_string));
 			if(mail.isPresent()) {	
 				player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
-						.append(EEMessages.MAIL_DELETE.get()
+						.append(EEMessages.MAIL_DELETE_MESSAGE.get()
 							.replaceAll("<id>", String.valueOf(mail.get().getID()))
 							.replaceAll("<player>", mail.get().getToName())
 							.replaceAll("<time>", this.plugin.getEverAPI().getManagerUtils().getDate().parseTime(mail.get().getDateTime()))
@@ -374,7 +374,7 @@ public class EEMail extends ECommand<EverEssentials> {
 	
 	private boolean commandClear(EPlayer player) {
 		if(player.clearMails()) {
-			player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.MAIL_CLEAR.getText()));
+			player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.MAIL_CLEAR_MESSAGE.getText()));
 			return true;
 		} else {
 			player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.MAIL_CLEAR_ERROR.getText()));
@@ -391,7 +391,7 @@ public class EEMail extends ECommand<EverEssentials> {
 		if(subject.isPresent()) {
 			if(subject.get().addMail(staff, message)) {
 				if(staff.getIdentifier().equals(player.getIdentifier())) {
-					staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.MAIL_SEND.get()
+					staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.MAIL_SEND_MESSAGE.get()
 						.replaceAll("<player>", player.getName())));
 				} else {
 					staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.MAIL_SEND_EQUALS.get()

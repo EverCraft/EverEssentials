@@ -26,22 +26,22 @@ import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.EParentCommand;
 
 public class EEWorldborder extends EParentCommand<EverEssentials> {
-		public EEWorldborder(final EverEssentials plugin) {
-	        super(plugin, "worldborder");
-	    }
-		
-		@Override
-		public boolean testPermission(final CommandSource source) {
-			return source.hasPermission(EEPermissions.WORLDBORDER.get());
-		}
-
-		@Override
-		public Text description(final CommandSource source) {
-			return EChat.of(EEMessages.WORLDBORDER_DESCRIPTION.get());
-		}
-
-		@Override
-		public boolean testPermissionHelp(final CommandSource source) {
-			return source.hasPermission(EEPermissions.WORLDBORDER.get());
-		}
+	public EEWorldborder(final EverEssentials plugin) {
+        super(plugin, "worldborder");
+    }
+	
+	@Override
+	public boolean testPermission(final CommandSource source) {
+		return source.hasPermission(EEPermissions.WORLDBORDER.get());
 	}
+
+	@Override
+	public Text description(final CommandSource source) {
+		return EChat.of(EEMessages.WORLDBORDER_DESCRIPTION.get());
+	}
+
+	@Override
+	public boolean testPermissionHelp(final CommandSource source) {
+		return source.hasPermission(EEPermissions.WORLDBORDER.get());
+	}
+}
