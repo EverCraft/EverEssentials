@@ -393,6 +393,7 @@ public class EEMessage extends EMessage {
 		
 		SPAWN_DESCRIPTION("spawn.description", "Permet de téléporter au spawn"),
 		SPAWN_PLAYER("spawn.player", "&7Vous avez été téléporté au &6<spawn>&7."),
+		SPAWN_DELAY("spawn.delay", "&7Votre téléportation commencera dans &6<delay>&7. Ne bougez pas."),
 		SPAWN_NAME("spawn.name", "&6spawn"),
 		SPAWN_NAME_HOVER("spawn.nameHover", "&cMonde : &6<world>[RT]&cX : &6<x>[RT]&cY : &6<y>[RT]&cZ : &6<z>"),
 		SPAWN_ERROR_GROUP("spawn.errorGroup", "&cIl y a aucun groupe qui porte le nom &6<name>."),
@@ -412,6 +413,7 @@ public class EEMessage extends EMessage {
 		SPAWNS_NAME("spawns.name", "&6<name>"),
 		SPAWNS_NAME_HOVER("spawns.nameHover", "&cMonde : &6<world>[RT]&cX : &6<x>[RT]&cY : &6<y>[RT]&cZ : &6<z>"),
 		SPAWNS_PLAYER("spawns.player", "&7Vous avez été téléporté au spawn &6<spawn>&7."),
+		SPAWNS_DELAY("spawns.delay", "&7Votre téléportation commencera dans &6<delay>&7. Ne bougez pas."),
 		SPAWNS_ERROR_TELEPORT("spawns.errorTeleport", "&cImpossible de vous téléporter au spawn <spawn>&7."),
 
 		DELSPAWN_DESCRIPTION("delspawn.description", "Supprime un spawn"),
@@ -591,6 +593,7 @@ public class EEMessage extends EMessage {
 		TOP_DESCRIPTION("top.description", "Téléporte le joueur à la position la plus élevée"),
 		TOP_POSITION("top.position", "&6&lposition"),
 		TOP_POSITION_HOVER("top.positionHover", "&cMonde : &6<world>[RT]&cX : &6<x>[RT]&cY : &6<y>[RT]&cZ : &6<z>"),
+		TOP_DELAY("top.delay", "&7Votre téléportation commencera dans &6<delay>&7. Ne bougez pas."),
 		TOP_TELEPORT("top.teleport", "&7Vous avez été téléporté à la <position> &7la plus élevée."),
 		TOP_TELEPORT_ERROR("top.teleportError", "&cImpossible de trouver une position où vous téléporter."),
 		
