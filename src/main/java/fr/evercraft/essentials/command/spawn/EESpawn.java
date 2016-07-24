@@ -142,20 +142,16 @@ public class EESpawn extends EReloadCommand<EverEssentials> {
 	}
 	
 	private boolean commandSpawn(final EPlayer player) throws CommandException {
-		Transform<World> spawn = player.getSpawn();
-		if(player.setTransform(spawn)) {
-			player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
-					.append(EEMessages.SPAWN_PLAYER.get())
-					.replace("<spawn>", getButtonSpawn(spawn))
-					.build());
-			return true;
-		} else {
-			player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
-					.append(EEMessages.SPAWN_ERROR_TELEPORT.get())
-					.replace("<spawn>", getButtonSpawn(spawn))
-					.build());
+		final Transform<World> spawn = player.getSpawn();
+		
+		long delay = this.plugin.getConfigs().getTeleportDelay(player);
+		if(delay > 0) {
+			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.SPAWN_DELAY.get()
+					.replaceAll("<delay>", this.plugin.getEverAPI().getManagerUtils().getDate().formatDateDiff(System.currentTimeMillis() + delay)));
 		}
-		return false;
+		
+		player.setTeleport(delay, () -> this.teleport(player, spawn), player.hasPermission(EEPermissions.TELEPORT_BYPASS_MOVE.get()));
+		return true;
 	}
 	
 	private boolean commandSpawn(final EPlayer player, final String group) throws CommandException {
@@ -170,21 +166,49 @@ public class EESpawn extends EReloadCommand<EverEssentials> {
 	}
 	
 	private boolean commandSpawn(final EPlayer player, final Transform<World> spawn, final String name) throws CommandException {
-		if(player.setTransform(spawn)) {
-			player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
-					.append(EEMessages.SPAWNS_PLAYER.get()
-							.replaceAll("<name>", name))
-					.replace("<spawn>", getButtonSpawn(spawn))
-					.build());
-			return true;
-		} else {
-			player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
-					.append(EEMessages.SPAWNS_ERROR_TELEPORT.get()
-						.replaceAll("<name>",  name))
-					.replace("<spawn>", getButtonSpawn(spawn))
-					.build());
+		long delay = this.plugin.getConfigs().getTeleportDelay(player);
+		if(delay > 0) {
+			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.SPAWNS_DELAY.get()
+					.replaceAll("<delay>", this.plugin.getEverAPI().getManagerUtils().getDate().formatDateDiff(System.currentTimeMillis() + delay)));
 		}
+		
+		player.setTeleport(delay, () -> this.teleport(player, spawn, name), player.hasPermission(EEPermissions.TELEPORT_BYPASS_MOVE.get()));
 		return false;
+	}
+	
+	private void teleport(final EPlayer player, final Transform<World> location) {
+		if(player.isOnline()) {
+			if(player.teleport(location)) {
+				player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
+						.append(EEMessages.SPAWN_PLAYER.get())
+						.replace("<spawn>", getButtonSpawn(location))
+						.build());
+
+			} else {
+				player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
+						.append(EEMessages.SPAWN_ERROR_TELEPORT.get())
+						.replace("<spawn>", getButtonSpawn(location))
+						.build());
+			}
+		}
+	}
+	
+	private void teleport(final EPlayer player, final Transform<World> location, final String name) {
+		if(player.isOnline()) {
+			if(player.teleport(location)) {
+				player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
+						.append(EEMessages.SPAWNS_PLAYER.get()
+								.replaceAll("<name>", name))
+						.replace("<spawn>", getButtonSpawn(location))
+						.build());
+			} else {
+				player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
+						.append(EEMessages.SPAWNS_ERROR_TELEPORT.get()
+							.replaceAll("<name>",  name))
+						.replace("<spawn>", getButtonSpawn(location))
+						.build());
+			}
+		}
 	}
 	
 	private Text getButtonSpawn(final Transform<World> location){

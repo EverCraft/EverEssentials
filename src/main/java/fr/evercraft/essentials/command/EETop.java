@@ -81,27 +81,37 @@ public class EETop extends ECommand<EverEssentials> {
 	}
 	
 	public boolean commandTop(final EPlayer player) {
-		if(teleport(player)) {
-			player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
-					.append(EEMessages.TOP_TELEPORT.get())
-					.replace("<position>", getButtonPosition(player.getLocation()))
-					.build());
+		final Optional<Transform<World>> transform = this.plugin.getEverAPI().getManagerUtils().getLocation().getMaxBlock(
+															player.getTransform(), 
+															!(player.isGod() || player.getGameMode().equals(GameModes.CREATIVE)));
+		
+		if(transform.isPresent()) {
+			long delay = this.plugin.getConfigs().getTeleportDelay(player);
+			
+			if(delay > 0) {
+				player.sendMessage(EEMessages.PREFIX.get() + EEMessages.TOP_DELAY.get()
+						.replaceAll("<delay>", this.plugin.getEverAPI().getManagerUtils().getDate().formatDateDiff(System.currentTimeMillis() + delay)));
+			}
+			
+			player.setTeleport(delay, () -> this.teleport(player, transform.get()), player.hasPermission(EEPermissions.TELEPORT_BYPASS_MOVE.get()));
 			return true;
 		} else {
 			player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.TOP_TELEPORT_ERROR.get()));
 		}
 		return false;
 	}
-	public boolean teleport(EPlayer player) {
-		Optional<Transform<World>> transform = this.plugin.getEverAPI().getManagerUtils().getLocation().getMaxBlock(
-														player.getTransform(), 
-														!(player.isGod() || player.getGameMode().equals(GameModes.CREATIVE)));
-		if(transform.isPresent()) {
-			player.setBack();
-			player.setTransform(transform.get());
-			return true;
+	
+	public void teleport(final EPlayer player, final Transform<World> location) {
+		if(player.isOnline()) {
+			if(player.teleport(location)) {
+				player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
+						.append(EEMessages.TOP_TELEPORT.get())
+						.replace("<position>", getButtonPosition(player.getLocation()))
+						.build());
+			} else {
+				player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.TOP_TELEPORT_ERROR.get()));
+			}
 		}
-		return false;
 	}
 	
 	public Text getButtonPosition(final Location<World> location){
