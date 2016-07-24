@@ -25,8 +25,8 @@ import org.spongepowered.api.event.cause.Cause;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.essentials.event.EAfkDisableEvent;
 import fr.evercraft.essentials.event.EAfkEnableEvent;
-import fr.evercraft.essentials.event.EToogleDisableEvent;
-import fr.evercraft.essentials.event.EToogleEnableEvent;
+import fr.evercraft.essentials.event.EToggleDisableEvent;
+import fr.evercraft.essentials.event.EToggleEnableEvent;
 import fr.evercraft.essentials.event.EGodDisableEvent;
 import fr.evercraft.essentials.event.EGodEnableEvent;
 import fr.evercraft.essentials.event.EMailAddEvent;
@@ -83,10 +83,10 @@ public class EEManagerEvent {
 	public boolean toggle(final EPlayer player, final boolean value) {
 		if(value) {
 			this.plugin.getLogger().debug("Event ToogleEvent.Enable : (UUID='" + player.getIdentifier() + "';value='" + value + "')");
-			return this.plugin.getGame().getEventManager().post(new EToogleEnableEvent(player, this.getCause()));
+			return this.plugin.getGame().getEventManager().post(new EToggleEnableEvent(player, this.getCause()));
 		} else {
 			this.plugin.getLogger().debug("Event ToogleEvent.Disable : (UUID='" + player.getIdentifier() + "';value='" + value + "')");
-			return this.plugin.getGame().getEventManager().post(new EToogleDisableEvent(player, this.getCause()));
+			return this.plugin.getGame().getEventManager().post(new EToggleDisableEvent(player, this.getCause()));
 		}
 	}
 	

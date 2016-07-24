@@ -18,10 +18,10 @@ package fr.evercraft.essentials.event;
 
 import org.spongepowered.api.event.cause.Cause;
 
-import fr.evercraft.everapi.event.ToogleEvent;
+import fr.evercraft.everapi.event.ToggleEvent;
 import fr.evercraft.everapi.server.player.EPlayer;
 
-public class EToogleEvent implements ToogleEvent {	
+public class EToggleEvent implements ToggleEvent {	
 	
     private final EPlayer player;
     private final boolean value;
@@ -29,7 +29,7 @@ public class EToogleEvent implements ToogleEvent {
     private final Cause cause;
     private boolean cancel;
 
-    public EToogleEvent(final EPlayer player, final boolean value, final Cause cause) {
+    public EToggleEvent(final EPlayer player, final boolean value, final Cause cause) {
     	this.player = player;
         this.value = value;
         

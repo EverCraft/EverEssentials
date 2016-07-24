@@ -18,12 +18,12 @@ package fr.evercraft.essentials.event;
 
 import org.spongepowered.api.event.cause.Cause;
 
-import fr.evercraft.everapi.event.ToogleEvent;
+import fr.evercraft.everapi.event.ToggleEvent;
 import fr.evercraft.everapi.server.player.EPlayer;
 
-public class EToogleDisableEvent extends EToogleEvent implements ToogleEvent.Disable {	
+public class EToggleDisableEvent extends EToggleEvent implements ToggleEvent.Disable {	
 
-    public EToogleDisableEvent(final EPlayer player, final Cause cause) {
+    public EToggleDisableEvent(final EPlayer player, final Cause cause) {
     	super(player, false, cause);
     }
 }
