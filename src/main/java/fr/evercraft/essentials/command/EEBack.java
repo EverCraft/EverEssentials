@@ -81,26 +81,45 @@ public class EEBack extends ECommand<EverEssentials> {
 	}
 	
 	public boolean commandBack(final EPlayer player){
-		Optional<Transform<World>> back = player.getBack();
+		final Optional<Transform<World>> back = player.getBack();
 		// Le joueur a une position de retour
 		if(back.isPresent()){
-			if(this.plugin.getManagerServices().getEssentials().hasPermissionWorld(player, back.get().getExtent())){
-				player.setBack(player.getTransform());
-				// Le joueur a bien été téléporter
-				player.setTransform(back.get());
-				player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.getText())
-						.append(EEMessages.BACK_TELEPORT.get())
-						.replace("<back>", getButtonLocation(back.get().getLocation()))
-						.build());
-				return true;
+			if(this.plugin.getManagerServices().getEssentials().hasPermissionWorld(player, back.get().getExtent())) {
+				if(this.plugin.getEverAPI().getManagerUtils().getLocation().isPositionSafe(back.get())) {
+					long delay = this.plugin.getConfigs().getTeleportDelay(player);
+					
+					if(delay > 0) {
+						player.sendMessage(EEMessages.PREFIX.get() + EEMessages.BACK_DELAY.get()
+								.replaceAll("<delay>", this.plugin.getEverAPI().getManagerUtils().getDate().formatDateDiff(System.currentTimeMillis() + delay)));
+					}
+					
+					player.setTeleport(delay, () -> this.teleport(player, back.get()), player.hasPermission(EEPermissions.TELEPORT_BYPASS_MOVE.get()));
+					return true;
+				} else {
+					player.sendMessage(EEMessages.PREFIX.get() + EEMessages.BACK_ERROR_LOCATION.get());
+				}
 			} else {
-				player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.NO_PERMISSION_WORLD_OTHERS.get()));
+				player.sendMessage(EEMessages.PREFIX.get() + EAMessages.NO_PERMISSION_WORLD_OTHERS.get());
 			}
 		// Le joueur n'a pas de position de retour
 		} else {
-			player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.BACK_INCONNU.getText()));
+			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.BACK_INCONNU.get());
 		}
 		return false;
+	}
+	
+	private void teleport(final EPlayer player, final Transform<World> teleport) {
+		if(player.isOnline()) {
+			// Le joueur a bien été téléporter
+			if(player.teleportSafe(teleport)) {
+				player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.getText())
+						.append(EEMessages.BACK_TELEPORT.get())
+						.replace("<back>", getButtonLocation(teleport.getLocation()))
+						.build());
+			} else {
+				player.sendMessage(EEMessages.PREFIX.get() + EEMessages.BACK_ERROR_LOCATION.get());
+			}
+		}
 	}
 	
 	public Text getButtonLocation(final Location<World> location){

@@ -217,36 +217,40 @@ public class EETeleportationAccept extends ECommand<EverEssentials> {
 	}
 	
 	public void teleportAsk(final EPlayer player_request, final EPlayer player, final Transform<World> teleport) {
-		if(player_request.teleportSafe(teleport)) {
-			player_request.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.getText())
-					.append(EEMessages.TPA_STAFF_TELEPORT.get()
-						.replaceAll("<player>", player.getName()))
-					.replace("<destination>", EETeleportationAsk.getButtonPosition(player.getName(), teleport.getLocation()))
-					.build());
-			player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.getText())
-					.append(EEMessages.TPA_PLAYER_TELEPORT.get())
-					.replace("<player>", EETeleportationAsk.getButtonPosition(player_request.getName(), teleport.getLocation()))
-					.build());
-		} else {
-			player_request.sendMessage(EEMessages.PREFIX.get() + EEMessages.TPA_ERROR_LOCATION.get()
-						.replaceAll("<player>", player_request.getName()));
+		if(player_request.isOnline() && player.isOnline()) {
+			if(player_request.teleportSafe(teleport)) {
+				player_request.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.getText())
+						.append(EEMessages.TPA_STAFF_TELEPORT.get()
+							.replaceAll("<player>", player.getName()))
+						.replace("<destination>", EETeleportationAsk.getButtonPosition(player.getName(), teleport.getLocation()))
+						.build());
+				player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.getText())
+						.append(EEMessages.TPA_PLAYER_TELEPORT.get())
+						.replace("<player>", EETeleportationAsk.getButtonPosition(player_request.getName(), teleport.getLocation()))
+						.build());
+			} else {
+				player_request.sendMessage(EEMessages.PREFIX.get() + EEMessages.TPA_ERROR_LOCATION.get()
+							.replaceAll("<player>", player_request.getName()));
+			}
 		}
 	}
 	
 	public void teleportAskHere(final EPlayer player_request, final EPlayer player, final Transform<World> teleport) {
-		if(player.teleportSafe(teleport)) {
-			player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.getText())
-					.append(EEMessages.TPAHERE_PLAYER_TELEPORT.get()
-						.replaceAll("<player>", player.getName()))
-					.replace("<destination>", EETeleportationAsk.getButtonPosition(player.getName(), teleport.getLocation()))
-					.build());
-			player_request.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.getText())
-					.append(EEMessages.TPAHERE_STAFF_TELEPORT.get())
-					.replace("<player>", EETeleportationAsk.getButtonPosition(player_request.getName(), teleport.getLocation()))
-					.build());
-		} else {
-			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.TPAHERE_ERROR_LOCATION.get()
-						.replaceAll("<player>", player_request.getName()));
+		if(player_request.isOnline() && player.isOnline()) {
+			if(player.teleportSafe(teleport)) {
+				player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.getText())
+						.append(EEMessages.TPAHERE_PLAYER_TELEPORT.get()
+							.replaceAll("<player>", player.getName()))
+						.replace("<destination>", EETeleportationAsk.getButtonPosition(player.getName(), teleport.getLocation()))
+						.build());
+				player_request.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.getText())
+						.append(EEMessages.TPAHERE_STAFF_TELEPORT.get())
+						.replace("<player>", EETeleportationAsk.getButtonPosition(player_request.getName(), teleport.getLocation()))
+						.build());
+			} else {
+				player.sendMessage(EEMessages.PREFIX.get() + EEMessages.TPAHERE_ERROR_LOCATION.get()
+							.replaceAll("<player>", player_request.getName()));
+			}
 		}
 	}
 }

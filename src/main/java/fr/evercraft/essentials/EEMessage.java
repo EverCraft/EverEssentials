@@ -56,6 +56,8 @@ public class EEMessage extends EMessage {
 		BACK_NAME_HOVER("back.nameHover", 					"&cMonde : &6<world>[RT]&cX : &6<x>[RT]&cY : &6<y>[RT]&cZ : &6<z>"),
 		BACK_TELEPORT("back.teleport", 						"&7Vous avez été téléporté à votre dernière <back>&7."),
 		BACK_INCONNU("back.inconnu", 						"&cVous n'avez aucune position sauvegardé."),
+		BACK_DELAY("back.delay", 							"&7Votre téléportation commencera dans &6<delay>&7. Ne bougez pas."),
+		BACK_ERROR_LOCATION("back.errorLocation", 			"&cImpossible de trouver une position pour réaliser une téléportation."),
 		
 		BED_DESCRIPTION("bed.description", 					"Retourne à la dernière position ou vous avez dormi"),
 		
@@ -538,7 +540,7 @@ public class EEMessage extends EMessage {
 		TPAHERE_PLAYER_QUESTION_DENY_HOVER("tpahere.playerQuestionDenyHover", "&cCliquez ici pour refuser la téléportation de &6<player>&7."),
 		TPAHERE_PLAYER_EXPIRE("tpahere.playerExpire", "&cLa demande de téléportation de &6<player> &ca expirée."),
 		TPAHERE_PLAYER_DENY("tpahere.playerDeny", "&7La demande de &6<player> &7 a bien été refusé."),
-		TPAHERE_PLAYER_ACCEPT("teleport.playerAccept", "&7Votre téléportation commencera dans &6<delay>&7. Ne bougez pas."),
+		TPAHERE_PLAYER_ACCEPT("tpahere.playerAccept", "&7Votre téléportation commencera dans &6<delay>&7. Ne bougez pas."),
 		TPAHERE_PLAYER_TELEPORT("tpahere.playerTeleport", "&7Vous avez été téléporté vers &6<destination>&7."),
 		TPAHERE_PLAYER_EMPTY("tpahere.playerEmpty", "&cVous n'avez aucune demande de téléportation de &6<player>&c."),
 		TPAHERE_ERROR_EQUALS("tpahere.errorEquals", "&cImpossible de vous envoyer une demande à vous même."),
