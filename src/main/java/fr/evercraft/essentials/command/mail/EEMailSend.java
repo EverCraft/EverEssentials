@@ -68,7 +68,7 @@ public class EEMailSend extends ESubCommand<EverEssentials> {
 	public boolean subExecute(final CommandSource source, final List<String> args) {
 		// Résultat de la commande :
 		boolean resultat = false;
-		if(args.size() == 3){
+		if(args.size() == 2){
 			// Si il a la permission
 			if(source.hasPermission(EEPermissions.MAIL_SEND.get())) {
 				if(args.get(0).equalsIgnoreCase("*") || args.get(0).equalsIgnoreCase("all")) {

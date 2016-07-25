@@ -16,6 +16,10 @@
  */
 package fr.evercraft.essentials.command.mail;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Pattern;
+
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.text.Text;
 
@@ -43,5 +47,23 @@ public class EEMail extends EParentCommand<EverEssentials> {
 	@Override
 	public boolean testPermissionHelp(final CommandSource source) {
 		return source.hasPermission(EEPermissions.MAIL.get());
+	}
+	
+	@Override
+	protected List<String> getArg(final String arg) {
+		List<String> args = super.getArg(arg);
+		// Le message est transformer en un seul argument
+		if(args.size() > 3 && args.get(0).equalsIgnoreCase("send")) {
+			List<String> args_send = new ArrayList<String>();
+			args_send.add(args.get(0));
+			args_send.add(args.get(1));
+			if(args.get(1).equalsIgnoreCase("*")) {
+				args_send.add(Pattern.compile("^[ \"]*" + args.get(0) + "[ \"]*\\*[ \"][ ]*").matcher(arg).replaceAll(""));
+			} else {
+				args_send.add(Pattern.compile("^[ \"]*" + args.get(0) + "[ \"]*" + args.get(1) + "[ \"][ ]*").matcher(arg).replaceAll(""));
+			}
+			return args_send;
+		}
+		return args;
 	}
 }

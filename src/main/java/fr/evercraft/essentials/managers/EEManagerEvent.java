@@ -20,21 +20,15 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.spongepowered.api.command.CommandSource;
+import org.spongepowered.api.entity.Transform;
 import org.spongepowered.api.event.cause.Cause;
+import org.spongepowered.api.world.World;
 
 import fr.evercraft.essentials.EverEssentials;
-import fr.evercraft.essentials.event.EAfkDisableEvent;
-import fr.evercraft.essentials.event.EAfkEnableEvent;
-import fr.evercraft.essentials.event.EToggleDisableEvent;
-import fr.evercraft.essentials.event.EToggleEnableEvent;
-import fr.evercraft.essentials.event.EGodDisableEvent;
-import fr.evercraft.essentials.event.EGodEnableEvent;
-import fr.evercraft.essentials.event.EMailAddEvent;
-import fr.evercraft.essentials.event.EMailReadEvent;
-import fr.evercraft.essentials.event.EMailRemoveEvent;
-import fr.evercraft.essentials.event.EVanishDisableEvent;
-import fr.evercraft.essentials.event.EVanishEnableEvent;
+import fr.evercraft.essentials.event.*;
 import fr.evercraft.everapi.event.AfkEvent;
+import fr.evercraft.everapi.event.HomeEvent;
+import fr.evercraft.everapi.event.IgnoreEvent;
 import fr.evercraft.everapi.event.MailEvent;
 import fr.evercraft.everapi.server.player.EPlayer;
 import fr.evercraft.everapi.services.essentials.Mail;
@@ -72,6 +66,10 @@ public class EEManagerEvent {
 		}
 	}
 	
+	/*
+	 * Toggle
+	 */
+	
 	public boolean toggle(UUID uuid, boolean value) {
 		Optional<EPlayer> player = this.plugin.getEServer().getEPlayer(uuid);
 		if(player.isPresent()) {
@@ -89,6 +87,10 @@ public class EEManagerEvent {
 			return this.plugin.getGame().getEventManager().post(new EToggleDisableEvent(player, this.getCause()));
 		}
 	}
+	
+	/*
+	 * God
+	 */
 	
 	public boolean god(UUID uuid, boolean value) {
 		Optional<EPlayer> player = this.plugin.getEServer().getEPlayer(uuid);
@@ -108,6 +110,10 @@ public class EEManagerEvent {
 		}
 	}
 	
+	/*
+	 * Vanish
+	 */
+	
 	public boolean vanish(UUID uuid, boolean value) {
 		Optional<EPlayer> player = this.plugin.getEServer().getEPlayer(uuid);
 		if(player.isPresent()) {
@@ -125,6 +131,10 @@ public class EEManagerEvent {
 			return this.plugin.getGame().getEventManager().post(new EVanishDisableEvent(player, this.getCause()));
 		}
 	}
+	
+	/*
+	 * Mail
+	 */
 	
 	public boolean mail(UUID uuid, final CommandSource source, final String message) {
 		Optional<EPlayer> player = this.plugin.getEServer().getEPlayer(uuid);
@@ -154,6 +164,82 @@ public class EEManagerEvent {
 		} else if(action.equals(MailEvent.Action.READ)) {
 			this.plugin.getLogger().debug("Event MailEvent.Read : (UUID='" + player.getIdentifier() + "';mail='" + mail + "')");
 			return this.plugin.getGame().getEventManager().post(new EMailReadEvent(player, mail, this.getCause()));
+		}
+		return false;
+	}
+	
+	/*
+	 * Back
+	 */
+	
+	public boolean back(UUID uuid, final Optional<Transform<World>> before, final Optional<Transform<World>> after) {
+		Optional<EPlayer> player = this.plugin.getEServer().getEPlayer(uuid);
+		if(player.isPresent()) {
+			return this.back(player.get(), before, after);
+		}
+		return false;
+	}
+	
+	public boolean back(final EPlayer player, final Optional<Transform<World>> before, final Optional<Transform<World>> after) {
+		this.plugin.getLogger().debug("Event BackEvent : (UUID='" + player.getIdentifier() + "';before='" + before + "';after='" + after + "')");
+		return this.plugin.getGame().getEventManager().post(new EBackEvent(player, before, after, this.getCause()));
+	}
+	
+	/*
+	 * Home
+	 */
+	
+	public boolean home(UUID uuid, final String name, final Transform<World> location, final HomeEvent.Action action) {
+		Optional<EPlayer> player = this.plugin.getEServer().getEPlayer(uuid);
+		if(player.isPresent()) {
+			return this.home(player.get(), name, location, action);
+		}
+		return false;
+	}
+	
+	public boolean home(final EPlayer player, final String name, final Transform<World> location, final HomeEvent.Action action) {
+		if(action.equals(HomeEvent.Action.ADD)) {
+			this.plugin.getLogger().debug("Event HomeEvent.Add : (UUID='" + player.getIdentifier() + "';name='" + name + "';location='" + location + "')");
+			return this.plugin.getGame().getEventManager().post(new EHomeAddEvent(player, name, location, this.getCause()));
+		} else if(action.equals(HomeEvent.Action.REMOVE)) {
+			this.plugin.getLogger().debug("Event HomeEvent.Remove : (UUID='" + player.getIdentifier() + "';name='" + name + "';location='" + location + "')");
+			return this.plugin.getGame().getEventManager().post(new EHomeRemoveEvent(player, name, location, this.getCause()));
+		}
+		return false;
+	}
+	
+	public boolean home(UUID uuid, final String name, final Transform<World> before, final Transform<World> after) {
+		Optional<EPlayer> player = this.plugin.getEServer().getEPlayer(uuid);
+		if(player.isPresent()) {
+			return this.home(player.get(), name, before, after);
+		}
+		return false;
+	}
+	
+	public boolean home(final EPlayer player, final String name, final Transform<World> before, final Transform<World> after) {
+		this.plugin.getLogger().debug("Event HomeEvent.Move : (UUID='" + player.getIdentifier() + "';name='" + name + "';before='" + before + "';after='" + after + "')");
+		return this.plugin.getGame().getEventManager().post(new EHomeMoveEvent(player, name, before, after, this.getCause()));
+	}
+	
+	/*
+	 * Ignore
+	 */
+	
+	public boolean ignore(final UUID uuid, final UUID ignore, final IgnoreEvent.Action action) {
+		Optional<EPlayer> player = this.plugin.getEServer().getEPlayer(uuid);
+		if(player.isPresent()) {
+			return this.ignore(player.get(), ignore, action);
+		}
+		return false;
+	}
+	
+	public boolean ignore(final EPlayer player, final UUID ignore, final IgnoreEvent.Action action) {
+		if(action.equals(IgnoreEvent.Action.ADD)) {
+			this.plugin.getLogger().debug("Event IgnoreEvent.Add : (UUID='" + player.getIdentifier() + "';ignore='" + ignore + "')");
+			return this.plugin.getGame().getEventManager().post(new EIgnoreAddEvent(player, ignore, this.getCause()));
+		} else if(action.equals(IgnoreEvent.Action.REMOVE)) {
+			this.plugin.getLogger().debug("Event IgnoreEvent.Remove : (UUID='" + player.getIdentifier() + "';ignore='" + ignore + "')");
+			return this.plugin.getGame().getEventManager().post(new EIgnoreRemoveEvent(player, ignore, this.getCause()));
 		}
 		return false;
 	}
