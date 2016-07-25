@@ -137,9 +137,40 @@ public class EEMailRead extends ESubCommand<EverEssentials> {
 		return true;
 	}
 	
+	private boolean commandRead(EPlayer player, String id_string) {
+		try {
+			Optional<Mail> mail = player.getMail(Integer.parseInt(id_string));
+			if(mail.isPresent()) {
+				if(player.readMail(mail.get())) {
+					BookView.Builder book = BookView.builder();
+					book = book.addPage(mail.get().getText());
+					player.sendBookView(book.build());
+					return true;
+				} else {
+					player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
+							.append(EEMessages.MAIL_READ_CANCEL.get()
+								.replaceAll("<id>", String.valueOf(mail.get().getID()))
+								.replaceAll("<player>", mail.get().getToName())
+								.replaceAll("<time>", this.plugin.getEverAPI().getManagerUtils().getDate().parseTime(mail.get().getDateTime()))
+								.replaceAll("<date>", this.plugin.getEverAPI().getManagerUtils().getDate().parseDate(mail.get().getDateTime()))
+								.replaceAll("<datetime>", this.plugin.getEverAPI().getManagerUtils().getDate().parseDateTime(mail.get().getDateTime())))
+							.replace("<mail>", getButtomReadMail(mail.get()))
+							.build());
+				}
+			} else {
+				player.sendMessage(EEMessages.PREFIX.get() + EEMessages.MAIL_READ_ERROR.get()
+						.replaceAll("<id>", id_string));
+			}
+		} catch (NumberFormatException e){
+			player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.IS_NOT_NUMBER.get()
+					.replaceAll("<number>", id_string)));
+		}
+		return false;
+	}
+	
 	public Text getButtonRead(final Mail mail){
-		return EEMessages.MAIL_BUTTOM_READ.getText().toBuilder()
-					.onHover(TextActions.showText(EEMessages.MAIL_BUTTOM_READ_HOVER.getText()))
+		return EEMessages.MAIL_BUTTON_READ.getText().toBuilder()
+					.onHover(TextActions.showText(EEMessages.MAIL_BUTTON_READ_HOVER.getText()))
 					.onClick(TextActions.runCommand("/mail read " + mail.getID()))
 					.build();
 	}
@@ -151,22 +182,14 @@ public class EEMailRead extends ESubCommand<EverEssentials> {
 					.build();
 	}
 	
-	private boolean commandRead(EPlayer player, String id_string) {
-		try {
-			Optional<Mail> mail = player.readMail(Integer.parseInt(id_string));
-			if(mail.isPresent()) {
-				BookView.Builder book = BookView.builder();
-				book = book.addPage(mail.get().getText());
-				player.sendBookView(book.build());
-				return true;
-			} else {
-				player.sendMessage(EEMessages.PREFIX.get() + EEMessages.MAIL_READ_ERROR.get()
-						.replaceAll("<id>", id_string));
-			}
-		} catch (NumberFormatException e){
-			player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.IS_NOT_NUMBER.get()
-					.replaceAll("<number>", id_string)));
-		}
-		return false;
+	private Text getButtomReadMail(final Mail mail) {
+		return EEMessages.MAIL_READ_MAIL.getText().toBuilder()
+					.onHover(TextActions.showText(EChat.of(EEMessages.MAIL_READ_MAIL_HOVER.get()
+							.replaceAll("<id>", String.valueOf(mail.getID()))
+							.replaceAll("<player>", mail.getToName())
+							.replaceAll("<time>", this.plugin.getEverAPI().getManagerUtils().getDate().parseTime(mail.getDateTime()))
+							.replaceAll("<date>", this.plugin.getEverAPI().getManagerUtils().getDate().parseDate(mail.getDateTime()))
+							.replaceAll("<datetime>", this.plugin.getEverAPI().getManagerUtils().getDate().parseDateTime(mail.getDateTime())))))
+					.build();
 	}
 }

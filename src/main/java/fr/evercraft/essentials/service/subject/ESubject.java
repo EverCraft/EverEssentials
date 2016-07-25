@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with EverEssentials.  If not, see <http://www.gnu.org/licenses/>.
  */
-package fr.evercraft.essentials.service;
+package fr.evercraft.essentials.service.subject;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -660,9 +660,7 @@ public class ESubject implements EssentialsSubject {
 	}
 	
 	@Override
-	public Optional<Mail> getMail(int id) {
-		Preconditions.checkNotNull(id, "id");
-		
+	public Optional<Mail> getMail(int id) {		
 		boolean found = false;
 		Iterator<Mail> mails = this.mails.iterator();
 		Mail mail = null;
@@ -700,19 +698,37 @@ public class ESubject implements EssentialsSubject {
 	}
 
 	@Override
-	public Optional<Mail> removeMail(int id) {
-		final Optional<Mail> mail = this.getMail(id);
-		if(mail.isPresent()) {
-			this.mails.remove(mail.get());
-			
-			if(this.plugin.getManagerEvent().mail(this.getUniqueId(), mail.get(), MailEvent.Action.REMOVE)) {
-				this.mails.add(mail.get());
+	public boolean removeMail(Mail mail) {
+		Preconditions.checkNotNull(mail, "mail");
+		
+		if(this.mails.remove(mail)) {
+			if(this.plugin.getManagerEvent().mail(this.getUniqueId(), mail, MailEvent.Action.REMOVE)) {
+				this.mails.add(mail);
 			} else {
-				this.plugin.getThreadAsync().execute(() -> this.plugin.getDataBases().removeMails(this.getIdentifier(), mail.get().getID()));
-				return mail;
+				this.plugin.getThreadAsync().execute(() -> this.plugin.getDataBases().removeMails(this.getIdentifier(), mail.getID()));
+				return true;
 			}
 		}
-		return Optional.empty();
+		return false;
+	}
+	
+	@Override
+	public boolean readMail(Mail mail) {
+		Preconditions.checkNotNull(mail, "mail");
+		
+		if(this.mails.contains(mail)) {
+			if(!mail.isRead()) {
+				mail.setRead(true);
+				
+				if(this.plugin.getManagerEvent().mail(this.getUniqueId(), mail, MailEvent.Action.READ)) {
+					mail.setRead(false);
+				} else {
+					this.plugin.getThreadAsync().execute(() -> this.plugin.getDataBases().updateMail(mail));
+				}
+			}
+			return true;
+		}
+		return false;
 	}
 	
 	@Override
@@ -731,24 +747,6 @@ public class ESubject implements EssentialsSubject {
 			return this.mails.isEmpty() || this.mails.size() < mails.size();
 		}
 		return false;
-	}
-	
-	@Override
-	public Optional<Mail> readMail(int id) {		
-		final Optional<Mail> mail = this.getMail(id);
-		if(mail.isPresent()) {
-			if(!mail.get().isRead()) {
-				mail.get().setRead(true);
-				
-				if(this.plugin.getManagerEvent().mail(this.getUniqueId(), mail.get(), MailEvent.Action.READ)) {
-					mail.get().setRead(false);
-				} else {
-					this.plugin.getThreadAsync().execute(() -> this.plugin.getDataBases().updateMail(mail.get()));
-				}
-			}
-			return mail;
-		}
-		return Optional.empty();
 	}
 
 	public void addMail(Mail mail) {

@@ -71,7 +71,7 @@ public class EEMailSend extends ESubCommand<EverEssentials> {
 		if(args.size() == 3){
 			// Si il a la permission
 			if(source.hasPermission(EEPermissions.MAIL_SEND.get())) {
-				if(args.get(0).equalsIgnoreCase("*")) {
+				if(args.get(0).equalsIgnoreCase("*") || args.get(0).equalsIgnoreCase("all")) {
 					// Si il a la permission
 					if(source.hasPermission(EEPermissions.MAIL_SENDALL.get())){
 						resultat = commandSendAll(source, args.get(1));
@@ -109,13 +109,14 @@ public class EEMailSend extends ESubCommand<EverEssentials> {
 			if(subject.get().addMail(staff, message)) {
 				if(staff.getIdentifier().equals(player.getIdentifier())) {
 					staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.MAIL_SEND_MESSAGE.get()
-						.replaceAll("<player>", player.getName())));
+							.replaceAll("<player>", player.getName())));
 				} else {
 					staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.MAIL_SEND_EQUALS.get()
 							.replaceAll("<player>", player.getName())));
 				}
 			} else {
-				staff.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR.getText()));
+				staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.MAIL_SEND_CANCEL.get()
+						.replaceAll("<player>", player.getName())));
 			}
 		} else {
 			staff.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
@@ -129,7 +130,7 @@ public class EEMailSend extends ESubCommand<EverEssentials> {
 	
 	private boolean commandSendAll(CommandSource player, String message) {
 		this.plugin.getThreadAsync().execute(() -> this.plugin.getDataBases().sendAllMail(player.getIdentifier(), message));
-		player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.MAIL_SENDALL.getText()));
+		player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.MAIL_SEND_ALL.getText()));
 		return true;
 	}
 }

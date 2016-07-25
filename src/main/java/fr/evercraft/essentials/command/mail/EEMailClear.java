@@ -77,9 +77,13 @@ public class EEMailClear extends ESubCommand<EverEssentials> {
 	 */
 	
 	private boolean commandClear(EPlayer player) {
-		if(player.clearMails()) {
-			player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.MAIL_CLEAR_MESSAGE.getText()));
-			return true;
+		if(!player.getMails().isEmpty()) {
+			if(player.clearMails()) {
+				player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.MAIL_CLEAR_MESSAGE.getText()));
+				return true;
+			} else {
+				player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.MAIL_CLEAR_CANCEL.getText()));
+			}
 		} else {
 			player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.MAIL_CLEAR_ERROR.getText()));
 		}

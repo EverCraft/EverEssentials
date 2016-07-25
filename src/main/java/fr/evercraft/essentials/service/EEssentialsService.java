@@ -38,6 +38,7 @@ import com.google.common.cache.RemovalNotification;
 
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
+import fr.evercraft.essentials.service.subject.ESubject;
 import fr.evercraft.everapi.java.Chronometer;
 import fr.evercraft.everapi.services.essentials.EssentialsService;
 import fr.evercraft.everapi.services.essentials.EssentialsSubject;

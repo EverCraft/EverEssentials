@@ -23,8 +23,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 
-import fr.evercraft.essentials.service.EMail;
-import fr.evercraft.essentials.service.ESubject;
+import fr.evercraft.essentials.service.subject.EMail;
+import fr.evercraft.essentials.service.subject.ESubject;
 import fr.evercraft.everapi.exception.PluginDisableException;
 import fr.evercraft.everapi.exception.ServerDisableException;
 import fr.evercraft.everapi.plugin.EDataBase;

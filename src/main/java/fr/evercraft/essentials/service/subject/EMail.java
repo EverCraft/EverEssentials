@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with EverEssentials.  If not, see <http://www.gnu.org/licenses/>.
  */
-package fr.evercraft.essentials.service;
+package fr.evercraft.essentials.service.subject;
 
 import java.util.Optional;
 

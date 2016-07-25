@@ -294,11 +294,14 @@ public class EEMessage extends EMessage {
 		
 		MAIL_DESCRIPTION("mail.description", "Gestion de vos messages"),
 		
-		MAIL_READ_DESCRIPTION("mail.read.description", "Lis le message séléctionné"),
+		MAIL_READ_DESCRIPTION("mail.read.description", "Lis les messages"),
 		MAIL_READ_TITLE("mail.read.title", "&aLa liste des messages"),
 		MAIL_READ_LINE_READ("mail.read.lineRead", "  &a&l➤&7 De &6<player>&7 le &6<date> &7à &6<time> : <read> <delete>"),
 		MAIL_READ_LINE_NO_READ("mail.read.lineNoRead", "  &6&l➤&7 De &6<player>&7 le &6<date> &7à &6<time> : <read> <delete>"),
 		MAIL_READ_EMPTY("mail.read.empty", "&7Vous n'avez aucun message"),
+		MAIL_READ_CANCEL("mail.read.cancel", "&cImpossible de lire le <mail>."),
+		MAIL_READ_MAIL("mail.read.mail", "&6message"),
+		MAIL_READ_MAIL_HOVER("mail.read.mailHover", "&7De &6<player>[RT]&7Le &6<date>"),
 		MAIL_READ_ERROR("mail.read.error", "&cVous n'avez pas de message qui correspond."),
 		
 		MAIL_DELETE_DESCRIPTION("mail.delete.description", "Supprime le message séléctionné"),
@@ -306,22 +309,26 @@ public class EEMessage extends EMessage {
 		MAIL_DELETE_VALID("mail.delete.valid", "&a&nConfirmer"),
 		MAIL_DELETE_VALID_HOVER("mail.delete.validHover", "&cCliquez ici pour supprimer le message."),
 		MAIL_DELETE_CONFIRMATION("mail.delete.confirmation", "&7Le <mail> &7a bien été supprimé."),
+		MAIL_DELETE_CANCEL("mail.delete.cancel", "&7Le <mail> &7n'a pas pu être supprimé."),
 		MAIL_DELETE_MAIL("mail.delete.mail", "&6message"),
 		MAIL_DELETE_MAIL_HOVER("mail.delete.mailHover", "&7De &6<player>[RT]&7Le &6<date>"),
 		MAIL_DELETE_ERROR("mail.delete.error", "&cVous n'avez pas de message qui correspond."),
 		
 		MAIL_CLEAR_DESCRIPTION("mail.clear.description", "Supprime tous vos messages"),
 		MAIL_CLEAR_MESSAGE("mail.clear.message", "&7Vous avez supprimé tous vos messages."),
+		MAIL_CLEAR_CANCEL("mail.clear.message", "&7Impossible de supprimé tous vos messages."),
 		MAIL_CLEAR_ERROR("mail.clear.error", "&cVous n'avez pas de message à supprimer."),
 		
 		MAIL_SEND_DESCRIPTION("mail.send.description", "Envoie un message à un ou plusieurs joueurs"),
 		MAIL_SEND_MESSAGE("mail.send.message", "&7Votre message a bien été envoyé à &6<player>&7."),
+		MAIL_SEND_CANCEL("mail.send.message", "&cImpossible d'envoyé le message à &6<player>&7."),
 		MAIL_SEND_EQUALS("mail.send.equals", "&7Votre message a bien été envoyé."),
-		MAIL_SENDALL("mail.sendAll", "&7Votre message a bien été envoyé à tous les joueurs."),
-		MAIL_BUTTOM_READ("mail.buttomRead", "&a&nLire"),
-		MAIL_BUTTOM_READ_HOVER("mail.buttomReadHover", "&cCliquez ici pour lire le message."),
-		MAIL_BUTTON_DELETE("mail.buttonDelete", "&c&nSupprimer"),
-		MAIL_BUTTON_DELETE_HOVER("mail.buttonDeleteHover", "&cCliquez ici pour supprimer le message."),
+		MAIL_SEND_ALL("mail.send.all", "&7Votre message a bien été envoyé à tous les joueurs."),
+		
+		MAIL_BUTTON_READ("mail.button.read", "&a&nLire"),
+		MAIL_BUTTON_READ_HOVER("mail.button.readHover", "&cCliquez ici pour lire le message."),
+		MAIL_BUTTON_DELETE("mail.button.delete", "&c&nSupprimer"),
+		MAIL_BUTTON_DELETE_HOVER("mail.button.deleteHover", "&cCliquez ici pour supprimer le message."),
 		
 		ME_DESCRIPTION("me.description", "Envoie un texte d'action dans le tchat"),
 		ME_PREFIX("me.prefix", "&f* <player> &r"),

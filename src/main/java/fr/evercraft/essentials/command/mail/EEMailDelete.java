@@ -58,8 +58,8 @@ public class EEMailDelete extends ESubCommand<EverEssentials> {
 	}
 
 	public Text help(final CommandSource source) {
-		return Text.builder("/" + this.getName())
-					.onClick(TextActions.suggestCommand("/" + this.getName() + "<ID>"))
+		return Text.builder("/" + this.getName() + " <ID>")
+					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
 					.build();
 	}
@@ -120,18 +120,30 @@ public class EEMailDelete extends ESubCommand<EverEssentials> {
 	
 	private boolean commandDeleteConfirmation(EPlayer player, String id_string) {
 		try {
-			Optional<Mail> mail = player.removeMail(Integer.parseInt(id_string));
-			if(mail.isPresent()) {	
-				player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
-						.append(EEMessages.MAIL_DELETE_CONFIRMATION.get()
-							.replaceAll("<id>", String.valueOf(mail.get().getID()))
-							.replaceAll("<player>", mail.get().getToName())
-							.replaceAll("<time>", this.plugin.getEverAPI().getManagerUtils().getDate().parseTime(mail.get().getDateTime()))
-							.replaceAll("<date>", this.plugin.getEverAPI().getManagerUtils().getDate().parseDate(mail.get().getDateTime()))
-							.replaceAll("<datetime>", this.plugin.getEverAPI().getManagerUtils().getDate().parseDateTime(mail.get().getDateTime())))
-						.replace("<mail>", getButtomDeleteMail(mail.get()))
-						.build());
-				return true;
+			Optional<Mail> mail = player.getMail(Integer.parseInt(id_string));
+			if(mail.isPresent()) {
+				if(player.removeMail(mail.get())) {
+					player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
+							.append(EEMessages.MAIL_DELETE_CONFIRMATION.get()
+								.replaceAll("<id>", String.valueOf(mail.get().getID()))
+								.replaceAll("<player>", mail.get().getToName())
+								.replaceAll("<time>", this.plugin.getEverAPI().getManagerUtils().getDate().parseTime(mail.get().getDateTime()))
+								.replaceAll("<date>", this.plugin.getEverAPI().getManagerUtils().getDate().parseDate(mail.get().getDateTime()))
+								.replaceAll("<datetime>", this.plugin.getEverAPI().getManagerUtils().getDate().parseDateTime(mail.get().getDateTime())))
+							.replace("<mail>", getButtomDeleteMail(mail.get()))
+							.build());
+					return true;
+				} else {
+					player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
+							.append(EEMessages.MAIL_DELETE_CANCEL.get()
+								.replaceAll("<id>", String.valueOf(mail.get().getID()))
+								.replaceAll("<player>", mail.get().getToName())
+								.replaceAll("<time>", this.plugin.getEverAPI().getManagerUtils().getDate().parseTime(mail.get().getDateTime()))
+								.replaceAll("<date>", this.plugin.getEverAPI().getManagerUtils().getDate().parseDate(mail.get().getDateTime()))
+								.replaceAll("<datetime>", this.plugin.getEverAPI().getManagerUtils().getDate().parseDateTime(mail.get().getDateTime())))
+							.replace("<mail>", getButtomDeleteMail(mail.get()))
+							.build());
+				}
 			} else {
 				player.sendMessage(EEMessages.PREFIX.get() + EEMessages.MAIL_DELETE_ERROR.get()
 						.replaceAll("<id>", id_string));
