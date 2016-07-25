@@ -16,6 +16,8 @@
  */
 package fr.evercraft.essentials.event;
 
+import java.util.Optional;
+
 import org.spongepowered.api.entity.Transform;
 import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.world.World;
@@ -25,11 +27,11 @@ import fr.evercraft.everapi.server.player.EPlayer;
 
 public class EHomeMoveEvent extends EHomeEvent implements HomeEvent.Move {	
 	
-    private final Transform<World> before;
+    private final Optional<Transform<World>> before;
     
     private final Transform<World> after;
 
-	public EHomeMoveEvent(final EPlayer player, final String name, final Transform<World> before, final Transform<World> after, final Cause cause) {
+	public EHomeMoveEvent(final EPlayer player, final String name, final Optional<Transform<World>> before, final Transform<World> after, final Cause cause) {
     	super(player, name, Action.MOVE, cause);
     	
     	this.before = before;
@@ -37,7 +39,7 @@ public class EHomeMoveEvent extends EHomeEvent implements HomeEvent.Move {
     }
 
 	@Override
-	public Transform<World> getBeforeLocation() {
+	public Optional<Transform<World>> getBeforeLocation() {
 		return this.before;
 	}
 

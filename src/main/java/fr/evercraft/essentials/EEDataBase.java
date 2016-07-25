@@ -346,6 +346,44 @@ public class EEDataBase extends EDataBase<EverEssentials> {
 	    }
 	}
 	
+	public void moveHome(final String identifier, final String name, final LocationSQL location) {
+		Connection connection = null;
+		PreparedStatement preparedStatement = null;
+    	try {
+    		connection = this.getConnection();
+    		String query = 	  "UPDATE `" + this.getTableHomes() + "` "
+							+ "SET `world` = ? ,"
+								+ "`x` = ?, "
+								+ "`y` = ?, "
+								+ "`z` = ?, "
+								+ "`yaw` = ?, "
+								+ "`pitch` = ? "
+							+ "WHERE `uuid` = ? "
+							+ "AND `name` = ? ;";
+			preparedStatement = connection.prepareStatement(query);
+			preparedStatement.setString(1, location.getWorldUUID());
+			preparedStatement.setDouble(2, location.getX());
+			preparedStatement.setDouble(3, location.getY());
+			preparedStatement.setDouble(4, location.getZ());
+			preparedStatement.setDouble(5, location.getYaw());
+			preparedStatement.setDouble(6, location.getPitch());
+			preparedStatement.setString(7, identifier);
+			preparedStatement.setString(8, name);
+			
+			preparedStatement.execute();
+			this.plugin.getLogger().debug("Updating to the database : (identifier='" + identifier + "';home='" + name + "';location='" + location + "')");
+    	} catch (SQLException e) {
+        	this.plugin.getLogger().warn("Error during a change of home : " + e.getMessage());
+		} catch (ServerDisableException e) {
+			e.execute();
+		} finally {
+			try {
+				if (preparedStatement != null) preparedStatement.close();
+				if (connection != null) connection.close();
+			} catch (SQLException e) {}
+	    }
+	}
+	
 	public void removeHome(final String identifier, final String name) {
 		Connection connection = null;
 		PreparedStatement preparedStatement = null;

@@ -242,7 +242,13 @@ public class EEMessage extends EMessage {
 		
 		SETHOME_DESCRIPTION("sethome.description", 						"Défini une résidence"),
 		SETHOME_SET("sethome.set", 										"&7Vous avez défini votre résidence."),
+		SETHOME_SET_CANCEL("sethome.setCancel", 						"&cImpossible de définir votre résidence."),
+		SETHOME_MOVE("sethome.move", 									"&7Vous avez redéfini votre résidence."),
+		SETHOME_MOVE_CANCEL("sethome.moveCancel", 						"&cImpossible de redéfinir votre résidence."),
 		SETHOME_MULTIPLE_SET("sethome.multipleSet", 					"&7Vous avez défini la résidence &6<home>&7."),
+		SETHOME_MULTIPLE_SET_CANCEL("sethome.multipleSetCancel", 		"&cImpossible de définir la résidence &6<home>&7."),
+		SETHOME_MULTIPLE_MOVE("sethome.multipleMove", 					"&7Vous avez redéfini la résidence &6<home>&7."),
+		SETHOME_MULTIPLE_MOVE_CANCEL("sethome.multipleMoveCancel", 		"&cImpossible de redéfinir la résidence &6<home>&7."),
 		SETHOME_MULTIPLE_ERROR_MAX("sethome.multipleErrorMax", 			"&cVous ne pouvez pas créer plus de <nombre> résidence(s)."),
 		SETHOME_MULTIPLE_NO_PERMISSION("sethome.multipleNoPermission", 	"&cVous n'avez pas la permission d'avoir plusieurs résidences."),
 		

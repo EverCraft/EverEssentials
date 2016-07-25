@@ -136,15 +136,38 @@ public class EEHomeSet extends EReloadCommand<EverEssentials> {
 	public boolean commandSetHome(final EPlayer player) {
 		int max = getMaxHome(player);
 		int homes = player.getHomes().size();
+		
+		boolean hasHome = player.hasHome(DEFAULT_HOME);
 		// Si le joueur à un home qui porte déjà ce nom ou il peut encore avoir un home supplémentaire
-		if(player.hasHome(DEFAULT_HOME) || homes == 0 || homes < max) {
+		if(hasHome || homes == 0 || homes < max) {
 			// Ajout d'un home
-			if(player.addHome(DEFAULT_HOME)) {
-				player.sendMessage(EEMessages.PREFIX.get() + EEMessages.SETHOME_SET.get());
-				return true;
-			// Impossible d'ajouter un home
+			if(!hasHome) {
+				if(player.addHome(DEFAULT_HOME)) {
+					player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
+							.append(EEMessages.SETHOME_SET.get())
+							.replace("<home>", getButtonHome(DEFAULT_HOME, player.getLocation()))
+							.build());
+					return true;
+				} else {
+					player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
+							.append(EEMessages.SETHOME_SET_CANCEL.get())
+							.replace("<home>", getButtonHome(DEFAULT_HOME, player.getLocation()))
+							.build());
+				}
+			// Modifie un home
 			} else {
-				player.sendMessage(EEMessages.PREFIX.get() + EAMessages.COMMAND_ERROR.get());
+				if(player.moveHome(DEFAULT_HOME)) {
+					player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
+							.append(EEMessages.SETHOME_MOVE.get())
+							.replace("<home>", getButtonHome(DEFAULT_HOME, player.getLocation()))
+							.build());
+					return true;
+				} else {
+					player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
+							.append(EEMessages.SETHOME_MOVE_CANCEL.get())
+							.replace("<home>", getButtonHome(DEFAULT_HOME, player.getLocation()))
+							.build());
+				}
 			}
 		// Il a déjà le nombre maximum d'home
 		} else {
@@ -159,20 +182,39 @@ public class EEHomeSet extends EReloadCommand<EverEssentials> {
 		// Si il a la permission multihome
 		if(player.hasPermission(EEPermissions.SETHOME_MULTIPLE.get())){
 			int max = getMaxHome(player);
+			boolean hasHome = player.hasHome(name);
+			
 			// Si le joueur à la permissions un unlimited ou un home qui porte déjà ce nom ou il peut encore avoir un home supplémentaire
 			if(player.hasPermission(EEPermissions.SETHOME_MULTIPLE_UNLIMITED.get()) || 
-					player.hasHome(name) || 
-					player.getHomes().size() < max) {
+					hasHome || player.getHomes().size() < max) {
 				// Ajout d'un home
-				if(player.addHome(name)) {
-					player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
-							.append(EEMessages.SETHOME_MULTIPLE_SET.get())
-							.replace("<home>", getButtonHome(name, player.getLocation()))
-							.build());
-					return true;
-					// Impossible d'ajouter un home
+				if(!hasHome) {
+					if(player.addHome(name)) {
+						player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
+								.append(EEMessages.SETHOME_MULTIPLE_SET.get())
+								.replace("<home>", getButtonHome(name, player.getLocation()))
+								.build());
+						return true;
+					} else {
+						player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
+								.append(EEMessages.SETHOME_MULTIPLE_SET_CANCEL.get())
+								.replace("<home>", getButtonHome(name, player.getLocation()))
+								.build());
+					}
+				// Modifie un home
 				} else {
-					player.sendMessage(EEMessages.PREFIX.get() + EAMessages.COMMAND_ERROR.get());
+					if(player.moveHome(name)) {
+						player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
+								.append(EEMessages.SETHOME_MULTIPLE_MOVE.get())
+								.replace("<home>", getButtonHome(name, player.getLocation()))
+								.build());
+						return true;
+					} else {
+						player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
+								.append(EEMessages.SETHOME_MULTIPLE_MOVE_CANCEL.get())
+								.replace("<home>", getButtonHome(name, player.getLocation()))
+								.build());
+					}
 				}
 			// Il a déjà le nombre maximum d'home
 			} else {

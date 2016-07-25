@@ -16,6 +16,8 @@
  */
 package fr.evercraft.essentials.event;
 
+import java.util.Optional;
+
 import org.spongepowered.api.entity.Transform;
 import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.world.World;
@@ -25,16 +27,16 @@ import fr.evercraft.everapi.server.player.EPlayer;
 
 public class EHomeRemoveEvent extends EHomeEvent implements HomeEvent.Remove {	
 	
-    private final Transform<World> location;
+    private final Optional<Transform<World>> location;
 
-	public EHomeRemoveEvent(final EPlayer player, final String name, final Transform<World> location, final Cause cause) {
+	public EHomeRemoveEvent(final EPlayer player, final String name, final Optional<Transform<World>> location, final Cause cause) {
     	super(player, name, Action.REMOVE, cause);
     	
     	this.location = location;
     }
 
 	@Override
-	public Transform<World> getLocation() {
+	public Optional<Transform<World>> getLocation() {
 		return this.location;
 	}
 }

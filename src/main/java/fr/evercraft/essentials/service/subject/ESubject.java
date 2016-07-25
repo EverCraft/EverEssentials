@@ -532,8 +532,33 @@ public class ESubject implements EssentialsSubject {
 		if(!this.homes.containsKey(identifier)) {
 			final LocationSQL locationSQL = new LocationSQL(this.plugin, location);
 			this.homes.put(identifier, locationSQL);
-			this.plugin.getThreadAsync().execute(() -> this.plugin.getDataBases().addHome(this.getIdentifier(), identifier, locationSQL));
+			
+			if(this.plugin.getManagerEvent().homeAdd(this.getUniqueId(), identifier, location)) {
+				this.homes.remove(identifier);
+			} else {
+				this.plugin.getThreadAsync().execute(() -> this.plugin.getDataBases().addHome(this.getIdentifier(), identifier, locationSQL));
+			}
 			return true;
+		}
+		return false;
+	}
+	
+	@Override
+	public boolean moveHome(final String identifier, final Transform<World> location) {
+		Preconditions.checkNotNull(identifier, "identifier");
+		Preconditions.checkNotNull(location, "location");
+		
+		LocationSQL before_sql = this.homes.get(identifier);
+		if(before_sql != null) {
+			final LocationSQL after_sql = new LocationSQL(this.plugin, location);
+			this.homes.put(identifier, after_sql);
+			
+			if(this.plugin.getManagerEvent().homeMove(this.getUniqueId(), identifier, before_sql.getTransform(), location)) {
+				this.homes.put(identifier, before_sql);
+			} else {
+				this.plugin.getThreadAsync().execute(() -> this.plugin.getDataBases().moveHome(this.getIdentifier(), identifier, after_sql));
+				return true;
+			}
 		}
 		return false;
 	}
@@ -542,20 +567,16 @@ public class ESubject implements EssentialsSubject {
 	public boolean removeHome(final String identifier) {
 		Preconditions.checkNotNull(identifier, "identifier");
 		
-		if(this.homes.containsKey(identifier)) {
+		LocationSQL location = this.homes.get(identifier);
+		if(location != null) {
 			this.homes.remove(identifier);
-			this.plugin.getThreadAsync().execute(() -> this.plugin.getDataBases().removeHome(this.getIdentifier(), identifier));
-			return true;
-		}
-		return false;
-	}
 
-	@Override
-	public boolean clearHome() {
-		if(!this.homes.isEmpty()) {
-			this.homes.clear();
-			this.plugin.getThreadAsync().execute(() -> this.plugin.getDataBases().clearHomes(this.getIdentifier()));
-			return true;
+			if(this.plugin.getManagerEvent().homeRemove(this.getUniqueId(), identifier, location.getTransform())) {
+				this.homes.put(identifier, location);
+			} else {
+				this.plugin.getThreadAsync().execute(() -> this.plugin.getDataBases().removeHome(this.getIdentifier(), identifier));
+				return true;
+			}
 		}
 		return false;
 	}

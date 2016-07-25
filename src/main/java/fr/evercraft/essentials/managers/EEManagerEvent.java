@@ -27,7 +27,6 @@ import org.spongepowered.api.world.World;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.essentials.event.*;
 import fr.evercraft.everapi.event.AfkEvent;
-import fr.evercraft.everapi.event.HomeEvent;
 import fr.evercraft.everapi.event.IgnoreEvent;
 import fr.evercraft.everapi.event.MailEvent;
 import fr.evercraft.everapi.server.player.EPlayer;
@@ -189,34 +188,41 @@ public class EEManagerEvent {
 	 * Home
 	 */
 	
-	public boolean home(UUID uuid, final String name, final Transform<World> location, final HomeEvent.Action action) {
+	public boolean homeAdd(UUID uuid, final String name, final Transform<World> location) {
 		Optional<EPlayer> player = this.plugin.getEServer().getEPlayer(uuid);
 		if(player.isPresent()) {
-			return this.home(player.get(), name, location, action);
+			return this.homeAdd(player.get(), name, location);
 		}
 		return false;
 	}
 	
-	public boolean home(final EPlayer player, final String name, final Transform<World> location, final HomeEvent.Action action) {
-		if(action.equals(HomeEvent.Action.ADD)) {
-			this.plugin.getLogger().debug("Event HomeEvent.Add : (UUID='" + player.getIdentifier() + "';name='" + name + "';location='" + location + "')");
-			return this.plugin.getGame().getEventManager().post(new EHomeAddEvent(player, name, location, this.getCause()));
-		} else if(action.equals(HomeEvent.Action.REMOVE)) {
-			this.plugin.getLogger().debug("Event HomeEvent.Remove : (UUID='" + player.getIdentifier() + "';name='" + name + "';location='" + location + "')");
-			return this.plugin.getGame().getEventManager().post(new EHomeRemoveEvent(player, name, location, this.getCause()));
-		}
-		return false;
+	public boolean homeAdd(final EPlayer player, final String name, final Transform<World> location) {
+		this.plugin.getLogger().debug("Event HomeEvent.Add : (UUID='" + player.getIdentifier() + "';name='" + name + "';location='" + location + "')");
+		return this.plugin.getGame().getEventManager().post(new EHomeAddEvent(player, name, location, this.getCause()));
 	}
 	
-	public boolean home(UUID uuid, final String name, final Transform<World> before, final Transform<World> after) {
+	public boolean homeRemove(UUID uuid, final String name, final Optional<Transform<World>> location) {
 		Optional<EPlayer> player = this.plugin.getEServer().getEPlayer(uuid);
 		if(player.isPresent()) {
-			return this.home(player.get(), name, before, after);
+			return this.homeRemove(player.get(), name, location);
 		}
 		return false;
 	}
 	
-	public boolean home(final EPlayer player, final String name, final Transform<World> before, final Transform<World> after) {
+	public boolean homeRemove(final EPlayer player, final String name, final Optional<Transform<World>> location) {
+		this.plugin.getLogger().debug("Event HomeEvent.Remove : (UUID='" + player.getIdentifier() + "';name='" + name + "';location='" + location + "')");
+		return this.plugin.getGame().getEventManager().post(new EHomeRemoveEvent(player, name, location, this.getCause()));
+	}
+	
+	public boolean homeMove(UUID uuid, final String name, final Optional<Transform<World>> before, final Transform<World> after) {
+		Optional<EPlayer> player = this.plugin.getEServer().getEPlayer(uuid);
+		if(player.isPresent()) {
+			return this.homeMove(player.get(), name, before, after);
+		}
+		return false;
+	}
+	
+	public boolean homeMove(final EPlayer player, final String name, final Optional<Transform<World>> before, final Transform<World> after) {
 		this.plugin.getLogger().debug("Event HomeEvent.Move : (UUID='" + player.getIdentifier() + "';name='" + name + "';before='" + before + "';after='" + after + "')");
 		return this.plugin.getGame().getEventManager().post(new EHomeMoveEvent(player, name, before, after, this.getCause()));
 	}
