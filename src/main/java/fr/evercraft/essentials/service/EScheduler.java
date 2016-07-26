@@ -28,7 +28,7 @@ import org.spongepowered.api.scheduler.Task;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.essentials.EEMessage.EEMessages;
-import fr.evercraft.essentials.service.subject.ESubject;
+import fr.evercraft.essentials.service.subject.EUserSubject;
 import fr.evercraft.everapi.server.player.EPlayer;
 import fr.evercraft.everapi.services.essentials.TeleportDelay;
 import fr.evercraft.everapi.services.essentials.TeleportRequest;
@@ -87,7 +87,7 @@ public class EScheduler {
 		
 		final Set<UUID> players = new HashSet<UUID>();
 		
-		for(ESubject player : this.plugin.getManagerServices().getEssentials().getOnlines()) {			
+		for(EUserSubject player : this.plugin.getManagerServices().getEssentials().getOnlines()) {			
 			// Teleport Ask
 			for(Entry<UUID, TeleportRequest> teleport : player.getAllTeleportsAsk().entrySet()) {
 				if(!teleport.getValue().isExpire() && teleport.getValue().getTime().isPresent() &&  teleport.getValue().getTime().get() <= current_time) {
@@ -157,7 +157,7 @@ public class EScheduler {
 					if(player.hasPermission(EEPermissions.AFK_BYPASS_AUTO.get())) {
 						player.setAfkAutoFake(true);
 					} else {
-						Optional<ESubject> subject = this.plugin.getManagerServices().getEssentials().getSubject(player.getUniqueId());
+						Optional<EUserSubject> subject = this.plugin.getManagerServices().getEssentials().getSubject(player.getUniqueId());
 						if(subject.isPresent()) {
 							if(subject.get().setAfkAuto(true)) {
 								if(EEMessages.AFK_ALL_ENABLE.has()) {

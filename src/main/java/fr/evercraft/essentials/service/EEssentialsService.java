@@ -38,45 +38,50 @@ import com.google.common.cache.RemovalNotification;
 
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
-import fr.evercraft.essentials.service.subject.ESubject;
+import fr.evercraft.essentials.service.subject.EUserSubject;
+import fr.evercraft.essentials.service.subject.EVirtualSubject;
 import fr.evercraft.everapi.java.Chronometer;
 import fr.evercraft.everapi.services.essentials.EssentialsService;
-import fr.evercraft.everapi.services.essentials.EssentialsSubject;
+import fr.evercraft.everapi.services.essentials.SubjectUserEssentials;
+import fr.evercraft.everapi.services.essentials.SubjectVirtualEssentials;
 
 public class EEssentialsService implements EssentialsService {
 	private final EverEssentials plugin;
 	
-	private final ConcurrentMap<UUID, ESubject> subjects;
-	private final LoadingCache<UUID, ESubject> cache;
+	private final ConcurrentMap<UUID, EUserSubject> subjects;
+	private final LoadingCache<UUID, EUserSubject> cache;
+	
+	private final EVirtualSubject console;
 	
 	private boolean world;
 
 	public EEssentialsService(final EverEssentials plugin) {		
 		this.plugin = plugin;
 		
-		this.subjects = new ConcurrentHashMap<UUID, ESubject>();
+		this.console = new EVirtualSubject();
+		this.subjects = new ConcurrentHashMap<UUID, EUserSubject>();
 		this.cache = CacheBuilder.newBuilder()
 					    .maximumSize(100)
 					    .expireAfterAccess(5, TimeUnit.MINUTES)
-					    .removalListener(new RemovalListener<UUID, ESubject>() {
+					    .removalListener(new RemovalListener<UUID, EUserSubject>() {
 					    	/**
 					    	 * Supprime un joueur du cache
 					    	 */
 							@Override
-							public void onRemoval(RemovalNotification<UUID, ESubject> notification) {
+							public void onRemoval(RemovalNotification<UUID, EUserSubject> notification) {
 								//EssentialsSubject.this.plugin.getManagerEvent().post(notification.getValue(), PermUserEvent.Action.USER_REMOVED);
 							}
 					    	
 					    })
-					    .build(new CacheLoader<UUID, ESubject>() {
+					    .build(new CacheLoader<UUID, EUserSubject>() {
 					    	/**
 					    	 * Ajoute un joueur au cache
 					    	 */
 					        @Override
-					        public ESubject load(UUID uuid){
+					        public EUserSubject load(UUID uuid){
 					        	Chronometer chronometer = new Chronometer();
 					        	
-					        	ESubject subject = new ESubject(EEssentialsService.this.plugin, uuid);
+					        	EUserSubject subject = new EUserSubject(EEssentialsService.this.plugin, uuid);
 					        	EEssentialsService.this.plugin.getLogger().debug("Loading user '" + uuid.toString() + "' in " +  chronometer.getMilliseconds().toString() + " ms");
 					            
 					            //EssentialsSubject.this.plugin.getManagerEvent().post(subject, PermUserEvent.Action.USER_ADDED);
@@ -86,11 +91,11 @@ public class EEssentialsService implements EssentialsService {
 	}
 
 	@Override
-	public Optional<EssentialsSubject> get(UUID uuid) {
+	public Optional<SubjectUserEssentials> get(UUID uuid) {
 		return Optional.ofNullable(this.getSubject(uuid).orElse(null));
 	}
 	
-	public Optional<ESubject> getSubject(UUID uuid) {
+	public Optional<EUserSubject> getSubject(UUID uuid) {
 		Preconditions.checkNotNull(uuid, "uuid");
 		try {
 			if(!this.subjects.containsKey(uuid)) {
@@ -103,7 +108,7 @@ public class EEssentialsService implements EssentialsService {
 		}
 	}
 	
-	public Optional<ESubject> getOnline(UUID uuid) {
+	public Optional<EUserSubject> getOnline(UUID uuid) {
 		Preconditions.checkNotNull(uuid, "uuid");
 		return Optional.ofNullable(this.subjects.get(uuid));
 	}
@@ -125,7 +130,7 @@ public class EEssentialsService implements EssentialsService {
 		this.world = this.plugin.getConfigs().isWorldTeleportPermissions();
 		
 		this.cache.cleanUp();
-		for(ESubject subject : this.subjects.values()) {
+		for(EUserSubject subject : this.subjects.values()) {
 			subject.reloadData();
 		}
 	}
@@ -137,7 +142,7 @@ public class EEssentialsService implements EssentialsService {
 	public void registerPlayer(UUID uuid) {
 		Preconditions.checkNotNull(uuid, "uuid");
 		
-		ESubject player = this.cache.getIfPresent(uuid);
+		EUserSubject player = this.cache.getIfPresent(uuid);
 		// Si le joueur est dans le cache
 		if(player != null) {
 			player.connect();
@@ -146,7 +151,7 @@ public class EEssentialsService implements EssentialsService {
 		// Si le joueur n'est pas dans le cache
 		} else {
 			Chronometer chronometer = new Chronometer();
-			player = new ESubject(this.plugin, uuid);
+			player = new EUserSubject(this.plugin, uuid);
 			player.connect();
 			this.subjects.putIfAbsent(uuid, player);
 			this.plugin.getLogger().debug("Loading player '" + uuid.toString() + "' in " +  chronometer.getMilliseconds().toString() + " ms");
@@ -161,7 +166,7 @@ public class EEssentialsService implements EssentialsService {
 	public void removePlayer(UUID uuid) {
 		Preconditions.checkNotNull(uuid, "uuid");
 		
-		ESubject player = this.subjects.remove(uuid);
+		EUserSubject player = this.subjects.remove(uuid);
 		// Si le joueur existe
 		if(player != null) {
 			player.disconnect();
@@ -176,14 +181,14 @@ public class EEssentialsService implements EssentialsService {
 		return EEPermissions.VANISH_SEE.get();
 	}
 
-	public Collection<ESubject> getAll() {
-		Set<ESubject> list = new HashSet<ESubject>();
+	public Collection<EUserSubject> getAll() {
+		Set<EUserSubject> list = new HashSet<EUserSubject>();
 		list.addAll(this.subjects.values());
 		list.addAll(this.cache.asMap().values());
 		return list;
 	}
 	
-	public Collection<ESubject> getOnlines() {
+	public Collection<EUserSubject> getOnlines() {
 		return this.subjects.values();
 	}
 	
@@ -193,5 +198,10 @@ public class EEssentialsService implements EssentialsService {
 	
 	public boolean hasPermissionWorld(Subject player, World world) {
 		return !this.world || player.hasPermission(EEPermissions.WORLD.get() + "." + world.getName());
+	}
+	
+	@Override
+	public SubjectVirtualEssentials getConsole() {
+		return this.console;
 	}
 }

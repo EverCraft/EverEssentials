@@ -61,7 +61,7 @@ public class EEMessage extends EMessage {
 		
 		BED_DESCRIPTION("bed.description", 					"Retourne à la dernière position ou vous avez dormi"),
 		
-		BROADCAST_DESCRIPTION("broadcast.description", 		"Envoye un message à tous les joueurs."),
+		BROADCAST_DESCRIPTION("broadcast.description", 		"Envoie un message à tous les joueurs."),
 		BROADCAST_MESSAGE("broadcast.message", 				"&7[&6&lBroadcast&7] <message>"),
 		
 		BOOK_DESCRIPTION("book.description", 				"Permet de modifier un livre."),
@@ -201,7 +201,7 @@ public class EEMessage extends EMessage {
 		
 		HELP_DESCRIPTION("help.description", 			"Affiche les informations sur les commandes disponibles sur le serveur."),
 		HELP_TITLE("help.title", 						"&aListe des commandes"),
-		HELP_SEARCH_TITLE("help.searchtitle", 			"&aListe des commandes : <command>"),
+		HELP_SEARCH_TITLE("help.searchtitle", 			"&aListe des commandes contenant '<command>'"),
 		
 		HOME_NAME("home.name", 							"&6&l<name>"),
 		HOME_NAME_HOVER("home.nameHover", 				"&cMonde : &6<world>[RT]&cX : &6<x>[RT]&cY : &6<y>[RT]&cZ : &6<z>"),
@@ -404,9 +404,26 @@ public class EEMessage extends EMessage {
 		REPAIR_ALL_DESCRIPTION("repairall.description", "Répare tous vos objets"),
 		REPAIR_ALL_PLAYER("repairall.player", "&7Vous venez de réparer tous les objets de votre inventaire."),
 		
+		MSG_DESCRIPTION("msg.description", 				"Envoie un message privé à un autre joueur"),
+		MSG_SEND("msg.send", 							"&dReçu de &f<player> &d: &7<message>"),
+		MSG_RECEIVE("msg.receive", 						"&dEnvoyé à &f<player> &d: &7<message>"),
+		MSG_HOVER("msg.hover", 							"&cCliquez ici pour répondre à <player>"),
+		
+		REPLY_DESCRIPTION("reply.description", 					"Répond à un message privé d'un autre joueur"),
+		REPLY_PLAYER_SEND("reply.playerSend", 					"&dReçu de &f<player> &d: &7<message>"),
+		REPLY_PLAYER_SEND_HOVER("reply.playerSendHover", 		"&cCliquez ici pour répondre à <player>"),
+		REPLY_PLAYER_RECEIVE("reply.playerReceive", 			"&dEnvoyé à &f<player> &d: &7<message>"),
+		REPLY_PLAYER_RECEIVE_HOVER("reply.playerReceiveHover", 	"&cCliquez ici pour répondre à <player>"),
+		REPLY_CONSOLE_SEND("reply.consoleReceive", 				"&dReçu de &f<player> &d: &7<message>"),
+		REPLY_CONSOLE_SEND_HOVER("reply.consoleSendHover", 		"&cCliquez ici pour répondre à <player>"),
+		REPLY_CONSOLE_RECEIVE("reply.consoleReceive", 			"&dEnvoyé à &f<player> &d: &7<message>"),
+		REPLY_CONSOLE_RECEIVE_HOVER("reply.consoleReceiveHover","&cCliquez ici pour répondre à <player>"),
+		REPLY_EMPTY("reply.empty", 								""),
+		REPLY_ERROR("reply.error", 								""),
+		
 		RULES_DESCRIPTION("rules.description", "Affiche les règles d'Evercraft."),
 		
-		SAY_DESCRIPTION("say.description", 		"Envoye un message à tous les joueurs."),
+		SAY_DESCRIPTION("say.description", 		"Envoie un message à tous les joueurs."),
 		SAY_PREFIX_PLAYER("say.prefixPlayer", 	"&7[&6<player>&7] <message>"),
 		SAY_PREFIX_CONSOLE("say.prefixConsole", "&7[&6Console&7] <message>"),
 		

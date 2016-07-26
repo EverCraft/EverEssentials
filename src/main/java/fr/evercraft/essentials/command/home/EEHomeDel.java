@@ -32,7 +32,7 @@ import org.spongepowered.api.world.World;
 import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
-import fr.evercraft.essentials.service.subject.ESubject;
+import fr.evercraft.essentials.service.subject.EUserSubject;
 import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ECommand;
@@ -105,7 +105,7 @@ public class EEHomeDel extends ECommand<EverEssentials> {
 	
 	public boolean commandDeleteHome(final EPlayer player, final String home_name) {
 		String name = EChat.fixLength(home_name, this.plugin.getEverAPI().getConfigs().get("maxCaractere").getInt(16));
-		Optional<ESubject> subject = this.plugin.getManagerServices().getEssentials().getSubject(player.getUniqueId());
+		Optional<EUserSubject> subject = this.plugin.getManagerServices().getEssentials().getSubject(player.getUniqueId());
 		if(subject.isPresent()) {
 			Optional<LocationSQL> home = subject.get().getHomeLocation(name);
 			// Le joueur a bien un home qui porte ce nom
@@ -127,7 +127,7 @@ public class EEHomeDel extends ECommand<EverEssentials> {
 	
 	public boolean commandDeleteHomeConfirmation(final EPlayer player, final String home_name) {
 		String name = EChat.fixLength(home_name, this.plugin.getEverAPI().getConfigs().get("maxCaractere").getInt(16));
-		Optional<ESubject> subject = this.plugin.getManagerServices().getEssentials().getSubject(player.getUniqueId());
+		Optional<EUserSubject> subject = this.plugin.getManagerServices().getEssentials().getSubject(player.getUniqueId());
 		if(subject.isPresent()) {
 			Optional<LocationSQL> home = subject.get().getHomeLocation(name);
 			// Le joueur a bien un home qui porte ce nom

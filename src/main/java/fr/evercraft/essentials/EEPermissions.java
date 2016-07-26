@@ -122,6 +122,8 @@ public enum EEPermissions implements EnumPermission {
 	REPAIR_HOTBAR("repair.hotbar"),
 	REPAIR_ALL("repair.all"),
 	
+	REPLY("reply.command"),
+	
 	MAIL("mail.command"),
 	MAIL_SEND("mail.send"),
 	MAIL_SENDALL("mail.sendall"),

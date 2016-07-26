@@ -29,7 +29,7 @@ import org.spongepowered.api.text.format.TextColors;
 import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
-import fr.evercraft.essentials.service.subject.ESubject;
+import fr.evercraft.essentials.service.subject.EUserSubject;
 import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ECommand;
@@ -131,7 +131,7 @@ public class EEAfk extends ECommand<EverEssentials> {
 	}
 	
 	public boolean commandAfk(final EPlayer player) {
-		Optional<ESubject> subject = this.plugin.getManagerServices().getEssentials().getSubject(player.getUniqueId());
+		Optional<EUserSubject> subject = this.plugin.getManagerServices().getEssentials().getSubject(player.getUniqueId());
 		if(subject.isPresent()) {
 			return this.commandAfk(player, subject.get());
 		} else {
@@ -140,7 +140,7 @@ public class EEAfk extends ECommand<EverEssentials> {
 		}
 	}
 	
-	public boolean commandAfk(final EPlayer player, final ESubject subject) {
+	public boolean commandAfk(final EPlayer player, final EUserSubject subject) {
 		boolean afk = subject.isAfk();
 		if(subject.setAfkCommand(!afk)) {
 			// Si le Afk est déjà activé
@@ -169,7 +169,7 @@ public class EEAfk extends ECommand<EverEssentials> {
 	}
 	
 	public boolean commandAfkOthers(final CommandSource staff, final EPlayer player) throws CommandException {
-		Optional<ESubject> subject = this.plugin.getManagerServices().getEssentials().getSubject(player.getUniqueId());
+		Optional<EUserSubject> subject = this.plugin.getManagerServices().getEssentials().getSubject(player.getUniqueId());
 		if(subject.isPresent()) {
 			return this.commandAfkOthers(staff, player, subject.get());
 		} else {
@@ -178,7 +178,7 @@ public class EEAfk extends ECommand<EverEssentials> {
 		}
 	}
 	
-	public boolean commandAfkOthers(final CommandSource staff, final EPlayer player, final ESubject subject) throws CommandException {
+	public boolean commandAfkOthers(final CommandSource staff, final EPlayer player, final EUserSubject subject) throws CommandException {
 		// La source et le joueur sont différent
 		if(!player.equals(staff)){
 			boolean afk = subject.isAfk();
@@ -218,7 +218,7 @@ public class EEAfk extends ECommand<EverEssentials> {
 	}
 	
 	public boolean commandAfkOthers(final CommandSource staff, final EPlayer player, final boolean etat) throws CommandException {
-		Optional<ESubject> subject = this.plugin.getManagerServices().getEssentials().getSubject(player.getUniqueId());
+		Optional<EUserSubject> subject = this.plugin.getManagerServices().getEssentials().getSubject(player.getUniqueId());
 		if(subject.isPresent()) {
 			return this.commandAfkOthers(staff, player, subject.get(), etat);
 		} else {
@@ -227,7 +227,7 @@ public class EEAfk extends ECommand<EverEssentials> {
 		}
 	}
 	
-	public boolean commandAfkOthers(final CommandSource staff, final EPlayer player, final ESubject subject, final boolean etat) throws CommandException {
+	public boolean commandAfkOthers(final CommandSource staff, final EPlayer player, final EUserSubject subject, final boolean etat) throws CommandException {
 		// La source et le joueur sont différent
 		if(!player.equals(staff)){
 			boolean afk = player.isAfk();
@@ -283,7 +283,7 @@ public class EEAfk extends ECommand<EverEssentials> {
 		return false;
 	}
 	
-	public boolean commandAfkOthersEquals(final EPlayer player, final ESubject subject, final boolean etat) throws CommandException {
+	public boolean commandAfkOthersEquals(final EPlayer player, final EUserSubject subject, final boolean etat) throws CommandException {
 		boolean afk = player.isAfk();
 		if(etat) {
 			// Si le Afk est déjà activé

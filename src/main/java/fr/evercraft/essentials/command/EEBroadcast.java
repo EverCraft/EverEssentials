@@ -49,17 +49,14 @@ public class EEBroadcast extends ECommand<EverEssentials> {
 
 	public Text help(final CommandSource source) {
 		Text help = Text.builder("/broadcast <" + EAMessages.ARGS_MESSAGE.get() + ">")
-				.onClick(TextActions.suggestCommand("/broadcast "))
-				.color(TextColors.RED).build();
+						.onClick(TextActions.suggestCommand("/broadcast "))
+						.color(TextColors.RED)
+						.build();
 		return help;
 	}
 	
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		return new ArrayList<String>();
-	}
-	
-	public boolean execute(final CommandSource source, final List<String> args, String arg) throws CommandException {
-		return execute(source, Arrays.asList(arg));
 	}
 
 	protected List<String> getArg(final String arg){
@@ -73,7 +70,7 @@ public class EEBroadcast extends ECommand<EverEssentials> {
 		// Résultat de la commande :
 		boolean resultat = false;
 		if(args.size() == 1) {
-			commandBroadcast(args.get(0));
+			resultat = commandBroadcast(args.get(0));
 		} else {
 			source.sendMessage(help(source));
 		}

@@ -35,7 +35,7 @@ import org.spongepowered.api.world.World;
 import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
-import fr.evercraft.essentials.service.subject.ESubject;
+import fr.evercraft.essentials.service.subject.EUserSubject;
 import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ECommand;
@@ -136,7 +136,7 @@ public class EEHomeOthers extends ECommand<EverEssentials> {
 	}
 	
 	public boolean commandHomeList(final CommandSource staff, final EPlayer player){
-		Optional<ESubject> subject = this.plugin.getManagerServices().getEssentials().getSubject(player.getUniqueId());
+		Optional<EUserSubject> subject = this.plugin.getManagerServices().getEssentials().getSubject(player.getUniqueId());
 		if(subject.isPresent()) {
 			Map<String, LocationSQL> homes = subject.get().getAllHomes();
 			// Le joueur n'as pas de home
@@ -188,7 +188,7 @@ public class EEHomeOthers extends ECommand<EverEssentials> {
 	
 	public boolean commandHomeDelete(final CommandSource staff, final EPlayer player, final String home_name){
 		String name = EChat.fixLength(home_name, this.plugin.getEverAPI().getConfigs().get("maxCaractere").getInt(16));
-		Optional<ESubject> subject = this.plugin.getManagerServices().getEssentials().getSubject(player.getUniqueId());
+		Optional<EUserSubject> subject = this.plugin.getManagerServices().getEssentials().getSubject(player.getUniqueId());
 		if(subject.isPresent()) {
 			Optional<LocationSQL> home = subject.get().getHomeLocation(name);
 			// Le joueur a bien un home qui porte ce nom
@@ -213,7 +213,7 @@ public class EEHomeOthers extends ECommand<EverEssentials> {
 	
 	public boolean commandHomeDeleteConfirmation(final CommandSource staff, final EPlayer player, final String home_name){
 		String name = EChat.fixLength(home_name, this.plugin.getEverAPI().getConfigs().get("maxCaractere").getInt(16));
-		Optional<ESubject> subject = this.plugin.getManagerServices().getEssentials().getSubject(player.getUniqueId());
+		Optional<EUserSubject> subject = this.plugin.getManagerServices().getEssentials().getSubject(player.getUniqueId());
 		if(subject.isPresent()) {
 			Optional<LocationSQL> home = subject.get().getHomeLocation(name);
 			// Le joueur a bien un home qui porte ce nom

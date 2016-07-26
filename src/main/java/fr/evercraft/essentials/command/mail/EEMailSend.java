@@ -33,7 +33,7 @@ import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ESubCommand;
-import fr.evercraft.everapi.services.essentials.EssentialsSubject;
+import fr.evercraft.everapi.services.essentials.SubjectUserEssentials;
 
 public class EEMailSend extends ESubCommand<EverEssentials> {
 	public EEMailSend(final EverEssentials plugin, final EEMail command) {
@@ -104,7 +104,7 @@ public class EEMailSend extends ESubCommand<EverEssentials> {
 	 */
 	
 	private boolean commandSend(CommandSource staff, User player, String message) {
-		Optional<EssentialsSubject> subject = this.plugin.getManagerServices().getEssentials().get(player.getUniqueId());
+		Optional<SubjectUserEssentials> subject = this.plugin.getManagerServices().getEssentials().get(player.getUniqueId());
 		if(subject.isPresent()) {
 			if(subject.get().addMail(staff, message)) {
 				if(staff.getIdentifier().equals(player.getIdentifier())) {

@@ -52,13 +52,13 @@ import fr.evercraft.everapi.event.MailEvent;
 import fr.evercraft.everapi.exception.ServerDisableException;
 import fr.evercraft.everapi.server.location.LocationSQL;
 import fr.evercraft.everapi.server.player.EPlayer;
-import fr.evercraft.everapi.services.essentials.EssentialsSubject;
+import fr.evercraft.everapi.services.essentials.SubjectUserEssentials;
 import fr.evercraft.everapi.services.essentials.Mail;
 import fr.evercraft.everapi.services.essentials.TeleportDelay;
 import fr.evercraft.everapi.services.essentials.TeleportRequest;
 import fr.evercraft.everapi.services.essentials.TeleportRequest.Type;
 
-public class ESubject implements EssentialsSubject {
+public class EUserSubject implements SubjectUserEssentials {
 	
 	private final EverEssentials plugin;
 	
@@ -83,8 +83,10 @@ public class ESubject implements EssentialsSubject {
 	private final LinkedHashMap<UUID, TeleportRequest> teleports;
 	
 	private Optional<TeleportDelay> teleport;
+	
+	private Optional<String> replyTo;
 
-	public ESubject(final EverEssentials plugin, final UUID uuid) {
+	public EUserSubject(final EverEssentials plugin, final UUID uuid) {
 		Preconditions.checkNotNull(plugin, "plugin");
 		Preconditions.checkNotNull(uuid, "uuid");
 		
@@ -111,6 +113,8 @@ public class ESubject implements EssentialsSubject {
 		
 		this.teleports = new LinkedHashMap<UUID, TeleportRequest>();
 		this.teleport = Optional.empty();
+		
+		this.replyTo = Optional.empty();
 		
 		reloadData();
 	}
@@ -875,6 +879,21 @@ public class ESubject implements EssentialsSubject {
 			return true;
 		}
 		return false;
+	}
+	
+	/*
+	 * ReplyTo
+	 */
+	
+	@Override
+	public boolean setReplyTo(String identifier) {
+		this.replyTo = Optional.ofNullable(identifier);
+		return true;
+	}
+
+	@Override
+	public Optional<String> getReplyTo() {
+		return this.replyTo;
 	}
 	
 	/*

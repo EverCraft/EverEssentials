@@ -24,7 +24,7 @@ import java.sql.Statement;
 import java.sql.Timestamp;
 
 import fr.evercraft.essentials.service.subject.EMail;
-import fr.evercraft.essentials.service.subject.ESubject;
+import fr.evercraft.essentials.service.subject.EUserSubject;
 import fr.evercraft.everapi.exception.PluginDisableException;
 import fr.evercraft.everapi.exception.ServerDisableException;
 import fr.evercraft.everapi.plugin.EDataBase;
@@ -529,7 +529,7 @@ public class EEDataBase extends EDataBase<EverEssentials> {
 	 * Mails
 	 */
 
-	public void sendMail(ESubject subject, String to, String message) {
+	public void sendMail(EUserSubject subject, String to, String message) {
 		Connection connection = null;
 		PreparedStatement preparedStatement = null;
     	try {
@@ -649,7 +649,7 @@ public class EEDataBase extends EDataBase<EverEssentials> {
 				sendMail(connection, datetime, identifier, list.getString("uuid"), message);
 			}
 			
-			for(ESubject subject : this.plugin.getManagerServices().getEssentials().getAll()) {
+			for(EUserSubject subject : this.plugin.getManagerServices().getEssentials().getAll()) {
 				subject.loadMails(connection);
 			}
     	} catch (SQLException e) {
