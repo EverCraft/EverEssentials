@@ -47,6 +47,7 @@ import com.google.common.collect.ImmutableSet;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.everapi.event.AfkEvent;
+import fr.evercraft.everapi.event.IgnoreEvent;
 import fr.evercraft.everapi.event.MailEvent;
 import fr.evercraft.everapi.exception.ServerDisableException;
 import fr.evercraft.everapi.server.location.LocationSQL;
@@ -629,6 +630,11 @@ public class ESubject implements EssentialsSubject {
 	 */
 	
 	@Override
+	public boolean ignore(UUID uuid) {
+		return this.ignores.contains(uuid);
+	}
+	
+	@Override
 	public Set<UUID> getIgnores() {
 		return ImmutableSet.copyOf(this.ignores);
 	}
@@ -639,8 +645,13 @@ public class ESubject implements EssentialsSubject {
 		
 		if(!this.ignores.contains(uuid)) {
 			this.ignores.add(uuid);
-			this.plugin.getThreadAsync().execute(() -> this.plugin.getDataBases().addIgnore(this.getIdentifier(), uuid.toString()));
-			return true;
+			
+			if(this.plugin.getManagerEvent().ignore(this.getUniqueId(), uuid,IgnoreEvent.Action.ADD)) {
+				this.ignores.remove(uuid);
+			} else {
+				this.plugin.getThreadAsync().execute(() -> this.plugin.getDataBases().addIgnore(this.getIdentifier(), uuid.toString()));
+				return true;
+			}
 		}
 		return false;
 	}
@@ -651,18 +662,13 @@ public class ESubject implements EssentialsSubject {
 		
 		if(this.ignores.contains(uuid)) {
 			this.ignores.remove(uuid);
-			this.plugin.getThreadAsync().execute(() -> this.plugin.getDataBases().removeIgnore(this.getIdentifier(), uuid.toString()));
-			return true;
-		}
-		return false;
-	}
-
-	@Override
-	public boolean clearIgnores() {		
-		if(!this.ignores.isEmpty()) {
-			this.ignores.clear();
-			this.plugin.getThreadAsync().execute(() -> this.plugin.getDataBases().clearIgnores(this.getIdentifier()));
-			return true;
+			
+			if(this.plugin.getManagerEvent().ignore(this.getUniqueId(), uuid,IgnoreEvent.Action.REMOVE)) {
+				this.ignores.add(uuid);
+			} else {
+				this.plugin.getThreadAsync().execute(() -> this.plugin.getDataBases().removeIgnore(this.getIdentifier(), uuid.toString()));
+				return true;
+			}
 		}
 		return false;
 	}

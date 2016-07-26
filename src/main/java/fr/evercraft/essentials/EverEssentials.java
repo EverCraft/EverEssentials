@@ -65,6 +65,8 @@ public class EverEssentials extends EPlugin {
 		this.messages = new EEMessage(this, "messages");
 		this.motd = new EEMotd(this, "motd");
 		this.rules = new EEConfigRules(this, "rules");
+		
+		this.managerCommands = new EEManagerCommands(this);
 	}
 	
 	@Override
@@ -73,7 +75,6 @@ public class EverEssentials extends EPlugin {
 		EECommand command = new EECommand(this);
 		command.add(new EEReload(this, command));
 		
-		this.managerCommands = new EEManagerCommands(this);
 		this.managerEvent = new EEManagerEvent(this);
 		
 		// Listeners

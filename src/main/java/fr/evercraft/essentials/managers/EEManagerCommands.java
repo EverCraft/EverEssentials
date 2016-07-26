@@ -16,7 +16,10 @@
  */
 package fr.evercraft.essentials.managers;
 
+import java.util.Optional;
 import java.util.TreeMap;
+
+import org.spongepowered.api.command.CommandMapping;
 
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.essentials.command.*;
@@ -93,7 +96,6 @@ public class EEManagerCommands extends TreeMap<String, ECommand<EverEssentials>>
 		register(new EEKill(this.plugin));
 		register(new EELag(this.plugin));
 		register(new EEList(this.plugin));
-		// register(new EEMail(this.plugin));
 		register(new EEMe(this.plugin));
 		register(new EEMojang(this.plugin));
 		register(new EEMore(this.plugin));
@@ -178,6 +180,13 @@ public class EEManagerCommands extends TreeMap<String, ECommand<EverEssentials>>
 		world.add(new EEWorldborderDamage(this.plugin, world));
 		world.add(new EEWorldborderWarning(this.plugin, world));
 		register(world);
+		
+		// Help
+		Optional<? extends CommandMapping> help = this.plugin.getGame().getCommandManager().get("help");
+        if(help.isPresent()) {
+        	this.plugin.getGame().getCommandManager().removeMapping(help.get());
+        }
+        register(new EEHelp(this.plugin));
 	}
 	
 	public void reload(){

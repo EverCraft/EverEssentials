@@ -199,7 +199,9 @@ public class EEMessage extends EMessage {
 		HEAL_OTHERS_DEAD_STAFF("heal.othersDeadStaff", 	"&6<player>&7 est déjà mort."),
 		HEAL_ALL_STAFF("heal.allStaff", 				"&7Vous avez soigné tous les joueurs."),
 		
-		HELP_DESCRIPTION("help.description", 			"Affiche l'aide du plugin."),
+		HELP_DESCRIPTION("help.description", 			"Affiche les informations sur les commandes disponibles sur le serveur."),
+		HELP_TITLE("help.title", 						"&aListe des commandes"),
+		HELP_SEARCH_TITLE("help.searchtitle", 			"&aListe des commandes : <command>"),
 		
 		HOME_NAME("home.name", 							"&6&l<name>"),
 		HOME_NAME_HOVER("home.nameHover", 				"&cMonde : &6<world>[RT]&cX : &6<x>[RT]&cY : &6<y>[RT]&cZ : &6<z>"),
