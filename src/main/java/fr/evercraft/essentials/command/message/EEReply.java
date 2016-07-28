@@ -127,10 +127,10 @@ public class EEReply extends ECommand<EverEssentials> {
 				.onClick(TextActions.suggestCommand("/msg " + receive.getName()))
 				.build());
 	
-			receive.sendMessage(EChat.of(EEMessages.REPLY_CONSOLE_SEND.get()
+			receive.sendMessage(EChat.of(EEMessages.REPLY_PLAYER_SEND.get()
 							.replaceAll("<message>", message))
 						.toBuilder()
-						.onHover(TextActions.showText(EChat.of(EEMessages.REPLY_CONSOLE_SEND_HOVER.get())))
+						.onHover(TextActions.showText(EChat.of(EEMessages.REPLY_PLAYER_SEND_HOVER.get())))
 						.onClick(TextActions.suggestCommand("/msg " + EEMsg.CONSOLE))
 						.build());
 		}
@@ -140,10 +140,10 @@ public class EEReply extends ECommand<EverEssentials> {
 	public boolean commandReply(final CommandSource source, final CommandSource receive, final String message) {
 		if(source instanceof EPlayer) {
 			EPlayer player = (EPlayer) source;
-			receive.sendMessage(player.replaceVariable(EEMessages.REPLY_CONSOLE_RECEIVE.get()
+			receive.sendMessage(player.replaceVariable(EEMessages.REPLY_PLAYER_RECEIVE.get()
 					.replaceAll("<message>", message))
 				.toBuilder()
-				.onHover(TextActions.showText(player.replaceVariable(EEMessages.REPLY_CONSOLE_RECEIVE_HOVER.get())))
+				.onHover(TextActions.showText(player.replaceVariable(EEMessages.REPLY_PLAYER_RECEIVE_HOVER.get())))
 				.onClick(TextActions.suggestCommand("/msg " + player.getName()))
 				.build());
 	
