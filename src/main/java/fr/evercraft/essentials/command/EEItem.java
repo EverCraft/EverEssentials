@@ -187,7 +187,7 @@ public class EEItem extends EReloadCommand<EverEssentials> {
 							return false;
 						}
 					} catch (NumberFormatException e) {
-						player.sendMessage(EEMessages.PREFIX.get() + EAMessages.IS_NOT_NUMBER.get().replaceAll("<number>", value));
+						player.sendMessage(EEMessages.PREFIX.get() + EAMessages.ERROR_VARIABLE.get().replaceAll("<number>", value));
 						return false;
 					}
 				}
