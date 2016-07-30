@@ -143,6 +143,9 @@ public class EEMsg extends ECommand<EverEssentials> {
 		return true;
 	}
 	
+	/*
+	 * L
+	 */
 	public boolean commandMsgConsole(final CommandSource player, final EPlayer receive, final String message) {
 		player.sendMessage(receive.replaceVariable(EEMessages.REPLY_PLAYER_RECEIVE.get()
 				.replaceAll("<message>", message))
