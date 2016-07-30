@@ -66,7 +66,8 @@ public class EEItem extends EReloadCommand<EverEssentials> {
 	}
 
 	public Text help(final CommandSource source) {
-		return Text.builder("/item <objet> [type] [quantité]").onClick(TextActions.suggestCommand("/item"))
+		return Text.builder("/item <" +  EAMessages.ARGS_OBJET.get() + "> [" + EAMessages.ARGS_TYPE.get() +"] [" + EAMessages.ARGS_AMOUNT.get() + "]")
+				.onClick(TextActions.suggestCommand("/item"))
 					.color(TextColors.RED).build();
 	}
 	
@@ -75,7 +76,6 @@ public class EEItem extends EReloadCommand<EverEssentials> {
 		if(args.size() == 1){
 			for(ItemType type : this.items){
 				suggests.add(type.getName().replaceAll("minecraft:", ""));
-				suggests.add(type.getName());
 			}
 		} else if(args.size() == 2){
 			Optional<ItemStack> optItem = UtilsItemStack.getItem(args.get(0));
@@ -84,11 +84,12 @@ public class EEItem extends EReloadCommand<EverEssentials> {
 				if(catalogType.isPresent()) {
 					for(CatalogType type : this.plugin.getGame().getRegistry().getAllOf(catalogType.get())){
 						suggests.add(type.getName());
-						suggests.add(type.getId());
 					}
 				} else {
-					suggests.add("1");
 					suggests.add(String.valueOf(optItem.get().getMaxStackQuantity()));
+					if(!suggests.contains("1")){
+						suggests.add("1");
+					}
 				}
 			}
 		} else if(args.size() == 3){
@@ -151,8 +152,8 @@ public class EEItem extends EReloadCommand<EverEssentials> {
 			if(!this.blacklist.contains(type)){
 				ItemStack item = ItemStack.of(type, optItem.get().getMaxStackQuantity());
 				player.giveItem(item);
-				player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.getText())
-					.append(EEMessages.ITEM_GIVE.getText())
+				player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
+					.append(EEMessages.ITEM_GIVE.get().replaceAll("<quantity>", String.valueOf(item.getQuantity())))
 						.replace("<item>", EChat.getButtomItem(item, EEMessages.ITEM_GIVE_COLOR.getColor()))
 					.build());
 				return true;
@@ -187,13 +188,13 @@ public class EEItem extends EReloadCommand<EverEssentials> {
 							return false;
 						}
 					} catch (NumberFormatException e) {
-						player.sendMessage(EEMessages.PREFIX.get() + EAMessages.ERROR_VARIABLE.get().replaceAll("<number>", value));
+						player.sendMessage(EEMessages.PREFIX.get() + EAMessages.IS_NOT_NUMBER.get().replaceAll("<number>", value));
 						return false;
 					}
 				}
 				player.giveItem(item);
-				player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.getText())
-					.append(EEMessages.ITEM_GIVE.getText())
+				player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
+					.append(EEMessages.ITEM_GIVE.get().replaceAll("<quantity>", String.valueOf(item.getQuantity())))
 						.replace("<item>", EChat.getButtomItem(item, EEMessages.ITEM_GIVE_COLOR.getColor()))
 					.build());
 				return true;
@@ -222,8 +223,8 @@ public class EEItem extends EReloadCommand<EverEssentials> {
 						if(quantity <= itemType.getMaxStackQuantity() && quantity > 0){
 							item.setQuantity(quantity);
 							player.giveItem(item);
-							player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.getText())
-								.append(EEMessages.ITEM_GIVE.getText())
+							player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
+								.append(EEMessages.ITEM_GIVE.get().replaceAll("<quantity>", String.valueOf(item.getQuantity())))
 									.replace("<item>", EChat.getButtomItem(item, EEMessages.ITEM_GIVE_COLOR.getColor()))
 								.build());
 							return true;
