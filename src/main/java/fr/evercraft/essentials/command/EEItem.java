@@ -66,7 +66,7 @@ public class EEItem extends EReloadCommand<EverEssentials> {
 	}
 
 	public Text help(final CommandSource source) {
-		return Text.builder("/item <objet> [quantité] [type]").onClick(TextActions.suggestCommand("/item"))
+		return Text.builder("/item <objet> [type] [quantité]").onClick(TextActions.suggestCommand("/item"))
 					.color(TextColors.RED).build();
 	}
 	
@@ -78,10 +78,17 @@ public class EEItem extends EReloadCommand<EverEssentials> {
 				suggests.add(type.getName());
 			}
 		} else if(args.size() == 2){
-			suggests.add("1");
-			Optional<ItemType> optItem = UtilsItemTypes.getItemType(args.get(0));
+			Optional<ItemStack> optItem = UtilsItemStack.getItem(args.get(0));
 			if(optItem.isPresent()){
-				suggests.add(String.valueOf(optItem.get().getMaxStackQuantity()));
+				Optional<Class<? extends CatalogType>> catalogType = UtilsItemTypes.getCatalogType(optItem.get());
+				if(catalogType.isPresent()) {
+					for(CatalogType type : this.plugin.getGame().getRegistry().getAllOf(catalogType.get())){
+						suggests.add(type.getId());
+					}
+				} else {
+					suggests.add("1");
+					suggests.add(String.valueOf(optItem.get().getMaxStackQuantity()));
+				}
 			}
 		} else if(args.size() == 3){
 			Optional<ItemStack> optItem = UtilsItemStack.getItem(args.get(0));
@@ -89,7 +96,10 @@ public class EEItem extends EReloadCommand<EverEssentials> {
 				Optional<Class<? extends CatalogType>> catalogType = UtilsItemTypes.getCatalogType(optItem.get());
 				if(catalogType.isPresent()) {
 					for(CatalogType type : this.plugin.getGame().getRegistry().getAllOf(catalogType.get())){
-						suggests.add(type.getId());
+						if(type.getName().equalsIgnoreCase(args.get(1))){
+							suggests.add("1");
+							suggests.add(String.valueOf(optItem.get().getMaxStackQuantity()));
+						}
 					}
 				}
 			}
@@ -113,7 +123,7 @@ public class EEItem extends EReloadCommand<EverEssentials> {
 		} else if(args.size() == 2) {
 			// Si la source est un joueur
 			if(source instanceof EPlayer) {
-				resultat = commandItem((EPlayer) source, args.get(0), args.get(1));
+				resultat = commandItem((EPlayer) source, args.get(0));
 			// La source n'est pas un joueur
 			} else {
 				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
@@ -139,6 +149,10 @@ public class EEItem extends EReloadCommand<EverEssentials> {
 			ItemType type = optItem.get();
 			if(!this.blacklist.contains(type)){
 				ItemStack item = ItemStack.of(type, optItem.get().getMaxStackQuantity());
+				Optional<Class<? extends CatalogType>> catalogType = UtilsItemTypes.getCatalogType(item);
+				if(catalogType.isPresent()) {
+					this.plugin.getEServer().broadcast("" + catalogType.get());
+				}
 				player.giveItem(item);
 				player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.getText())
 					.append(EEMessages.ITEM_GIVE.getText())
@@ -155,14 +169,40 @@ public class EEItem extends EReloadCommand<EverEssentials> {
 			return false;
 		}
 	}
-	
-	public boolean commandItem(final EPlayer player, String item_name, String arg) {
+	/*
+	public boolean commandItem(final EPlayer player, String item_name, String data) {
+		Optional<ItemType> optItem = UtilsItemTypes.getItemType(item_name);
+		if(optItem.isPresent()){
+			ItemType itemType = optItem.get();
+			if(!this.blacklist.contains(itemType)){
+				ItemStack item = ItemStack.of(itemType, optItem.get().getMaxStackQuantity());
+				player.giveItem(item);
+				player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.getText())
+					.append(EEMessages.ITEM_GIVE.getText())
+						.replace("<item>", EChat.getButtomItem(item, EEMessages.ITEM_GIVE_COLOR.getColor()))
+					.build());
+					return true;
+				
+			} else {
+				player.sendMessage(EEMessages.PREFIX.get() + EEMessages.ITEM_ERROR_ITEM_BLACKLIST.get());
+				return false;
+			}
+		} else {
+			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.ITEM_ERROR_ITEM_NOT_FOUND.get()
+					.replaceAll("<item>", item_name));
+			return false;
+		}
+	}
+	*/
+	public boolean commandItem(final EPlayer player, String item_name, String item_quantity) {
+		player.sendMessage("" + this.blacklist);
+		
 		Optional<ItemType> optItem = UtilsItemTypes.getItemType(item_name);
 		if(optItem.isPresent()){
 			ItemType type = optItem.get();
 			if(!this.blacklist.contains(type)){
 				try {
-					int quantity = Integer.parseInt(arg);
+					int quantity = Integer.parseInt(item_quantity);
 					if(quantity < type.getMaxStackQuantity()){
 						ItemStack item = ItemStack.of(type, quantity);
 						player.giveItem(item);
@@ -172,12 +212,12 @@ public class EEItem extends EReloadCommand<EverEssentials> {
 							.build());
 						return true;
 					} else {
-						player.sendMessage(EEMessages.PREFIX.get() + EEMessages.ITEM_ERROR_ITEM_BLACKLIST.get()
+						player.sendMessage(EEMessages.PREFIX.get() + EEMessages.ITEM_ERROR_QUANTITY.get()
 								.replaceAll("<nb>", String.valueOf(type.getMaxStackQuantity())));
 						return false;
 					}
 				} catch (NumberFormatException e) {
-					player.sendMessage(EEMessages.PREFIX.get() + EAMessages.IS_NOT_NUMBER.get().replaceAll("<number>", arg));
+					player.sendMessage(EEMessages.PREFIX.get() + EAMessages.IS_NOT_NUMBER.get().replaceAll("<number>", item_quantity));
 					return false;
 				}
 			} else {
