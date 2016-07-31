@@ -405,7 +405,7 @@ public class EEMessage extends EMessage {
 		REPAIR_ALL_DESCRIPTION("repairall.description", "Répare tous vos objets"),
 		REPAIR_ALL_PLAYER("repairall.player", "&7Vous venez de réparer tous les objets de votre inventaire."),
 		
-		MSG_DESCRIPTION("msg.description", 				"Envoie un message privé à un autre joueur"),
+		MSG_DESCRIPTION("msg.description", 					"Envoie un message privé à un autre joueur"),
 		MSG_PLAYER_SEND("msg.playerSend", 					"&dEnvoyé à &f<DISPLAYNAME> &d: &7<message>"),
 		MSG_PLAYER_SEND_HOVER("msg.playerSendHover", 		"&cCliquez ici pour répondre à <DISPLAYNAME>"),
 		MSG_PLAYER_RECEIVE("msg.playerReceive", 			"&dReçu de &f<DISPLAYNAME> &d: &7<message>"),
@@ -414,6 +414,7 @@ public class EEMessage extends EMessage {
 		MSG_CONSOLE_SEND_HOVER("msg.consoleSendHover", 		"&cCliquez ici pour répondre à la console"),
 		MSG_CONSOLE_RECEIVE("msg.consoleReceive", 			"&dReçu de la &6console &d: &7<message>"),
 		MSG_CONSOLE_RECEIVE_HOVER("msg.consoleReceiveHover","&cCliquez ici pour répondre à la console"),
+		MSG_CONSOLE_ERROR("msg.consoleError",				"&cImpossible de vous envoyez un message à vous même."),
 		MSG_COMMANDBLOCK_RECEIVE("msg.commandblockReceive", "&dVous avez reçu un message &d: &7<message>"),
 		
 		REPLY_DESCRIPTION("reply.description", 					"Répond à un message privé d'un autre joueur"),
