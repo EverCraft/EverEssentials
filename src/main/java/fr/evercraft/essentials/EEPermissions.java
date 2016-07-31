@@ -67,6 +67,8 @@ public enum EEPermissions implements EnumPermission {
 	FEED("feed.command"),
 	FEED_OTHERS("feed.others"),
 	
+	FREEZE("freeze.command"),
+	
 	FLY("fly.command"),
 	FLY_OTHERS("fly.others"),
 	

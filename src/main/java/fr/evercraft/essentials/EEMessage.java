@@ -135,7 +135,9 @@ public class EEMessage extends EMessage {
 		FEED_OTHERS_PLAYER("feed.othersPlayer", 			"&7Vous avez été rassasié par &6<staff>&7."),
 		FEED_ALL_STAFF("feed.allStaff", 					"&7Vous avez rassasié tous les joueurs."),
 		
-		FLY_DESCRIPTION("fly.description", 								"Permet de vous envoler."),
+		FREEZE_DESCRIPTION("freeze.description", 			"Immobilise un joueur"),
+		
+		FLY_DESCRIPTION("fly.description", 								"Permet de vous envoler"),
 		FLY_PLAYER_ENABLE("fly.playerEnable",							"&7Vous pouvez désormais vous envoler."),
 		FLY_PLAYER_ENABLE_ERROR("fly.playerEnableError", 				"&7Vous possèdez déjà le droit de vous envoler."),
 		FLY_PLAYER_DISABLE("fly.playerDisable", 						"&7Vous ne pouvez plus vous envoler."),
@@ -149,7 +151,7 @@ public class EEMessage extends EMessage {
 		FLY_OTHERS_STAFF_DISABLE_ERROR("fly.othersStaffDisableError", 	"&6<player> &7ne possède pas le droit de s'envoler."),
 		FLY_OTHERS_ERROR_CREATIVE("fly.othersErrorCreative", 			"&7Vous ne pouvez pas enlever le droit de s'envoler à &6<player> &7 car il est en mode créative."),
 		
-		GAMEMODE_DESCRIPTION("gamemode.description", 					"Change le mode de jeu d'un joueur."),
+		GAMEMODE_DESCRIPTION("gamemode.description", 					"Change le mode de jeu d'un joueur"),
 		GAMEMODE_PLAYER_CHANGE("gamemode.playerChange", 				"&7Vous êtes désormais en mode de jeu &6<gamemode>&7."),
 		GAMEMODE_PLAYER_EQUAL("gamemode.playerEqual", 					"&7Vous êtes déjà en mode de jeu &6<gamemode>&7."),
 		GAMEMODE_OTHERS_STAFF_CHANGE("gamemode.othersStaffChange", 		"&7Mode de jeu &6<gamemode> &7pour &6<player>&7."),
@@ -157,7 +159,7 @@ public class EEMessage extends EMessage {
 		GAMEMODE_OTHERS_EQUAL("gamemode.othersEqual", 					"&6<player> &7possède déjà le mode de jeu &6<gamemode>&7."),
 		GAMEMODE_ERROR_NAME("gamemode.errorName", 						"&cMode de jeu inconnu."),
 		
-		GENERATE_DESCRIPTION("generate.description", 								"Initialise tous les chunks d'un monde."),
+		GENERATE_DESCRIPTION("generate.description", 								"Initialise tous les chunks d'un monde"),
 		GENERATE_WARNING("generate.warning.message", 								"&cAttention : &7Générer tous les chunks d'un monde peut prendre plusieurs heures et causer des latences."
 				+ "[RT] Le nombre total de chunks a générer est de &6<chunk>&7."
 				+ "[RT] Souhaitez-vous vraiment générer tous les chuncks du monde &6<world> ? <confirmation>"),
@@ -165,13 +167,16 @@ public class EEMessage extends EMessage {
 		GENERATE_WARNING_VALID_HOVER("generate.warning.confirmationValidHover", 	"&cCliquez ici pour lancer la génération des chunks dans le monde &6<world>&7."),
 		GENERATE_LAUNCH("generate.launch", 											"&7Génération du monde &6<world> &7lancée avec succès."),
 				
-		GETPOS_DESCRIPTION("getpos.description", 		"Affiche les coordonnées d'un joueur."),
+		GETPOS_DESCRIPTION("getpos.description", 		"Affiche les coordonnées d'un joueur"),
 		GETPOS_MESSAGE("getpos.message", 				"&7Voici votre &6<position>&7."),
 		GETPOS_MESSAGE_OTHERS("getpos.messageOthers", 	"&7Voici la <position> &7de &6<player>&7."),
 		GETPOS_POTISITON_NAME("getpos.positionName", 	"&6&lposition"),
 		GETPOS_POSITION_HOVER("getpos.positionHover", 	"&cMonde : &6<world>[RT]&cX : &6<x>[RT]&cY : &6<y>[RT]&cZ : &6<z>"),
 		
-		GOD_DESCRIPTION("god.description", 								"Permet de vous rendre invulnérable."),
+		GOD_DESCRIPTION("god.description", 								"Gère l'invulnérabilité d'un joueur"),
+		GOD_ON_DESCRIPTION("god.on.description", 						"Rend le joueur invulnérable"),
+		GOD_OFF_DESCRIPTION("god.off.description", 						"Rend le joueur vulnérable"),
+		GOD_STATUS_DESCRIPTION("god.status.description", 				"Affiche si le joueur est vulnérable où pas"),
 		GOD_PLAYER_ENABLE("god.playerEnable", 							"&7Vous êtes désormais invulnérable."),
 		GOD_PLAYER_ENABLE_ERROR("god.playerEnableError", 				"&7Vous êtes déjà invulnérable."),
 		GOD_PLAYER_DISABLE("god.playerDisable", 						"&7Vous êtes désormais vulnérable."),
@@ -741,7 +746,7 @@ public class EEMessage extends EMessage {
 		
 		WHOIS_DESCRIPTION("whois.description", "Affiche les informations d'un joueur"),
 		WHOIS_TITLE("whois.title", "&aInformations : &c<player>"),
-		WHOIS_UUID("whois.uuid", "    &6&l➤ &6UUID : <uuid>"),
+		WHOIS_UUID("whois.uuid", "    &6&l➤  &6UUID : <uuid>"),
 		WHOIS_UUID_STYLE("whois.uuidStyle", "&c<uuid>"),
 		WHOIS_IP("whois.ip", "    &6&l➤  &6IP : <ip>"),
 		WHOIS_IP_STYLE("whois.ipStyle", "&c<ip>"),
