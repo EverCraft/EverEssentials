@@ -49,24 +49,24 @@ public class EEWhitelistRemove extends ESubCommand<EverEssentials> {
 	}
 	
 	public List<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
-		List<String> suggets = new ArrayList<String>();
+		List<String> suggests = new ArrayList<String>();
 		if(args.size() == 1) {
 			Optional<WhitelistService> whitelist = this.plugin.getEverAPI().getManagerService().getWhitelist();
 			if(whitelist.isPresent()){
 				for(GameProfile player : whitelist.get().getWhitelistedProfiles()) {
 					if(player.getName().isPresent()) {
-						suggets.add(player.getName().orElse(player.getUniqueId().toString()));
+						suggests.add(player.getName().orElse(player.getUniqueId().toString()));
 					}
 				}
 			} else {
 				for(GameProfile player : this.plugin.getEServer().getGameProfileManager().getCache().getProfiles()) {
 					if(player.getName().isPresent()) {
-						suggets.add(player.getName().orElse(player.getUniqueId().toString()));
+						suggests.add(player.getName().orElse(player.getUniqueId().toString()));
 					}
 				}
 			}
 		}
-		return suggets;
+		return suggests;
 	}
 
 	public Text help(final CommandSource source) {

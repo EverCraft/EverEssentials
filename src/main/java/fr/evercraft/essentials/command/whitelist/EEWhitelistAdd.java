@@ -49,19 +49,19 @@ public class EEWhitelistAdd extends ESubCommand<EverEssentials> {
 	}
 	
 	public List<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
-		List<String> suggets = new ArrayList<String>();
+		List<String> suggests = new ArrayList<String>();
 		if(args.size() == 1) {
 			for(GameProfile player : this.plugin.getEServer().getGameProfileManager().getCache().getProfiles()) {
 				if(player.getName().isPresent()) {
-					suggets.add(player.getName().orElse(player.getUniqueId().toString()));
+					suggests.add(player.getName().orElse(player.getUniqueId().toString()));
 				}
 			}
 		}
-		return suggets;
+		return suggests;
 	}
 
 	public Text help(final CommandSource source) {
-		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_PLAYER.get() + ">")
+		return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_PLAYER.get() + "]")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
 					.build();
