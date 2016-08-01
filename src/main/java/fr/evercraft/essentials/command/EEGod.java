@@ -18,8 +18,6 @@ package fr.evercraft.essentials.command;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.text.Text;
@@ -30,9 +28,9 @@ import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
-import fr.evercraft.everapi.plugin.EChat;
+import fr.evercraft.everapi.exception.PluginDisableException;
+import fr.evercraft.everapi.exception.ServerDisableException;
 import fr.evercraft.everapi.plugin.command.ECommand;
-import fr.evercraft.everapi.server.player.EPlayer;
 
 public class EEGod extends ECommand<EverEssentials> {
 	
@@ -71,7 +69,7 @@ public class EEGod extends ECommand<EverEssentials> {
 		}
 		return suggests;
 	}
-	
+	/*
 	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Résultat de la commande :
 		boolean resultat = false;
@@ -229,6 +227,13 @@ public class EEGod extends ECommand<EverEssentials> {
 				}
 			}
 		}
+		return false;
+	}
+	*/
+
+	@Override
+	public boolean execute(CommandSource source, List<String> args) throws CommandException, PluginDisableException, ServerDisableException {
+		// TODO Auto-generated method stub
 		return false;
 	}
 }

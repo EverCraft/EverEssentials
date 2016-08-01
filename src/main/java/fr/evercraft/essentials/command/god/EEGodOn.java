@@ -1,23 +1,8 @@
-/*
- * This file is part of EverEssentials.
- *
- * EverEssentials is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * EverEssentials is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with EverEssentials.  If not, see <http://www.gnu.org/licenses/>.
- */
 package fr.evercraft.essentials.command.god;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
@@ -51,13 +36,20 @@ public class EEGodOn extends ESubCommand<EverEssentials> {
 	}
 
 	public Text help(final CommandSource source) {
-		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_PLAYER.get() + ">")
+		if(source.hasPermission(EEPermissions.GOD_OTHERS.get())){
+			return Text.builder("/" + this.getName() + "  [" + EAMessages.ARGS_PLAYER.get() + "]")
+						.onClick(TextActions.suggestCommand("/" + this.getName()))
+						.color(TextColors.RED)
+						.build();
+		} else {
+			return Text.builder("/" + this.getName())
 					.onClick(TextActions.suggestCommand("/" + this.getName()))
 					.color(TextColors.RED)
 					.build();
+		}
 	}
 	
-	public boolean subExecute(final CommandSource source, final List<String> args) {
+	public boolean subExecute(final CommandSource source, final List<String> args) throws CommandException {
 		// Résultat de la commande :
 		boolean resultat = false;
 		if(args.size() == 0) {
@@ -67,7 +59,20 @@ public class EEGodOn extends ESubCommand<EverEssentials> {
 				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
 			}
 		} else if(args.size() == 1) {
-			resultat = commandGodOnOthers(source, args.get(0));
+			// Si il a la permission
+			if(source.hasPermission(EEPermissions.GOD_OTHERS.get())){
+				Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(args.get(0));
+				// Le joueur existe
+				if(optPlayer.isPresent()){
+					resultat = commandGodOnOthers(source, optPlayer.get());
+				// Le joueur est introuvable
+				} else {
+					source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
+				}
+			// Il n'a pas la permission
+			} else {
+				source.sendMessage(EAMessages.NO_PERMISSION.getText());
+			}
 		} else {
 			source.sendMessage(this.help(source));
 		}
@@ -76,25 +81,40 @@ public class EEGodOn extends ESubCommand<EverEssentials> {
 
 	public boolean commandGodOn(final EPlayer player) {
 		boolean godMode = player.isGod();
-		player.setGod(!godMode);
 		// Si le god mode est déjà activé
-		if(godMode){
-			player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.GOD_PLAYER_DISABLE.getText()));
+		if(!godMode){
+			player.heal();
+			player.setGod(true);
+			player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.GOD_ON_ENABLE.getText()));
 			// God mode est déjà désactivé
 		} else {
-			player.heal();
-			player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.GOD_PLAYER_ENABLE.getText()));
+			player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.GOD_ON_ENABLE_ERROR.getText()));
 		}
 		return true;
 	}
 	
-	private boolean commandGodOnOthers(final CommandSource player, final String name) {
-		if(!this.plugin.getEServer().hasWhitelist()){
-			this.plugin.getEServer().setHasWhitelist(true);
-			player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.WHITELIST_ON_ACTIVATED.get()));
+	public boolean commandGodOnOthers(final CommandSource staff, final EPlayer player) throws CommandException {
+		// La source et le joueur sont différent
+		if(!player.equals(staff)){
+			boolean godMode = player.isGod();
+			// Si le god mode est déjà activé
+			if(!godMode){
+				player.heal();
+				player.setGod(true);
+				player.sendMessage(EEMessages.PREFIX.get() + EEMessages.GOD_ON_OTHERS_ENABLE.get()
+						.replaceAll("<staff>", staff.getName()));
+				staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.GOD_ON_OTHERS_STAFF_ENABLE.get()
+						.replaceAll("<player>", player.getName())));
+				return true;
+			// God mode est déjà désactivé
+			} else {
+				staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.GOD_ON_OTHERS_STAFF_ENABLE_ERROR.get()
+						.replaceAll("<player>", player.getName())));
+				return false;
+			}
+		// La source et le joueur sont identique
 		} else {
-			player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.WHITELIST_ON_ALREADY_ACTIVATED.get()));
+			return subExecute(staff, new ArrayList<String>());
 		}
-		return true;
 	}
 }
