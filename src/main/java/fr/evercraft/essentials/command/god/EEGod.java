@@ -28,7 +28,7 @@ import fr.evercraft.everapi.plugin.command.EParentCommand;
 public class EEGod extends EParentCommand<EverEssentials> {
 	
 	public EEGod(final EverEssentials plugin) {
-        super(plugin, "god");
+        super(plugin, "god", "godmode");
     }
 	
 	@Override

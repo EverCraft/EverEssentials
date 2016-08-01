@@ -1,3 +1,19 @@
+/*
+ * This file is part of EverEssentials.
+ *
+ * EverEssentials is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * EverEssentials is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with EverEssentials.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package fr.evercraft.essentials.command.god;
 
 import java.util.ArrayList;
@@ -32,12 +48,16 @@ public class EEGodOn extends ESubCommand<EverEssentials> {
 	}
 	
 	public List<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
-		return new ArrayList<String>();
+		List<String> suggests = null;
+		if(!(args.size() == 1 && source.hasPermission(EEPermissions.GOD_OTHERS.get()))){
+			suggests = new ArrayList<String>();
+		}
+		return suggests;
 	}
 
 	public Text help(final CommandSource source) {
 		if(source.hasPermission(EEPermissions.GOD_OTHERS.get())){
-			return Text.builder("/" + this.getName() + "  [" + EAMessages.ARGS_PLAYER.get() + "]")
+			return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_PLAYER.get() + "]")
 						.onClick(TextActions.suggestCommand("/" + this.getName()))
 						.color(TextColors.RED)
 						.build();

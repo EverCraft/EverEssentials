@@ -23,6 +23,10 @@ import org.spongepowered.api.command.CommandMapping;
 
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.essentials.command.*;
+import fr.evercraft.essentials.command.god.EEGod;
+import fr.evercraft.essentials.command.god.EEGodOff;
+import fr.evercraft.essentials.command.god.EEGodOn;
+import fr.evercraft.essentials.command.god.EEGodStatus;
 import fr.evercraft.essentials.command.home.*;
 import fr.evercraft.essentials.command.mail.*;
 import fr.evercraft.essentials.command.message.*;
@@ -72,7 +76,6 @@ public class EEManagerCommands extends TreeMap<String, ECommand<EverEssentials>>
 		register(new EEGameMode(this.plugin));
 		register(new EEGenerate(this.plugin));
 		register(new EEGetPos(this.plugin));
-		register(new EEGod(this.plugin));
 		register(new EEHat(this.plugin));
 		register(new EEHeal(this.plugin));
 		register(new EEHome(this.plugin));
@@ -144,6 +147,12 @@ public class EEManagerCommands extends TreeMap<String, ECommand<EverEssentials>>
 		register(new EEWorldsNether(this.plugin));
 		
 		// Commands	
+		EEGod god = new EEGod(this.plugin);
+		god.add(new EEGodOn(this.plugin, god));
+		god.add(new EEGodOff(this.plugin, god));
+		god.add(new EEGodStatus(this.plugin, god));
+		register(god);
+		
 		EEMail mail = new EEMail(this.plugin);
 		mail.add(new EEMailClear(this.plugin, mail));
 		mail.add(new EEMailDelete(this.plugin, mail));
