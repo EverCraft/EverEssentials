@@ -174,19 +174,24 @@ public class EEMessage extends EMessage {
 		GETPOS_POSITION_HOVER("getpos.positionHover", 	"&cMonde : &6<world>[RT]&cX : &6<x>[RT]&cY : &6<y>[RT]&cZ : &6<z>"),
 		
 		GOD_DESCRIPTION("god.description", 								"Gère l'invulnérabilité d'un joueur"),
+		
 		GOD_ON_DESCRIPTION("god.on.description", 						"Rend le joueur invulnérable"),
 		GOD_OFF_DESCRIPTION("god.off.description", 						"Rend le joueur vulnérable"),
 		GOD_STATUS_DESCRIPTION("god.status.description", 				"Affiche si le joueur est vulnérable où pas"),
-		GOD_PLAYER_ENABLE("god.playerEnable", 							"&7Vous êtes désormais invulnérable."),
-		GOD_PLAYER_ENABLE_ERROR("god.playerEnableError", 				"&7Vous êtes déjà invulnérable."),
-		GOD_PLAYER_DISABLE("god.playerDisable", 						"&7Vous êtes désormais vulnérable."),
-		GOD_PLAYER_DISABLE_ERROR("god.playerDisableError", 				"&7Vous êtes déjà vulnérable."),
-		GOD_OTHERS_PLAYER_ENABLE("god.othersPlayerEnable", 				"&7Vous êtes désormais invulnérable grâce à &6<staff>&7."),
-		GOD_OTHERS_PLAYER_DISABLE("god.othersPlayerDisable", 			"&7Vous n'êtes plus invulnérable à cause de &6<staff>&7."),
-		GOD_OTHERS_STAFF_ENABLE("god.othersStaffEnable", 				"&7Vous venez de rendre invulnérable &6<player>&7."),
-		GOD_OTHERS_STAFF_ENABLE_ERROR("god.othersStaffEnableError", 	"&6<player> &7est déjà invulnérable."),
-		GOD_OTHERS_STAFF_DISABLE("god.othersStaffDisable", 				"&7Vous venez de rendre vulnérable &6<player>&7."),
-		GOD_OTHERS_STAFF_DISABLE_ERROR("god.othersStaffDisableError", 	"&6<player> &7est déjà vulnérable."),
+		
+		GOD_ON_ENABLE("god.on.enable", 									"&7Vous êtes désormais invulnérable."),
+		GOD_ON_ENABLE_ERROR("god.on.enableError", 						"&7Vous êtes déjà invulnérable."),
+		GOD_ON_OTHERS_ENABLE("god.on.othersEnable", 					"&7Vous êtes désormais invulnérable grâce à &6<staff>&7."),
+		GOD_ON_OTHERS_STAFF_ENABLE("god.on.othersStaffEnable", 			"&7Vous venez de rendre invulnérable &6<player>&7."),
+		GOD_ON_OTHERS_STAFF_ENABLE_ERROR("god.on.othersStaffEnableError", 	"&cErreur : <player> &7est déjà invulnérable."),
+		
+		GOD_OFF_DISABLE("god.off.disable", 								"&7Vous êtes désormais vulnérable."),
+		GOD_OFF_DISABLE_ERROR("god.off.disableError", 					"&7Vous êtes déjà vulnérable."),
+		GOD_OFF_OTHERS_DISABLE("god.off.otherDisable", 					"&7Vous n'êtes plus invulnérable à cause de &6<staff>&7."),
+		GOD_OFF_OTHERS_STAFF_DISABLE("god.off.othersStaffDisable", 				"&7Vous venez de rendre vulnérable &6<player>&7."),
+		
+		GOD_OFF_OTHERS_STAFF_DISABLE_ERROR("god.off.othersStaffDisableError", 	"&cErreur : <player> &7est déjà vulnérable."),
+		
 		GOD_TELEPORT("god.teleport", 									"&7Vous avez été téléporté car vous étiez en train de tomber dans le vide."),
 		
 		HAT_DESCRIPTION("hat.description", 				"Place l'objet dans votre main sur votre tête"),
