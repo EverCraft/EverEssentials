@@ -73,10 +73,14 @@ public class EEReply extends ECommand<EverEssentials> {
 		// Résultat de la commande :
 		boolean resultat = false;
 		if(args.size() == 1) {
+			// La source est un joueur
 			if(source instanceof EPlayer) {
 				resultat = commandReply(source, ((EPlayer) source).getReplyTo(), args.get(0));
-			} else {
+			// La source est une console
+			} else if(source.equals(this.plugin.getGame().getServer().getConsole())) {
 				resultat = commandReply(source, this.plugin.getManagerServices().getEssentials().getConsole().getReplyTo(), args.get(0));
+			} else {
+				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText()));
 			}
 		} else {
 			source.sendMessage(help(source));
@@ -85,77 +89,100 @@ public class EEReply extends ECommand<EverEssentials> {
 	}
 	
 	public boolean commandReply(final CommandSource player, final Optional<String> receive, final String message) {
+		// Résultat de la commande :
+		boolean resultat = false;
+		
 		if(receive.isPresent()) {
-			String identifier = receive.get();
-			try {
-				Optional<EPlayer> replyTo = this.plugin.getEServer().getEPlayer(UUID.fromString(identifier));
-				if(replyTo.isPresent()) {
-					return this.commandReply(player, replyTo.get(), message);
+			// Le destinataire est le console
+			if(receive.get().equalsIgnoreCase(EEMsg.CONSOLE)) {
+				// La source est un joueur
+				if(player instanceof EPlayer) {
+					resultat = this.commandMsgConsole((EPlayer) player, this.plugin.getEServer().getConsole(), message);
+				// La source est une console
 				} else {
-					player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.REPLY_ERROR.get()));
+					player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.COMMAND_ERROR.get()));
 				}
-			} catch(IllegalArgumentException e) {
-				return this.commandReply(player, this.plugin.getEServer().getConsole(), message);
+			// Le destinataire est un joueur
+			} else {
+				try {
+					Optional<EPlayer> replyTo = this.plugin.getEServer().getEPlayer(UUID.fromString(receive.get()));
+					if(replyTo.isPresent()) {
+						// La source est un joueur
+						if(player instanceof EPlayer) {
+							resultat = this.commandMsgPlayer((EPlayer) player, replyTo.get(), message);
+						// La source est une console
+						} else {
+							resultat = this.commandMsgConsole(player, replyTo.get(), message);
+						}
+					} else {
+						player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.PLAYER_NOT_FOUND.get()));
+					}
+				} catch(IllegalArgumentException e) {
+					player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.COMMAND_ERROR.get()));
+				}
 			}
 		} else {
 			player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.REPLY_EMPTY.get()));
 		}
-		return false;
+		return resultat;
 	}
 	
-	public boolean commandReply(final CommandSource source, final EPlayer receive, final String message) {
-		if(source instanceof EPlayer) {
-			EPlayer player = (EPlayer) source;
-			receive.sendMessage(player.replaceVariable(EEMessages.REPLY_PLAYER_RECEIVE.get()
-										.replaceAll("<message>", message))
-									.toBuilder()
-									.onHover(TextActions.showText(player.replaceVariable(EEMessages.REPLY_PLAYER_RECEIVE_HOVER.get())))
-									.onClick(TextActions.suggestCommand("/msg " + player.getName()))
-									.build());
-			
-			player.sendMessage(receive.replaceVariable(EEMessages.REPLY_PLAYER_SEND.get()
-										.replaceAll("<message>", message))
-									.toBuilder()
-									.onHover(TextActions.showText(receive.replaceVariable(EEMessages.REPLY_PLAYER_SEND_HOVER.get())))
-									.onClick(TextActions.suggestCommand("/msg " + receive.getName()))
-									.build());
-		} else {
-			source.sendMessage(receive.replaceVariable(EEMessages.REPLY_CONSOLE_RECEIVE.get()
-					.replaceAll("<message>", message))
-				.toBuilder()
-				.onHover(TextActions.showText(receive.replaceVariable(EEMessages.REPLY_CONSOLE_RECEIVE_HOVER.get())))
-				.onClick(TextActions.suggestCommand("/msg " + receive.getName()))
-				.build());
-	
-			receive.sendMessage(EChat.of(EEMessages.REPLY_PLAYER_SEND.get()
-							.replaceAll("<message>", message))
-						.toBuilder()
-						.onHover(TextActions.showText(EChat.of(EEMessages.REPLY_PLAYER_SEND_HOVER.get())))
-						.onClick(TextActions.suggestCommand("/msg " + EEMsg.CONSOLE))
-						.build());
-		}
+	/*
+	 * Un joueur parle à un autre joueur
+	 */
+	public boolean commandMsgPlayer(final EPlayer player, final EPlayer receive, final String message) {
+		receive.sendMessage(player.replaceVariable(EEMessages.REPLY_PLAYER_RECEIVE.get()
+									.replaceAll("<message>", message))
+								.toBuilder()
+								.onHover(TextActions.showText(player.replaceVariable(EEMessages.REPLY_PLAYER_RECEIVE_HOVER.get())))
+								.onClick(TextActions.suggestCommand("/msg " + player.getName() + " "))
+								.build());
+		
+		player.sendMessage(receive.replaceVariable(EEMessages.REPLY_PLAYER_SEND.get()
+									.replaceAll("<message>", message))
+								.toBuilder()
+								.onHover(TextActions.showText(receive.replaceVariable(EEMessages.REPLY_PLAYER_SEND_HOVER.get())))
+								.onClick(TextActions.suggestCommand("/msg " + receive.getName() + " "))
+								.build());
 		return true;
 	}
 	
-	public boolean commandReply(final CommandSource source, final CommandSource receive, final String message) {
-		if(source instanceof EPlayer) {
-			EPlayer player = (EPlayer) source;
-			receive.sendMessage(player.replaceVariable(EEMessages.REPLY_PLAYER_RECEIVE.get()
-					.replaceAll("<message>", message))
-				.toBuilder()
-				.onHover(TextActions.showText(player.replaceVariable(EEMessages.REPLY_PLAYER_RECEIVE_HOVER.get())))
-				.onClick(TextActions.suggestCommand("/msg " + player.getName()))
-				.build());
+	/*
+	 * La console envoye un message à joueur
+	 */
+	public boolean commandMsgConsole(final CommandSource player, final EPlayer receive, final String message) {
+		player.sendMessage(receive.replaceVariable(EEMessages.REPLY_PLAYER_RECEIVE.get()
+				.replaceAll("<message>", message))
+			.toBuilder()
+			.onHover(TextActions.showText(receive.replaceVariable(EEMessages.REPLY_PLAYER_RECEIVE_HOVER.get())))
+			.onClick(TextActions.suggestCommand("/msg " + receive.getName() + " "))
+			.build());
+
+		receive.sendMessage(EChat.of(EEMessages.REPLY_CONSOLE_SEND.get()
+						.replaceAll("<message>", message))
+					.toBuilder()
+					.onHover(TextActions.showText(EChat.of(EEMessages.REPLY_CONSOLE_SEND_HOVER.get())))
+					.onClick(TextActions.suggestCommand("/msg " + EEMsg.CONSOLE + " "))
+					.build());
+		return true;
+	}
 	
-			player.sendMessage(EChat.of(EEMessages.REPLY_CONSOLE_SEND.get()
-							.replaceAll("<message>", message))
-						.toBuilder()
-						.onHover(TextActions.showText(EChat.of(EEMessages.REPLY_CONSOLE_SEND_HOVER.get())))
-						.onClick(TextActions.suggestCommand("/msg " + receive.getName()))
-						.build());
-		} else {
-			source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.REPLY_ERROR.get()));
-		}
+	/*
+	 * Un joueur envoye un message à la console
+	 */
+	public boolean commandMsgConsole(final EPlayer player, final CommandSource receive, final String message) {
+		player.sendMessage(EChat.of(EEMessages.REPLY_CONSOLE_SEND.get()
+						.replaceAll("<message>", message))
+					.toBuilder()
+					.onHover(TextActions.showText(EChat.of(EEMessages.REPLY_CONSOLE_SEND_HOVER.get())))
+					.onClick(TextActions.suggestCommand("/msg " + receive.getName() + " "))
+					.build());
+		receive.sendMessage(player.replaceVariable(EEMessages.REPLY_PLAYER_RECEIVE.get()
+						.replaceAll("<message>", message))
+					.toBuilder()
+					.onHover(TextActions.showText(player.replaceVariable(EEMessages.REPLY_PLAYER_RECEIVE_HOVER.get())))
+					.onClick(TextActions.suggestCommand("/msg " + player.getName() + " "))
+					.build());
 		return true;
 	}
 }

@@ -431,8 +431,7 @@ public class EEMessage extends EMessage {
 		REPLY_CONSOLE_SEND_HOVER("reply.consoleSendHover", 		"&cCliquez ici pour répondre à la console"),
 		REPLY_CONSOLE_RECEIVE("reply.consoleReceive", 			"&dReçu de la &6console &d: &7<message>"),
 		REPLY_CONSOLE_RECEIVE_HOVER("reply.consoleReceiveHover","&cCliquez ici pour répondre à la console"),
-		REPLY_EMPTY("reply.empty", 								"&cVous n'êtes en conversation avec quelqu'un, pour en démmarrez une fait &6/msg <joueur> <message>"),
-		REPLY_ERROR("reply.error", 								"&cImpossible de vous répondre à vous même."),
+		REPLY_EMPTY("reply.empty", 								"&cVous n'êtes en conversation avec aucune personne, pour en démarrez une fait &6/msg <joueur> <message>"),
 		
 		RULES_DESCRIPTION("rules.description", "Affiche les règles d'Evercraft."),
 		
