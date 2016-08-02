@@ -79,7 +79,7 @@ public class EEMsg extends ECommand<EverEssentials> {
 		if(args.size() > 2) {
 			List<String> args_send = new ArrayList<String>();
 			args_send.add(args.get(0));
-			args_send.add(Pattern.compile("^[ \"]*" + args.get(0) + "[ \"]*\\*[ \"][ ]*").matcher(arg).replaceAll(""));
+			args_send.add(Pattern.compile("^[ \"]*" + args.get(0) + "[ \"][ ]*").matcher(arg).replaceAll(""));
 			return args_send;
 		}
 		return args;
