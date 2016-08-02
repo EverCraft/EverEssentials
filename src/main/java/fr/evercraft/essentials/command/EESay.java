@@ -49,9 +49,10 @@ public class EESay extends ECommand<EverEssentials> {
 	}
 
 	public Text help(final CommandSource source) {
-		Text help = Text.builder("/say <" + EAMessages.ARGS_MESSAGE.get() + ">").onClick(TextActions.suggestCommand("/say "))
-					.color(TextColors.RED).build();
-		return help;
+		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_MESSAGE.get() + ">")
+					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
+					.color(TextColors.RED)
+					.build();
 	}
 	
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {

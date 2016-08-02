@@ -49,11 +49,10 @@ public class EEKill  extends ECommand<EverEssentials> {
 	}
 
 	public Text help(final CommandSource source) {
-		Text help;
-		help = Text.builder("/kill <" + EAMessages.ARGS_PLAYER.get() + ">")
-				.onClick(TextActions.suggestCommand("/kill "))
-				.color(TextColors.RED).build();
-		return help;
+		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_PLAYER.get() + ">")
+					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
+					.color(TextColors.RED)
+					.build();
 	}
 	
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
@@ -82,14 +81,15 @@ public class EEKill  extends ECommand<EverEssentials> {
 	}
 	
 	public boolean commandKill(final CommandSource staff, final EPlayer player) {
+		player.setHealth(0);
 		if(!player.equals(staff)) {
-			player.setHealth(0);
 			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.KILL_PLAYER.get()
 					.replaceAll("<staff>", staff.getName()));
 			staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.KILL_STAFF.get()
 					.replaceAll("<player>", player.getName())));
 		} else {
-			this.plugin.getGame().getCommandManager().process(staff, "suicide");
+			player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.KILL_EQUALS.get()
+					.replaceAll("<player>", player.getName())));
 		}
 		return true;
 	}

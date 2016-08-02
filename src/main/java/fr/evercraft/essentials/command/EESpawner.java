@@ -57,9 +57,10 @@ public class EESpawner extends ECommand<EverEssentials> {
 	}
 
 	public Text help(final CommandSource source) {
-		return Text.builder("/spawner <" + EAMessages.ARGS_ENTITY.get() + "> [délais]")
-				.onClick(TextActions.suggestCommand("/spawner "))
-				.color(TextColors.RED).build();
+		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_ENTITY.get() + "> [" + EAMessages.ARGS_SECONDS.get() + "]")
+					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
+					.color(TextColors.RED)
+					.build();
 	}
 	
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {

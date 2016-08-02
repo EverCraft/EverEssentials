@@ -51,8 +51,8 @@ public class EEHelp extends ECommand<EverEssentials> {
 	}
 
 	public Text help(final CommandSource source) {
-		return Text.builder("/help [commande]")
-					.onClick(TextActions.suggestCommand("/help "))
+		return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_COMMAND.get() + "]")
+					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
 					.build();
 	}

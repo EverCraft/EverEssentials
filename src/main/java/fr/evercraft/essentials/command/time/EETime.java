@@ -64,19 +64,21 @@ public class EETime extends ECommand<EverEssentials> {
 	}
 
 	public Text help(final CommandSource source) {
-		return Text.builder("/time ").onClick(TextActions.suggestCommand("/time "))
+		return Text.builder("/" + this.getName() + " ")
 				.append(Text.of("["))
-				.append(Text.builder("day").onClick(TextActions.suggestCommand("/time day")).build())
+				.append(Text.builder("day").onClick(TextActions.suggestCommand("/" + this.getName() + " day")).build())
 				.append(Text.of("|"))
-				.append(Text.builder("night").onClick(TextActions.suggestCommand("/time night")).build())
+				.append(Text.builder("night").onClick(TextActions.suggestCommand("/" + this.getName() + " night")).build())
 				.append(Text.of("|"))
-				.append(Text.builder("dawn").onClick(TextActions.suggestCommand("/time dawn")).build())
+				.append(Text.builder("dawn").onClick(TextActions.suggestCommand("/" + this.getName() + " dawn")).build())
 				.append(Text.of("|"))
-				.append(Text.builder("17:30").onClick(TextActions.suggestCommand("/time 17:30")).build())
+				.append(Text.builder("17:30").onClick(TextActions.suggestCommand("/" + this.getName() + " 17:30")).build())
 				.append(Text.of("|"))
-				.append(Text.builder("4000").onClick(TextActions.suggestCommand("/time 4000")).build())
-				.append(Text.of("] [monde|*]"))
-				.color(TextColors.RED).build();
+				.append(Text.builder("4000").onClick(TextActions.suggestCommand("/" + this.getName() + " 4000")).build())
+				.append(Text.of("] [" + EAMessages.ARGS_WORLD.get() + "|*]"))
+				.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
+				.color(TextColors.RED)
+				.build();
 	}
 
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {

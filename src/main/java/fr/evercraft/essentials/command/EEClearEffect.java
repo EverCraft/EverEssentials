@@ -50,13 +50,13 @@ public class EEClearEffect extends ECommand<EverEssentials> {
 
 	public Text help(final CommandSource source) {
 		if(source.hasPermission(EEPermissions.CLEAREFFECT_OTHERS.get())){
-			return Text.builder("/cleareffect [" + EAMessages.ARGS_PLAYER.get() + "]")
-					.onClick(TextActions.suggestCommand("/cleareffect "))
+			return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_PLAYER.get() + "]")
+					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
 					.build();
 		}
-		return Text.builder("/cleareffect")
-				.onClick(TextActions.suggestCommand("/cleareffect"))
+		return Text.builder("/" + this.getName())
+				.onClick(TextActions.suggestCommand("/" + this.getName()))
 				.color(TextColors.RED)
 				.build();
 	}

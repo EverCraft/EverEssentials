@@ -58,7 +58,7 @@ public class EEMailDelete extends ESubCommand<EverEssentials> {
 	}
 
 	public Text help(final CommandSource source) {
-		return Text.builder("/" + this.getName() + " <ID>")
+		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_ID.get() + ">")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
 					.build();

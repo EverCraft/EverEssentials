@@ -50,12 +50,15 @@ public class EEPing extends ECommand<EverEssentials> {
 
 	public Text help(final CommandSource source) {
 		if(source.hasPermission(EEPermissions.PING_OTHERS.get())){
-			return Text.builder("/ping [" + EAMessages.ARGS_PLAYER.get() + "]")
-					.onClick(TextActions.suggestCommand("/ping "))
-					.color(TextColors.RED).build();
+			return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_PLAYER.get() + "]")
+					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
+					.color(TextColors.RED)
+					.build();
 		}
-		return Text.builder("/ping").onClick(TextActions.suggestCommand("/ping"))
-					.color(TextColors.RED).build();
+		return Text.builder("/" + this.getName())
+					.onClick(TextActions.suggestCommand("/" + this.getName()))
+					.color(TextColors.RED)
+					.build();
 	}
 	
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {

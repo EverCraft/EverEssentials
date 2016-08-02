@@ -64,11 +64,15 @@ public class EESpawn extends EReloadCommand<EverEssentials> {
 
 	public Text help(final CommandSource source) {
 		if(source.hasPermission(EEPermissions.SPAWNS.get())) {
-			return Text.builder("/spawn [" + EAMessages.ARGS_GROUP + "]").onClick(TextActions.suggestCommand("/spawn "))
-				.color(TextColors.RED).build();
+			return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_GROUP + "]")
+						.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
+						.color(TextColors.RED)
+						.build();
 		}
-		return Text.builder("/spawn").onClick(TextActions.suggestCommand("/spawn"))
-				.color(TextColors.RED).build();
+		return Text.builder("/" + this.getName())
+					.onClick(TextActions.suggestCommand("/" + this.getName()))
+					.color(TextColors.RED)
+					.build();
 	}
 	
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {

@@ -52,12 +52,15 @@ public class EEFly extends ECommand<EverEssentials> {
 	public Text help(final CommandSource source) {
 		Text help;
 		if(source.hasPermission(EEPermissions.FLY_OTHERS.get())){
-			help = Text.builder("/fly").onClick(TextActions.suggestCommand("/fly "))
-					.append(Text.builder(" [" + EAMessages.ARGS_PLAYER.get() + " [on|off]]").build())
-					.color(TextColors.RED).build();
+			help = Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_PLAYER.get() + " [on|off]]")
+					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
+					.color(TextColors.RED)
+					.build();
 		} else {
-			help = Text.builder("/fly").onClick(TextActions.suggestCommand("/fly"))
-					.color(TextColors.RED).build();
+			help = Text.builder("/" + this.getName())
+					.onClick(TextActions.suggestCommand("/" + this.getName()))
+					.color(TextColors.RED)
+					.build();
 		}
 		return help;
 	}

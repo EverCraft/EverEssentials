@@ -45,7 +45,10 @@ public class EEWeatherStorm extends ECommand<EverEssentials> {
 	}
 
 	public Text help(final CommandSource source) {
-		return Text.builder("/storm").onClick(TextActions.suggestCommand("/storm")).color(TextColors.RED).build();
+		return Text.builder("/" + this.getName())
+					.onClick(TextActions.suggestCommand("/" + this.getName()))
+					.color(TextColors.RED)
+					.build();
 	}
 
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {

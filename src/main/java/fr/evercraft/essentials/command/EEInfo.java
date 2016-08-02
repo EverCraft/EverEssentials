@@ -50,8 +50,10 @@ public class EEInfo extends ECommand<EverEssentials> {
 	}
 
 	public Text help(final CommandSource source) {
-		Text help = Text.builder("/info").onClick(TextActions.suggestCommand("/info"))
-				.color(TextColors.RED).build();
+		Text help = Text.builder("/" + this.getName())
+						.onClick(TextActions.suggestCommand("/" + this.getName()))
+						.color(TextColors.RED)
+						.build();
 		return help;
 	}
 	

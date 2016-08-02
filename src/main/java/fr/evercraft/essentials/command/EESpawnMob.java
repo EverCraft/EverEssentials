@@ -63,9 +63,10 @@ public class EESpawnMob extends EReloadCommand<EverEssentials> {
 	}
 
 	public Text help(final CommandSource source) {
-		return Text.builder("/spawnmob <" + EAMessages.ARGS_ENTITY.get() + "> [quantité]")
-				.onClick(TextActions.suggestCommand("/spawnmob "))
-				.color(TextColors.RED).build();
+		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_ENTITY.get() + "> [" + EAMessages.ARGS_AMOUNT.get() + "]")
+					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
+					.color(TextColors.RED)
+					.build();
 	}
 	
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {

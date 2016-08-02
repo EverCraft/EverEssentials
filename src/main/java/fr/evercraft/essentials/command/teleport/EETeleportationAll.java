@@ -54,11 +54,15 @@ public class EETeleportationAll extends ECommand<EverEssentials> {
 
 	public Text help(final CommandSource source) {
 		if(source.hasPermission(EEPermissions.TPALL_OTHERS.get())){
-			return Text.builder("/tpall [joueur]").onClick(TextActions.suggestCommand("/tpall "))
-					.color(TextColors.RED).build();
+			return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_PLAYER.get() + "]")
+						.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
+						.color(TextColors.RED)
+						.build();
 		} 
-		return Text.builder("/tpall").onClick(TextActions.suggestCommand("/tpall"))
-					.color(TextColors.RED).build();
+		return Text.builder("/" + this.getName())
+						.onClick(TextActions.suggestCommand("/" + this.getName()))
+						.color(TextColors.RED)
+						.build();
 	}
 	
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {

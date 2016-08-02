@@ -53,8 +53,8 @@ public class EEMsg extends ECommand<EverEssentials> {
 	}
 
 	public Text help(final CommandSource source) {
-		Text help = Text.builder("/msg <" + EAMessages.ARGS_PLAYER.get() + "> <" + EAMessages.ARGS_MESSAGE.get() + ">")
-						.onClick(TextActions.suggestCommand("/msg "))
+		Text help = Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_PLAYER.get() + "> <" + EAMessages.ARGS_MESSAGE.get() + ">")
+						.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 						.color(TextColors.RED)
 						.build();
 		return help;

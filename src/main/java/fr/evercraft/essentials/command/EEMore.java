@@ -50,9 +50,10 @@ public class EEMore extends ECommand<EverEssentials> {
 	}
 
 	public Text help(final CommandSource source) {
-		Text help = Text.builder("/more").onClick(TextActions.suggestCommand("/more"))
-				.color(TextColors.RED).build();
-		return help;
+		return Text.builder("/" + this.getName())
+					.onClick(TextActions.suggestCommand("/" + this.getName()))
+					.color(TextColors.RED)
+					.build();
 	}
 	
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {

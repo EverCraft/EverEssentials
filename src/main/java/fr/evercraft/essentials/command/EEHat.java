@@ -50,9 +50,13 @@ public class EEHat extends ECommand<EverEssentials> {
 	}
 
 	public Text help(final CommandSource source) {
-		return Text.builder("/hat ").onClick(TextActions.suggestCommand("/hat "))
-				.append(Text.builder("[remove]").onClick(TextActions.suggestCommand("/hat remove")).build())
-				.color(TextColors.RED).build();
+		return Text.builder("/" + this.getName() + " ")
+				.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
+				.append(Text.builder("[remove]")
+							.onClick(TextActions.suggestCommand("/" + this.getName() + " remove"))
+							.build())
+				.color(TextColors.RED)
+				.build();
 	}
 	
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {

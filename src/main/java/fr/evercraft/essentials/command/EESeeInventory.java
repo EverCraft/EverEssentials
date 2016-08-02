@@ -49,10 +49,10 @@ public class EESeeInventory extends ECommand<EverEssentials> {
 	}
 
 	public Text help(final CommandSource source) {
-		Text help = Text.builder("/invsee <" + EAMessages.ARGS_PLAYER.get() + ">")
-				.onClick(TextActions.suggestCommand("/invsee "))
-				.color(TextColors.RED).build();
-		return help;
+		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_PLAYER.get() + ">")
+					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
+					.color(TextColors.RED)
+					.build();
 	}
 	
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {

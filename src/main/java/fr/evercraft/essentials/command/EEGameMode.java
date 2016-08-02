@@ -23,6 +23,7 @@ import java.util.Optional;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.entity.living.player.gamemode.GameMode;
+import org.spongepowered.api.text.LiteralText.Builder;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
@@ -51,32 +52,24 @@ public class EEGameMode extends ECommand<EverEssentials> {
 	}
 	
 	public Text help(final CommandSource source) {
-		if(source.hasPermission(EEPermissions.PING_OTHERS.get())){
-			return Text.builder("/gm <")
-					.append(Text.builder("survival").onClick(TextActions.suggestCommand("/gm survival ")).build())
-					.append(Text.builder("|").build())
-					.append(Text.builder("creative").onClick(TextActions.suggestCommand("/gm creative ")).build())
-					.append(Text.builder("|").build())
-					.append(Text.builder("adventure").onClick(TextActions.suggestCommand("/gm adventure ")).build())
-					.append(Text.builder("|").build())
-					.append(Text.builder("spectator").onClick(TextActions.suggestCommand("/gm spectator ")).build())
-					.append(Text.builder("|").build())
-					.append(Text.builder("empty").onClick(TextActions.suggestCommand("/gm empty ")).build())
-					.append(Text.builder("> [joueur]").build())
-					.color(TextColors.RED).build();
+		Builder build = Text.builder("/" + this.getName() + " <")
+				.append(Text.builder("survival").onClick(TextActions.suggestCommand("/" + this.getName() + " survival ")).build())
+				.append(Text.of("|"))
+				.append(Text.builder("creative").onClick(TextActions.suggestCommand("/" + this.getName() + " creative ")).build())
+				.append(Text.of("|"))
+				.append(Text.builder("adventure").onClick(TextActions.suggestCommand("/" + this.getName() + " adventure ")).build())
+				.append(Text.of("|"))
+				.append(Text.builder("spectator").onClick(TextActions.suggestCommand("/" + this.getName() + " spectator ")).build())
+				.append(Text.of("|"))
+				.append(Text.builder("empty").onClick(TextActions.suggestCommand("/" + this.getName() + " empty ")).build())
+				.append(Text.of(">"));
+		
+		if(source.hasPermission(EEPermissions.GAMEMODE_OTHERS.get())){
+			build = build.append(Text.of(" [" + EAMessages.ARGS_PLAYER.get() + "]"));
 		}
-		return Text.builder("/gm <")
-					.append(Text.builder("survival").onClick(TextActions.suggestCommand("/gm survival")).build())
-					.append(Text.builder("|").build())
-					.append(Text.builder("creative").onClick(TextActions.suggestCommand("/gm creative")).build())
-					.append(Text.builder("|").build())
-					.append(Text.builder("adventure").onClick(TextActions.suggestCommand("/gm adventure")).build())
-					.append(Text.builder("|").build())
-					.append(Text.builder("spectator").onClick(TextActions.suggestCommand("/gm spectator")).build())
-					.append(Text.builder("|").build())
-					.append(Text.builder("empty").onClick(TextActions.suggestCommand("/gm empty")).build())
-					.append(Text.builder(">").build())
-					.color(TextColors.RED).build();
+		
+		return build.color(TextColors.RED)
+					.build();
 	}
 	
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {

@@ -16,6 +16,7 @@
  */
 package fr.evercraft.essentials.command;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.spongepowered.api.command.CommandException;
@@ -31,9 +32,9 @@ import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.plugin.command.ECommand;
 
-public class EEReload extends ECommand<EverEssentials>{
+public class EEReloadAll extends ECommand<EverEssentials>{
 	
-	public EEReload(final EverEssentials plugin) {
+	public EEReloadAll(final EverEssentials plugin) {
         super(plugin, "reload", "rl");
     }
 	
@@ -46,15 +47,14 @@ public class EEReload extends ECommand<EverEssentials>{
 	}
 
 	public Text help(final CommandSource source) {
-		Text help;
-		help = Text.builder("/reload").onClick(TextActions.suggestCommand("/reload"))
-				.color(TextColors.RED).build();
-		return help;
+		return Text.builder("/" + this.getName())
+					.onClick(TextActions.suggestCommand("/" + this.getName()))
+					.color(TextColors.RED)
+					.build();
 	}
 	
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
-		List<String> suggests = null;
-		return suggests;
+		return new ArrayList<String>();
 	}
 	
 	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {

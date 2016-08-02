@@ -56,8 +56,8 @@ public class EESpawnSet extends ECommand<EverEssentials> {
 	}
 
 	public Text help(final CommandSource source) {
-		return Text.builder("/setspawn [" + EAMessages.ARGS_GROUP + "]")
-					.onClick(TextActions.suggestCommand("/sethome "))
+		return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_GROUP + "]")
+					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
 					.build();
 	}

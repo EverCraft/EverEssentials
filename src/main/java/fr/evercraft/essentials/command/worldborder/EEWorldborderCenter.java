@@ -68,7 +68,7 @@ public class EEWorldborderCenter extends ESubCommand<EverEssentials> {
 
 	public Text help(final CommandSource source) {
 		return Text.builder("/" + this.getName() + " <x> <z> [" + EAMessages.ARGS_WORLD.get() + "]")
-					.onClick(TextActions.suggestCommand("/" + this.getName()))
+					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
 					.build();
 	}

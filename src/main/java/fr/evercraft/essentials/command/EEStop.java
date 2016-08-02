@@ -30,6 +30,7 @@ import org.spongepowered.api.text.format.TextColors;
 import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
+import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ECommand;
 
@@ -48,9 +49,10 @@ public class EEStop extends ECommand<EverEssentials> {
 	}
 
 	public Text help(final CommandSource source) {
-		Text help = Text.builder("/stop <raison...>").onClick(TextActions.suggestCommand("/stop "))
-					.color(TextColors.RED).build();
-		return help;
+		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_REASON.get() + ">")
+					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
+					.color(TextColors.RED)
+					.build();
 	}
 	
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {

@@ -53,13 +53,13 @@ public class EETeleportationAskAll extends ECommand<EverEssentials> {
 
 	public Text help(final CommandSource source) {
 		if(source.hasPermission(EEPermissions.TPAALL_OTHERS.get())){
-			return Text.builder("/tpaall [joueur]")
-					.onClick(TextActions.suggestCommand("/tpaall "))
+			return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_PLAYER.get() + "]")
+					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
 					.build();
 		} 
-		return Text.builder("/tpaall")
-					.onClick(TextActions.suggestCommand("/tpaall"))
+		return Text.builder("/" + this.getName())
+					.onClick(TextActions.suggestCommand("/" + this.getName()))
 					.color(TextColors.RED)
 					.build();
 	}

@@ -290,6 +290,7 @@ public class EEMessage extends EMessage {
 		KILL_DESCRIPTION("kill.description", "Tue un joueur"),
 		KILL_PLAYER("kill.player", "&7Vous avez été tué par &6<staff>&7."),
 		KILL_STAFF("kill.staff", "&7Vous avez tué &6<player>&7."),
+		KILL_EQUALS("kill.equals", "&7Vous vous êtes suicidé."),
 		
 		LAG_DESCRIPTION("lag.description", "Connaître l'état du serveur"),
 		LAG_TITLE("lag.title", "&aInformations sur le serveur"),
@@ -520,6 +521,7 @@ public class EEMessage extends EMessage {
 		SUDO_CONSOLE("sudo.console", "&7Votre <command> &7à bien était éxecutée par la &6console&7."),
 		
 		SUICIDE_DESCRIPTION("suicide.description", "Permet de vous suicider"),
+		SUICIDE_PLAYER("suicide.player", "&7Vous vous êtes suicidé."),
 		
 		TP_DESCRIPTION("tp.description", "Téléporte le joueur vers un autre joueur"),
 		TP_DESTINATION("tp.destination", "&6&l<player>"),

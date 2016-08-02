@@ -47,10 +47,10 @@ public class EEMe extends ECommand<EverEssentials> {
 	}
 
 	public Text help(final CommandSource source) {
-		Text help = Text.builder("/me <" + EAMessages.ARGS_MESSAGE.get() + ">")
-				.onClick(TextActions.suggestCommand("/me "))
-				.color(TextColors.RED).build();
-		return help;
+		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_MESSAGE.get() + ">")
+					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
+					.color(TextColors.RED)
+					.build();
 	}
 	
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {

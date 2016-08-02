@@ -61,8 +61,10 @@ public class EEEffect extends EReloadCommand<EverEssentials> {
 	}
 
 	public Text help(final CommandSource source) {
-		return Text.builder("/effect <effet> [amplification] [durée]").onClick(TextActions.suggestCommand("/effect"))
-				.color(TextColors.RED).build();
+		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_EFFECT.get() + "> [" + EAMessages.ARGS_AMPLIFICATION.get() + "] [" + EAMessages.ARGS_SECONDS.get() + "]")
+					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
+					.color(TextColors.RED)
+					.build();
 	}
 
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {

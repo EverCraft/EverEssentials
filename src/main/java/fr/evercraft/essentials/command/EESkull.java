@@ -50,11 +50,20 @@ public class EESkull extends ECommand<EverEssentials> {
 	}
 
 	public Text help(final CommandSource source) {
-		return Text.builder("/skull").onClick(TextActions.suggestCommand("/skull")).color(TextColors.RED).build();
+		if(source.hasPermission(EEPermissions.SKULL_OTHERS.get())) {
+			return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_PLAYER.get() + "]")
+					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
+					.color(TextColors.RED)
+					.build();
+		}
+		return Text.builder("/" + this.getName())
+					.onClick(TextActions.suggestCommand("/" + this.getName()))
+					.color(TextColors.RED)
+					.build();
 	}
 
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
-		if (args.size() == 1 && source.hasPermission(EEPermissions.PING_OTHERS.get())) {
+		if (args.size() == 1 && source.hasPermission(EEPermissions.SKULL_OTHERS.get())) {
 			return null;
 		}
 		return new ArrayList<String>();

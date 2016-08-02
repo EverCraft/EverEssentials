@@ -54,8 +54,16 @@ public class EEWhois extends ECommand<EverEssentials> {
 	}
 
 	public Text help(final CommandSource source) {
-		return Text.builder("/whois").onClick(TextActions.suggestCommand("/whois"))
-				.color(TextColors.RED).build();
+		if(source.hasPermission(EEPermissions.WHOIS_OTHERS.get())) {
+			return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_PLAYER.get() + "]")
+					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
+					.color(TextColors.RED)
+					.build();
+		}
+		return Text.builder("/" + this.getName())
+				.onClick(TextActions.suggestCommand("/" + this.getName()))
+				.color(TextColors.RED)
+				.build();
 	}
 	
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
@@ -79,13 +87,19 @@ public class EEWhois extends ECommand<EverEssentials> {
 			}
 		// Nom du home connu
 		} else if(args.size() == 1) {
-			Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(args.get(0));
-			// Le joueur existe
-			if(optPlayer.isPresent()){
-				resultat = commandWhoisPlayer(source, optPlayer.get());
-			// Joueur introuvable
+			// Si il a la permission
+			if(source.hasPermission(EEPermissions.WHOIS_OTHERS.get())) {
+				Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(args.get(0));
+				// Le joueur existe
+				if(optPlayer.isPresent()) {
+					resultat = commandWhoisPlayer(source, optPlayer.get());
+				// Joueur introuvable
+				} else {
+					source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
+				}
+			// Il n'a pas la permission
 			} else {
-				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
+				source.sendMessage(EAMessages.NO_PERMISSION.getText());
 			}
 		// Nombre d'argument incorrect
 		} else {

@@ -30,6 +30,7 @@ import fr.evercraft.essentials.command.mail.*;
 import fr.evercraft.essentials.command.message.*;
 import fr.evercraft.essentials.command.repair.*;
 import fr.evercraft.essentials.command.spawn.*;
+import fr.evercraft.essentials.command.sub.*;
 import fr.evercraft.essentials.command.teleport.*;
 import fr.evercraft.essentials.command.teleport.request.*;
 import fr.evercraft.essentials.command.time.*;
@@ -53,7 +54,9 @@ public class EEManagerCommands extends HashSet<ECommand<EverEssentials>> {
 		super();
 		
 		this.plugin = plugin;
+		
 		this.command = new EECommand(this.plugin);
+		this.command.add(new EEReload(this.plugin, this.command));
 		
 		load();
 	}
@@ -98,7 +101,7 @@ public class EEManagerCommands extends HashSet<ECommand<EverEssentials>> {
 		register(new EEMsg(this.plugin));
 		register(new EENames(this.plugin));
 		register(new EENear(this.plugin));
-		register(new EEReload(this.plugin));
+		register(new EEReloadAll(this.plugin));
 		register(new EERepair(this.plugin));
 		register(new EERepairAll(this.plugin));
 		register(new EERepairHand(this.plugin));

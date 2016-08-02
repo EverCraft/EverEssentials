@@ -22,6 +22,7 @@ import java.util.Optional;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
+import org.spongepowered.api.text.LiteralText.Builder;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
@@ -49,13 +50,21 @@ public class EEExp extends ECommand<EverEssentials> {
 	}
 
 	public Text help(final CommandSource source) {
-		if(source.hasPermission(EEPermissions.EXP_OTHERS.get())){
-			return Text.builder("/xp <give|set> <lvl|exp> <" + EAMessages.ARGS_AMOUNT.get() + "> [" + EAMessages.ARGS_PLAYER.get() + "]")
-					.onClick(TextActions.suggestCommand("/xp "))
-				.color(TextColors.RED).build();
+		Builder build = Text.builder("/" + this.getName() + " <")
+							.append(Text.builder("give")
+										.onClick(TextActions.suggestCommand("/xp give "))
+										.build())
+							.append(Text.of("|"))
+							.append(Text.builder("set")
+										.onClick(TextActions.suggestCommand("/xp set "))
+										.build())
+							.append(Text.of("> <lvl|exp> <" + EAMessages.ARGS_AMOUNT.get() + ">)"));
+		if(source.hasPermission(EEPermissions.EXP_OTHERS.get())) {
+			build = build.append(Text.of("[" + EAMessages.ARGS_PLAYER.get() + "]"));
 		}
-		return Text.builder("/xp <give|set> <lvl|exp> <" + EAMessages.ARGS_AMOUNT.get() + ">").onClick(TextActions.suggestCommand("/xp "))
-				.color(TextColors.RED).build();
+		return build.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
+							.color(TextColors.RED)
+							.build();
 	}
 	
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {

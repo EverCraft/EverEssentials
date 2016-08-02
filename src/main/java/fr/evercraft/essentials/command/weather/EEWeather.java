@@ -55,15 +55,17 @@ public class EEWeather extends ECommand<EverEssentials> {
 	}
 
 	public Text help(final CommandSource source) {
-		return Text.builder("/weather ").onClick(TextActions.suggestCommand("/weather "))
+		return Text.builder("/" + this.getName() + " ")
 				.append(Text.of("<"))
-				.append(Text.builder("sun").onClick(TextActions.suggestCommand("/weather sun")).build())
+				.append(Text.builder("sun").onClick(TextActions.suggestCommand("/" + this.getName() + " sun")).build())
 				.append(Text.of("|"))
-				.append(Text.builder("rain").onClick(TextActions.suggestCommand("/weather rain")).build())
+				.append(Text.builder("rain").onClick(TextActions.suggestCommand("/" + this.getName() + " rain")).build())
 				.append(Text.of("|"))
-				.append(Text.builder("storm").onClick(TextActions.suggestCommand("/weather storm")).build())
-				.append(Text.of("> [monde [minutes]]"))
-				.color(TextColors.RED).build();
+				.append(Text.builder("storm").onClick(TextActions.suggestCommand("/" + this.getName() + " storm")).build())
+				.append(Text.of("> [" + EAMessages.ARGS_WORLD.get() + " [" + EAMessages.ARGS_MINUTES.get() + "]]"))
+				.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
+				.color(TextColors.RED)
+				.build();
 	}
 
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {

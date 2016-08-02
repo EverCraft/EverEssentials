@@ -55,11 +55,15 @@ public class EETeleportationPosition extends ECommand<EverEssentials> {
 
 	public Text help(final CommandSource source) {
 		if(source.hasPermission(EEPermissions.TPPOS_OTHERS.get())){
-			return Text.builder("/tppos <x> <y> <z> [monde [joueur]]").onClick(TextActions.suggestCommand("/tppos "))
-					.color(TextColors.RED).build();
+			return Text.builder("/" + this.getName() + " <x> <y> <z> [" + EAMessages.ARGS_WORLD.get() + " [" + EAMessages.ARGS_PLAYER.get() + "]]")
+					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
+					.color(TextColors.RED)
+					.build();
 		} 
-		return Text.builder("/tppos <x> <y> <z> [monde]").onClick(TextActions.suggestCommand("/tppos "))
-					.color(TextColors.RED).build();
+		return Text.builder("/" + this.getName() + " <x> <y> <z> [" + EAMessages.ARGS_WORLD.get() + "]")
+					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
+					.color(TextColors.RED)
+					.build();
 	}
 	
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {

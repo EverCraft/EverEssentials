@@ -45,15 +45,16 @@ public class EERepair extends ECommand<EverEssentials> {
 	}
 
 	public Text help(final CommandSource source) {
-		return Text.builder("/repair ").onClick(TextActions.suggestCommand("/repair "))
-				.append(Text.of("<"))
-				.append(Text.builder("all").onClick(TextActions.suggestCommand("/repair all")).build())
-				.append(Text.of("|"))
-				.append(Text.builder("hand").onClick(TextActions.suggestCommand("/repair hand")).build())
-				.append(Text.of("|"))
-				.append(Text.builder("hotbar").onClick(TextActions.suggestCommand("/repair hotbar")).build())
-				.append(Text.of(">"))
-				.color(TextColors.RED).build();
+		return Text.builder("/" + this.getName() + " ").onClick(TextActions.suggestCommand("/" + this.getName() + " "))
+					.append(Text.of("<"))
+					.append(Text.builder("all").onClick(TextActions.suggestCommand("/" + this.getName() + " all")).build())
+					.append(Text.of("|"))
+					.append(Text.builder("hand").onClick(TextActions.suggestCommand("/" + this.getName() + " hand")).build())
+					.append(Text.of("|"))
+					.append(Text.builder("hotbar").onClick(TextActions.suggestCommand("/" + this.getName() + " hotbar")).build())
+					.append(Text.of(">"))
+					.color(TextColors.RED)
+					.build();
 	}
 
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {

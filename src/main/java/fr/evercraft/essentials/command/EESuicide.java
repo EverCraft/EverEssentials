@@ -16,6 +16,7 @@
  */
 package fr.evercraft.essentials.command;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.spongepowered.api.command.CommandException;
@@ -28,6 +29,7 @@ import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
+import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ECommand;
 import fr.evercraft.everapi.server.player.EPlayer;
 
@@ -46,15 +48,14 @@ public class EESuicide extends ECommand<EverEssentials> {
 	}
 
 	public Text help(final CommandSource source) {
-		Text help;
-		help = Text.builder("/suicide").onClick(TextActions.suggestCommand("/suicide"))
-				.color(TextColors.RED).build();
-		return help;
+		return Text.builder("/" + this.getName())
+					.onClick(TextActions.suggestCommand("/" + this.getName()))
+					.color(TextColors.RED)
+					.build();
 	}
 	
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
-		List<String> suggests = null;
-		return suggests;
+		return new ArrayList<String>();
 	}
 	
 	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
@@ -77,6 +78,8 @@ public class EESuicide extends ECommand<EverEssentials> {
 	
 	public boolean commandSuicide(final EPlayer player) {
 		player.setHealth(0);
+		player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.SUICIDE_PLAYER.get()
+				.replaceAll("<player>", player.getName())));
 		return true;
 	}
 }

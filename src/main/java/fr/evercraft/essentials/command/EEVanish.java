@@ -51,12 +51,15 @@ public class EEVanish extends ECommand<EverEssentials> {
 	public Text help(final CommandSource source) {
 		Text help;
 		if(source.hasPermission(EEPermissions.VANISH_OTHERS.get())){
-			help = Text.builder("/vanish").onClick(TextActions.suggestCommand("/vanish "))
-					.append(Text.builder(" [joueur [on|off]]").build())
-					.color(TextColors.RED).build();
+			help = Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_PLAYER.get() + " [on|off]]")
+					.onClick(TextActions.suggestCommand("/vanish "))
+					.color(TextColors.RED)
+					.build();
 		} else {
-			help = Text.builder("/vanish").onClick(TextActions.suggestCommand("/vanish"))
-					.color(TextColors.RED).build();
+			help = Text.builder("/" + this.getName())
+					.onClick(TextActions.suggestCommand("/" + this.getName()))
+					.color(TextColors.RED)
+					.build();
 		}
 		return help;
 	}
@@ -87,7 +90,7 @@ public class EEVanish extends ECommand<EverEssentials> {
 		// On connais le joueur
 		} else if(args.size() == 1) {
 			// Si il a la permission
-			if(source.hasPermission(EEPermissions.VANISH_OTHERS.get())){
+			if(source.hasPermission(EEPermissions.VANISH_OTHERS.get())) {
 				Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(args.get(0));
 				// Le joueur existe
 				if(optPlayer.isPresent()){
@@ -103,7 +106,7 @@ public class EEVanish extends ECommand<EverEssentials> {
 		// On connais le joueur et si on doit lui activé ou lui désactivé le vanish
 		} else if(args.size() == 2) {
 			// Si il a la permission
-			if(source.hasPermission(EEPermissions.VANISH_OTHERS.get())){
+			if(source.hasPermission(EEPermissions.VANISH_OTHERS.get())) {
 				Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(args.get(0));
 				// Le joueur existe
 				if(optPlayer.isPresent()){

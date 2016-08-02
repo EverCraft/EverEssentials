@@ -53,22 +53,26 @@ public class EESpeed extends ECommand<EverEssentials> {
 	}
 
 	public Text help(final CommandSource source) {
-		if(source.hasPermission(EEPermissions.SPEED_WALK.get()) && 
-			source.hasPermission(EEPermissions.SPEED_FLY.get())) {
-			return Text.builder("/speed [" + EAMessages.ARGS_SPEED.get() + "] [walk|fly] [" + EAMessages.ARGS_PLAYER.get() + "]")
-					.onClick(TextActions.suggestCommand("/speed "))
-					.color(TextColors.RED).build();
+		if(source.hasPermission(EEPermissions.SPEED_WALK.get()) && source.hasPermission(EEPermissions.SPEED_FLY.get())) {
+			return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_SPEED.get() + "] [walk|fly] [" + EAMessages.ARGS_PLAYER.get() + "]")
+					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
+					.color(TextColors.RED)
+					.build();
 		} else if(source.hasPermission(EEPermissions.SPEED_FLY.get())) {
-				return Text.builder("/speed [" + EAMessages.ARGS_SPEED.get() + "] [fly] [" + EAMessages.ARGS_PLAYER.get() + "]")
-						.onClick(TextActions.suggestCommand("/speed "))
-						.color(TextColors.RED).build();
+			return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_SPEED.get() + "] [fly] [" + EAMessages.ARGS_PLAYER.get() + "]")
+					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
+					.color(TextColors.RED)
+					.build();
 		} else if(source.hasPermission(EEPermissions.SPEED_WALK.get())) {
-			return Text.builder("/speed [" + EAMessages.ARGS_SPEED.get() + "] [walk] [" + EAMessages.ARGS_PLAYER.get() + "]")
-					.onClick(TextActions.suggestCommand("/speed "))
-					.color(TextColors.RED).build();
+			return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_SPEED.get() + "] [walk] [" + EAMessages.ARGS_PLAYER.get() + "]")
+					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
+					.color(TextColors.RED)
+					.build();
 		}
-		return Text.builder("/speed").onClick(TextActions.suggestCommand("/speed"))
-				.color(TextColors.RED).build();
+		return Text.builder("/" + this.getName())
+					.onClick(TextActions.suggestCommand("/" + this.getName()))
+					.color(TextColors.RED)
+					.build();
 	}
 
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
