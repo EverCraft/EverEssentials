@@ -16,17 +16,15 @@
  */
 package fr.evercraft.essentials.managers;
 
+import java.util.HashSet;
 import java.util.Optional;
-import java.util.TreeMap;
 
 import org.spongepowered.api.command.CommandMapping;
 
+import fr.evercraft.essentials.EECommand;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.essentials.command.*;
-import fr.evercraft.essentials.command.god.EEGod;
-import fr.evercraft.essentials.command.god.EEGodOff;
-import fr.evercraft.essentials.command.god.EEGodOn;
-import fr.evercraft.essentials.command.god.EEGodStatus;
+import fr.evercraft.essentials.command.god.*;
 import fr.evercraft.essentials.command.home.*;
 import fr.evercraft.essentials.command.mail.*;
 import fr.evercraft.essentials.command.message.*;
@@ -41,19 +39,22 @@ import fr.evercraft.essentials.command.weather.*;
 import fr.evercraft.essentials.command.whitelist.*;
 import fr.evercraft.essentials.command.world.*;
 import fr.evercraft.essentials.command.worldborder.*;
-import fr.evercraft.everapi.plugin.command.ECommand;
-import fr.evercraft.everapi.plugin.command.EReloadCommand;
+import fr.evercraft.everapi.plugin.command.*;
 
-public class EEManagerCommands extends TreeMap<String, ECommand<EverEssentials>>{
+public class EEManagerCommands extends HashSet<ECommand<EverEssentials>> {
 	
 	private static final long serialVersionUID = -570936893274825176L;
 
-	private EverEssentials plugin;
+	private final EverEssentials plugin;
+	
+	private final EECommand command;
 	
 	public EEManagerCommands(EverEssentials plugin){
 		super();
 		
 		this.plugin = plugin;
+		this.command = new EECommand(this.plugin);
+		
 		load();
 	}
 	
@@ -192,7 +193,7 @@ public class EEManagerCommands extends TreeMap<String, ECommand<EverEssentials>>
 	}
 	
 	public void reload(){
-		for(ECommand<EverEssentials> command : this.values()) {
+		for(ECommand<EverEssentials> command : this) {
 			if(command instanceof EReloadCommand) {
 				((EReloadCommand<EverEssentials>) command).reload();
 			}
@@ -200,6 +201,7 @@ public class EEManagerCommands extends TreeMap<String, ECommand<EverEssentials>>
 	}
 	
 	private void register(ECommand<EverEssentials> command) {
-		this.put(command.getName(), command);
+		this.command.add(command);
+		this.add(command);
 	}
 }
