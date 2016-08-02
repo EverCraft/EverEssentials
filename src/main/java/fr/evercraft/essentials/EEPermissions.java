@@ -132,6 +132,13 @@ public enum EEPermissions implements EnumPermission {
 	
 	ME("me.command"),
 	
+	MSG("msg.command"),
+	MSG_COLOR("msg.color"),
+	MSG_FORMAT("msg.format"),
+	MSG_MAGIC("msg.magic"),
+	MSG_CHARACTER("msg.character"),
+	MSG_ICONS("msg.icons"),
+	
 	MOJANG("mojang.command"),
 	
 	MORE("more.command"),

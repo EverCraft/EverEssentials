@@ -73,12 +73,14 @@ public class EEReply extends ECommand<EverEssentials> {
 		// Résultat de la commande :
 		boolean resultat = false;
 		if(args.size() == 1) {
+			String message = EEMsg.replaceMessage(this.plugin.getChat(), source, args.get(0));
+			
 			// La source est un joueur
 			if(source instanceof EPlayer) {
-				resultat = commandReply(source, ((EPlayer) source).getReplyTo(), args.get(0));
+				resultat = commandReply(source, ((EPlayer) source).getReplyTo(), message);
 			// La source est une console
 			} else if(source.equals(this.plugin.getGame().getServer().getConsole())) {
-				resultat = commandReply(source, this.plugin.getManagerServices().getEssentials().getConsole().getReplyTo(), args.get(0));
+				resultat = commandReply(source, this.plugin.getManagerServices().getEssentials().getConsole().getReplyTo(), message);
 			} else {
 				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText()));
 			}

@@ -23,6 +23,7 @@ import java.util.regex.Pattern;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
+import org.spongepowered.api.service.permission.Subject;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
@@ -44,7 +45,7 @@ public class EEMsg extends ECommand<EverEssentials> {
     }
 	
 	public boolean testPermission(final CommandSource source) {
-		return source.hasPermission(EEPermissions.REPLY.get());
+		return source.hasPermission(EEPermissions.MSG.get());
 	}
 
 	public Text description(final CommandSource source) {
@@ -88,17 +89,19 @@ public class EEMsg extends ECommand<EverEssentials> {
 		// Résultat de la commande :
 		boolean resultat = false;
 		if(args.size() == 2) {
+			String message = EEMsg.replaceMessage(this.plugin.getChat(), source, args.get(1));
+			
 			// Le destinataire est la console
 			if(args.get(0).equalsIgnoreCase(EEMsg.CONSOLE)) {
 				// La source est un joueur
 				if(source instanceof EPlayer) {
-					resultat = this.commandMsgConsole((EPlayer) source, this.plugin.getEServer().getConsole(), args.get(1));
+					resultat = this.commandMsgConsole((EPlayer) source, this.plugin.getEServer().getConsole(), message);
 				// La source est la console
 				} else if(this.plugin.getEServer().getConsole().equals(source)) {
 					source.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.MSG_CONSOLE_ERROR.getText()));
 				// La source est un commande block
 				} else if(source.getIdentifier().equals("@")) {
-					resultat = this.commandMsgCommandBloc(source, this.plugin.getEServer().getConsole(), args.get(1));
+					resultat = this.commandMsgCommandBloc(source, this.plugin.getEServer().getConsole(), message);
 				// La source est inconnue
 				} else {
 					source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
@@ -110,13 +113,13 @@ public class EEMsg extends ECommand<EverEssentials> {
 				if(optPlayer.isPresent()) {
 					// La source est un joueur
 					if(source instanceof EPlayer) {
-						resultat = commandMsgPlayer((EPlayer) source, optPlayer.get(), args.get(1));
+						resultat = commandMsgPlayer((EPlayer) source, optPlayer.get(), message);
 					// La source est la console
 					} else if(this.plugin.getGame().getServer().getConsole().equals(source)) {
 						resultat = commandMsgConsole(source, optPlayer.get(), args.get(1));
 					// La source est un commande block
 					} else if(source.getIdentifier().equals("@")) {
-						resultat = this.commandMsgCommandBloc(source, optPlayer.get(), args.get(1));
+						resultat = this.commandMsgCommandBloc(source, optPlayer.get(), message);
 					// La source est inconnue
 					} else {
 						source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR.getText()));
@@ -215,5 +218,24 @@ public class EEMsg extends ECommand<EverEssentials> {
 	public boolean commandMsgCommandBloc(final CommandSource player, final CommandSource receive, final String message) {
 		receive.sendMessage(EChat.of(EEMessages.MSG_COMMANDBLOCK_RECEIVE.get().replaceAll("<message>", message)));
 		return true;
+	}
+	
+	public static String replaceMessage(final EChat chat, final Subject player, String message) {
+		if(!player.hasPermission(EEPermissions.MSG_COLOR.get())) {
+			message = message.replaceAll(EChat.REGEX_COLOR, "");
+		}
+		if(!player.hasPermission(EEPermissions.MSG_FORMAT.get())) {
+			message = message.replaceAll(EChat.REGEX_FORMAT, "");
+		}
+		if(!player.hasPermission(EEPermissions.MSG_MAGIC.get())) {
+			message = message.replaceAll(EChat.REGEX_MAGIC, "");
+		}
+		if(player.hasPermission(EEPermissions.MSG_CHARACTER.get())) {
+			message = chat.replaceCharacter(message);
+		}
+		if(player.hasPermission(EEPermissions.MSG_ICONS.get())) {
+			message = chat.replaceIcons(message);
+		}
+		return message;
 	}
 }
