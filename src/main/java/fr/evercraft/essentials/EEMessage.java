@@ -135,8 +135,23 @@ public class EEMessage extends EMessage {
 		FEED_OTHERS_PLAYER("feed.othersPlayer", 			"&7Vous avez été rassasié par &6<staff>&7."),
 		FEED_ALL_STAFF("feed.allStaff", 					"&7Vous avez rassasié tous les joueurs."),
 		
-		FREEZE_DESCRIPTION("freeze.description", 			"Immobilise un joueur"),
-		
+		FREEZE_DESCRIPTION("freeze.description", 										"Gère la paralysie sur un joueur"),
+		FREEZE_ON_DESCRIPTION("freeze.on.description", 									"Paralyse un joueur"),
+		FREEZE_ON_ENABLE("freeze.on.enable", 											"&7Vous êtes paralysé."),
+		FREEZE_ON_ENABLE_ERROR("freeze.on.enableError", 								"&cErreur : Vous êtes déjà paralysé."),
+		FREEZE_ON_OTHERS_ENABLE("freeze.on.othersEnable", 								"&7Vous venez d'être paralysé par &6<staff>&7."),
+		FREEZE_ON_OTHERS_STAFF_ENABLE("freeze.on.othersStaffEnable", 					"&7Vous venez de paralyser &6<player>&7."),
+		FREEZE_ON_OTHERS_STAFF_ENABLE_ERROR("freeze.on.othersStaffEnableError", 		"&cErreur : <player> &7est déjà paralysé."),
+		FREEZE_OFF_DESCRIPTION("freeze.off.description", 								"Libère un joueur paralysé"),
+		FREEZE_OFF_DISABLE("freeze.off.disable", 										"&7Vous êtes désormais libre."),
+		FREEZE_OFF_DISABLE_ERROR("freeze.off.disableError", 							"&cErreur : Vous êtes déjà libre."),
+		FREEZE_OFF_OTHERS_DISABLE("freeze.off.otherDisable", 							"&7Vous êtes libre grâce à &6<staff>&7."),
+		FREEZE_OFF_OTHERS_STAFF_DISABLE("freeze.off.othersStaffDisable", 				"&7Vous venez de libérer &6<player>&7."),
+		FREEZE_OFF_OTHERS_STAFF_DISABLE_ERROR("freeze.off.othersStaffDisableError", 	"&cErreur : <player> &7est déjà libre."),
+		FREEZE_STATUS_DESCRIPTION("freeze.status.description", 							"Affiche si le joueur est paralysé où libre"),
+		FREEZE_STATUS_ON("freeze.status.on", 											"<player> &7est paralysé."),
+		FREEZE_STATUS_OFF("freeze.status.off", 											"<player> &7est libre."),
+
 		FLY_DESCRIPTION("fly.description", 								"Permet de vous envoler"),
 		FLY_PLAYER_ENABLE("fly.playerEnable",							"&7Vous pouvez désormais vous envoler."),
 		FLY_PLAYER_ENABLE_ERROR("fly.playerEnableError", 				"&7Vous possèdez déjà le droit de vous envoler."),
@@ -174,21 +189,18 @@ public class EEMessage extends EMessage {
 		GETPOS_POSITION_HOVER("getpos.positionHover", 	"&cMonde : &6<world>[RT]&cX : &6<x>[RT]&cY : &6<y>[RT]&cZ : &6<z>"),
 		
 		GOD_DESCRIPTION("god.description", 										"Gère l'invulnérabilité d'un joueur"),
-		
 		GOD_ON_DESCRIPTION("god.on.description", 								"Rend le joueur invulnérable"),
 		GOD_ON_ENABLE("god.on.enable", 											"&7Vous êtes désormais invulnérable."),
 		GOD_ON_ENABLE_ERROR("god.on.enableError", 								"&cErreur : Vous êtes déjà invulnérable."),
 		GOD_ON_OTHERS_ENABLE("god.on.othersEnable", 							"&7Vous êtes désormais invulnérable grâce à &6<staff>&7."),
 		GOD_ON_OTHERS_STAFF_ENABLE("god.on.othersStaffEnable", 					"&7Vous venez de rendre invulnérable &6<player>&7."),
 		GOD_ON_OTHERS_STAFF_ENABLE_ERROR("god.on.othersStaffEnableError", 		"&cErreur : <player> &7est déjà invulnérable."),
-		
 		GOD_OFF_DESCRIPTION("god.off.description", 								"Rend le joueur vulnérable"),
 		GOD_OFF_DISABLE("god.off.disable", 										"&7Vous êtes désormais vulnérable."),
 		GOD_OFF_DISABLE_ERROR("god.off.disableError", 							"&cErreur : Vous êtes déjà vulnérable."),
 		GOD_OFF_OTHERS_DISABLE("god.off.otherDisable", 							"&7Vous n'êtes plus invulnérable à cause de &6<staff>&7."),
 		GOD_OFF_OTHERS_STAFF_DISABLE("god.off.othersStaffDisable", 				"&7Vous venez de rendre vulnérable &6<player>&7."),
 		GOD_OFF_OTHERS_STAFF_DISABLE_ERROR("god.off.othersStaffDisableError", 	"&cErreur : <player> &7est déjà vulnérable."),
-		
 		GOD_STATUS_DESCRIPTION("god.status.description", 				"Affiche si le joueur est vulnérable où pas"),
 		GOD_STATUS_ON("god.status.on", 									"<player> &7est invulnérable."),
 		GOD_STATUS_OFF("god.status.off", 								"<player> &7est vulnérable."),

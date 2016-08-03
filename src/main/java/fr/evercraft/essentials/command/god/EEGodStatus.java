@@ -127,4 +127,3 @@ public class EEGodStatus extends ESubCommand<EverEssentials> {
 		return true;
 	}
 }
-

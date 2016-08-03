@@ -72,6 +72,7 @@ public class EUserSubject implements SubjectUserEssentials {
 	private boolean god;
 	private boolean vanish;
 	private boolean toggle;
+	private boolean freeze;
 	
 	// Tempo
 	private boolean afk;
@@ -101,6 +102,7 @@ public class EUserSubject implements SubjectUserEssentials {
 		this.god = false;
 		this.vanish = false;
 		this.toggle = true;
+		this.freeze = false;
 		
 		// Tempo
 		
@@ -184,6 +186,7 @@ public class EUserSubject implements SubjectUserEssentials {
 				this.vanish = list.getBoolean("vanish");
 				this.god = list.getBoolean("god");
 				this.toggle = list.getBoolean("toggle");
+				this.freeze = list.getBoolean("freeze");
 				
 				this.plugin.getLogger().debug("Loading : (identifier='" + this.identifier + "';"
 														+ "vanish='" + this.vanish + "';"
@@ -312,6 +315,7 @@ public class EUserSubject implements SubjectUserEssentials {
 													+ "vanish='" + this.vanish + "';"
 													+ "god='" + this.god + "';"
 													+ "toggle='" + this.toggle + "';"
+													+ "freeze='" + this.freeze + "';"
 													+ ")");
 		} catch (SQLException e) {
 	    	this.plugin.getLogger().warn("Error during a change of player : " + e.getMessage());
@@ -477,6 +481,30 @@ public class EUserSubject implements SubjectUserEssentials {
 				this.toggle = !toggle;
 			} else {
 				this.plugin.getThreadAsync().execute(() -> this.plugin.getDataBases().setToggle(this.getIdentifier(), toggle));
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	/*
+	 * Freeze
+	 */
+
+	@Override
+	public boolean isFreeze() {
+		return this.freeze;
+	}
+
+	@Override
+	public boolean setFreeze(final boolean freeze) {		
+		if(this.freeze != freeze) {
+			this.freeze = freeze;
+			
+			if(this.plugin.getManagerEvent().toggle(this.getUniqueId(), freeze)) {
+				this.freeze = !freeze;
+			} else {
+				this.plugin.getThreadAsync().execute(() -> this.plugin.getDataBases().setFreeze(this.getIdentifier(), freeze));
 				return true;
 			}
 		}
