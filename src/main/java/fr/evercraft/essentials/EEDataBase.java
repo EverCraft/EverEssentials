@@ -52,6 +52,7 @@ public class EEDataBase extends EDataBase<EverEssentials> {
 							"`vanish` BOOL NOT NULL DEFAULT '0'," +
 							"`god` BOOL NOT NULL DEFAULT '0'," +
 							"`toggle` BOOL NOT NULL DEFAULT '1'," +
+							"`freeze` BOOL NOT NULL DEFAULT '0'," +
 							"PRIMARY KEY (`uuid`));";
 		initTable(this.getTablePlayers(), players);
 		
@@ -225,6 +226,32 @@ public class EEDataBase extends EDataBase<EverEssentials> {
 			this.plugin.getLogger().debug("Updating the database : (identifier='" + identifier + "';toggle='" + toggle + "')");
     	} catch (SQLException e) {
         	this.plugin.getLogger().warn("Error during a change of toggle : " + e.getMessage());
+		} catch (ServerDisableException e) {
+			e.execute();
+		} finally {
+			try {
+				if (preparedStatement != null) preparedStatement.close();
+				if (connection != null) connection.close();
+			} catch (SQLException e) {}
+	    }
+	}
+	
+	public void setFreeze(final String identifier, final boolean freeze) {
+		Connection connection = null;
+		PreparedStatement preparedStatement = null;
+    	try {
+    		connection = this.getConnection();
+    		String query = 	  "UPDATE `" + this.getTablePlayers() + "` "
+							+ "SET `freeze` = ? "
+							+ "WHERE `uuid` = ? ;";
+			preparedStatement = connection.prepareStatement(query);
+			preparedStatement.setBoolean(1, freeze);
+			preparedStatement.setString(2, identifier);
+			
+			preparedStatement.execute();
+			this.plugin.getLogger().debug("Updating the database : (identifier='" + identifier + "';freeze='" + freeze + "')");
+    	} catch (SQLException e) {
+        	this.plugin.getLogger().warn("Error during a change of freeze : " + e.getMessage());
 		} catch (ServerDisableException e) {
 			e.execute();
 		} finally {

@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with EverEssentials.  If not, see <http://www.gnu.org/licenses/>.
  */
-package fr.evercraft.essentials.command.god;
+package fr.evercraft.essentials.command.freeze;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,37 +26,37 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
 
+import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
-import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ESubCommand;
 import fr.evercraft.everapi.server.player.EPlayer;
 
-public class EEGodStatus extends ESubCommand<EverEssentials> {
-	public EEGodStatus(final EverEssentials plugin, final EEGod command) {
-        super(plugin, command, "status");
+public class EEFreezeOn extends ESubCommand<EverEssentials> {
+	public EEFreezeOn(final EverEssentials plugin, final EEFreeze command) {
+        super(plugin, command, "on");
     }
 	
 	public boolean testPermission(final CommandSource source) {
-		return source.hasPermission(EEPermissions.GOD.get());
+		return source.hasPermission(EEPermissions.FREEZE.get());
 	}
 
 	public Text description(final CommandSource source) {
-		return EChat.of(EEMessages.GOD_STATUS_DESCRIPTION.get());
+		return EChat.of(EEMessages.FREEZE_ON_DESCRIPTION.get());
 	}
 	
 	public List<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		List<String> suggests = null;
-		if(!(args.size() == 1 && source.hasPermission(EEPermissions.GOD_OTHERS.get()))){
+		if(!(args.size() == 1 && source.hasPermission(EEPermissions.FREEZE_OTHERS.get()))){
 			suggests = new ArrayList<String>();
 		}
 		return suggests;
 	}
 
 	public Text help(final CommandSource source) {
-		if(source.hasPermission(EEPermissions.GOD_OTHERS.get())){
+		if(source.hasPermission(EEPermissions.FREEZE_OTHERS.get())){
 			return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_PLAYER.get() + "]")
 						.onClick(TextActions.suggestCommand("/" + this.getName()))
 						.color(TextColors.RED)
@@ -74,17 +74,17 @@ public class EEGodStatus extends ESubCommand<EverEssentials> {
 		boolean resultat = false;
 		if(args.size() == 0) {
 			if(source instanceof EPlayer) {
-				resultat = commandGodStatus((EPlayer) source);
+				resultat = commandFreezeOn((EPlayer) source);
 			} else {
 				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
 			}
 		} else if(args.size() == 1) {
 			// Si il a la permission
-			if(source.hasPermission(EEPermissions.GOD_OTHERS.get())){
+			if(source.hasPermission(EEPermissions.FREEZE_OTHERS.get())){
 				Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(args.get(0));
 				// Le joueur existe
 				if(optPlayer.isPresent()){
-					resultat = commandGodStatusOthers(source, optPlayer.get());
+					resultat = commandFreezeOnOthers(source, optPlayer.get());
 				// Le joueur est introuvable
 				} else {
 					source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
@@ -99,31 +99,40 @@ public class EEGodStatus extends ESubCommand<EverEssentials> {
 		return resultat;
 	}
 
-	public boolean commandGodStatus(final EPlayer player) {
-		boolean godMode = player.isGod();
-		// Si le god mode est déjà activé
-		if(godMode){
-			player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.GOD_STATUS_PLAYER_ON.get()
-					.replaceAll("<player>", player.getDisplayName())));
-		// God mode est déjà désactivé
+	public boolean commandFreezeOn(final EPlayer player) {
+		boolean freeze = player.isFreeze();
+		// Si le freeze est déjà activé
+		if(!freeze){
+			player.setFreeze(true);
+			player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.FREEZE_ON_ENABLE.getText()));
+			// Freeze est déjà désactivé
 		} else {
-			player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.GOD_STATUS_PLAYER_OFF.get()
-					.replaceAll("<player>", player.getDisplayName())));
+			player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.FREEZE_ON_ENABLE_ERROR.getText()));
 		}
 		return true;
 	}
 	
-	public boolean commandGodStatusOthers(final CommandSource source, final EPlayer target) {
-		boolean godMode = target.isGod();
-		// Si le god mode est déjà activé
-		if(godMode){
-			source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.GOD_STATUS_OTHERS_ON.get()
-					.replaceAll("<player>", target.getDisplayName())));
-		// God mode est déjà désactivé
+	public boolean commandFreezeOnOthers(final CommandSource staff, final EPlayer player) throws CommandException {
+		// La source et le joueur sont différent
+		if(!player.equals(staff)){
+			boolean freeze = player.isFreeze();
+			// Si le freeze est déjà activé
+			if(!freeze){
+				player.setFreeze(true);
+				player.sendMessage(EEMessages.PREFIX.get() + EEMessages.FREEZE_ON_OTHERS_ENABLE.get()
+						.replaceAll("<staff>", staff.getName()));
+				staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.FREEZE_ON_OTHERS_STAFF_ENABLE.get()
+						.replaceAll("<player>", player.getName())));
+				return true;
+			// Freeze est déjà désactivé
+			} else {
+				staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.FREEZE_ON_OTHERS_STAFF_ENABLE_ERROR.get()
+						.replaceAll("<player>", player.getName())));
+				return false;
+			}
+		// La source et le joueur sont identique
 		} else {
-			source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.GOD_STATUS_OTHERS_OFF.get()
-					.replaceAll("<player>", target.getDisplayName())));
+			return subExecute(staff, new ArrayList<String>());
 		}
-		return true;
 	}
 }

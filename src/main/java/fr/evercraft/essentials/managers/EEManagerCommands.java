@@ -24,6 +24,10 @@ import org.spongepowered.api.command.CommandMapping;
 import fr.evercraft.essentials.EECommand;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.essentials.command.*;
+import fr.evercraft.essentials.command.freeze.EEFreeze;
+import fr.evercraft.essentials.command.freeze.EEFreezeOff;
+import fr.evercraft.essentials.command.freeze.EEFreezeOn;
+import fr.evercraft.essentials.command.freeze.EEFreezeStatus;
 import fr.evercraft.essentials.command.god.*;
 import fr.evercraft.essentials.command.home.*;
 import fr.evercraft.essentials.command.mail.*;
@@ -151,6 +155,12 @@ public class EEManagerCommands extends HashSet<ECommand<EverEssentials>> {
 		register(new EEWorldsNether(this.plugin));
 		
 		// Commands	
+		EEFreeze freeze = new EEFreeze(this.plugin);
+		freeze.add(new EEFreezeOn(this.plugin, freeze));
+		freeze.add(new EEFreezeOff(this.plugin, freeze));
+		freeze.add(new EEFreezeStatus(this.plugin, freeze));
+		register(freeze);
+		
 		EEGod god = new EEGod(this.plugin);
 		god.add(new EEGodOn(this.plugin, god));
 		god.add(new EEGodOff(this.plugin, god));

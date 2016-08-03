@@ -135,8 +135,23 @@ public class EEMessage extends EMessage {
 		FEED_OTHERS_PLAYER("feed.othersPlayer", 			"&7Vous avez été rassasié par &6<staff>&7."),
 		FEED_ALL_STAFF("feed.allStaff", 					"&7Vous avez rassasié tous les joueurs."),
 		
-		FREEZE_DESCRIPTION("freeze.description", 			"Immobilise un joueur"),
-		
+		FREEZE_DESCRIPTION("freeze.description", 										"Gère la paralysie sur un joueur"),
+		FREEZE_ON_DESCRIPTION("freeze.on.description", 									"Paralyse un joueur"),
+		FREEZE_ON_ENABLE("freeze.on.enable", 											"&7Vous êtes paralysé."),
+		FREEZE_ON_ENABLE_ERROR("freeze.on.enableError", 								"&cErreur : Vous êtes déjà paralysé."),
+		FREEZE_ON_OTHERS_ENABLE("freeze.on.othersEnable", 								"&7Vous venez d'être paralysé par &6<staff>&7."),
+		FREEZE_ON_OTHERS_STAFF_ENABLE("freeze.on.othersStaffEnable", 					"&7Vous venez de paralyser &6<player>&7."),
+		FREEZE_ON_OTHERS_STAFF_ENABLE_ERROR("freeze.on.othersStaffEnableError", 		"&cErreur : <player> &7est déjà paralysé."),
+		FREEZE_OFF_DESCRIPTION("freeze.off.description", 								"Libère un joueur paralysé"),
+		FREEZE_OFF_DISABLE("freeze.off.disable", 										"&7Vous êtes désormais libre."),
+		FREEZE_OFF_DISABLE_ERROR("freeze.off.disableError", 							"&cErreur : Vous êtes déjà libre."),
+		FREEZE_OFF_OTHERS_DISABLE("freeze.off.otherDisable", 							"&7Vous êtes libre grâce à &6<staff>&7."),
+		FREEZE_OFF_OTHERS_STAFF_DISABLE("freeze.off.othersStaffDisable", 				"&7Vous venez de libérer &6<player>&7."),
+		FREEZE_OFF_OTHERS_STAFF_DISABLE_ERROR("freeze.off.othersStaffDisableError", 	"&cErreur : <player> &7est déjà libre."),
+		FREEZE_STATUS_DESCRIPTION("freeze.status.description", 							"Affiche si le joueur est paralysé où libre"),
+		FREEZE_STATUS_ON("freeze.status.on", 											"<player> &7est paralysé."),
+		FREEZE_STATUS_OFF("freeze.status.off", 											"<player> &7est libre."),
+
 		FLY_DESCRIPTION("fly.description", 								"Permet de vous envoler"),
 		FLY_PLAYER_ENABLE("fly.playerEnable",							"&7Vous pouvez désormais vous envoler."),
 		FLY_PLAYER_ENABLE_ERROR("fly.playerEnableError", 				"&7Vous possèdez déjà le droit de vous envoler."),
@@ -174,8 +189,8 @@ public class EEMessage extends EMessage {
 		GETPOS_POSITION_HOVER("getpos.positionHover", 	"&cMonde : &6<world>[RT]&cX : &6<x>[RT]&cY : &6<y>[RT]&cZ : &6<z>"),
 		
 		GOD_DESCRIPTION("god.description", 										"Gère l'invulnérabilité d'un joueur"),
-		
 		GOD_ON_DESCRIPTION("god.on.description", 								"Rend le joueur invulnérable"),
+
 		GOD_ON_PLAYER("god.on.player", 											"&7Vous êtes désormais invulnérable."),
 		GOD_ON_PLAYER_ERROR("god.on.playerError", 								"&cErreur : Vous êtes déjà invulnérable."),
 		GOD_ON_PLAYER_CANCEL("god.on.playerCancel", 							"&cImpossible de vous rendre invulnérable."),
@@ -183,8 +198,9 @@ public class EEMessage extends EMessage {
 		GOD_ON_OTHERS_STAFF("god.on.othersStaff", 								"&7Vous venez de rendre invulnérable &6<player>&7."),
 		GOD_ON_OTHERS_ERROR("god.on.othersError", 								"&cErreur : &6<player> &cest déjà invulnérable."),
 		GOD_ON_OTHERS_CANCEL("god.on.othersCancel", 							"&cImpossible de rendre &6<player> &cinvulnérable."),
-		
+
 		GOD_OFF_DESCRIPTION("god.off.description", 								"Rend le joueur vulnérable"),
+
 		GOD_OFF_PLAYER("god.off.player", 										"&7Vous êtes désormais vulnérable."),
 		GOD_OFF_PLAYER_ERROR("god.off.playerError", 							"&cErreur : Vous êtes déjà vulnérable."),
 		GOD_OFF_PLAYER_CANCEL("god.off.playerCancel", 							"&cImpossible de vous rendre vulnérable."),
@@ -198,7 +214,7 @@ public class EEMessage extends EMessage {
 		GOD_STATUS_PLAYER_OFF("god.status.playerOff", 							"&7Vous êtes vulnérable."),
 		GOD_STATUS_OTHERS_ON("god.status.othersOn", 							"&6<player> &7est invulnérable."),
 		GOD_STATUS_OTHERS_OFF("god.status.othersOff", 							"&6<player> &7est vulnérable."),
-
+		
 		GOD_TELEPORT("god.teleport", 									"&7Vous avez été téléporté car vous étiez en train de tomber dans le vide."),
 		
 		HAT_DESCRIPTION("hat.description", 				"Place l'objet dans votre main sur votre tête"),
