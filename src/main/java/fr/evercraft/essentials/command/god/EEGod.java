@@ -47,7 +47,7 @@ public class EEGod extends EParentCommand<EverEssentials> {
 
 	@Override
 	public boolean testPermissionHelp(final CommandSource source) {
-		return source.hasPermission(EEPermissions.GOD.get());
+		return true;
 	}
 	
 	@Override
@@ -74,6 +74,7 @@ public class EEGod extends EParentCommand<EverEssentials> {
 			} else {
 				player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.GOD_OFF_PLAYER.getText()));
 			}
+			return true;
 		} else {
 			if(god) {
 				player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.GOD_ON_PLAYER_CANCEL.getText()));
@@ -81,7 +82,6 @@ public class EEGod extends EParentCommand<EverEssentials> {
 				player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.GOD_OFF_PLAYER_CANCEL.getText()));
 			}
 		}
-		
-		return true;
+		return false;
 	}
 }

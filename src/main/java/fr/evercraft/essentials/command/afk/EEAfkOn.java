@@ -40,23 +40,23 @@ public class EEAfkOn extends ESubCommand<EverEssentials> {
     }
 	
 	public boolean testPermission(final CommandSource source) {
-		return source.hasPermission(EEPermissions.GOD.get());
+		return true;
 	}
 
 	public Text description(final CommandSource source) {
-		return EChat.of(EEMessages.GOD_ON_DESCRIPTION.get());
+		return EChat.of(EEMessages.AFK_ON_DESCRIPTION.get());
 	}
 	
 	public List<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
-		List<String> suggests = null;
-		if(!(args.size() == 1 && source.hasPermission(EEPermissions.GOD_OTHERS.get()))){
-			suggests = new ArrayList<String>();
+		List<String> suggests = new ArrayList<String>();
+		if(!(args.size() == 1 && source.hasPermission(EEPermissions.AFK_OTHERS.get()))){
+			suggests = null;
 		}
 		return suggests;
 	}
 
 	public Text help(final CommandSource source) {
-		if(source.hasPermission(EEPermissions.GOD_OTHERS.get())){
+		if(source.hasPermission(EEPermissions.AFK_OTHERS.get())){
 			return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_PLAYER.get() + "]")
 						.onClick(TextActions.suggestCommand("/" + this.getName()))
 						.color(TextColors.RED)
@@ -74,17 +74,17 @@ public class EEAfkOn extends ESubCommand<EverEssentials> {
 		boolean resultat = false;
 		if(args.size() == 0) {
 			if(source instanceof EPlayer) {
-				resultat = commandGodOn((EPlayer) source);
+				resultat = commandAfkOn((EPlayer) source);
 			} else {
 				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
 			}
 		} else if(args.size() == 1) {
 			// Si il a la permission
-			if(source.hasPermission(EEPermissions.GOD_OTHERS.get())){
+			if(source.hasPermission(EEPermissions.AFK_OTHERS.get())){
 				Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(args.get(0));
 				// Le joueur existe
 				if(optPlayer.isPresent()){
-					resultat = commandGodOnOthers(source, optPlayer.get());
+					resultat = commandAfkOnOthers(source, optPlayer.get());
 				// Le joueur est introuvable
 				} else {
 					source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
@@ -99,50 +99,58 @@ public class EEAfkOn extends ESubCommand<EverEssentials> {
 		return resultat;
 	}
 
-	public boolean commandGodOn(final EPlayer player) {
-		boolean godMode = player.isGod();
-		// Si le god mode est déjà activé
-		if(!godMode){
-			if(player.setGod(true)) {
-				player.heal();
-				player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.GOD_ON_PLAYER.getText()));
+	public boolean commandAfkOn(final EPlayer player) {
+		boolean afk = player.isAfk();
+		// Si le mode afk est déjà activé
+		if(!afk){
+			if(player.setAfk(true)) {
+				player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.AFK_ON_PLAYER.getText()));
+				if(EEMessages.AFK_ON_ALL.has()) {
+					player.broadcastMessage(EEMessages.PREFIX.getText().concat(player.replaceVariable(EEMessages.AFK_ON_ALL.get())));
+				}
 				return true;
 			} else {
-				player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.GOD_ON_PLAYER_CANCEL.getText()));
+				player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.AFK_ON_PLAYER_CANCEL.getText()));
 			}
-		// God mode est déjà désactivé
+		// Mode afk est déjà désactivé
 		} else {
-			player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.GOD_ON_PLAYER_ERROR.getText()));
+			player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.AFK_ON_PLAYER_ERROR.getText()));
 		}
 		return false;
 	}
 	
-	public boolean commandGodOnOthers(final CommandSource staff, final EPlayer player) throws CommandException {
+	public boolean commandAfkOnOthers(final CommandSource staff, final EPlayer player) throws CommandException {
 		// La source et le joueur sont différent
 		if(!player.equals(staff)){
-			boolean godMode = player.isGod();
-			// Si le god mode est déjà activé
-			if(!godMode) {
-				if(player.setGod(true)) {
-					player.heal();
-					player.sendMessage(EEMessages.PREFIX.get() + EEMessages.GOD_ON_OTHERS_PLAYER.get()
+			boolean afk = player.isAfk();
+			// Si le mode afk est déjà activé
+			if(!afk) {
+				if(player.setAfk(true)) {
+					player.sendMessage(EEMessages.PREFIX.get() + EEMessages.AFK_ON_OTHERS_PLAYER.get()
 							.replaceAll("<staff>", staff.getName()));
-					staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.GOD_ON_OTHERS_STAFF.get()
+					staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.AFK_ON_OTHERS_STAFF.get()
 							.replaceAll("<player>", player.getName())));
+					if(EEMessages.AFK_ON_ALL.has()) {
+						for(EPlayer other : this.plugin.getEServer().getOnlineEPlayers()) {
+							if(!other.equals(player) && other.equals(staff)) {
+								player.sendMessage(EEMessages.PREFIX.getText().concat(player.replaceVariable(EEMessages.AFK_ON_ALL.get())));
+							}
+						}
+					}
 					return true;
 				} else {
-					staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.GOD_ON_OTHERS_CANCEL.get()
+					staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.AFK_ON_OTHERS_CANCEL.get()
 							.replaceAll("<player>", player.getName())));
 				}
-			// God mode est déjà désactivé
+			// Mode afk est déjà désactivé
 			} else {
-				staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.GOD_ON_OTHERS_ERROR.get()
+				staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.AFK_ON_OTHERS_ERROR.get()
 						.replaceAll("<player>", player.getName())));
 			}
-			return false;
 		// La source et le joueur sont identique
 		} else {
 			return subExecute(staff, new ArrayList<String>());
 		}
+		return false;
 	}
 }

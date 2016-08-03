@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with EverEssentials.  If not, see <http://www.gnu.org/licenses/>.
  */
-package fr.evercraft.essentials.command.god;
+package fr.evercraft.essentials.command.fly;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,8 +34,8 @@ import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ESubCommand;
 import fr.evercraft.everapi.server.player.EPlayer;
 
-public class EEGodStatus extends ESubCommand<EverEssentials> {
-	public EEGodStatus(final EverEssentials plugin, final EEGod command) {
+public class EEFlyStatus extends ESubCommand<EverEssentials> {
+	public EEFlyStatus(final EverEssentials plugin, final EEFly command) {
         super(plugin, command, "status");
     }
 	
@@ -44,19 +44,19 @@ public class EEGodStatus extends ESubCommand<EverEssentials> {
 	}
 
 	public Text description(final CommandSource source) {
-		return EChat.of(EEMessages.GOD_STATUS_DESCRIPTION.get());
+		return EChat.of(EEMessages.FLY_STATUS_DESCRIPTION.get());
 	}
 	
 	public List<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		List<String> suggests = new ArrayList<String>();
-		if(!(args.size() == 1 && source.hasPermission(EEPermissions.GOD_OTHERS.get()))){
+		if(!(args.size() == 1 && source.hasPermission(EEPermissions.FLY_OTHERS.get()))){
 			suggests = null;
 		}
 		return suggests;
 	}
 
 	public Text help(final CommandSource source) {
-		if(source.hasPermission(EEPermissions.GOD_OTHERS.get())){
+		if(source.hasPermission(EEPermissions.FLY_OTHERS.get())){
 			return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_PLAYER.get() + "]")
 						.onClick(TextActions.suggestCommand("/" + this.getName()))
 						.color(TextColors.RED)
@@ -74,17 +74,17 @@ public class EEGodStatus extends ESubCommand<EverEssentials> {
 		boolean resultat = false;
 		if(args.size() == 0) {
 			if(source instanceof EPlayer) {
-				resultat = commandGodStatus((EPlayer) source);
+				resultat = commandFlyStatus((EPlayer) source);
 			} else {
 				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
 			}
 		} else if(args.size() == 1) {
 			// Si il a la permission
-			if(source.hasPermission(EEPermissions.GOD_OTHERS.get())){
+			if(source.hasPermission(EEPermissions.FLY_OTHERS.get())){
 				Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(args.get(0));
 				// Le joueur existe
 				if(optPlayer.isPresent()){
-					resultat = commandGodStatusOthers(source, optPlayer.get());
+					resultat = commandFlyStatusOthers(source, optPlayer.get());
 				// Le joueur est introuvable
 				} else {
 					source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
@@ -99,33 +99,33 @@ public class EEGodStatus extends ESubCommand<EverEssentials> {
 		return resultat;
 	}
 
-	public boolean commandGodStatus(final EPlayer player) {
-		// Si le god mode est déjà activé
-		if(player.isGod()){
-			player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.GOD_STATUS_PLAYER_ON.get()
+	public boolean commandFlyStatus(final EPlayer player) {
+		// Fly activé
+		if(player.getAllowFlight()){
+			player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.FLY_STATUS_PLAYER_ON.get()
 					.replaceAll("<player>", player.getDisplayName())));
-		// God mode est déjà désactivé
+		// Fly désactivé
 		} else {
-			player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.GOD_STATUS_PLAYER_OFF.get()
+			player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.FLY_STATUS_PLAYER_OFF.get()
 					.replaceAll("<player>", player.getDisplayName())));
 		}
 		return true;
 	}
 	
-	public boolean commandGodStatusOthers(final CommandSource staff, final EPlayer player) {
+	public boolean commandFlyStatusOthers(final CommandSource staff, final EPlayer player) {
 		if(!player.equals(staff)) {
-			// Si le god mode est déjà activé
-			if(player.isGod()){
-				staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.GOD_STATUS_OTHERS_ON.get()
+			// Fly activé
+			if(player.getAllowFlight()){
+				staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.FLY_STATUS_OTHERS_ON.get()
 						.replaceAll("<player>", player.getDisplayName())));
-			// God mode est déjà désactivé
+			// Fly désactivé
 			} else {
-				staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.GOD_STATUS_OTHERS_OFF.get()
+				staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.FLY_STATUS_OTHERS_OFF.get()
 						.replaceAll("<player>", player.getDisplayName())));
 			}
 			return true;
 		} else {
-			return this.commandGodStatus(player);
+			return this.commandFlyStatus(player);
 		}
 	}
 }

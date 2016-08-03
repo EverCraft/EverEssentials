@@ -24,10 +24,9 @@ import org.spongepowered.api.command.CommandMapping;
 import fr.evercraft.essentials.EECommand;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.essentials.command.*;
-import fr.evercraft.essentials.command.freeze.EEFreeze;
-import fr.evercraft.essentials.command.freeze.EEFreezeOff;
-import fr.evercraft.essentials.command.freeze.EEFreezeOn;
-import fr.evercraft.essentials.command.freeze.EEFreezeStatus;
+import fr.evercraft.essentials.command.afk.*;
+import fr.evercraft.essentials.command.fly.*;
+import fr.evercraft.essentials.command.freeze.*;
 import fr.evercraft.essentials.command.god.*;
 import fr.evercraft.essentials.command.home.*;
 import fr.evercraft.essentials.command.mail.*;
@@ -66,7 +65,6 @@ public class EEManagerCommands extends HashSet<ECommand<EverEssentials>> {
 	}
 	
 	public void load() {	
-		register(new EEAfk(this.plugin));
 		register(new EEBack(this.plugin));
 		register(new EEBed(this.plugin));
 		register(new EEBook(this.plugin));
@@ -80,7 +78,6 @@ public class EEManagerCommands extends HashSet<ECommand<EverEssentials>> {
 		register(new EEExp(this.plugin));
 		register(new EEExt(this.plugin));
 		register(new EEFeed(this.plugin));
-		register(new EEFly(this.plugin));
 		register(new EEGameMode(this.plugin));
 		register(new EEGenerate(this.plugin));
 		register(new EEGetPos(this.plugin));
@@ -160,6 +157,18 @@ public class EEManagerCommands extends HashSet<ECommand<EverEssentials>> {
 		freeze.add(new EEFreezeOff(this.plugin, freeze));
 		freeze.add(new EEFreezeStatus(this.plugin, freeze));
 		register(freeze);
+		
+		EEAfk afk = new EEAfk(this.plugin);
+		afk.add(new EEAfkOn(this.plugin, afk));
+		afk.add(new EEAfkOff(this.plugin, afk));
+		afk.add(new EEAfkStatus(this.plugin, afk));
+		register(afk);
+		
+		EEFly fly = new EEFly(this.plugin);
+		fly.add(new EEFlyOn(this.plugin, fly));
+		fly.add(new EEFlyOff(this.plugin, fly));
+		fly.add(new EEFlyStatus(this.plugin, fly));
+		register(fly);
 		
 		EEGod god = new EEGod(this.plugin);
 		god.add(new EEGodOn(this.plugin, god));

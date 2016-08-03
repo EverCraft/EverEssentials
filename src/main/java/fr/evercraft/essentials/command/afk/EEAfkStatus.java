@@ -40,23 +40,23 @@ public class EEAfkStatus extends ESubCommand<EverEssentials> {
     }
 	
 	public boolean testPermission(final CommandSource source) {
-		return source.hasPermission(EEPermissions.GOD.get());
+		return true;
 	}
 
 	public Text description(final CommandSource source) {
-		return EChat.of(EEMessages.GOD_STATUS_DESCRIPTION.get());
+		return EChat.of(EEMessages.AFK_STATUS_DESCRIPTION.get());
 	}
 	
 	public List<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
-		List<String> suggests = null;
-		if(!(args.size() == 1 && source.hasPermission(EEPermissions.GOD_OTHERS.get()))){
-			suggests = new ArrayList<String>();
+		List<String> suggests = new ArrayList<String>();
+		if(!(args.size() == 1 && source.hasPermission(EEPermissions.AFK_OTHERS.get()))){
+			suggests = null;
 		}
 		return suggests;
 	}
 
 	public Text help(final CommandSource source) {
-		if(source.hasPermission(EEPermissions.GOD_OTHERS.get())){
+		if(source.hasPermission(EEPermissions.AFK_OTHERS.get())){
 			return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_PLAYER.get() + "]")
 						.onClick(TextActions.suggestCommand("/" + this.getName()))
 						.color(TextColors.RED)
@@ -74,17 +74,17 @@ public class EEAfkStatus extends ESubCommand<EverEssentials> {
 		boolean resultat = false;
 		if(args.size() == 0) {
 			if(source instanceof EPlayer) {
-				resultat = commandGodStatus((EPlayer) source);
+				resultat = commandAfkStatus((EPlayer) source);
 			} else {
 				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
 			}
 		} else if(args.size() == 1) {
 			// Si il a la permission
-			if(source.hasPermission(EEPermissions.GOD_OTHERS.get())){
+			if(source.hasPermission(EEPermissions.AFK_OTHERS.get())){
 				Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(args.get(0));
 				// Le joueur existe
 				if(optPlayer.isPresent()){
-					resultat = commandGodStatusOthers(source, optPlayer.get());
+					resultat = commandAfkStatusOthers(source, optPlayer.get());
 				// Le joueur est introuvable
 				} else {
 					source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
@@ -99,32 +99,34 @@ public class EEAfkStatus extends ESubCommand<EverEssentials> {
 		return resultat;
 	}
 
-	public boolean commandGodStatus(final EPlayer player) {
-		boolean godMode = player.isGod();
-		// Si le god mode est déjà activé
-		if(godMode){
-			player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.GOD_STATUS_PLAYER_ON.get()
+	public boolean commandAfkStatus(final EPlayer player) {
+		// Si le mode afk est déjà activé
+		if(player.isAfk()){
+			player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.AFK_STATUS_PLAYER_ON.get()
 					.replaceAll("<player>", player.getDisplayName())));
-		// God mode est déjà désactivé
+		// Le mode afk est déjà désactivé
 		} else {
-			player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.GOD_STATUS_PLAYER_OFF.get()
+			player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.AFK_STATUS_PLAYER_OFF.get()
 					.replaceAll("<player>", player.getDisplayName())));
 		}
 		return true;
 	}
 	
-	public boolean commandGodStatusOthers(final CommandSource source, final EPlayer target) {
-		boolean godMode = target.isGod();
-		// Si le god mode est déjà activé
-		if(godMode){
-			source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.GOD_STATUS_OTHERS_ON.get()
-					.replaceAll("<player>", target.getDisplayName())));
-		// God mode est déjà désactivé
+	public boolean commandAfkStatusOthers(final CommandSource staff, final EPlayer player) {
+		if(!player.equals(staff)) {
+			// Si le mode afk est déjà activé
+			if(player.isAfk()){
+				staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.AFK_STATUS_OTHERS_ON.get()
+						.replaceAll("<player>", player.getDisplayName())));
+			// Le mode afk est déjà désactivé
+			} else {
+				staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.AFK_STATUS_OTHERS_OFF.get()
+						.replaceAll("<player>", player.getDisplayName())));
+			}
+			return true;
 		} else {
-			source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.GOD_STATUS_OTHERS_OFF.get()
-					.replaceAll("<player>", target.getDisplayName())));
+			return this.commandAfkStatus(player);
 		}
-		return true;
 	}
 }
 

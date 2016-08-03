@@ -40,7 +40,7 @@ public class EEGodOn extends ESubCommand<EverEssentials> {
     }
 	
 	public boolean testPermission(final CommandSource source) {
-		return source.hasPermission(EEPermissions.GOD.get());
+		return true;
 	}
 
 	public Text description(final CommandSource source) {
@@ -48,9 +48,9 @@ public class EEGodOn extends ESubCommand<EverEssentials> {
 	}
 	
 	public List<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
-		List<String> suggests = null;
+		List<String> suggests = new ArrayList<String>();
 		if(!(args.size() == 1 && source.hasPermission(EEPermissions.GOD_OTHERS.get()))){
-			suggests = new ArrayList<String>();
+			suggests = null;
 		}
 		return suggests;
 	}
@@ -142,7 +142,7 @@ public class EEGodOn extends ESubCommand<EverEssentials> {
 			return false;
 		// La source et le joueur sont identique
 		} else {
-			return subExecute(staff, new ArrayList<String>());
+			return commandGodOn(player);
 		}
 	}
 }

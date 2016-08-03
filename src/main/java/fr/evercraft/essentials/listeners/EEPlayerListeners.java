@@ -224,9 +224,11 @@ public class EEPlayerListeners {
 	@Listener
     public void onPlayerSendCommand(SendCommandEvent event, @First Player player_sponge) {
 		// AFK
-		Optional<EPlayer> player = this.plugin.getEServer().getEPlayer(player_sponge);
-		if(player.isPresent()) {
-			player.get().updateLastActivated();
+		if(!event.getCommand().equalsIgnoreCase("afk")) {
+			Optional<EPlayer> player = this.plugin.getEServer().getEPlayer(player_sponge);
+			if(player.isPresent()) {
+				player.get().updateLastActivated();
+			}
 		}
     }
 

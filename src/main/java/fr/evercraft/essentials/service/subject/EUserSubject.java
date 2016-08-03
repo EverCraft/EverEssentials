@@ -423,10 +423,9 @@ public class EUserSubject implements SubjectUserEssentials {
 			
 			Optional<EPlayer> player = this.plugin.getEServer().getEPlayer(this.identifier);
 			if(player.isPresent()) {
-				if(EEMessages.AFK_ALL_DISABLE.has()) {
-					player.get().broadcast(EEMessages.PREFIX.getText().concat(player.get().replaceVariable(EEMessages.AFK_ALL_DISABLE.get())));
-				} else {
-					player.get().sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.AFK_PLAYER_DISABLE.getText()));
+				player.get().sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.AFK_OFF_PLAYER.getText()));
+				if(EEMessages.AFK_OFF_ALL.has()) {
+					player.get().broadcastMessage(EEMessages.PREFIX.getText().concat(player.get().replaceVariable(EEMessages.AFK_OFF_ALL.get())));
 				}
 			}
 		}

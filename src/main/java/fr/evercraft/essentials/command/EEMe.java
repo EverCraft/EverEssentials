@@ -75,7 +75,7 @@ public class EEMe extends ECommand<EverEssentials> {
 	}
 	
 	public boolean commandMe(final EPlayer player, String message) {
-		player.broadcast(EEMessages.ME_PREFIX.get().replaceAll("<player>", player.getName()) + message);
+		player.broadcastMessage(EEMessages.ME_PREFIX.get().replaceAll("<player>", player.getName()) + message);
 		return true;
 	}
 	

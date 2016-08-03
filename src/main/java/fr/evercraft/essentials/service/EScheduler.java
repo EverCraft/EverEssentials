@@ -160,10 +160,9 @@ public class EScheduler {
 						Optional<EUserSubject> subject = this.plugin.getManagerServices().getEssentials().getSubject(player.getUniqueId());
 						if(subject.isPresent()) {
 							if(subject.get().setAfkAuto(true)) {
-								if(EEMessages.AFK_ALL_ENABLE.has()) {
-									player.broadcast(EEMessages.PREFIX.getText().concat(player.replaceVariable(EEMessages.AFK_ALL_ENABLE.get())));
-								} else {
-									player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.AFK_PLAYER_ENABLE.getText()));
+								player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.AFK_ON_PLAYER.getText()));
+								if(EEMessages.AFK_ON_ALL.has()) {
+									player.broadcastMessage(EEMessages.PREFIX.getText().concat(player.replaceVariable(EEMessages.AFK_ON_ALL.get())));
 								}
 							} else {
 								player.setAfkAutoFake(true);

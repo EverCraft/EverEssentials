@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with EverEssentials.  If not, see <http://www.gnu.org/licenses/>.
  */
-package fr.evercraft.essentials.command.afk;
+package fr.evercraft.essentials.command.fly;
 
 import java.util.List;
 
@@ -29,20 +29,20 @@ import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.EParentCommand;
 import fr.evercraft.everapi.server.player.EPlayer;
 
-public class EEAfk extends EParentCommand<EverEssentials> {
+public class EEFly extends EParentCommand<EverEssentials> {
 	
-	public EEAfk(final EverEssentials plugin) {
-        super(plugin, "afk", "away");
+	public EEFly(final EverEssentials plugin) {
+        super(plugin, "fly");
     }
 	
 	@Override
 	public boolean testPermission(final CommandSource source) {
-		return source.hasPermission(EEPermissions.AFK.get());
+		return source.hasPermission(EEPermissions.FLY.get());
 	}
 
 	@Override
 	public Text description(final CommandSource source) {
-		return EChat.of(EEMessages.AFK_DESCRIPTION.get());
+		return EChat.of(EEMessages.FLY_DESCRIPTION.get());
 	}
 
 	@Override
@@ -57,7 +57,7 @@ public class EEAfk extends EParentCommand<EverEssentials> {
 				
 		// Si la source est un joueur
 		if(source instanceof EPlayer) {
-			resultat = this.commandAfk((EPlayer) source);
+			resultat = this.commandFly((EPlayer) source);
 		// La source n'est pas un joueur
 		} else {
 			source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
@@ -66,27 +66,25 @@ public class EEAfk extends EParentCommand<EverEssentials> {
 		return resultat;
 	}
 	
-	private boolean commandAfk(final EPlayer player) {
-		boolean afk = !player.isAfk();
-		if(player.setAfk(afk)) {
-			if(afk) {
-				player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.AFK_ON_PLAYER.getText()));
-				if(EEMessages.AFK_ON_ALL.has()) {
-					player.broadcastMessage(EEMessages.PREFIX.getText().concat(player.replaceVariable(EEMessages.AFK_ON_ALL.get())));
+	private boolean commandFly(final EPlayer player) {
+		boolean fly = !player.getAllowFlight();
+		if(!(player.isCreative() && !fly)) {
+			if(player.setAllowFlight(fly)) {
+				if(fly) {
+					player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.FLY_ON_PLAYER.getText()));
+				} else {
+					player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.FLY_OFF_PLAYER.getText()));
 				}
+				return true;
 			} else {
-				player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.AFK_OFF_PLAYER.getText()));
-				if(EEMessages.AFK_OFF_ALL.has()) {
-					player.broadcastMessage(EEMessages.PREFIX.getText().concat(player.replaceVariable(EEMessages.AFK_OFF_ALL.get())));
+				if(fly) {
+					player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.FLY_ON_PLAYER_CANCEL.getText()));
+				} else {
+					player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.FLY_OFF_PLAYER_CANCEL.getText()));
 				}
 			}
-			return true;
 		} else {
-			if(afk) {
-				player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.AFK_ON_PLAYER_CANCEL.getText()));
-			} else {
-				player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.AFK_OFF_PLAYER_CANCEL.getText()));
-			}
+			player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.FLY_OFF_PLAYER_CREATIVE.getText()));
 		}
 		return false;
 	}
