@@ -103,12 +103,15 @@ public class EEGodOff extends ESubCommand<EverEssentials> {
 		boolean godMode = player.isGod();
 		// Si le god mode est déjà activé
 		if(godMode){
-			player.heal();
-			player.setGod(false);
-			player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.GOD_OFF_DISABLE.getText()));
-			// God mode est déjà désactivé
+			if(player.setGod(false)) {
+				player.heal();
+				player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.GOD_OFF_PLAYER.getText()));
+			} else {
+				player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.GOD_OFF_PLAYER_CANCEL.getText()));
+			}
+		// God mode est déjà désactivé
 		} else {
-			player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.GOD_OFF_DISABLE_ERROR.getText()));
+			player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.GOD_OFF_PLAYER_ERROR.getText()));
 		}
 		return true;
 	}
@@ -119,19 +122,23 @@ public class EEGodOff extends ESubCommand<EverEssentials> {
 			boolean godMode = player.isGod();
 			// Si le god mode est déjà activé
 			if(godMode){
-				player.heal();
-				player.setGod(false);
-				player.sendMessage(EEMessages.PREFIX.get() + EEMessages.GOD_OFF_OTHERS_DISABLE.get()
-						.replaceAll("<staff>", staff.getName()));
-				staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.GOD_OFF_OTHERS_STAFF_DISABLE.get()
-						.replaceAll("<player>", player.getName())));
-				return true;
+				if(player.setGod(false)) {
+					player.heal();
+					player.sendMessage(EEMessages.PREFIX.get() + EEMessages.GOD_OFF_OTHERS_PLAYER.get()
+							.replaceAll("<staff>", staff.getName()));
+					staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.GOD_OFF_OTHERS_STAFF.get()
+							.replaceAll("<player>", player.getName())));
+					return true;
+				} else {
+					player.sendMessage(EEMessages.PREFIX.get() + EEMessages.GOD_OFF_OTHERS_CANCEL.get()
+							.replaceAll("<staff>", staff.getName()));
+				}
 			// God mode est déjà désactivé
 			} else {
-				staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.GOD_OFF_OTHERS_STAFF_DISABLE_ERROR.get()
+				staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.GOD_OFF_OTHERS_ERROR.get()
 						.replaceAll("<player>", player.getName())));
-				return false;
 			}
+			return false;
 		// La source et le joueur sont identique
 		} else {
 			return subExecute(staff, new ArrayList<String>());

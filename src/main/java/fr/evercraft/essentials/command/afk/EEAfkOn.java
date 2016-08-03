@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with EverEssentials.  If not, see <http://www.gnu.org/licenses/>.
  */
-package fr.evercraft.essentials.command.god;
+package fr.evercraft.essentials.command.afk;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,8 +34,8 @@ import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ESubCommand;
 import fr.evercraft.everapi.server.player.EPlayer;
 
-public class EEGodOn extends ESubCommand<EverEssentials> {
-	public EEGodOn(final EverEssentials plugin, final EEGod command) {
+public class EEAfkOn extends ESubCommand<EverEssentials> {
+	public EEAfkOn(final EverEssentials plugin, final EEAfk command) {
         super(plugin, command, "on");
     }
 	

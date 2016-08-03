@@ -50,19 +50,16 @@ public class EEAfk extends ECommand<EverEssentials> {
 	}
 
 	public Text help(final CommandSource source) {
-		Text help;
 		if(source.hasPermission(EEPermissions.AFK_OTHERS.get())){
-			help = Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_PLAYER.get() + " [on|off]]")
+			return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_PLAYER.get() + " [on|off]]")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
 					.build();
-		} else {
-			help = Text.builder("/" + this.getName())
+		}
+		return Text.builder("/" + this.getName())
 					.onClick(TextActions.suggestCommand("/" + this.getName()))
 					.color(TextColors.RED)
 					.build();
-		}
-		return help;
 	}
 	
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {

@@ -103,11 +103,11 @@ public class EEGodStatus extends ESubCommand<EverEssentials> {
 		boolean godMode = player.isGod();
 		// Si le god mode est déjà activé
 		if(godMode){
-			player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.GOD_STATUS_ON.get()
+			player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.GOD_STATUS_PLAYER_ON.get()
 					.replaceAll("<player>", player.getDisplayName())));
 		// God mode est déjà désactivé
 		} else {
-			player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.GOD_STATUS_OFF.get()
+			player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.GOD_STATUS_PLAYER_OFF.get()
 					.replaceAll("<player>", player.getDisplayName())));
 		}
 		return true;
@@ -117,11 +117,11 @@ public class EEGodStatus extends ESubCommand<EverEssentials> {
 		boolean godMode = target.isGod();
 		// Si le god mode est déjà activé
 		if(godMode){
-			source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.GOD_STATUS_ON.get()
+			source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.GOD_STATUS_OTHERS_ON.get()
 					.replaceAll("<player>", target.getDisplayName())));
 		// God mode est déjà désactivé
 		} else {
-			source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.GOD_STATUS_OFF.get()
+			source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.GOD_STATUS_OTHERS_OFF.get()
 					.replaceAll("<player>", target.getDisplayName())));
 		}
 		return true;
