@@ -303,12 +303,13 @@ public class EUserSubject implements SubjectUserEssentials {
 		PreparedStatement preparedStatement = null;
 		try {
 			String query = 	  "INSERT INTO `" + this.plugin.getDataBases().getTablePlayers() + "` "
-							+ "VALUES (?, ?, ?, ?);";
+							+ "VALUES (?, ?, ?, ?, ?);";
 			preparedStatement = connection.prepareStatement(query);
 			preparedStatement.setString(1, this.getIdentifier());
 			preparedStatement.setBoolean(2, this.vanish);
 			preparedStatement.setBoolean(3, this.god);
 			preparedStatement.setBoolean(4, this.toggle);
+			preparedStatement.setBoolean(5, this.freeze);
 			
 			preparedStatement.execute();
 			this.plugin.getLogger().debug("Insert : (identifier='" + this.identifier + "';"
