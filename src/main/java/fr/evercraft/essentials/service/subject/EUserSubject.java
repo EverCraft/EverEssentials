@@ -192,6 +192,7 @@ public class EUserSubject implements SubjectUserEssentials {
 														+ "vanish='" + this.vanish + "';"
 														+ "god='" + this.god + "';"
 														+ "toggle='" + this.toggle + "';"
+														+ "freeze='" + this.freeze + "';"
 														+ ")");
 			} else {
 				this.insertPlayer(connection);
@@ -501,7 +502,7 @@ public class EUserSubject implements SubjectUserEssentials {
 		if(this.freeze != freeze) {
 			this.freeze = freeze;
 			
-			if(this.plugin.getManagerEvent().toggle(this.getUniqueId(), freeze)) {
+			if(this.plugin.getManagerEvent().freeze(this.getUniqueId(), freeze)) {
 				this.freeze = !freeze;
 			} else {
 				this.plugin.getThreadAsync().execute(() -> this.plugin.getDataBases().setFreeze(this.getIdentifier(), freeze));

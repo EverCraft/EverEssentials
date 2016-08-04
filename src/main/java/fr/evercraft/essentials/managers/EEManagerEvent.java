@@ -88,6 +88,28 @@ public class EEManagerEvent {
 	}
 	
 	/*
+	 * Freeze
+	 */
+	
+	public boolean freeze(UUID uuid, boolean value) {
+		Optional<EPlayer> player = this.plugin.getEServer().getEPlayer(uuid);
+		if(player.isPresent()) {
+			return this.freeze(player.get(), value);
+		}
+		return false;
+	}
+	
+	public boolean freeze(final EPlayer player, final boolean value) {
+		if(value) {
+			this.plugin.getLogger().debug("Event FreezeEvent.Enable : (UUID='" + player.getIdentifier() + "';value='" + value + "')");
+			return this.plugin.getGame().getEventManager().post(new EFreezeEnableEvent(player, this.getCause()));
+		} else {
+			this.plugin.getLogger().debug("Event FreezeEvent.Disable : (UUID='" + player.getIdentifier() + "';value='" + value + "')");
+			return this.plugin.getGame().getEventManager().post(new EFreezeDisableEvent(player, this.getCause()));
+		}
+	}
+	
+	/*
 	 * God
 	 */
 	

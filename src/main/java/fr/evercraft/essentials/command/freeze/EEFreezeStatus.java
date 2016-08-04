@@ -114,11 +114,11 @@ public class EEFreezeStatus extends ESubCommand<EverEssentials> {
 	
 	public boolean commandFreezeStatusOthers(final CommandSource staff, final EPlayer player) {
 		if(!player.equals(staff)) {
-			// Fly activé
+			// Freeze activé
 			if(player.isFreeze()){
 				staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.FREEZE_STATUS_OTHERS_ON.get()
 						.replaceAll("<player>", player.getDisplayName())));
-			// Fly désactivé
+			// Freeze désactivé
 			} else {
 				staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.FREEZE_STATUS_OTHERS_OFF.get()
 						.replaceAll("<player>", player.getDisplayName())));
