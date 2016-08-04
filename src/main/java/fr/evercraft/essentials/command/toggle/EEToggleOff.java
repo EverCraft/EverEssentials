@@ -18,10 +18,10 @@ package fr.evercraft.essentials.command.toggle;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
-import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
@@ -29,6 +29,7 @@ import org.spongepowered.api.text.format.TextColors;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.essentials.EEMessage.EEMessages;
+import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ESubCommand;
 import fr.evercraft.everapi.server.player.EPlayer;
@@ -39,7 +40,7 @@ public class EEToggleOff extends ESubCommand<EverEssentials> {
     }
 	
 	public boolean testPermission(final CommandSource source) {
-		return source.hasPermission(EEPermissions.TOGGLE.get());
+		return true;
 	}
 
 	public Text description(final CommandSource source) {
@@ -47,39 +48,98 @@ public class EEToggleOff extends ESubCommand<EverEssentials> {
 	}
 	
 	public List<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
-		return new ArrayList<String>();
+		List<String> suggests = new ArrayList<String>();
+		if(!(args.size() == 1 && source.hasPermission(EEPermissions.TOGGLE_OTHERS.get()))){
+			suggests = null;
+		}
+		return suggests;
 	}
 
 	public Text help(final CommandSource source) {
-		return Text.builder("/" + this.getName())
+		if(source.hasPermission(EEPermissions.TOGGLE_OTHERS.get())){
+			return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_PLAYER.get() + "]")
+						.onClick(TextActions.suggestCommand("/" + this.getName()))
+						.color(TextColors.RED)
+						.build();
+		} else {
+			return Text.builder("/" + this.getName())
 					.onClick(TextActions.suggestCommand("/" + this.getName()))
 					.color(TextColors.RED)
 					.build();
+		}
 	}
 	
-	public boolean subExecute(final CommandSource source, final List<String> args) {
+	public boolean subExecute(final CommandSource source, final List<String> args) throws CommandException {
 		// Résultat de la commande :
 		boolean resultat = false;
-		if(source instanceof Player){
-			if(this.plugin.getEServer().getEPlayer((Player) source).isPresent()){
-				EPlayer player = this.plugin.getEServer().getEPlayer((Player) source).get();
-				if(args.size() == 0) {
-					resultat = commandToggleOff(player);
-				} else {
-					source.sendMessage(this.help(player));
-				}
+		if(args.size() == 0) {
+			if(source instanceof EPlayer) {
+				resultat = commandToggleOff((EPlayer) source);
+			} else {
+				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
 			}
+		} else if(args.size() == 1) {
+			// Si il a la permission
+			if(source.hasPermission(EEPermissions.TOGGLE_OTHERS.get())){
+				Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(args.get(0));
+				// Le joueur existe
+				if(optPlayer.isPresent()){
+					resultat = commandToggleOffOthers(source, optPlayer.get());
+				// Le joueur est introuvable
+				} else {
+					source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
+				}
+			// Il n'a pas la permission
+			} else {
+				source.sendMessage(EAMessages.NO_PERMISSION.getText());
+			}
+		} else {
+			source.sendMessage(this.help(source));
 		}
 		return resultat;
 	}
 
-	private boolean commandToggleOff(final EPlayer player) {
-		if(player.isToggle()){
-			player.setToggle(false);
-			player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.TOGGLE_OFF_DISABLED.get()));
+	public boolean commandToggleOff(final EPlayer player) {
+		boolean toggle = player.isToggle();
+		// Toggle activé
+		if(toggle) {
+			if(player.setToggle(false)) {
+				player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.TOGGLE_OFF_PLAYER.getText()));
+			} else {
+				player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.TOGGLE_OFF_PLAYER_CANCEL.getText()));
+			}
+		// Toggle désactivé
 		} else {
-			player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.TOGGLE_OFF_ALREADY_DISABLED.get()));
+			player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.TOGGLE_OFF_PLAYER_ERROR.getText()));
 		}
 		return true;
+	}
+	
+	public boolean commandToggleOffOthers(final CommandSource staff, final EPlayer player) throws CommandException {
+		// La source et le joueur sont différent
+		if(!player.equals(staff)){
+			boolean toggle = player.isToggle();
+			// Toggle activé
+			if(toggle) {
+				if(player.setToggle(false)) {
+					player.sendMessage(EEMessages.PREFIX.get() + EEMessages.TOGGLE_OFF_OTHERS_PLAYER.get()
+							.replaceAll("<staff>", staff.getName()));
+					staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.TOGGLE_OFF_OTHERS_STAFF.get()
+							.replaceAll("<player>", player.getName())));
+					return true;
+				} else {
+					staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.TOGGLE_OFF_OTHERS_CANCEL.get()
+							.replaceAll("<player>", player.getName())));
+				}
+			// Toggle désactivé
+			} else {
+				staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.TOGGLE_OFF_OTHERS_ERROR.get()
+						.replaceAll("<player>", player.getName())));
+			}
+			return false;
+		// La source et le joueur sont identique
+		} else {
+			return commandToggleOff(player);
+		}
 	}
 }

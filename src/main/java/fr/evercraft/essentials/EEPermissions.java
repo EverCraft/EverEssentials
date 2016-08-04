@@ -209,6 +209,7 @@ public enum EEPermissions implements EnumPermission {
 	TELEPORT_BYPASS_MOVE("teleport.bypass.move"),
 	
 	TOGGLE("toggle.command"),
+	TOGGLE_OTHERS("toggle.others"),
 	
 	TOP("top.command"),
 	

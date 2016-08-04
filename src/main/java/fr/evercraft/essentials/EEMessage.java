@@ -692,17 +692,32 @@ public class EEMessage extends EMessage {
 		TIME_DAY_DESCRIPTION("time.dayDescription", "Mettre le jour dans votre monde"),
 		TIME_NIGHT_DESCRIPTION("time.nightDescription", "Mettre la nuit dans votre monde"),
 		
-		TOGGLE_DESCRIPTION("toggle.description", "Permet de gérer les demandes de téléportation"),
-		TOGGLE_ON_DESCRIPTION("toggle.on.description", "Active les demandes de téléportation"),
-		TOGGLE_ON_ACTIVATED("toggle.on.activated", "&7Vous acceptez désormais les demandes de téléportation."),
-		TOGGLE_ON_ALREADY_ACTIVATED("toggle.on.alreadyActivated", "&cErreur : Vous acceptez déjà les demandes de téléportation."),
-		TOGGLE_OFF_DESCRIPTION("toggle.off.description", "Désactive les demandes de téléportation"),
-		TOGGLE_OFF_DISABLED("toggle.off.disabled", "&7Vous refusez désormais les demandes de téléportation."),
-		TOGGLE_OFF_ALREADY_DISABLED("toggle.off.alreadyDisabled", "&cErreur : Vous refusez déjà les demandes de téléportation."),
-		TOGGLE_STATUS_DESCRIPTION("toggle.status.description", "Gère les demandes de téléportation"),
-		TOGGLE_STATUS_MESSAGE("toggle.status.message", "&7Les demandes de téléportation sont <status>."),
-		TOGGLE_STATUS_ACTIVATED("toggle.status.activated", "&aactivée"),
-		TOGGLE_STATUS_DISABLED("toggle.status.disabled", "&cdésactivée"),
+		TOGGLE_DESCRIPTION("toggle.description", 									"Permet de gérer les demandes de téléportation"),
+		
+		TOGGLE_ON_DESCRIPTION("toggle.on.description", 								"Active les demandes de téléportation"),
+		TOGGLE_ON_PLAYER("toggle.on.player", 										"&7Vous acceptez désormais les demandes de téléportation."),
+		TOGGLE_ON_PLAYER_ERROR("toggle.on.playerError", 							"&cVous acceptez déjà les demandes de téléportation."),
+		TOGGLE_ON_PLAYER_CANCEL("toggle.on.playerCancel", 							"&cImpossible d'accepter les demandes de téléportation."),
+		TOGGLE_ON_OTHERS_PLAYER("toggle.on.othersPlayer", 							"&7Vous acceptez désormais les demandes de téléportation grâce à &6<staff>&7."),
+		TOGGLE_ON_OTHERS_STAFF("toggle.on.othersStaff", 							"&6<player> &7accepte désormais les demandes de téléportation."),
+		TOGGLE_ON_OTHERS_ERROR("toggle.on.othersError", 							"&6<player> &caccepte déjà les demandes de téléportation."),
+		TOGGLE_ON_OTHERS_CANCEL("toggle.on.othersCancel", 							"&cImpossible que &6<player> &caccepte les demandes de téléportation."),
+
+		TOGGLE_OFF_DESCRIPTION("toggle.off.description", 							"Désactive les demandes de téléportation"),
+		TOGGLE_OFF_PLAYER("toggle.off.player", 										"&7Vous refusez désormais les demandes de téléportation."),
+		TOGGLE_OFF_PLAYER_ERROR("toggle.off.playerError", 							"&cVous refusez déjà les demandes de téléportation."),
+		TOGGLE_OFF_PLAYER_CANCEL("toggle.off.playerCancel", 						"&cImpossible de refuser les demandes de téléportation."),
+		TOGGLE_OFF_OTHERS_PLAYER("toggle.off.othersPlayer", 						"&7Vous refusez désormais les demandes de téléportation grâce à &6<staff>&7."),
+		TOGGLE_OFF_OTHERS_STAFF("toggle.off.othersStaff", 							"&6<player> &7refuse désormais les demandes de téléportation."),
+		TOGGLE_OFF_OTHERS_ERROR("toggle.off.othersError", 							"&6<player> &crefuse déjà les demandes de téléportation."),
+		TOGGLE_OFF_OTHERS_CANCEL("toggle.off.othersCancel", 						"&cImpossible que &6<player> &crefuse les demandes de téléportation."),
+		
+		TOGGLE_STATUS_DESCRIPTION("toggle.status.description", 						"Gère les demandes de téléportation"),
+		TOGGLE_STATUS_PLAYER_ON("toggle.status.playerOn", 							"&7Vous acceptez les demandes de téléportation."),
+		TOGGLE_STATUS_PLAYER_OFF("toggle.status.playerOff", 						"&7Vous n'acceptez pas les demandes de téléportation."),
+		TOGGLE_STATUS_OTHERS_ON("toggle.status.othersOn", 							"&6<player> &7accepte les demandes de téléportation."),
+		TOGGLE_STATUS_OTHERS_OFF("toggle.status.othersOff", 						"&6<player> &7n'accepte pas les demandes de téléportation."),
+		
 		TOGGLE_DISABLED("toggle.disabled", "&6<player> &7n’accepte pas les demandes de téléportation."),
 		
 		TOP_DESCRIPTION("top.description", "Téléporte le joueur à la position la plus élevée"),
@@ -955,7 +970,14 @@ public class EEMessage extends EMessage {
 		}
 		
 		public boolean has() {
-			return this.message != null;
+			if(this.message != null) {
+				if(this.message instanceof String) {
+					return !((String) this.message).isEmpty();
+				} else if(this.message instanceof List) {
+					return !((List<?>) this.message).isEmpty();
+				}
+			}
+			return false;
 		}
 	}
 }
