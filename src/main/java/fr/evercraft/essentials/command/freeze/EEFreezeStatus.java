@@ -26,9 +26,9 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
 
-import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
+import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ESubCommand;
@@ -40,7 +40,7 @@ public class EEFreezeStatus extends ESubCommand<EverEssentials> {
     }
 	
 	public boolean testPermission(final CommandSource source) {
-		return source.hasPermission(EEPermissions.FREEZE.get());
+		return true;
 	}
 
 	public Text description(final CommandSource source) {
@@ -48,9 +48,9 @@ public class EEFreezeStatus extends ESubCommand<EverEssentials> {
 	}
 	
 	public List<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
-		List<String> suggests = null;
+		List<String> suggests = new ArrayList<String>();
 		if(!(args.size() == 1 && source.hasPermission(EEPermissions.FREEZE_OTHERS.get()))){
-			suggests = new ArrayList<String>();
+			suggests = null;
 		}
 		return suggests;
 	}
@@ -100,30 +100,32 @@ public class EEFreezeStatus extends ESubCommand<EverEssentials> {
 	}
 
 	public boolean commandFreezeStatus(final EPlayer player) {
-		boolean freeze = player.isFreeze();
 		// Si le freeze est déjà activé
-		if(freeze){
-			player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.FREEZE_STATUS_ON.get()
+		if(player.isFreeze()){
+			player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.FREEZE_STATUS_PLAYER_ON.get()
 					.replaceAll("<player>", player.getDisplayName())));
 		// Freeze est déjà désactivé
 		} else {
-			player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.FREEZE_STATUS_OFF.get()
+			player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.FREEZE_STATUS_PLAYER_OFF.get()
 					.replaceAll("<player>", player.getDisplayName())));
 		}
 		return true;
 	}
 	
-	public boolean commandFreezeStatusOthers(final CommandSource source, final EPlayer target) {
-		boolean freeze = target.isFreeze();
-		// Si le freeze est déjà activé
-		if(freeze){
-			source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.FREEZE_STATUS_ON.get()
-					.replaceAll("<player>", target.getDisplayName())));
-		// Freeze est déjà désactivé
+	public boolean commandFreezeStatusOthers(final CommandSource staff, final EPlayer player) {
+		if(!player.equals(staff)) {
+			// Fly activé
+			if(player.isFreeze()){
+				staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.FREEZE_STATUS_OTHERS_ON.get()
+						.replaceAll("<player>", player.getDisplayName())));
+			// Fly désactivé
+			} else {
+				staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.FREEZE_STATUS_OTHERS_OFF.get()
+						.replaceAll("<player>", player.getDisplayName())));
+			}
+			return true;
 		} else {
-			source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.FREEZE_STATUS_OFF.get()
-					.replaceAll("<player>", target.getDisplayName())));
+			return this.commandFreezeStatus(player);
 		}
-		return true;
 	}
 }
