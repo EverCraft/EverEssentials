@@ -105,6 +105,8 @@ public class EEFlyOff extends ESubCommand<EverEssentials> {
 		if(fly){
 			if(!player.isCreative()){
 				if(player.setAllowFlight(false)) {
+					player.setFlying(false);
+					player.teleportBottom();
 					player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.FLY_OFF_PLAYER.getText()));
 				} else {
 					player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.FLY_OFF_PLAYER_CANCEL.getText()));
@@ -127,6 +129,8 @@ public class EEFlyOff extends ESubCommand<EverEssentials> {
 			if(fly){
 				if(!player.isCreative()){
 					if(player.setAllowFlight(false)) {
+						player.setFlying(false);
+						player.teleportBottom();
 						player.sendMessage(EEMessages.PREFIX.get() + EEMessages.FLY_OFF_OTHERS_PLAYER.get()
 								.replaceAll("<staff>", staff.getName()));
 						staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.FLY_OFF_OTHERS_STAFF.get()

@@ -73,6 +73,8 @@ public class EEFly extends EParentCommand<EverEssentials> {
 				if(fly) {
 					player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.FLY_ON_PLAYER.getText()));
 				} else {
+					player.setFlying(false);
+					player.teleportBottom();
 					player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.FLY_OFF_PLAYER.getText()));
 				}
 				return true;
