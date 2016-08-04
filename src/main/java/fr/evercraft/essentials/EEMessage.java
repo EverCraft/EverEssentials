@@ -231,8 +231,8 @@ public class EEMessage extends EMessage {
 		GETPOS_POSITION_HOVER("getpos.positionHover", 	"&cMonde : &6<world>[RT]&cX : &6<x>[RT]&cY : &6<y>[RT]&cZ : &6<z>"),
 		
 		GOD_DESCRIPTION("god.description", 										"Gère l'invulnérabilité d'un joueur"),
+		
 		GOD_ON_DESCRIPTION("god.on.description", 								"Rend le joueur invulnérable"),
-
 		GOD_ON_PLAYER("god.on.player", 											"&7Vous êtes désormais invulnérable."),
 		GOD_ON_PLAYER_ERROR("god.on.playerError", 								"&cErreur : Vous êtes déjà invulnérable."),
 		GOD_ON_PLAYER_CANCEL("god.on.playerCancel", 							"&cImpossible de vous rendre invulnérable."),
@@ -240,9 +240,8 @@ public class EEMessage extends EMessage {
 		GOD_ON_OTHERS_STAFF("god.on.othersStaff", 								"&7Vous venez de rendre invulnérable &6<player>&7."),
 		GOD_ON_OTHERS_ERROR("god.on.othersError", 								"&cErreur : &6<player> &cest déjà invulnérable."),
 		GOD_ON_OTHERS_CANCEL("god.on.othersCancel", 							"&cImpossible de rendre &6<player> &cinvulnérable."),
-
+		
 		GOD_OFF_DESCRIPTION("god.off.description", 								"Rend le joueur vulnérable"),
-
 		GOD_OFF_PLAYER("god.off.player", 										"&7Vous êtes désormais vulnérable."),
 		GOD_OFF_PLAYER_ERROR("god.off.playerError", 							"&cErreur : Vous êtes déjà vulnérable."),
 		GOD_OFF_PLAYER_CANCEL("god.off.playerCancel", 							"&cImpossible de vous rendre vulnérable."),

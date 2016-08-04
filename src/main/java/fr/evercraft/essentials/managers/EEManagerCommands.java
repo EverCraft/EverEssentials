@@ -152,12 +152,6 @@ public class EEManagerCommands extends HashSet<ECommand<EverEssentials>> {
 		register(new EEWorldsNether(this.plugin));
 		
 		// Commands	
-		EEFreeze freeze = new EEFreeze(this.plugin);
-		freeze.add(new EEFreezeOn(this.plugin, freeze));
-		freeze.add(new EEFreezeOff(this.plugin, freeze));
-		freeze.add(new EEFreezeStatus(this.plugin, freeze));
-		register(freeze);
-		
 		EEAfk afk = new EEAfk(this.plugin);
 		afk.add(new EEAfkOn(this.plugin, afk));
 		afk.add(new EEAfkOff(this.plugin, afk));
@@ -169,6 +163,12 @@ public class EEManagerCommands extends HashSet<ECommand<EverEssentials>> {
 		fly.add(new EEFlyOff(this.plugin, fly));
 		fly.add(new EEFlyStatus(this.plugin, fly));
 		register(fly);
+		
+		EEFreeze freeze = new EEFreeze(this.plugin);
+		freeze.add(new EEFreezeOn(this.plugin, freeze));
+		freeze.add(new EEFreezeOff(this.plugin, freeze));
+		freeze.add(new EEFreezeStatus(this.plugin, freeze));
+		register(freeze);
 		
 		EEGod god = new EEGod(this.plugin);
 		god.add(new EEGodOn(this.plugin, god));
