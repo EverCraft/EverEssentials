@@ -247,7 +247,72 @@ public enum EEPermissions implements EnumPermission {
 	WHOIS("whois.command"),
 	WHOIS_OTHERS("whois.others"),
 	
-	COLOR("color.command");
+	COLOR("color.command"),
+	
+	SIGN_COLOR("sign.color"),
+	SIGN_FORMAT("sign.format"),
+	SIGN_MAGIC("sign.magic"),
+	
+	SIGN_MAIL_BREAK("sign.break.balance"),
+	SIGN_MAIL_CREATE("sign.create.balance"),
+	SIGN_MAIL_USE("sign.use.balance"),
+	
+	SIGN_BALANCE_BREAK("sign.break.balance"),
+	SIGN_BALANCE_CREATE("sign.create.balance"),
+	SIGN_BALANCE_USE("sign.use.balance"),
+	
+	SIGN_DISPOSAL_BREAK("sign.break.disposal"),
+	SIGN_DISPOSAL_CREATE("sign.create.disposal"),
+	SIGN_DISPOSAL_USE("sign.use.disposal"),
+	
+	SIGN_ENCHANT_BREAK("sign.break.enchant"),
+	SIGN_ENCHANT_CREATE("sign.create.enchant"),
+	SIGN_ENCHANT_USE("sign.use.enchant"),
+	
+	SIGN_FREE_BREAK("sign.break.free"),
+	SIGN_FREE_CREATE("csign.reate.free"),
+	SIGN_FREE_USE("sign.use.free"),
+	
+	SIGN_FOOD_BREAK("sign.break.food"),
+	SIGN_FOOD_CREATE("sign.create.food"),
+	SIGN_FOOD_USE("sign.use.food"),
+	
+	SIGN_GAMEMODE_BREAK("sign.break.gamemode"),
+	SIGN_GAMEMODE_CREATE("sign.create.gamemode"),
+	SIGN_GAMEMODE_USE("sign.use.gamemode"),
+	
+	SIGN_HEAL_BREAK("sign.break.heal"),
+	SIGN_HEAL_CREATE("sign.create.heal"),
+	SIGN_HEAL_USE("sign.use.heal"),
+
+	SIGN_KIT_BREAK("sign.break.kit"),
+	SIGN_KIT_CREATE("sign.create.kit"),
+	SIGN_IKIT_USE("sign.use.kit"),
+
+	SIGN_PROTECTION_BREAK("sign.break.protection"),
+	SIGN_PROTECTION_CREATE("sign.create.protection"),
+	SIGN_PROTECTION_USE("sign.use.protection"),
+	SIGN_PROTECTION_BYPASS("sign.protection.bypass"),
+	
+	SIGN_REPAIR_BREAK("sign.break.repair"),
+	SIGN_REPAIR_CREATE("sign.create.repair"),
+	SIGN_REPAIR_USE("sign.use.repair"),
+	
+	SIGN_SPAWNMOB_BREAK("sign.break.spawnmob"),
+	SIGN_SPAWNMOB_CREATE("sign.create.spawnmob"),
+	SIGN_SPAWNMOB_USE("sign.use.spawnmob"),
+	
+	SIGN_TIME_BREAK("sign.break.time"),
+	SIGN_TIME_CREATE("sign.create.time"),
+	SIGN_TIME_USE("sign.use.time"),
+	
+	SIGN_WARP_BREAK("sign.break.warp"),
+	SIGN_WARP_CREATE("sign.create.warp"),
+	SIGN_WARP_USE("sign.use.warp"),
+	
+	SIGN_WEATHER_BREAK("sign.break.weather"),
+	SIGN_WEATHER_CREATE("sign.create.weather"),
+	SIGN_WEATHER_USE("sign.use.weather");
 	
 	private final static String prefix = "everessentials";
 	
