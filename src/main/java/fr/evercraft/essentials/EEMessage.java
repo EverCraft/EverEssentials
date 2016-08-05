@@ -77,6 +77,8 @@ public class EEMessage extends EMessage {
 		BACK_DELAY("back.delay", 							"&7Votre téléportation commencera dans &6<delay>&7. Ne bougez pas."),
 		BACK_ERROR_LOCATION("back.errorLocation", 			"&cImpossible de trouver une position pour réaliser une téléportation."),
 		
+		BALANCE_PLAYER("balance.player", "&7Vous avez actuellement &6<solde> <symbol>&7.", "&7Balance : &6<solde> <symbol>"),
+		
 		BED_DESCRIPTION("bed.description", 					"Retourne à la dernière position ou vous avez dormi"),
 		
 		BROADCAST_DESCRIPTION("broadcast.description", 		"Envoie un message à tous les joueurs."),
@@ -915,7 +917,10 @@ public class EEMessage extends EMessage {
 		WORLDS_TELEPORT_PLAYER_ERROR("worlds.teleportPlayerError", "&7Impossible de vous téléporter dans le monde <world>&7."),
 		WORLDS_TELEPORT_OTHERS_PLAYER("worlds.teleportOthersPlayer", "&7Vous avez été téléporté dans le monde <world> &7par &6<staff>&7."),
 		WORLDS_TELEPORT_OTHERS_STAFF("worlds.teleportOthersStaff", "&7Vous téléportez &6<player> &7dans le monde <world>&7."),
-		WORLDS_TELEPORT_OTHERS_ERROR("worlds.teleportOthersError", "&7Impossible de trouver une position pour téléporter &6<player> &7dans le monde &6<world>&7.");
+		WORLDS_TELEPORT_OTHERS_ERROR("worlds.teleportOthersError", "&7Impossible de trouver une position pour téléporter &6<player> &7dans le monde &6<world>&7."),
+		
+		SIGN_CREATE("sign.create",		"&7Panneau crée avec succès."),
+		SIGN_DISABLE("sign.disable",    "&cSe panneau est désactivé.");
 		
 		private final String path;
 	    private final Object french;
