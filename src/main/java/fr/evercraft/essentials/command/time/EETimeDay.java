@@ -24,10 +24,13 @@ import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
+import org.spongepowered.api.world.DimensionTypes;
+import org.spongepowered.api.world.World;
 
 import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
+import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.command.ECommand;
 
 public class EETimeDay extends ECommand<EverEssentials> {
@@ -45,14 +48,23 @@ public class EETimeDay extends ECommand<EverEssentials> {
 	}
 
 	public Text help(final CommandSource source) {
-		return Text.builder("/" + this.getName())
+		return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_WORLD.get() + "|*]")
 					.onClick(TextActions.suggestCommand("/" + this.getName()))
 					.color(TextColors.RED)
 					.build();
 	}
 
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
-		return new ArrayList<String>();
+		List<String> suggests = new ArrayList<String>();
+		if (args.size() == 1) {
+			for (World world : this.plugin.getEServer().getWorlds()) {
+				if(world.getProperties().getDimensionType().equals(DimensionTypes.OVERWORLD)) {
+					suggests.add(world.getName());
+				}
+			}
+			suggests.add("*");
+		}
+		return suggests;
 	}
 
 	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
@@ -61,6 +73,8 @@ public class EETimeDay extends ECommand<EverEssentials> {
 		// Si on ne connait pas le joueur
 		if (args.size() == 0) {
 			resultat = commandTimeDay(source);
+		} else if(args.size() == 1){
+			resultat = commandTimeDay(source, args.get(0));
 		// Nombre d'argument incorrect
 		} else {
 			source.sendMessage(help(source));
@@ -70,6 +84,11 @@ public class EETimeDay extends ECommand<EverEssentials> {
 
 	public boolean commandTimeDay(final CommandSource player) {
 		this.plugin.getGame().getCommandManager().process(player, "time day");
+		return false;
+	}
+	
+	public boolean commandTimeDay(final CommandSource player, final String arg) {
+		this.plugin.getGame().getCommandManager().process(player, "time day" + arg);
 		return false;
 	}
 }

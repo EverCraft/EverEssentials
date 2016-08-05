@@ -100,7 +100,7 @@ public class EEManagerCommands extends HashSet<ECommand<EverEssentials>> {
 		register(new EEMore(this.plugin));
 		register(new EEMotd(this.plugin));
 		register(new EEMsg(this.plugin));
-		register(new EENames(this.plugin));
+		register(new EEName(this.plugin));
 		register(new EENear(this.plugin));
 		register(new EEReloadAll(this.plugin));
 		register(new EERepair(this.plugin));

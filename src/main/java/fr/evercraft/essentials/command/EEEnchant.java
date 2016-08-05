@@ -56,7 +56,7 @@ public class EEEnchant extends ECommand<EverEssentials> {
 	}
 
 	public Text help(final CommandSource source) {
-		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_ENCHANTMENT.get() + "> [" + EAMessages.ARGS_ENCHANTMENT.get() + "]")
+		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_ENCHANTMENT.get() + "> [" + EAMessages.ARGS_LEVEL.get() + "]")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
 					.build();

@@ -40,10 +40,10 @@ import fr.evercraft.everapi.server.player.EPlayer;
 import fr.evercraft.everapi.services.MojangService;
 import fr.evercraft.everapi.services.mojang.namehistory.NameHistory;
 
-public class EENames extends ECommand<EverEssentials> {
+public class EEName extends ECommand<EverEssentials> {
 	
-	public EENames(final EverEssentials plugin) {
-        super(plugin, "names");
+	public EEName(final EverEssentials plugin) {
+        super(plugin, "name", "names");
     }
 
 	public boolean testPermission(final CommandSource source) {
