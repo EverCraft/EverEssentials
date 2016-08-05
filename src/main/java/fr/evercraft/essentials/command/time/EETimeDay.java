@@ -88,7 +88,7 @@ public class EETimeDay extends ECommand<EverEssentials> {
 	}
 	
 	public boolean commandTimeDay(final CommandSource player, final String arg) {
-		this.plugin.getGame().getCommandManager().process(player, "time day" + arg);
+		this.plugin.getGame().getCommandManager().process(player, "time day " + arg);
 		return false;
 	}
 }

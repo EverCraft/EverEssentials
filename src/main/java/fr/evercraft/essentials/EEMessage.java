@@ -88,7 +88,13 @@ public class EEMessage extends EMessage {
 		BOOK_WRITABLE("book.writable", 						""),
 		BOOK_NO_WRITTEN("book.noWritten", 					""),
 		
-		BUTCHER_DESCRIPTION("butcher.description", 			"Supprime les entités dans un monde ou dans un rayon."),
+		BUTCHER_DESCRIPTION("butcher.description", 					"Supprime les entités dans un monde ou dans un rayon."),
+		BUTCHER_ALL_DESCRIPTION("butcher.all.description", 			"Supprime toutes les entités dans un monde ou dans un rayon."),
+		BUTCHER_ANIMAL_DESCRIPTION("butcher.animal.description", 	"Supprime toutes les animaux dans un monde ou dans un rayon."),
+		BUTCHER_MONSTER_DESCRIPTION("butcher.monster.description", 	"Supprime toutes les monstres dans un monde ou dans un rayon."),
+		BUTCHER_TYPE_DESCRIPTION("butcher.type.description", 	  	"Supprime toutes les entité d'un type dans un monde ou dans un rayon."),
+		
+		
 		BUTCHER_NOENTITY("butcher.noEntity", 				"&cIl y a aucune entité à supprimer."),
 		BUTCHER_ENTITY_COLOR("butcher.entityColor", 		"&6"),
 		BUTCHER_ANIMAL("butcher.killAnimal", 				"&7Suppression de &6<count> &7animaux dans ce monde."),

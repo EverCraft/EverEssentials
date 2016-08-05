@@ -88,7 +88,7 @@ public class EETimeNight extends ECommand<EverEssentials> {
 	}
 	
 	public boolean commandTimeNight(final CommandSource player, final String arg) {
-		this.plugin.getGame().getCommandManager().process(player, "time night" + arg);
+		this.plugin.getGame().getCommandManager().process(player, "time night " + arg);
 		return false;
 	}
 }

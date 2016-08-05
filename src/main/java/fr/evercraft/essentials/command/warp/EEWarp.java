@@ -64,7 +64,7 @@ public class EEWarp extends EReloadCommand<EverEssentials> {
 	}
 
 	public Text help(final CommandSource source) {
-		return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_WARP.get() + " [" + EAMessages.ARGS_PLAYER.get() + "]]")
+		return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_WARP.get() + "] [" + EAMessages.ARGS_PLAYER.get() + "]")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
 					.build();
@@ -98,10 +98,10 @@ public class EEWarp extends EReloadCommand<EverEssentials> {
 		} else if(args.size() == 2) {
 			// Si il a la permission
 			if(source.hasPermission(EEPermissions.WARP_OTHERS.get())){
-				Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(args.get(0));
+				Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(args.get(1));
 				// Le joueur existe
 				if(optPlayer.isPresent()){
-					resultat = commandWarpTeleportOthers(source, optPlayer.get(), args.get(1));
+					resultat = commandWarpTeleportOthers(source, optPlayer.get(), args.get(0));
 				// Le joueur est introuvable
 				} else {
 					source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));

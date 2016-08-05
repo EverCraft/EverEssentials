@@ -46,7 +46,7 @@ public class EEWorldsEnd extends ECommand<EverEssentials> {
 	}
 
 	public Text help(final CommandSource source) {
-		return Text.builder("/" + this.getName()+ " [" + EAMessages.ARGS_WORLD.get() + "]")
+		return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_WORLD.get() + "]")
 					.onClick(TextActions.suggestCommand("/" + this.getName()))
 					.color(TextColors.RED)
 					.build();
