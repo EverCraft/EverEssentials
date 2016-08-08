@@ -74,7 +74,6 @@ public class EEManagerCommands extends HashSet<ECommand<EverEssentials>> {
 		register(new EEBed(this.plugin));
 		register(new EEBook(this.plugin));
 		register(new EEBroadcast(this.plugin));
-		// register(new EEButcher(this.plugin));
 		register(new EEClearInventory(this.plugin));
 		register(new EEClearEffect(this.plugin));
 		register(new EEColor(this.plugin));
