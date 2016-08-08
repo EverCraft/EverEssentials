@@ -1,3 +1,19 @@
+/*
+ * This file is part of EverEssentials.
+ *
+ * EverEssentials is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * EverEssentials is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with EverEssentials.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package fr.evercraft.essentials.command.butcher;
 
 import java.util.ArrayList;
@@ -48,7 +64,7 @@ public class EEButcherMonster extends ESubCommand<EverEssentials> {
 	}
 
 	public Text help(final CommandSource source) {
-		return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_RADIUS.get() + "]")
+		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_RADIUS.get() + "|" + EAMessages.ARGS_ALL.get() + ">")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
 					.build();
@@ -61,11 +77,21 @@ public class EEButcherMonster extends ESubCommand<EverEssentials> {
 			EPlayer player = (EPlayer) source;
 			if(args.size() == 1) {
 				if (args.get(0).equals("all")){
-					resultat = commandButcherMonster(player);
+					// Si il a la permission
+					if(player.hasPermission(EEPermissions.BUTCHER_WORLD.get())){
+						resultat = commandButcherMonster(player);
+					// Il n'a pas la permission
+					} else {
+						player.sendMessage(EAMessages.NO_PERMISSION.getText());
+					}
 				} else {
 					try {
 						int radius = Integer.parseInt(args.get(0));
-						resultat = commandButcherMonster(player, radius);
+						if(radius > 0  && radius <= this.plugin.getConfigs().getButcherMaxRadius()) {
+							resultat = commandButcherMonster(player, radius);
+						} else {
+							player.sendMessage(EEMessages.PREFIX.get() + EAMessages.NUMBER_INVALID.getText());
+						}
 					} catch (NumberFormatException e) {
 						player.sendMessage(EEMessages.PREFIX.get() + EAMessages.IS_NOT_NUMBER.get()
 								.replaceAll("<number>", args.get(0)));
@@ -82,7 +108,7 @@ public class EEButcherMonster extends ESubCommand<EverEssentials> {
 		Predicate<Entity> predicate = new Predicate<Entity>() {
 		    @Override
 		    public boolean test(Entity entity) {
-		    	if(UtilsEntityType.MONSTERS.contains(entity.getType()) && entity.get(Keys.ANGRY).orElse(false)) {
+		    	if(UtilsEntityType.MONSTERS.contains(entity.getType()) && entity.get(Keys.ANGRY).orElse(true)) {
 		    		return true;
 		    	}
 		    	return false;
@@ -104,7 +130,7 @@ public class EEButcherMonster extends ESubCommand<EverEssentials> {
 		Predicate<Entity> predicate = new Predicate<Entity>() {
 		    @Override
 		    public boolean test(Entity entity) {
-		    	if(UtilsEntityType.MONSTERS.contains(entity.getType()) && entity.get(Keys.ANGRY).orElse(false)) {
+		    	if(UtilsEntityType.MONSTERS.contains(entity.getType()) && entity.get(Keys.ANGRY).orElse(true)) {
 		    		if(entity.getLocation().getPosition().distance(player.getLocation().getPosition()) <= radius) {
 			    		return true;
 			    	}

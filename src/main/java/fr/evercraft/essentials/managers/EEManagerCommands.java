@@ -25,6 +25,11 @@ import fr.evercraft.essentials.EECommand;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.essentials.command.*;
 import fr.evercraft.essentials.command.afk.*;
+import fr.evercraft.essentials.command.butcher.EEButcher;
+import fr.evercraft.essentials.command.butcher.EEButcherAll;
+import fr.evercraft.essentials.command.butcher.EEButcherAnimal;
+import fr.evercraft.essentials.command.butcher.EEButcherMonster;
+import fr.evercraft.essentials.command.butcher.EEButcherType;
 import fr.evercraft.essentials.command.fly.*;
 import fr.evercraft.essentials.command.freeze.*;
 import fr.evercraft.essentials.command.god.*;
@@ -69,7 +74,7 @@ public class EEManagerCommands extends HashSet<ECommand<EverEssentials>> {
 		register(new EEBed(this.plugin));
 		register(new EEBook(this.plugin));
 		register(new EEBroadcast(this.plugin));
-		register(new EEButcher(this.plugin));
+		// register(new EEButcher(this.plugin));
 		register(new EEClearInventory(this.plugin));
 		register(new EEClearEffect(this.plugin));
 		register(new EEColor(this.plugin));
@@ -157,6 +162,13 @@ public class EEManagerCommands extends HashSet<ECommand<EverEssentials>> {
 		afk.add(new EEAfkOff(this.plugin, afk));
 		afk.add(new EEAfkStatus(this.plugin, afk));
 		register(afk);
+		
+		EEButcher butcher = new EEButcher(this.plugin);
+		butcher.add(new EEButcherAll(this.plugin, butcher));
+		butcher.add(new EEButcherAnimal(this.plugin, butcher));
+		butcher.add(new EEButcherMonster(this.plugin, butcher));
+		butcher.add(new EEButcherType(this.plugin, butcher));
+		register(butcher);
 		
 		EEFly fly = new EEFly(this.plugin);
 		fly.add(new EEFlyOn(this.plugin, fly));
