@@ -282,7 +282,7 @@ public class EEWhois extends ECommand<EverEssentials> {
 	
 	public Text getMute(final EPlayer player) {
 		// TODO EverSanctions
-		return EChat.of(EEMessages.WHOIS_MUTE_ENABLE.get());
+		return EChat.of(EEMessages.WHOIS_MUTE_DISABLE.get());
 		/*
 		if(player.isMute()) {
 			return EChat.of(EEMessages.WHOIS_MUTE_ENABLE.get());
