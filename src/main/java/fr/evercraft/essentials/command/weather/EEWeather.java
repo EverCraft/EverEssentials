@@ -107,7 +107,8 @@ public class EEWeather extends ECommand<EverEssentials> {
 			if (optWorld.isPresent()) {
 				resultat = commandWeather(source, getWeather(args.get(0)), optWorld.get());
 			} else {
-				source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.WORLD_NOT_FOUND.get()));
+				source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.WORLD_NOT_FOUND.get()
+						.replaceAll("<world>", args.get(1))));
 			}
 		// On connais le joueur
 		} else if (args.size() == 3) {
@@ -116,7 +117,8 @@ public class EEWeather extends ECommand<EverEssentials> {
 			if (optWorld.isPresent()) {
 				resultat = commandWeatherDuration(source, getWeather(args.get(0)), optWorld.get(), args.get(2));
 			} else {
-				source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.WORLD_NOT_FOUND.get()));
+				source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.WORLD_NOT_FOUND.get()
+						.replaceAll("<world>", args.get(1))));
 			}
 		// Nombre d'argument incorrect
 		} else {

@@ -50,7 +50,7 @@ public class EEExt extends ECommand<EverEssentials> {
 
 	public Text help(final CommandSource source) {
 		if(source.hasPermission(EEPermissions.EXT_OTHERS.get())){
-			return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_PLAYER.get() + "]")
+			return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_PLAYER.get() + "|*]")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
 					.build();
@@ -84,13 +84,17 @@ public class EEExt extends ECommand<EverEssentials> {
 		} else if(args.size() == 1) {
 			// Si il a la permission
 			if(source.hasPermission(EEPermissions.EXT_OTHERS.get())){
-				Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(args.get(0));
-				// Le joueur existe
-				if(optPlayer.isPresent()){
-					resultat = commandExtOthers(source, optPlayer.get());
-				// Le joueur est introuvable
+				if(args.get(0).equals("*")) {
+					resultat = commandExtAll(source);
 				} else {
-					source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
+					Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(args.get(0));
+					// Le joueur existe
+					if(optPlayer.isPresent()){
+						resultat = commandExtOthers(source, optPlayer.get());
+					// Le joueur est introuvable
+					} else {
+						source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
+					}
 				}
 			// Il n'a pas la permission
 			} else {
@@ -133,5 +137,21 @@ public class EEExt extends ECommand<EverEssentials> {
 			return execute(staff, new ArrayList<String>());
 		}
 		return false;
+	}
+	
+	public boolean commandExtAll(final CommandSource staff) {
+		// Pour tous les joueurs connecté
+		for(EPlayer player : this.plugin.getEServer().getOnlineEPlayers()){
+			if(player.getFireTicks() > 0) {
+				player.setFireTicks(0);
+				// La source et le joueur sont différent
+				if(!staff.equals(player)) {
+					player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.EXT_OTHERS_PLAYER.get()
+							.replaceAll("<staff>", staff.getName())));
+				}
+			}
+		}
+		staff.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.EXT_ALL_STAFF.getText()));
+		return true;
 	}
 }

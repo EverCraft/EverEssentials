@@ -133,7 +133,8 @@ public class EETime extends ECommand<EverEssentials> {
 				if (optWorld.isPresent()) {
 					resultat = commandTimeSet(source, parseTime(args.get(0)), optWorld.get());
 				} else {
-					source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.WORLD_NOT_FOUND.get()));
+					source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.WORLD_NOT_FOUND.get()
+							.replaceAll("<world>", args.get(1))));
 				}
 			}
 		// Nombre d'argument incorrect
@@ -183,7 +184,7 @@ public class EETime extends ECommand<EverEssentials> {
 	}
 	
 	public void setWorldTime(WorldProperties world, long time) {
-		world.setWorldTime(((long) (Math.ceil(world.getTotalTime()/(double)MAX_TIME)*MAX_TIME)) + time);
+		world.setWorldTime(((long) (Math.ceil(world.getTotalTime()/(double) MAX_TIME) * MAX_TIME)) + time);
 	}
 	
 	public Optional<Long> parseTime(final String arg){

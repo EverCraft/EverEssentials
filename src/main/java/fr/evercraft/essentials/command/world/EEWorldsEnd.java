@@ -28,6 +28,7 @@ import org.spongepowered.api.text.format.TextColors;
 import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
+import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.command.ECommand;
 
 public class EEWorldsEnd extends ECommand<EverEssentials> {
@@ -45,7 +46,7 @@ public class EEWorldsEnd extends ECommand<EverEssentials> {
 	}
 
 	public Text help(final CommandSource source) {
-		return Text.builder("/" + this.getName())
+		return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_WORLD.get() + "]")
 					.onClick(TextActions.suggestCommand("/" + this.getName()))
 					.color(TextColors.RED)
 					.build();
@@ -66,7 +67,7 @@ public class EEWorldsEnd extends ECommand<EverEssentials> {
 		if (args.size() == 0) {
 			resultat = commandEnd(source);
 		} else if (args.size() == 1){
-			resultat = commandEndOthers(source, args.get(0));
+			resultat = commandEnd(source, args.get(0));
 		// Nombre d'argument incorrect
 		} else {
 			source.sendMessage(help(source));
@@ -79,7 +80,7 @@ public class EEWorldsEnd extends ECommand<EverEssentials> {
 		return false;
 	}
 	
-	public boolean commandEndOthers(final CommandSource player, final String arg) {
+	public boolean commandEnd(final CommandSource player, final String arg) {
 		this.plugin.getGame().getCommandManager().process(player, "worlds DIM1 "+ arg);
 		return false;
 	}

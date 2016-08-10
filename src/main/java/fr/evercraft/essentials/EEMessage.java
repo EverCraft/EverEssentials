@@ -88,16 +88,22 @@ public class EEMessage extends EMessage {
 		BOOK_WRITABLE("book.writable", 						""),
 		BOOK_NO_WRITTEN("book.noWritten", 					""),
 		
-		BUTCHER_DESCRIPTION("butcher.description", 			"Supprime les entités dans un monde ou dans un rayon."),
+		BUTCHER_DESCRIPTION("butcher.description", 					"Supprime les entités dans un monde ou dans un rayon."),
+		BUTCHER_ALL_DESCRIPTION("butcher.all.description", 			"Supprime toutes les entités dans un monde ou dans un rayon."),
+		BUTCHER_ANIMAL_DESCRIPTION("butcher.animal.description", 	"Supprime toutes les animaux dans un monde ou dans un rayon."),
+		BUTCHER_MONSTER_DESCRIPTION("butcher.monster.description", 	"Supprime toutes les monstres dans un monde ou dans un rayon."),
+		BUTCHER_TYPE_DESCRIPTION("butcher.type.description", 	  	"Supprime toutes les entité d'un type dans un monde ou dans un rayon."),
+		
+		
 		BUTCHER_NOENTITY("butcher.noEntity", 				"&cIl y a aucune entité à supprimer."),
 		BUTCHER_ENTITY_COLOR("butcher.entityColor", 		"&6"),
-		BUTCHER_ANIMAL("butcher.killAnimal", 				"&7Suppression de &6<count> &7animaux dans ce monde."),
-		BUTCHER_ANIMAL_RADIUS("butcher.killAnimalRadius", 	"&7Suppression de &6<count> &7animaux dans un rayon de &6<radius> bloc(s)&7."),
-		BUTCHER_MONSTER("butcher.killMonster", 				"&7Suppression de &6<count> &7monstre(s) dans ce monde."),
-		BUTCHER_MONSTER_RADIUS("butcher.killMonsterRadius", "&7Suppression de &6<count> &7monstre(s) dans un rayon de &6<radius> bloc(s)&7."),
-		BUTCHER_ALL("butcher.killAll",						"&7Suppression de &6<count> &7entité(s) dans ce monde."),
-		BUTCHER_ALL_RADIUS("butcher.killAllRadius", 		"&7Suppression de &6<count> &7entité(s) dans un rayon de &6<radius> bloc(s)&7."),
-		BUTCHER_TYPE("butcher.killType", 					"&7Suppression de &6<count> &6<entity>&6(s)&7 dans ce monde."),
+		BUTCHER_ANIMAL("butcher.killAnimal", 				"&7Suppression de &6<count> animaux &7dans ce monde."),
+		BUTCHER_ANIMAL_RADIUS("butcher.killAnimalRadius", 	"&7Suppression de &6<count> animaux &7dans un rayon de &6<radius> bloc(s)&7."),
+		BUTCHER_MONSTER("butcher.killMonster", 				"&7Suppression de &6<count> monstre(s) &7dans ce monde."),
+		BUTCHER_MONSTER_RADIUS("butcher.killMonsterRadius", "&7Suppression de &6<count> monstre(s) &7dans un rayon de &6<radius> bloc(s)&7."),
+		BUTCHER_ALL("butcher.killAll",						"&7Suppression de &6<count> entité(s) &7dans ce monde."),
+		BUTCHER_ALL_RADIUS("butcher.killAllRadius", 		"&7Suppression de &6<count> entité(s) &7dans un rayon de &6<radius> bloc(s)&7."),
+		BUTCHER_TYPE("butcher.killType", 					"&7Suppression de &6<count> <entity>&6(s)&7 dans ce monde."),
 		BUTCHER_TYPE_RADIUS("butcher.killTypeRadius", 		"&7Suppression de &6<count> &6<entity>&6(s)&7 dans un rayon de &6<radius> bloc(s)&7."),
 		
 		CLEAREFFECT_DESCRIPTION("cleareffect.description", 		"Supprime tous les effets de potions d'un joueur."),
@@ -142,12 +148,13 @@ public class EEMessage extends EMessage {
 		EXP_OTHERS_PLAYER_SET_EXP("exp.othersPlayerSetExp", 		"&7Votre expérience a été modifié à &6<experience> &7par &6<staff>&7."),
 		EXP_OTHERS_STAFF_SET_EXP("exp.othersStaffSetExp", 			"&7Vous avez modifié l'expérience de &6<player> &7à &6<experience>&7."),
 		
-		EXT_DESCRIPTION("ext.description", 					"Enleve le feu sur un joueur."),
+		EXT_DESCRIPTION("ext.description", 					"Retire le feu sur un joueur."),
 		EXT_PLAYER("ext.player", 							"&7Vous n'êtes plus en feu."),
 		EXT_PLAYER_ERROR("ext.playerError", 				"&7Vous n'êtes pas en feu."),
 		EXT_OTHERS_PLAYER("ext.othersPlayer", 				"&7Vous n'êtes plus en feu grâce à &6<staff>&7."),
-		EXT_OTHERS_STAFF("ext.othersStaff", 				"&7Vous avez enlevé le feu sur &6<player>&7."),
+		EXT_OTHERS_STAFF("ext.othersStaff", 				"&7Vous avez retiré le feu sur &6<player>&7."),
 		EXT_OTHERS_ERROR("ext.othersError", 				"&6<player> &7n'est pas en feu."),
+		EXT_ALL_STAFF("ext.allStaff", 						"&7Vous avez retiré le feu sur tous les joueurs."),
 		
 		FEED_DESCRIPTION("feed.description", 				"Satisfait la faim d'un joueur."),
 		FEED_PLAYER("feed.player", 							"&7Vous vous êtes rassasié."),
@@ -275,7 +282,7 @@ public class EEMessage extends EMessage {
 		HEAL_OTHERS_DEAD_STAFF("heal.othersDeadStaff", 	"&6<player>&7 est déjà mort."),
 		HEAL_ALL_STAFF("heal.allStaff", 				"&7Vous avez soigné tous les joueurs."),
 		
-		HELP_DESCRIPTION("help.description", 			"Affiche les informations sur les commandes disponibles sur le serveur."),
+		HELP_DESCRIPTION("help.description", 			"Affiche les informations sur les commandes disponibles du serveur."),
 		HELP_TITLE("help.title", 						"&aListe des commandes"),
 		HELP_SEARCH_TITLE("help.searchtitle", 			"&aListe des commandes contenant '<command>'"),
 		
@@ -330,7 +337,7 @@ public class EEMessage extends EMessage {
 		SETHOME_MULTIPLE_ERROR_MAX("sethome.multipleErrorMax", 			"&cVous ne pouvez pas créer plus de <nombre> résidence(s)."),
 		SETHOME_MULTIPLE_NO_PERMISSION("sethome.multipleNoPermission", 	"&cVous n'avez pas la permission d'avoir plusieurs résidences."),
 		
-		INFO_DESCRIPTION("info.description", "Indique le type d'un item"),
+		INFO_DESCRIPTION("info.description", "Indique le type d'un objet"),
 		INFO_PLAYER("info.player", "&7Le type de l'objet <item> &7est &6<type>&7."),
 		INFO_ITEM_COLOR("info.itemColor", "&6"),
 		
@@ -903,9 +910,9 @@ public class EEMessage extends EMessage {
 		WORLDBORDER_WARNING_TIME("worldborder.warning.time", "&7L'avertissement de la bordure du monde &6<world> &7a été défini à &6<nb> &7seconde(s)."),
 		WORLDBORDER_WARNING_DISTANCE("worldborder.warning.distance", "&7L'avertissement de la bordure du monde &6<world> &7a été défini à &6<nb> &7bloc(s) de distance."),
 			
-		WORLDS_DESCRIPTION("worlds.description", "Téléporte le joueur dans le monde de votre choix"),
-		WORLDS_END_DESCRIPTION("worlds.endDescription", "Vous téléporte dans le monde du néant"),
-		WORLDS_NETHER_DESCRIPTION("worlds.netherDescription", "Vous téléporte dans le monde de l'enfer"),
+		WORLDS_DESCRIPTION("worlds.description", "Téléporte un joueur dans le monde de votre choix"),
+		WORLDS_END_DESCRIPTION("worlds.endDescription", "Téléporte un joueur dans le monde du néant"),
+		WORLDS_NETHER_DESCRIPTION("worlds.netherDescription", "Téléporte un joueur dans le monde de l'enfer"),
 		WORLDS_LIST_TITLE("worlds.listTitle", "&aListe des mondes"),
 		WORLDS_LIST_LINE("worlds.listLine", "    &6&l➤  &6<world> &7: <teleport>"),
 		WORLDS_LIST_TELEPORT("worlds.listTeleport", "&2&nTéléporter"),
@@ -916,7 +923,7 @@ public class EEMessage extends EMessage {
 		WORLDS_TELEPORT_PLAYER_ERROR("worlds.teleportPlayerError", "&7Impossible de vous téléporter dans le monde <world>&7."),
 		WORLDS_TELEPORT_OTHERS_PLAYER("worlds.teleportOthersPlayer", "&7Vous avez été téléporté dans le monde <world> &7par &6<staff>&7."),
 		WORLDS_TELEPORT_OTHERS_STAFF("worlds.teleportOthersStaff", "&7Vous téléportez &6<player> &7dans le monde <world>&7."),
-		WORLDS_TELEPORT_OTHERS_ERROR("worlds.teleportOthersError", "&7Impossible de téléporter &6<player> &7dans le monde&7."),
+		WORLDS_TELEPORT_OTHERS_ERROR("worlds.teleportOthersError", "&7Impossible de trouver une position pour téléporter &6<player> &7dans le monde &6<world>&7."),
 		
 		SIGN_CREATE("sign.create",		"&7Panneau crée avec succès."),
 		SIGN_DISABLE("sign.disable",    "&cSe panneau est désactivé.");

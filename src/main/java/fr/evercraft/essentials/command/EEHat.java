@@ -127,7 +127,7 @@ public class EEHat extends ECommand<EverEssentials> {
 			}
 		// Le jouer n'a pas d'objet dans la main
 		} else {
-			player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.EMPTY_ITEM_IN_HAND));
+			player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.EMPTY_ITEM_IN_HAND.get()));
 		}
 		return false;
 	}

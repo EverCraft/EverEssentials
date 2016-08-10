@@ -40,7 +40,7 @@ import fr.evercraft.everapi.text.ETextBuilder;
 public class EEWorlds extends ECommand<EverEssentials> {
 
 	public EEWorlds(final EverEssentials plugin) {
-		super(plugin, "worlds");
+		super(plugin, "worlds", "world");
 	}
 
 	public boolean testPermission(final CommandSource source) {
@@ -96,10 +96,16 @@ public class EEWorlds extends ECommand<EverEssentials> {
 			if (source.hasPermission(EEPermissions.WORLDS_OTHERS.get())){
 				// Si la source est bien un joueur
 				if(source instanceof EPlayer) {
-					Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(args.get(1));
+					EPlayer player = (EPlayer) source;
+					Optional<EPlayer> optTarget = this.plugin.getEServer().getEPlayer(args.get(1));
 					// Le joueur existe
-					if(optPlayer.isPresent()){
-						resultat = commandWorldTeleportOthers((EPlayer) source, optPlayer.get(), args.get(0));
+					if(optTarget.isPresent()){
+						if(!player.equals(optTarget.get())){
+							resultat = commandWorldTeleportOthers((EPlayer) source, optTarget.get(), args.get(0));
+						} else {
+							args.remove(args.size() - 1);
+							return execute(player, args);
+						}
 					// Le joueur est introuvable
 					} else {
 						source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
@@ -180,7 +186,8 @@ public class EEWorlds extends ECommand<EverEssentials> {
 					return true;
 				} else {
 					staff.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
-							.append(EEMessages.WORLDS_TELEPORT_OTHERS_ERROR.get())
+							.append(EEMessages.WORLDS_TELEPORT_OTHERS_ERROR.get()
+									.replaceAll("<player>", player.getDisplayName()))
 							.replace("<world>", getButtonPosition(optWorld.get().getSpawnLocation()))
 							.build());
 				}

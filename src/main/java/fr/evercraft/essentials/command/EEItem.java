@@ -66,7 +66,8 @@ public class EEItem extends EReloadCommand<EverEssentials> {
 	}
 
 	public Text help(final CommandSource source) {
-		return Text.builder("/" + this.getName() + " <" +  EAMessages.ARGS_ITEM.get() + "> [" + EAMessages.ARGS_TYPE.get() +"] [" + EAMessages.ARGS_AMOUNT.get() + "]")
+		return Text.builder("/" + this.getName() + " <" +  EAMessages.ARGS_ITEM.get() + "> [" + EAMessages.ARGS_TYPE.get() 
+				+"] [" + EAMessages.ARGS_AMOUNT.get() + "]")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
 					.build();
@@ -84,7 +85,6 @@ public class EEItem extends EReloadCommand<EverEssentials> {
 				Optional<Class<? extends CatalogType>> catalogType = UtilsItemTypes.getCatalogType(optItem.get());
 				if(catalogType.isPresent()) {
 					for(CatalogType type : this.plugin.getGame().getRegistry().getAllOf(catalogType.get())){
-						suggests.add(type.getId());
 						suggests.add(type.getName());
 					}
 				} else {
