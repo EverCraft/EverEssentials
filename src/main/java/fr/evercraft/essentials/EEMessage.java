@@ -469,6 +469,10 @@ public class EEMessage extends EMessage {
 		PING_PLAYER("ping.player", "&7Votre ping : &6<ping> &7ms."),
 		PING_OTHERS("ping.others", "&7Le ping de &6<player> &7: &6<ping> &7ms."),
 		
+		PLAYED_DESCRIPTION("played.description", "Connaître le temps de jeu d'un joueur"),
+		PLAYED_PLAYER("played.player", "&7Votre temps de jeu : &6<time> &7ms."),
+		PLAYED_OTHERS("played.others", "&7Le temps de jeu de &6<player> &7: &6<time> &7ms."),
+		
 		INVSEE_DESCRIPTION("invsee.description", "Regarde l'inventaire d'un autre joueur"),
 		
 		RELOAD_ALL_DESCRIPTION("reload.description", "Recharge tous les plugins"),

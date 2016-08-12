@@ -155,6 +155,9 @@ public enum EEPermissions implements EnumPermission {
 	PING("ping.command"),
 	PING_OTHERS("ping.others"),
 	
+	PLAYED("played.command"),
+	PLAYED_OTHERS("played.others"),
+	
 	RULES("rules.command"),
 	
 	SAY("say.command"),
