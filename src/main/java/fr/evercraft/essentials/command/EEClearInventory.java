@@ -71,14 +71,15 @@ public class EEClearInventory extends ECommand<EverEssentials> {
 	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Résultat de la commande :
 		boolean resultat = false;
+		
 		// Si on ne connait pas le joueur
 		if(args.size() == 0) {
 			// Si la source est un joueur
 			if(source instanceof EPlayer) {
-				resultat = commandClearInventory((EPlayer) source);
+				resultat = this.commandClearInventory((EPlayer) source);
 			// La source n'est pas un joueur
 			} else {
-				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
+				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText()));
 			}
 		// On connais le joueur
 		} else if(args.size() == 1) {
@@ -87,29 +88,32 @@ public class EEClearInventory extends ECommand<EverEssentials> {
 				Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(args.get(0));
 				// Le joueur existe
 				if(optPlayer.isPresent()){
-					resultat = commandClearInventory(source, optPlayer.get());
+					resultat = this.commandClearInventory(source, optPlayer.get());
 				// Le joueur est introuvable
 				} else {
 					source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
 				}
 			// Il n'a pas la permission
 			} else {
-				source.sendMessage(EAMessages.NO_PERMISSION.getText());
+				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.NO_PERMISSION.getText()));
 			}
 		// Nombre d'argument incorrect
 		} else {
-			source.sendMessage(help(source));
+			source.sendMessage(this.help(source));
 		}
+		
 		return resultat;
 	}
 	
-	public boolean commandClearInventory(final EPlayer player){
+	private boolean commandClearInventory(final EPlayer player){
 		int total = player.getInventory().totalItems();
-		if (total != 0){
+		// Si il a des items
+		if (total != 0) {
 			player.getInventory().clear();
 			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.CLEARINVENTORY_PLAYER.get()
 					.replaceAll("<amount>", String.valueOf(total)));
 			return true;
+		// Il n'a pas d'item
 		} else {
 			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.CLEARINVENTORY_NOITEM.get());
 			return false;
@@ -117,10 +121,11 @@ public class EEClearInventory extends ECommand<EverEssentials> {
 		}
 	}
 	
-	public boolean commandClearInventory(final CommandSource staff, final EPlayer player) throws CommandException{
+	private boolean commandClearInventory(final CommandSource staff, final EPlayer player) throws CommandException{
 		// La source et le joueur sont différent
 		if(!player.equals(staff)){
 			int total = player.getInventory().totalItems();
+			// Si il a des items
 			if (total != 0){
 				player.getInventory().clear();
 				player.sendMessage(EEMessages.PREFIX.get() + EEMessages.CLEARINVENTORY_OTHERS_PLAYER.get()
@@ -130,13 +135,14 @@ public class EEClearInventory extends ECommand<EverEssentials> {
 						.replaceAll("<player>", player.getName())
 						.replaceAll("<amount>", String.valueOf(total))));
 				return true;
+			// Il n'a pas d'item
 			} else {
 				staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.CLEARINVENTORY_NOITEM.get()));
 				return false;
 			}
 		// La source et le joueur sont identique
 		} else {
-			return execute(staff, new ArrayList<String>());
+			return this.commandClearInventory(player);
 		}
 	}
 }

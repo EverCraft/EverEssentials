@@ -59,6 +59,7 @@ public class EEBroadcast extends ECommand<EverEssentials> {
 		return new ArrayList<String>();
 	}
 
+	@Override
 	protected List<String> getArg(final String arg){
 		if(arg.isEmpty()) {
 			return Arrays.asList();
@@ -70,14 +71,14 @@ public class EEBroadcast extends ECommand<EverEssentials> {
 		// Résultat de la commande :
 		boolean resultat = false;
 		if(args.size() == 1) {
-			resultat = commandBroadcast(args.get(0));
+			resultat = this.commandBroadcast(args.get(0));
 		} else {
-			source.sendMessage(help(source));
+			source.sendMessage(this.help(source));
 		}
 		return resultat;
 	}
 	
-	public boolean commandBroadcast(final String message) {
+	private boolean commandBroadcast(final String message) {
 		this.plugin.getEServer().getBroadcastChannel().send(EChat.of(EEMessages.BROADCAST_MESSAGE.get()
 				.replaceAll("<message>", message)));
 		return true;

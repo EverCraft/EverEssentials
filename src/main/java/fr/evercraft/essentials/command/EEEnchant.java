@@ -157,7 +157,8 @@ public class EEEnchant extends ECommand<EverEssentials> {
 							return false;
 						}
 					} else {
-						player.sendMessage(EEMessages.PREFIX.get() + EAMessages.NUMBER_INVALID.get());
+						player.sendMessage(EEMessages.PREFIX.get() + EAMessages.IS_NOT_NUMBER.get()
+								.replaceAll("<number>", lvl));
 						return false;
 					}
 				} catch (NumberFormatException e) {

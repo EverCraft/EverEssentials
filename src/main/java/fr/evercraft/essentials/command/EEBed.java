@@ -38,6 +38,10 @@ import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ECommand;
 import fr.evercraft.everapi.server.player.EPlayer;
 
+/*
+ * Pas encore implémentée
+ */
+
 public class EEBed extends ECommand<EverEssentials> {
 	
 	public EEBed(final EverEssentials plugin) {

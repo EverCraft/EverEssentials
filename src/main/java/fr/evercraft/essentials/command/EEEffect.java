@@ -18,6 +18,7 @@ package fr.evercraft.essentials.command;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
@@ -37,13 +38,14 @@ import fr.evercraft.everapi.server.player.EPlayer;
 import fr.evercraft.everapi.sponge.UtilsEffect;
 
 public class EEEffect extends EReloadCommand<EverEssentials> {
+	
 	private int default_duration;
 	private int default_max_duration;
 	private int default_amplifier;
 	
 	public EEEffect(final EverEssentials plugin) {
 		super(plugin, "effect", "effects");
-		reload();
+		this.reload();
 	}
 
 	public void reload() {
@@ -70,17 +72,18 @@ public class EEEffect extends EReloadCommand<EverEssentials> {
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		List<String> suggests = new ArrayList<String>();
 		if (source instanceof Player) {
+			// Effet
 			if (args.size() == 1) {
-				// Effet
 				suggests = UtilsEffect.getEffects();
+			// Amplification
 			} else if (args.size() == 2) {
-				// Amplification
-				if (UtilsEffect.getEffect(args.get(0)).isPresent()) {
-					UtilsEffect effect = UtilsEffect.getEffect(args.get(0)).get();
-					for (int cpt = effect.getMinAmplifier(); cpt <= effect.getMaxAmplifier(); cpt++) {
+				Optional<UtilsEffect> effect = UtilsEffect.getEffect(args.get(0));
+				if (effect.isPresent()) {
+					for (int cpt = 1; cpt <= effect.get().getMaxAmplifier(); cpt++) {
 						suggests.add(String.valueOf(cpt));
 					}
 				}
+			// Duration
 			} else if (args.size() == 3) {
 				suggests.add("30");
 				suggests.add("60");
@@ -93,6 +96,7 @@ public class EEEffect extends EReloadCommand<EverEssentials> {
 	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Résultat de la commande :
 		boolean resultat = false;
+		
 		if (source instanceof EPlayer) {
 			EPlayer player = (EPlayer) source;
 			// Affichage de l'aide
@@ -100,85 +104,102 @@ public class EEEffect extends EReloadCommand<EverEssentials> {
 				player.sendMessage(help(source));
 			// Ajout de l'effect avec amplifier et durée par défaut
 			} else if (args.size() == 1) {
-				commandEffect(player, args.get(0));
+				resultat = this.commandEffect(player, args.get(0));
 			// Ajout de l'effect avec durée par défaut et amplifier personnalisé
 			} else if (args.size() == 2) {
 				try {
-					int amplification = Integer.valueOf(args.get(1));
-					commandEffect(player, args.get(0), amplification);
+					resultat = this.commandEffect(player, args.get(0), Integer.valueOf(args.get(1)));
 					// Nombre invalide
 				} catch (NumberFormatException e) {
-					player.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.NUMBER_INVALID.getText()));
+					player.sendMessage(EEMessages.PREFIX.get() + EAMessages.IS_NOT_NUMBER.get()
+							.replaceAll("<number>", args.get(1)));
 				}
 			// Ajout de l'effect avec durée et amplifier personnalisé
 			} else if (args.size() == 3) {
 				try {
 					int amplification = Integer.valueOf(args.get(1));
-					int duration = Integer.valueOf(args.get(2)) * 20;
-					commandEffect(player, args.get(0), amplification, duration);
+					try {
+						int duration = Integer.valueOf(args.get(2)) * 20;
+						resultat = this.commandEffect(player, args.get(0), amplification, duration);
+					} catch (NumberFormatException e) {
+						player.sendMessage(EEMessages.PREFIX.get() + EAMessages.IS_NOT_NUMBER.get()
+								.replaceAll("<number>", args.get(2)));
+					}
 				} catch (NumberFormatException e) {
-					player.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.NUMBER_INVALID.getText()));
+					player.sendMessage(EEMessages.PREFIX.get() + EAMessages.IS_NOT_NUMBER.get()
+							.replaceAll("<number>", args.get(1)));
 				}
 			} else {
-				source.sendMessage(help(source));
+				source.sendMessage(this.help(source));
 			}
 		} else {
-			source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
+			source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText()));
 		}
+		
 		return resultat;
 	}
 
-	public boolean commandEffect(final EPlayer player, final String effect) {
-		if (UtilsEffect.getEffect(effect).isPresent()) {
-			PotionEffect potion = createPotionEffect(UtilsEffect.getEffect(effect).get().getType(), 
-					this.default_amplifier, 
-					this.default_duration);
-			player.addPotion(potion);
+	private boolean commandEffect(final EPlayer player, final String name_effect) {
+		Optional<UtilsEffect> effect = UtilsEffect.getEffect(name_effect);
+		// Si l'effet existe
+		if(effect.isPresent()) {
+			player.addPotion(this.createPotionEffect(effect.get().getType(), this.default_amplifier, this.default_duration));
 			return true;
+		// L'effet n'existe pas
 		} else {
-			player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.EFFECT_ERROR_NAME.getText()));
+			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.EFFECT_ERROR_NAME.get()
+					.replaceAll("<effect>", name_effect));
 			return false;
 		}
 	}
 
-	public boolean commandEffect(final EPlayer player, final String effect, final int amplifier) {
-		if (UtilsEffect.getEffect(effect).isPresent()) {
-			UtilsEffect utils = UtilsEffect.getEffect(effect).get();
-			if (utils.getMinAmplifier() <= amplifier && amplifier <= utils.getMaxAmplifier()) {
-				player.addPotion(createPotionEffect(utils.getType(), amplifier - 1, this.default_duration));
+	private boolean commandEffect(final EPlayer player, final String name_effect, final int amplifier) {
+		Optional<UtilsEffect> effect = UtilsEffect.getEffect(name_effect);
+		// Si l'effet existe
+		if (effect.isPresent()) {
+			// Si la valeur de l'amplifieur est correcte
+			if (1 <= amplifier && amplifier <= effect.get().getMaxAmplifier()) {
+				player.addPotion(createPotionEffect(effect.get().getType(), amplifier - 1, this.default_duration));
+			// La valeur de l'amplifieur n'est pas correcte
 			} else {
-				player.sendMessage(EEMessages.PREFIX.get()
-					+ EEMessages.EFFECT_ERROR_AMPLIFIER.get()
-						.replaceAll("<min>", String.valueOf(utils.getMinAmplifier()))
-						.replaceAll("<max>", String.valueOf(utils.getMaxAmplifier())));
+				player.sendMessage(EEMessages.PREFIX.get() + EEMessages.EFFECT_ERROR_AMPLIFIER.get()
+						.replaceAll("<min>", "1")
+						.replaceAll("<max>", String.valueOf(effect.get().getMaxAmplifier())));
 			}
 			return true;
+		// L'effet n'existe pas
 		} else {
-			player.sendMessage(EEMessages.PREFIX.get() 
-				+ EEMessages.EFFECT_ERROR_NAME.get());
+			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.EFFECT_ERROR_NAME.get()
+					.replaceAll("<effect>", name_effect));
 			return false;
 		}
 	}
 
-	public boolean commandEffect(final EPlayer player, final String effect, final int amplifier, final int duration) {
-		if (UtilsEffect.getEffect(effect).isPresent()) {
-			UtilsEffect utils = UtilsEffect.getEffect(effect).get();
-			if (utils.getMinAmplifier() <= amplifier && amplifier <= utils.getMaxAmplifier()) {
+	private boolean commandEffect(final EPlayer player, final String name_effect, final int amplifier, final int duration) {
+		Optional<UtilsEffect> effect = UtilsEffect.getEffect(name_effect);
+		// Si l'effet existe
+		if (effect.isPresent()) {
+			// Si la valeur de l'amplifieur est correcte
+			if (1 <= amplifier && amplifier <= effect.get().getMaxAmplifier()) {
+				// Si la durée est correcte
 				if (duration > 0 && duration <= this.default_max_duration) {
-					player.addPotion(createPotionEffect(utils.getType(), amplifier - 1, duration));
+					player.addPotion(createPotionEffect(effect.get().getType(), amplifier - 1, duration));
+				// La durée n'est pas correcte
 				} else {
 					player.sendMessage(EEMessages.PREFIX.get() 
 						+ EEMessages.EFFECT_ERROR_DURATION.get()
-							.replaceAll("<min>", String.valueOf(1))
+							.replaceAll("<min>", "1")
 							.replaceAll("<max>", String.valueOf(this.default_max_duration)));
 				}
+			// La valeur de l'amplifieur n'est pas correcte
 			} else {
 				player.sendMessage(EEMessages.PREFIX.get()
 						+ EEMessages.EFFECT_ERROR_AMPLIFIER.get()
-							.replaceAll("<min>", String.valueOf(utils.getMinAmplifier()))
-							.replaceAll("<max>", String.valueOf(utils.getMaxAmplifier() / 20)));
+							.replaceAll("<min>", "1")
+							.replaceAll("<max>", String.valueOf(effect.get().getMaxAmplifier() / 20)));
 			}
 			return true;
+		// L'effet n'existe pas
 		} else {
 			player.sendMessage(EEMessages.PREFIX.get() 
 					+ EEMessages.EFFECT_ERROR_NAME.get());

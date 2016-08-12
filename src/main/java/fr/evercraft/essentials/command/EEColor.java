@@ -65,23 +65,25 @@ public class EEColor extends ECommand<EverEssentials> {
 	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Résultat de la commande :
 		boolean resultat = false;
+		
 		// Si on ne connait pas le joueur
 		if(args.size() == 0) {
 			// Si la source est un joueur
 			if(source instanceof EPlayer) {
-				resultat = commandColor((EPlayer) source);
+				resultat = this.commandColor((EPlayer) source);
 			// La source n'est pas un joueur
 			} else {
-				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
+				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText()));
 			}
 		// Nombre d'argument incorrect
 		} else {
-			source.sendMessage(help(source));
+			source.sendMessage(this.help(source));
 		}
+		
 		return resultat;
 	}
 	
-	public boolean commandColor(final EPlayer player) {
+	private boolean commandColor(final EPlayer player) {
 		Builder book = BookView.builder();
 		
 		List<Text> page = new ArrayList<Text>();

@@ -72,11 +72,11 @@ public class EEConfig extends EConfig {
 													"Set to -1 for no timeout.");
 		
 		// AFK
-		addDefault("afk-auto", 3, 		"Auto-AFK",
+		addDefault("afk.auto", 3, 		"Auto-AFK",
 								  		"After this timeout in seconds, the user will be set as afk.",
 								  		"This feature requires the player to have everessentials.afk.auto node.",
 								  		"Set to -1 for no timeout.");
-		addDefault("afk-auto-kick", 10, 
+		addDefault("afk.auto-kick", 10, 
 										"Auto-AFK Kick",
 										"After this timeout in seconds, the user will be kicked from the server.",
 										"everessentials.afk.kickexempt node overrides this feature.",
@@ -89,7 +89,7 @@ public class EEConfig extends EConfig {
 		addDefault("near-distance.default", 200);
 
 		// SpawnMob
-		addDefault("spawnmob-limit", 50, "Mob limit on the /spawnmob command per execution.");
+		addDefault("spawnmob-limit", 20, "Mob limit on the /spawnmob command per execution.");
 		
 		// Butcher
 		addDefault("butcher-max-radius", 1000);
@@ -107,73 +107,135 @@ public class EEConfig extends EConfig {
 														"This does not affect the /home command, there is a separate toggle below for this.");
 		
 		// Effect
-		addDefault("effect-default-duration", 60, "Int");
-		addDefault("effect-default-max-duration", 600, "Int");
-		addDefault("effect-default-amplifier", 0, "Int");
+		addDefault("effect.duration-default", 60, "Int");
+		addDefault("effect.duration-max", 600, "Int");
+		addDefault("effect.amplifier-default", 0, "Int");
+		addDefault("effect.effect.unsafe", 0, "Boolean");
 		
-		addDefault("generate.tickPercentLimit", 0.15, "Float");
-		addDefault("generate.tickInterval", 10, "Int");
-		addDefault("generate.chunksPerTick", 10, "Int");
-		
-		addDefault("spawnmob.limit", 20, "Mob limit on the /spawnmob command per execution.");
-		
-		addDefault("remove-god-on-disconnect", false);
-		addDefault("remove-vanish-on-disconnect", true);
+		addDefault("generate.tick-percent-limit", 0.15, "Float");
+		addDefault("generate.tick-interval", 10, "Int");
+		addDefault("generate.chunks-per-tick", 10, "Int");
 		
 		// GameMode
-		addDefault("gamemode-kill", true);
-		addDefault("gamemode-paint", true);
+		addDefault("gamemode.kill", true);
+		addDefault("gamemode.paint", true);
 		
-		addDefault("god-teleport-to-spawn", true);
+		// God
+		addDefault("god.remove-on-disconnect", false);
+		addDefault("god.teleport-to-spawn", true);
 		
-		if(this.get("list").getValue() == null) {
+		// Vanish
+		addDefault("vanish.remove-on-disconnect", true);
+		
+		// List
+		if(this.get("list").isVirtual()) {
 			addDefault("list.Admins", "owner admin", "To merge groups, list the groups you wish to merge", "Staff: owner admin moderator");
 			addDefault("list.builder", 20, "To limit groups, set a max user limit");
 			addDefault("list.default", "hidden", "To hide groups, set the group as hidden");
 			addDefault("list.Players", "*", "All players with no grouping");
 		}
 	}
+
+	/*
+	 * AFK
+	 */
 	
-	public boolean isWorldTeleportPermissions() {
-		return this.get("world-teleport-permissions").getBoolean(false);
+	public long getAfkAuto() {
+		return this.get("afk.auto").getLong(-1);
 	}
 	
-	public boolean isWarpPermissions() {
-		return this.get("warp-permission").getBoolean(false);
+	public long getAfkAutoKick() {
+		return this.get("afk.auto-kick").getLong(-1);
 	}
+	
+	/*
+	 * BlackList Item
+	 */
+	
+	/*
+	 * Butcher
+	 */
 	
 	public int getButcherMaxRadius() {
 		return this.get("butcher-max-radius").getInt(1000);
 	}
-
-	public boolean removeGodOnDisconnect() {
-		return this.get("remove-god-on-disconnect").getBoolean(false);
+	
+	/*
+	 * Effect
+	 */
+	
+	public int getEffectDurationDefault() {
+		return this.get("effect.duration-default").getInt() * 20;
 	}
 	
-	public boolean removeVanishOnDisconnect() {
-		return this.get("remove-vanish-on-disconnect").getBoolean(true);
+	public int getEffectDurationMax() {
+		return this.get("effect.duration-max").getInt() * 20;
 	}
 	
-	public boolean isGodTeleportToSpawn() {
-		return this.get("remove-vanish-on-disconnect").getBoolean(true);
+	public int getEffectAmplifierDefault() {
+		return this.get("effect.amplifier-default").getInt();
 	}
+	
+	public boolean getEffectUnsafe() {
+		return this.get("effect.unsafe").getBoolean();
+	}
+	
+	/*
+	 * GameMde
+	 */
 	
 	public boolean isGameModeKill() {
-		return this.get("gamemode-kill").getBoolean(true);
+		return this.get("gamemode.kill").getBoolean(true);
 	}
 	
 	public boolean isGameModePaint() {
-		return this.get("gamemode-paint").getBoolean(true);
+		return this.get("gamemode.paint").getBoolean(true);
 	}
+	
+	/*
+	 * God
+	 */
+	
+	public boolean removeGodOnDisconnect() {
+		return this.get("god.remove-on-disconnect").getBoolean(false);
+	}
+	
+	public boolean isGodTeleportToSpawn() {
+		return this.get("god.teleport-to-spawn").getBoolean(true);
+	}
+	
+	/*
+	 * Home
+	 */
+	
+	/*
+	 * List
+	 */
 	
 	public ConfigurationNode getConfigList() {
 		return this.get("list");
 	}
-
+	
+	/*
+	 * Near
+	 */
+	
+	/*
+	 * Spawn
+	 */
+	
 	public String getSpawnNewbies() {
-		return this.get("newbies-spawnpoint").getString("newbies");
+		return this.get("spawn.newbies-spawnpoint").getString("newbies");
 	}
-
+	
+	/*
+	 * SpawnMob
+	 */
+	
+	/*
+	 * Teleport
+	 */
+	
 	/**
 	 * Retourne le délais de téléportation
 	 * @return En seconde
@@ -200,12 +262,28 @@ public class EEConfig extends EConfig {
 	public boolean hasTeleportDelay() {
 		return this.getTeleportDelay() > 0;
 	}
-
-	public long getAfkAuto() {
-		return this.get("afk-auto").getLong(-1);
+	
+	/*
+	 * Vanish
+	 */
+	
+	public boolean removeVanishOnDisconnect() {
+		return this.get("vanish.remove-on-disconnect").getBoolean(true);
 	}
 	
-	public long getAfkAutoKick() {
-		return this.get("afk-auto-kick").getLong(-1);
+	/*
+	 * Warp
+	 */
+	
+	public boolean isWarpPermissions() {
+		return this.get("warp-permission").getBoolean(false);
+	}
+	
+	/*
+	 * World
+	 */
+	
+	public boolean isWorldTeleportPermissions() {
+		return this.get("world-teleport-permissions").getBoolean(false);
 	}
 }

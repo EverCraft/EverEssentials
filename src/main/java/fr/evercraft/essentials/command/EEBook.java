@@ -36,6 +36,10 @@ import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.command.ECommand;
 import fr.evercraft.everapi.server.player.EPlayer;
 
+/*
+ * Pas encore implémentée
+ */
+
 public class EEBook extends ECommand<EverEssentials> {
 	
 	public EEBook(final EverEssentials plugin) {

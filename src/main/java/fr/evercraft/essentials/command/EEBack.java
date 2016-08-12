@@ -66,30 +66,34 @@ public class EEBack extends ECommand<EverEssentials> {
 	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Résultat de la commande :
 		boolean resultat = false;
-		// Nom du home inconnu
+		
+		// Nombre d'argument correct
 		if (args.size() == 0) {
 			// Si la source est un joueur
 			if (source instanceof EPlayer) {
-				resultat = commandBack((EPlayer) source);
+				resultat = this.commandBack((EPlayer) source);
 			// La source n'est pas un joueur
 			} else {
-				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
+				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText()));
 			}
 		// Nombre d'argument incorrect
 		} else {
-			source.sendMessage(help(source));
+			source.sendMessage(this.help(source));
 		}
 		return resultat;
 	}
 	
-	public boolean commandBack(final EPlayer player){
+	private boolean commandBack(final EPlayer player){
 		final Optional<Transform<World>> back = player.getBack();
 		// Le joueur a une position de retour
 		if(back.isPresent()){
+			// Si il y a la permission d'aller dans le monde
 			if(this.plugin.getManagerServices().getEssentials().hasPermissionWorld(player, back.get().getExtent())) {
+				// Si la position est safe
 				if(this.plugin.getEverAPI().getManagerUtils().getLocation().isPositionSafe(back.get())) {
 					long delay = this.plugin.getConfigs().getTeleportDelay(player);
 					
+					// Si il y a un delay de téléportation
 					if(delay > 0) {
 						player.sendMessage(EEMessages.PREFIX.get() + EEMessages.BACK_DELAY.get()
 								.replaceAll("<delay>", this.plugin.getEverAPI().getManagerUtils().getDate().formatDateDiff(System.currentTimeMillis() + delay)));
@@ -97,9 +101,11 @@ public class EEBack extends ECommand<EverEssentials> {
 					
 					player.setTeleport(delay, () -> this.teleport(player, back.get()), player.hasPermission(EEPermissions.TELEPORT_BYPASS_MOVE.get()));
 					return true;
+				// La position n'est pas safe
 				} else {
 					player.sendMessage(EEMessages.PREFIX.get() + EEMessages.BACK_ERROR_LOCATION.get());
 				}
+			// Il n'a pas la permission d'aller dans le monde
 			} else {
 				player.sendMessage(EEMessages.PREFIX.get() + EAMessages.NO_PERMISSION_WORLD_OTHERS.get());
 			}
@@ -124,7 +130,7 @@ public class EEBack extends ECommand<EverEssentials> {
 		}
 	}
 	
-	public Text getButtonLocation(final Location<World> location){
+	private Text getButtonLocation(final Location<World> location){
 		return EEMessages.BACK_NAME.getText().toBuilder()
 					.onHover(TextActions.showText(EChat.of(EEMessages.BACK_NAME_HOVER.get()
 							.replaceAll("<world>", location.getExtent().getName())
