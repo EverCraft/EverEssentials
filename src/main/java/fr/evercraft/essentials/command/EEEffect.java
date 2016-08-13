@@ -40,8 +40,9 @@ import fr.evercraft.everapi.sponge.UtilsEffect;
 public class EEEffect extends EReloadCommand<EverEssentials> {
 	
 	private int default_duration;
-	private int default_max_duration;
+	private int max_duration;
 	private int default_amplifier;
+	private boolean unsafe;
 	
 	public EEEffect(final EverEssentials plugin) {
 		super(plugin, "effect", "effects");
@@ -49,9 +50,10 @@ public class EEEffect extends EReloadCommand<EverEssentials> {
 	}
 
 	public void reload() {
-		this.default_duration = this.plugin.getConfigs().get("effect-default-duration").getInt() * 20;
-		this.default_max_duration = this.plugin.getConfigs().get("effect-default-max-duration").getInt() * 20;
-		this.default_amplifier = this.plugin.getConfigs().get("effect-default-amplifier").getInt();
+		this.default_duration = this.plugin.getConfigs().getEffectDurationDefault();
+		this.max_duration = this.plugin.getConfigs().getEffectDurationMax();
+		this.default_amplifier = this.plugin.getConfigs().getEffectAmplifierDefault();
+		this.unsafe = this.plugin.getConfigs().isEffectUnsafe();
 	}
 
 	public boolean testPermission(final CommandSource source) {
@@ -158,7 +160,7 @@ public class EEEffect extends EReloadCommand<EverEssentials> {
 		// Si l'effet existe
 		if (effect.isPresent()) {
 			// Si la valeur de l'amplifieur est correcte
-			if (1 <= amplifier && amplifier <= effect.get().getMaxAmplifier()) {
+			if (1 <= amplifier && (this.unsafe || amplifier <= effect.get().getMaxAmplifier())) {
 				player.addPotion(createPotionEffect(effect.get().getType(), amplifier - 1, this.default_duration));
 			// La valeur de l'amplifieur n'est pas correcte
 			} else {
@@ -180,16 +182,16 @@ public class EEEffect extends EReloadCommand<EverEssentials> {
 		// Si l'effet existe
 		if (effect.isPresent()) {
 			// Si la valeur de l'amplifieur est correcte
-			if (1 <= amplifier && amplifier <= effect.get().getMaxAmplifier()) {
+			if (1 <= amplifier && (this.unsafe || amplifier <= effect.get().getMaxAmplifier())) {
 				// Si la durée est correcte
-				if (duration > 0 && duration <= this.default_max_duration) {
+				if (duration > 0 && duration <= this.max_duration) {
 					player.addPotion(createPotionEffect(effect.get().getType(), amplifier - 1, duration));
 				// La durée n'est pas correcte
 				} else {
 					player.sendMessage(EEMessages.PREFIX.get() 
 						+ EEMessages.EFFECT_ERROR_DURATION.get()
 							.replaceAll("<min>", "1")
-							.replaceAll("<max>", String.valueOf(this.default_max_duration)));
+							.replaceAll("<max>", String.valueOf(this.max_duration)));
 				}
 			// La valeur de l'amplifieur n'est pas correcte
 			} else {

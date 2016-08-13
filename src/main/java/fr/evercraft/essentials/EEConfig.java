@@ -112,6 +112,8 @@ public class EEConfig extends EConfig {
 		addDefault("effect.amplifier-default", 0, "Int");
 		addDefault("effect.effect.unsafe", 0, "Boolean");
 		
+		
+		// Generate
 		addDefault("generate.tick-percent-limit", 0.15, "Float");
 		addDefault("generate.tick-interval", 10, "Int");
 		addDefault("generate.chunks-per-tick", 10, "Int");
@@ -176,12 +178,20 @@ public class EEConfig extends EConfig {
 		return this.get("effect.amplifier-default").getInt();
 	}
 	
-	public boolean getEffectUnsafe() {
+	public boolean isEffectUnsafe() {
 		return this.get("effect.unsafe").getBoolean();
 	}
 	
 	/*
-	 * GameMde
+	 * Enchant
+	 */
+	
+	public boolean isEnchantementsUnsafe() {
+		return this.get("enchant.unsafe").getBoolean();
+	}
+	
+	/*
+	 * GameMode
 	 */
 	
 	public boolean isGameModeKill() {
@@ -190,6 +200,22 @@ public class EEConfig extends EConfig {
 	
 	public boolean isGameModePaint() {
 		return this.get("gamemode.paint").getBoolean(true);
+	}
+	
+	/*
+	 * Generate
+	 */
+	
+	public float getGenerateTickPercentLimit() {
+		return this.get("generate.tick-percent-limit").getLong((long) 0.15);
+	}
+	
+	public float getGenerateTickInterval() {
+		return this.get("generate.tick-interval").getInt(10);
+	}
+	
+	public float getGenerateChuncksPerTick() {
+		return this.get("generate.chunks-per-tick").getInt(10);
 	}
 	
 	/*
