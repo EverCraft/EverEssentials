@@ -81,6 +81,9 @@ public class EUserSubject implements SubjectUserEssentials {
 	private boolean afk_auto_fake;
 	private boolean afk_kick_fake;
 	
+	private long date_played;
+	private long total_time_played;
+	
 	private final LinkedHashMap<UUID, TeleportRequest> teleports;
 	
 	private Optional<TeleportDelay> teleport;
@@ -105,14 +108,12 @@ public class EUserSubject implements SubjectUserEssentials {
 		this.freeze = false;
 		
 		// Tempo
-		
 		this.afk = false;
 		this.updateLastActivated();
 		
 		this.afk_auto_fake = false;
 		this.afk_kick_fake = false;
-		
-		
+				
 		this.teleports = new LinkedHashMap<UUID, TeleportRequest>();
 		this.teleport = Optional.empty();
 		
@@ -132,15 +133,17 @@ public class EUserSubject implements SubjectUserEssentials {
 		Optional<EPlayer> optPlayer = this.getEPlayer();
 		if(optPlayer.isPresent()) {
 			EPlayer player = optPlayer.get();
-			
+			this.date_played = System.currentTimeMillis();
 			if(player.get(Keys.INVISIBLE).orElse(false) != vanish) {
 				player.offer(Keys.INVISIBLE, vanish);
 			}
 		} else {
 			this.plugin.getLogger().warn("Player empty : connect");
 		}
-		
 		this.afk = false;
+		
+		this.plugin.getEServer().broadcast("Total : " + this.total_time_played);
+		this.plugin.getEServer().broadcast("Date : " + this.date_played);
 	}
 	
 	public void disconnect() {
@@ -152,6 +155,12 @@ public class EUserSubject implements SubjectUserEssentials {
 			if(this.plugin.getConfigs().removeGodOnDisconnect() && this.god) {
 				this.setGod(false);
 			}
+			this.updateTotalTimePlayed();
+			
+			this.plugin.getEServer().broadcast("Total : " + this.total_time_played);
+			this.plugin.getEServer().broadcast("Date : " + this.date_played);
+			
+			this.setTotalTimePlayed(total_time_played);
 		} else {
 			this.plugin.getLogger().warn("Player empty : disconnect");
 		}
@@ -187,12 +196,14 @@ public class EUserSubject implements SubjectUserEssentials {
 				this.god = list.getBoolean("god");
 				this.toggle = list.getBoolean("toggle");
 				this.freeze = list.getBoolean("freeze");
+				this.total_time_played = list.getLong("total_time_played");
 				
 				this.plugin.getLogger().debug("Loading : (identifier='" + this.identifier + "';"
 														+ "vanish='" + this.vanish + "';"
 														+ "god='" + this.god + "';"
 														+ "toggle='" + this.toggle + "';"
 														+ "freeze='" + this.freeze + "';"
+														+ "total_time_played='" + this.total_time_played + "';"
 														+ ")");
 			} else {
 				this.insertPlayer(connection);
@@ -304,13 +315,14 @@ public class EUserSubject implements SubjectUserEssentials {
 		PreparedStatement preparedStatement = null;
 		try {
 			String query = 	  "INSERT INTO `" + this.plugin.getDataBases().getTablePlayers() + "` "
-							+ "VALUES (?, ?, ?, ?, ?);";
+							+ "VALUES (?, ?, ?, ?, ?, ?);";
 			preparedStatement = connection.prepareStatement(query);
 			preparedStatement.setString(1, this.getIdentifier());
 			preparedStatement.setBoolean(2, this.vanish);
 			preparedStatement.setBoolean(3, this.god);
 			preparedStatement.setBoolean(4, this.toggle);
 			preparedStatement.setBoolean(5, this.freeze);
+			preparedStatement.setLong(6, this.total_time_played);
 			
 			preparedStatement.execute();
 			this.plugin.getLogger().debug("Insert : (identifier='" + this.identifier + "';"
@@ -318,6 +330,7 @@ public class EUserSubject implements SubjectUserEssentials {
 													+ "god='" + this.god + "';"
 													+ "toggle='" + this.toggle + "';"
 													+ "freeze='" + this.freeze + "';"
+													+ "total_time_played='" + this.total_time_played + "';"
 													+ ")");
 		} catch (SQLException e) {
 	    	this.plugin.getLogger().warn("Error during a change of player : " + e.getMessage());
@@ -440,6 +453,21 @@ public class EUserSubject implements SubjectUserEssentials {
 		return this.last_activated;
 	}
 	
+	@Override
+	public void updateTotalTimePlayed() {
+		this.total_time_played = this.total_time_played + (System.currentTimeMillis() - this.date_played);
+	}
+	
+	@Override
+	public long getDatePlayed() {
+		return this.date_played;
+	}
+	
+	@Override
+	public void setDatePlayed(final long time) {
+		this.date_played = time;
+	}
+	
 	/*
 	 * God
 	 */
@@ -508,6 +536,28 @@ public class EUserSubject implements SubjectUserEssentials {
 				this.plugin.getThreadAsync().execute(() -> this.plugin.getDataBases().setFreeze(this.getIdentifier(), freeze));
 				return true;
 			}
+		}
+		return false;
+	}
+	
+	/*
+	 * Total time played
+	 */
+
+	@Override
+	public long getTotalTimePlayed() {
+		this.updateTotalTimePlayed();
+		return this.total_time_played;
+	}
+
+	@Override
+	public boolean setTotalTimePlayed(final long time) {		
+		this.plugin.getEServer().broadcast("Total : " + this.total_time_played);
+		this.plugin.getEServer().broadcast("Date : " + this.date_played);
+		if(this.total_time_played != time) {
+			this.total_time_played = time;
+			this.plugin.getThreadAsync().execute(() -> this.plugin.getDataBases().setTotalTimePlayed(this.getIdentifier(), time));
+			return true;
 		}
 		return false;
 	}

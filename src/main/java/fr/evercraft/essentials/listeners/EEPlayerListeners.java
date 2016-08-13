@@ -45,6 +45,7 @@ import org.spongepowered.api.event.network.ClientConnectionEvent;
 
 import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EverEssentials;
+import fr.evercraft.everapi.event.AfkEvent;
 import fr.evercraft.everapi.server.player.EPlayer;
 import fr.evercraft.everapi.services.essentials.TeleportDelay;
 import fr.evercraft.everapi.sponge.UtilsPainting;
@@ -251,6 +252,18 @@ public class EEPlayerListeners {
 	@Listener
 	public void onPlayerFood(ChangeDataHolderEvent.ValueChange event, @First Player player) {
 		this.plugin.getEServer().broadcast("EverEssentials : Test ChangeDataHolderEvent");
+	}
+	
+	@Listener
+	public void onPlayerAFK(AfkEvent.Enable event) {
+		EPlayer player = event.getPlayer();
+		player.updateTotalTimePlayed();
+	}
+	
+	@Listener
+	public void onPlayerAFK(AfkEvent.Disable event) {
+		EPlayer player = event.getPlayer();
+		player.setTotalTimePlayed(System.currentTimeMillis());
 	}
 	
 	@Listener

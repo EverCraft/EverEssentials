@@ -114,6 +114,7 @@ public class EEManagerCommands extends HashSet<ECommand<EverEssentials>> {
 		register(new EEReply(this.plugin));
 		register(new EERules(this.plugin));
 		register(new EEPing(this.plugin));
+		register(new EEPlayed(this.plugin));
 		register(new EESay(this.plugin));
 		register(new EESeeInventory(this.plugin));
 		register(new EESkull(this.plugin));
