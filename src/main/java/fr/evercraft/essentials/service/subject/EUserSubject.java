@@ -73,6 +73,7 @@ public class EUserSubject implements SubjectUserEssentials {
 	private boolean vanish;
 	private boolean toggle;
 	private boolean freeze;
+	private long total_played;
 	
 	// Tempo
 	private boolean afk;
@@ -81,8 +82,7 @@ public class EUserSubject implements SubjectUserEssentials {
 	private boolean afk_auto_fake;
 	private boolean afk_kick_fake;
 	
-	private long date_played;
-	private long total_time_played;
+	private Optional<Long> last_played;
 	
 	private final LinkedHashMap<UUID, TeleportRequest> teleports;
 	
@@ -113,6 +113,8 @@ public class EUserSubject implements SubjectUserEssentials {
 		
 		this.afk_auto_fake = false;
 		this.afk_kick_fake = false;
+		
+		this.last_played = Optional.empty();
 				
 		this.teleports = new LinkedHashMap<UUID, TeleportRequest>();
 		this.teleport = Optional.empty();
@@ -133,17 +135,20 @@ public class EUserSubject implements SubjectUserEssentials {
 		Optional<EPlayer> optPlayer = this.getEPlayer();
 		if(optPlayer.isPresent()) {
 			EPlayer player = optPlayer.get();
-			this.date_played = System.currentTimeMillis();
+			
 			if(player.get(Keys.INVISIBLE).orElse(false) != vanish) {
 				player.offer(Keys.INVISIBLE, vanish);
 			}
+			
+			this.startTotalTimePlayed();
+			
 		} else {
 			this.plugin.getLogger().warn("Player empty : connect");
 		}
 		this.afk = false;
 		
-		this.plugin.getEServer().broadcast("Total : " + this.total_time_played);
-		this.plugin.getEServer().broadcast("Date : " + this.date_played);
+		this.plugin.getEServer().broadcast("Total : " + this.total_played);
+		this.plugin.getEServer().broadcast("Date : " + this.last_played);
 	}
 	
 	public void disconnect() {
@@ -155,12 +160,10 @@ public class EUserSubject implements SubjectUserEssentials {
 			if(this.plugin.getConfigs().removeGodOnDisconnect() && this.god) {
 				this.setGod(false);
 			}
-			this.updateTotalTimePlayed();
+			this.stopTotalTimePlayed();
 			
-			this.plugin.getEServer().broadcast("Total : " + this.total_time_played);
-			this.plugin.getEServer().broadcast("Date : " + this.date_played);
-			
-			this.setTotalTimePlayed(total_time_played);
+			this.plugin.getEServer().broadcast("Total : " + this.total_played);
+			this.plugin.getEServer().broadcast("Date : " + this.last_played);
 		} else {
 			this.plugin.getLogger().warn("Player empty : disconnect");
 		}
@@ -196,14 +199,14 @@ public class EUserSubject implements SubjectUserEssentials {
 				this.god = list.getBoolean("god");
 				this.toggle = list.getBoolean("toggle");
 				this.freeze = list.getBoolean("freeze");
-				this.total_time_played = list.getLong("total_time_played");
+				this.total_played = list.getLong("total_time_played");
 				
 				this.plugin.getLogger().debug("Loading : (identifier='" + this.identifier + "';"
 														+ "vanish='" + this.vanish + "';"
 														+ "god='" + this.god + "';"
 														+ "toggle='" + this.toggle + "';"
 														+ "freeze='" + this.freeze + "';"
-														+ "total_time_played='" + this.total_time_played + "';"
+														+ "total_played='" + this.total_played + "';"
 														+ ")");
 			} else {
 				this.insertPlayer(connection);
@@ -322,7 +325,7 @@ public class EUserSubject implements SubjectUserEssentials {
 			preparedStatement.setBoolean(3, this.god);
 			preparedStatement.setBoolean(4, this.toggle);
 			preparedStatement.setBoolean(5, this.freeze);
-			preparedStatement.setLong(6, this.total_time_played);
+			preparedStatement.setLong(6, this.total_played);
 			
 			preparedStatement.execute();
 			this.plugin.getLogger().debug("Insert : (identifier='" + this.identifier + "';"
@@ -330,7 +333,7 @@ public class EUserSubject implements SubjectUserEssentials {
 													+ "god='" + this.god + "';"
 													+ "toggle='" + this.toggle + "';"
 													+ "freeze='" + this.freeze + "';"
-													+ "total_time_played='" + this.total_time_played + "';"
+													+ "total_played='" + this.total_played + "';"
 													+ ")");
 		} catch (SQLException e) {
 	    	this.plugin.getLogger().warn("Error during a change of player : " + e.getMessage());
@@ -452,20 +455,30 @@ public class EUserSubject implements SubjectUserEssentials {
 	public long getLastActivated() {
 		return this.last_activated;
 	}
-	
+
+	/*
+	 * Total time played
+	 */
+
 	@Override
-	public void updateTotalTimePlayed() {
-		this.total_time_played = this.total_time_played + (System.currentTimeMillis() - this.date_played);
+	public long getTotalTimePlayed() {
+		return this.total_played + this.last_played.orElse(0L);
 	}
 	
 	@Override
-	public long getDatePlayed() {
-		return this.date_played;
+	public boolean startTotalTimePlayed() {
+		this.last_played = Optional.of(System.currentTimeMillis());
+		return true;
 	}
 	
 	@Override
-	public void setDatePlayed(final long time) {
-		this.date_played = time;
+	public boolean stopTotalTimePlayed() {
+		if(this.last_played.isPresent()) {
+			this.total_played = this.total_played + (System.currentTimeMillis() - this.last_played.get());
+			this.plugin.getThreadAsync().execute(() -> this.plugin.getDataBases().setTotalTimePlayed(this.getIdentifier(), this.total_played));
+		}
+		this.last_played = Optional.empty();
+		return true;
 	}
 	
 	/*
@@ -536,28 +549,6 @@ public class EUserSubject implements SubjectUserEssentials {
 				this.plugin.getThreadAsync().execute(() -> this.plugin.getDataBases().setFreeze(this.getIdentifier(), freeze));
 				return true;
 			}
-		}
-		return false;
-	}
-	
-	/*
-	 * Total time played
-	 */
-
-	@Override
-	public long getTotalTimePlayed() {
-		this.updateTotalTimePlayed();
-		return this.total_time_played;
-	}
-
-	@Override
-	public boolean setTotalTimePlayed(final long time) {		
-		this.plugin.getEServer().broadcast("Total : " + this.total_time_played);
-		this.plugin.getEServer().broadcast("Date : " + this.date_played);
-		if(this.total_time_played != time) {
-			this.total_time_played = time;
-			this.plugin.getThreadAsync().execute(() -> this.plugin.getDataBases().setTotalTimePlayed(this.getIdentifier(), time));
-			return true;
 		}
 		return false;
 	}

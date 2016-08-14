@@ -255,15 +255,12 @@ public class EEPlayerListeners {
 	}
 	
 	@Listener
-	public void onPlayerAFK(AfkEvent.Enable event) {
-		EPlayer player = event.getPlayer();
-		player.updateTotalTimePlayed();
-	}
-	
-	@Listener
-	public void onPlayerAFK(AfkEvent.Disable event) {
-		EPlayer player = event.getPlayer();
-		player.setTotalTimePlayed(System.currentTimeMillis());
+	public void onPlayerAFK(AfkEvent event) {
+		if(event.getValue()) {
+			event.getPlayer().stopTotalTimePlayed();
+		} else {
+			event.getPlayer().startTotalTimePlayed();
+		}
 	}
 	
 	@Listener

@@ -105,7 +105,7 @@ public class EEPlayed extends ECommand<EverEssentials> {
 	
 	public boolean commandPlayed(final EPlayer player) {
 		player.sendMessage(EEMessages.PREFIX.get() + EEMessages.PLAYED_PLAYER.get()
-				.replaceAll("<time>", this.plugin.getEverAPI().getManagerUtils().getDate().formatDateDiff(player.getTotalTimePlayed(), 3)));
+				.replaceAll("<time>", this.plugin.getEverAPI().getManagerUtils().getDate().formatDateDiff(player.getTotalTimePlayed() + System.currentTimeMillis())));
 		return true;
 	}
 	
@@ -114,7 +114,7 @@ public class EEPlayed extends ECommand<EverEssentials> {
 		if(!player.equals(staff)){
 			staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.PLAYED_OTHERS.get()
 					.replaceAll("<player>", player.getName())
-					.replaceAll("<time>", String.valueOf(player.getConnection().getLatency()))));
+					.replaceAll("<time>", this.plugin.getEverAPI().getManagerUtils().getDate().formatDateDiff(player.getTotalTimePlayed() + System.currentTimeMillis()))));
 			return true;
 		// La source et le joueur sont identique
 		} else {
