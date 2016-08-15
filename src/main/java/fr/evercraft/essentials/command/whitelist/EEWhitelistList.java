@@ -19,6 +19,7 @@ package fr.evercraft.essentials.command.whitelist;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
@@ -79,17 +80,15 @@ public class EEWhitelistList extends ESubCommand<EverEssentials> {
 				if(player.hasPermission(EEPermissions.WHITELIST_MANAGE.get())) {
 					for(GameProfile profile : whitelist.getWhitelistedProfiles()) {
 						String name = profile.getName().orElse(profile.getUniqueId().toString());
-						lists.add(ETextBuilder.toBuilder(EEMessages.WHITELIST_LIST_LINE.get()
+						lists.add(ETextBuilder.toBuilder(EEMessages.WHITELIST_LIST_LINE_DELETE.get()
 									.replaceAll("<player>", name))
-								.replace("<delete>", getButtonDelete(name))
+								.replace("<delete>", getButtonDelete(name, profile.getUniqueId()))
 								.build());
 					}
 				} else {
 					for(GameProfile profile : whitelist.getWhitelistedProfiles()) {
-						lists.add(ETextBuilder.toBuilder(EEMessages.WHITELIST_LIST_LINE.get()
-									.replaceAll("<player>", profile.getName().orElse(profile.getUniqueId().toString())))
-								.replace("<delete>", "")
-								.build());
+						lists.add(EChat.of(EEMessages.WHITELIST_LIST_LINE.get()
+									.replaceAll("<player>", profile.getName().orElse(profile.getUniqueId().toString()))));
 						}
 				}
 			} else {
@@ -101,11 +100,11 @@ public class EEWhitelistList extends ESubCommand<EverEssentials> {
 		return true;
 	}
 	
-	public Text getButtonDelete(final String name){
+	public Text getButtonDelete(final String name, UUID uuid){
 		return EEMessages.WHITELIST_LIST_REMOVE.getText().toBuilder()
 					.onHover(TextActions.showText(EChat.of(EEMessages.WHITELIST_LIST_REMOVE_HOVER.get()
 							.replaceAll("<player>", name))))
-					.onClick(TextActions.runCommand("/whitelist remove " + name))
+					.onClick(TextActions.runCommand("/whitelist remove " + uuid.toString()))
 					.build();
 	}
 }

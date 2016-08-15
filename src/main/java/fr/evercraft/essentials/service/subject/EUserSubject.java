@@ -462,7 +462,10 @@ public class EUserSubject implements SubjectUserEssentials {
 
 	@Override
 	public long getTotalTimePlayed() {
-		return this.total_played + this.last_played.orElse(0L);
+		if(this.last_played.isPresent()) {
+			return this.total_played + (System.currentTimeMillis() - this.last_played.get());
+		}
+		return this.total_played;
 	}
 	
 	@Override
