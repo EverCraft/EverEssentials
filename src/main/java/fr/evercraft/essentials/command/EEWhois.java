@@ -139,6 +139,7 @@ public class EEWhois extends ECommand<EverEssentials> {
 		lists.add(ChatColorsEnabled(player));
 		lists.add(getLocale(player));
 		lists.add(getToggle(player));
+		lists.add(getTotalTimePlayed(player));
 		
 		this.plugin.getEverAPI().getManagerService().getEPagination().sendTo(
 				EChat.of(EEMessages.WHOIS_TITLE.get().replace("<player>", player.getName())).toBuilder()
@@ -352,5 +353,10 @@ public class EEWhois extends ECommand<EverEssentials> {
 		} else {
 			return EChat.of(EEMessages.WHOIS_TOGGLE_DISABLE.get());
 		}
+	}
+	
+	public Text getTotalTimePlayed(final EPlayer player){
+		return EChat.of(EEMessages.WHOIS_TOTAL_TIME_PLAYED.get()
+				.replaceAll("<time>", this.plugin.getEverAPI().getManagerUtils().getDate().diff(player.getTotalTimePlayed())));
 	}
 }

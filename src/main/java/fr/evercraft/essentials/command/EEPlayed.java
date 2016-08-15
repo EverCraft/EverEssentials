@@ -22,6 +22,7 @@ import java.util.Optional;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
+import org.spongepowered.api.profile.GameProfile;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
@@ -62,10 +63,15 @@ public class EEPlayed extends ECommand<EverEssentials> {
 	}
 	
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
+		List<String> suggests = new ArrayList<String>();
 		if(args.size() == 1 && source.hasPermission(EEPermissions.PLAYED_OTHERS.get())){
-			return null;
+			for(GameProfile player : this.plugin.getEServer().getGameProfileManager().getCache().getProfiles()) {
+				if(player.getName().isPresent()) {
+					suggests.add(player.getName().orElse(player.getUniqueId().toString()));
+				}
+			}
 		}
-		return new ArrayList<String>();
+		return suggests;
 	}
 	
 	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {

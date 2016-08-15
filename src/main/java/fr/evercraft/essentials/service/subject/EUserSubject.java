@@ -146,9 +146,6 @@ public class EUserSubject implements SubjectUserEssentials {
 			this.plugin.getLogger().warn("Player empty : connect");
 		}
 		this.afk = false;
-		
-		this.plugin.getEServer().broadcast("Total : " + this.total_played);
-		this.plugin.getEServer().broadcast("Date : " + this.last_played);
 	}
 	
 	public void disconnect() {
@@ -161,9 +158,6 @@ public class EUserSubject implements SubjectUserEssentials {
 				this.setGod(false);
 			}
 			this.stopTotalTimePlayed();
-			
-			this.plugin.getEServer().broadcast("Total : " + this.total_played);
-			this.plugin.getEServer().broadcast("Date : " + this.last_played);
 		} else {
 			this.plugin.getLogger().warn("Player empty : disconnect");
 		}

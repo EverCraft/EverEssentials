@@ -129,7 +129,8 @@ public class EEAfkOn extends ESubCommand<EverEssentials> {
 					player.sendMessage(EEMessages.PREFIX.get() + EEMessages.AFK_ON_OTHERS_PLAYER.get()
 							.replaceAll("<staff>", staff.getName()));
 					staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.AFK_ON_OTHERS_STAFF.get()
-							.replaceAll("<player>", player.getName())));
+							.replaceAll("<player>", player.getName())
+							.replaceAll("<staff>", staff.getName())));
 					if(EEMessages.AFK_ON_ALL.has()) {
 						for(EPlayer other : this.plugin.getEServer().getOnlineEPlayers()) {
 							if(!other.equals(player) && other.equals(staff)) {

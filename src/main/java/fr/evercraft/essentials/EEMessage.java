@@ -47,8 +47,8 @@ public class EEMessage extends EMessage {
 		AFK_ON_PLAYER_ERROR("afk.on.playerError", 								"&cVous êtes déjà AFK."),
 		AFK_ON_PLAYER_CANCEL("afk.on.playerCancel", 							"&cImpossible de vous mettre AFK."),
 		AFK_ON_ALL("afk.on.all", 												"&6" + EChat.DISPLAYNAME_FORMAT + " &7est désormais AFK.", "The message may be empty"),
-		AFK_ON_OTHERS_PLAYER("afk.on.othersPlayer", 							"&7Vous êtes désormais AFK."),
-		AFK_ON_OTHERS_STAFF("afk.on.othersStaff", 								"&6<player> &7est désormais AFK."),
+		AFK_ON_OTHERS_PLAYER("afk.on.othersPlayer", 							"&7Vous êtes désormais AFK à cause de &6<staff>&7."),
+		AFK_ON_OTHERS_STAFF("afk.on.othersStaff", 								"&6<player> &7est désormais AFK à cause de &6<staff>&7."),
 		AFK_ON_OTHERS_ERROR("afk.on.othersError", 								"&6<player> &cest déjà signalé AFK."),
 		AFK_ON_OTHERS_CANCEL("afk.on.othersCancel", 							"&cImpossible de rendre &6<player> &cinvulnérable."),
 
@@ -58,8 +58,8 @@ public class EEMessage extends EMessage {
 		AFK_OFF_PLAYER_ERROR("afk.off.playerError", 							"&cVous n'êtes pas AFK."),
 		AFK_OFF_PLAYER_CANCEL("afk.off.playerCancel", 							"&cImpossible de vous rendre vulnérable."),
 		AFK_OFF_ALL("afk.off.all", 												"&6" + EChat.DISPLAYNAME_FORMAT + " &7n'est plus AFK.", "The message may be empty"),
-		AFK_OFF_OTHERS_PLAYER("afk.off.othersPlayer", 							"&7Vous n'êtes plus AFK."),
-		AFK_OFF_OTHERS_STAFF("afk.off.othersStaff", 							"&6<player> &7n'est plus AFK."),
+		AFK_OFF_OTHERS_PLAYER("afk.off.othersPlayer", 							"&7Vous n'êtes plus AFK à cause de &6<staff>&7."),
+		AFK_OFF_OTHERS_STAFF("afk.off.othersStaff", 							"&6<player> &7n'est plus AFK à cause de &6<staff>&7."),
 		AFK_OFF_OTHERS_ERROR("afk.off.othersError", 							"&6<player> &cn'est pas AFK."),
 		AFK_OFF_OTHERS_CANCEL("afk.off.othersCancel", 							"&cImpossible de rendre sortir &6<player> &cd'AFK."),
 		
@@ -113,10 +113,10 @@ public class EEMessage extends EMessage {
 		CLEAREFFECT_OTHERS_STAFF("cleareffect.othersStaff", 	"&7Tous les effets de potions de &6<player> &7ont été supprimés."),
 		
 		CLEARINVENTORY_DESCRIPTION("clearinventory.description", 	"Supprime tous les objets de l'inventaire d'un joueur."),
-		CLEARINVENTORY_PLAYER("clearinventory.player", 				"&7Vous venez de supprimer &6<amount> &7objet(s) de votre inventaire."),
+		CLEARINVENTORY_PLAYER("clearinventory.player", 				"&7Vous venez de supprimer &6<amount> objet(s) &7de votre inventaire."),
 		CLEARINVENTORY_NOITEM("clearinventory.noItem", 				"&cErreur : Aucun objet à supprimer."),
-		CLEARINVENTORY_OTHERS_PLAYER("clearinventory.othersPlayer", "&6<staff> &7vient de supprimer &6<amount>&7 objet(s) de votre inventaire."),
-		CLEARINVENTORY_OTHERS_STAFF("clearinventory.othersStaff", 	"&7Vous venez de supprimer &6<amount> &7objet(s) de l'inventaire de &6<player>&7."),
+		CLEARINVENTORY_OTHERS_PLAYER("clearinventory.othersPlayer", "&6<staff> &7vient de supprimer &6<amount> objet(s) &7de votre inventaire."),
+		CLEARINVENTORY_OTHERS_STAFF("clearinventory.othersStaff", 	"&7Vous venez de supprimer &6<amount> objet(s) &7de l'inventaire de &6<player>&7."),
 		
 		COLOR_DESCRIPTION("color.description", 				"Affiche les différentes couleurs dans Minecraft."),
 		COLOR_LIST_MESSAGE("color.listTitle", 				"&l&7Liste des couleurs :"), 
@@ -886,6 +886,7 @@ public class EEMessage extends EMessage {
 		WHOIS_LANGUAGE("whois.language", "    &6&l➤  &6Langage : &a<langue>"),
 		WHOIS_TOGGLE_ENABLE("whois.toggleEnable", "    &6&l➤  &6Requêtes de téléportation : &aActivé"),
 		WHOIS_TOGGLE_DISABLE("whois.toggleDisable", "    &6&l➤  &6Requêtes de téléportation : &cDésactivé"),
+		WHOIS_TOTAL_TIME_PLAYED("whois.totalTimePlayed", "    &6&l➤  &6Temps de jeu : &a<time>"),
 		
 		WORLDBORDER_DESCRIPTION("worldborder.description", "Gère la bordure des mondes"),
 		WORLDBORDER_INFO_DESCRIPTION("worldborder.info.description", "Affiche les informations sur la bordure d'un monde"),
