@@ -49,7 +49,7 @@ public class EEToggleOn extends ESubCommand<EverEssentials> {
 	
 	public List<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		List<String> suggests = new ArrayList<String>();
-		if(!(args.size() == 1 && source.hasPermission(EEPermissions.TOGGLE_OTHERS.get()))){
+		if(args.size() == 1 && source.hasPermission(EEPermissions.TOGGLE_OTHERS.get())){
 			suggests = null;
 		}
 		return suggests;
