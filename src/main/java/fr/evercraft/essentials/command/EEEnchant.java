@@ -66,31 +66,35 @@ public class EEEnchant extends ECommand<EverEssentials> {
 		List<String> suggests = new ArrayList<String>();
 		if (source instanceof Player){
 			Optional<EPlayer> player = this.plugin.getEServer().getEPlayer(((Player) source).getUniqueId());
-			if(player.isPresent()) {
-				if(args.size() == 1){
-					if (player.get().getItemInMainHand().isPresent()){
-						ItemStack item = player.get().getItemInMainHand().get();
-						EnchantmentData enchantmentData = item.getOrCreate(EnchantmentData.class).get();
-						if (!enchantmentData.enchantments().isEmpty()){
-							for (Enchantment enchant : getApplicableEnchant(enchantmentData, item)){
-								suggests.add(enchant.getId().replace("minecraft:", ""));
-							}
-						} else {
-							for (Enchantment enchant : UtilsEnchantment.getEnchantments()){
-								if (enchant.canBeAppliedByTable(item)){
-									suggests.add(enchant.getId().replace("minecraft:", ""));
+			if(player.isPresent() && player.get().getItemInMainHand().isPresent()) {
+				if(args.size() == 1) {
+					ItemStack item = player.get().getItemInMainHand().get();
+					EnchantmentData enchantmentData = item.getOrCreate(EnchantmentData.class).get();
+					
+					// Si il y a plusieurs enchantements
+					if (!enchantmentData.enchantments().isEmpty()) {
+						for (Enchantment enchant : UtilsEnchantment.getEnchantments()) {
+							if(enchant.canBeAppliedToStack(item)) {
+								for(ItemEnchantment ench : enchantmentData.enchantments()) {
+									if(enchant.isCompatibleWith(ench.getEnchantment())){
+										suggests.add(enchant.getId().toLowerCase().replace("minecraft:", ""));
+									}
 								}
+							}
+						}
+					// Il y a un seul enchantements
+					} else {
+						for (Enchantment enchant : UtilsEnchantment.getEnchantments()) {
+							if (enchant.canBeAppliedByTable(item)) {
+								suggests.add(enchant.getId().toLowerCase().replace("minecraft:", ""));
 							}
 						}
 					}
 				} else if(args.size() == 2){
-					if (player.get().getItemInMainHand().isPresent()){
-						Optional<Enchantment> optEnchantment = UtilsEnchantment.getID("minecraft:" + args.get(0));
-						if (optEnchantment.isPresent()){
-							Enchantment enchantment = optEnchantment.get();
-							for (int cpt = 1 ; cpt <= enchantment.getMaximumLevel() ; cpt++){
-								suggests.add(String.valueOf(cpt));
-							}
+					Optional<Enchantment> enchantment = this.getEnchantment(args.get(0));
+					if (enchantment.isPresent()) {
+						for (int cpt = enchantment.get().getMinimumLevel() ; cpt <= enchantment.get().getMaximumLevel() ; cpt++){
+							suggests.add(String.valueOf(cpt));
 						}
 					}
 				}
@@ -102,122 +106,99 @@ public class EEEnchant extends ECommand<EverEssentials> {
 	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Résultat de la commande :
 		boolean resultat = false;
-		// Si on ne connait pas le joueur
-		if (args.size() == 1){
-			// Si la source est un joueur
-			if(source instanceof EPlayer) {
-				resultat = commandEnchant((EPlayer) source, args.get(0));
-			// La source n'est pas un joueur
+		
+		// Si la source est un joueur
+		if(source instanceof EPlayer) {
+			EPlayer player = (EPlayer) source;
+			
+			if(args.size() == 1) {
+				Optional<Enchantment> enchantment = this.getEnchantment(args.get(0));
+				
+				// Si l'enchantement existe
+				if(enchantment.isPresent()) {
+					resultat = this.commandEnchant(player, enchantment.get(), enchantment.get().getMaximumLevel());
+				} else {
+					player.sendMessage(EEMessages.PREFIX.get() + EEMessages.ENCHANT_NOT_FOUND.get());
+				}
+			} else if(args.size() == 2) {
+				Optional<Enchantment> enchantment = this.getEnchantment(args.get(0));
+				
+				// Si l'enchantement existe
+				if(enchantment.isPresent()) {
+					try {
+						int level = Integer.parseInt(args.get(1));
+						resultat = this.commandEnchant(player, enchantment.get(), level);
+						
+					} catch (NumberFormatException e) {
+						player.sendMessage(EEMessages.PREFIX.get() + EAMessages.IS_NOT_NUMBER.get()
+								.replaceAll("<number>", args.get(1)));
+						return false;
+					}
+				// L'enchantement n'existe pas
+				} else {
+					player.sendMessage(EEMessages.PREFIX.get() + EEMessages.ENCHANT_NOT_FOUND.get());
+				}
+			// Nombre d'argument incorrect
 			} else {
-				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
+				source.sendMessage(this.help(source));
 			}
-		} else if(args.size() == 2) {
-			// Si la source est un joueur
-			if(source instanceof EPlayer) {
-				resultat = commandEnchant((EPlayer) source, args.get(0), args.get(1));
-			// La source n'est pas un joueur
-			} else {
-				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
-			}
-		// Nombre d'argument incorrect
+		// La source n'est pas un joueur
 		} else {
-			source.sendMessage(help(source));
+			source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
 		}
 		return resultat;
 	}
 	
-	public boolean commandEnchant(final EPlayer player, String enchantname, String lvl) {
-		if (player.getItemInMainHand().isPresent()){
+	private boolean commandEnchant(final EPlayer player, Enchantment enchantment, int level) {
+		// Si le joueur a un item dans la main
+		if (player.getItemInMainHand().isPresent()) {
 			ItemStack item = player.getItemInMainHand().get();
-			Optional<Enchantment> optEnchantment = UtilsEnchantment.getID("minecraft:" + enchantname);
-			if (optEnchantment.isPresent()){
-				Enchantment enchantment = optEnchantment.get();
-				try {
-					int level = Integer.parseInt(lvl);
-					if (level > 0){
-						if (level <= enchantment.getMaximumLevel()){
-							ItemEnchantment itemEnchant = new ItemEnchantment(enchantment, level);
-							EnchantmentData enchantmentData = item.getOrCreate(EnchantmentData.class).get();
-							if (itemEnchant.getEnchantment().canBeAppliedToStack(item)){
-								enchantmentData.set(enchantmentData.enchantments().add(itemEnchant));
-								item.offer(enchantmentData);
-								player.setItemInMainHand(item);
-								player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.ENCHANT_SUCCESSFULL.getText()));
-								return true;
-							} else {
-								player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.getText())
-										.append(EEMessages.ENCHANT_INCOMPATIBLE.get())
-										.replace("<item>", EChat.getButtomItem(item, 
-												EChat.getTextColor(EEMessages.MORE_ITEM_COLOR.get())))
-										.build());
-								return false;
-							}
-						} else {
-							player.sendMessage(EEMessages.PREFIX.get() + EEMessages.ENCHANT_LEVEL_TOO_HIGHT.get());
-							return false;
-						}
+			
+			// Si le level n'est pas trop faible
+			if (level >= enchantment.getMinimumLevel()){
+				// Si le level n'est pas trop élevé
+				if (level <= enchantment.getMaximumLevel()) {
+					EnchantmentData enchantment_data = item.getOrCreate(EnchantmentData.class).get();
+					
+					// Si l'enchantement est applicable sur cet item
+					if (UtilsEnchantment.canBeAppliedToItemStack(item, enchantment)) {
+						enchantment_data.set(enchantment_data.enchantments().add(new ItemEnchantment(enchantment, level)));
+						item.offer(enchantment_data);
+						player.setItemInMainHand(item);
+						player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
+								.append(EEMessages.ENCHANT_SUCCESSFULL.get()
+										.replaceAll("<enchantment>", enchantment.getId().toLowerCase().replace("minecraft:", ""))
+										.replaceAll("<level>", String.valueOf(level)))
+								.replace("<item>", EChat.getButtomItem(item, EChat.getTextColor(EEMessages.ENCHANT_ITEM_COLOR.get())))
+								.build());
+						return true;
+					// L'enchantement n'est pas applicable sur cet item
 					} else {
-						player.sendMessage(EEMessages.PREFIX.get() + EAMessages.IS_NOT_NUMBER.get()
-								.replaceAll("<number>", lvl));
-						return false;
+						player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.getText())
+								.append(EEMessages.ENCHANT_INCOMPATIBLE.get()
+										.replaceAll("<enchantment>", enchantment.getId().toLowerCase().replace("minecraft:", ""))
+										.replaceAll("<level>", String.valueOf(level)))
+								.replace("<item>", EChat.getButtomItem(item, EChat.getTextColor(EEMessages.ENCHANT_ITEM_COLOR.get())))
+								.build());
 					}
-				} catch (NumberFormatException e) {
-					player.sendMessage(EEMessages.PREFIX.get() + EAMessages.IS_NOT_NUMBER.get()
-							.replaceAll("<number>", lvl));
-					return false;
-				}
-			} else {
-				player.sendMessage(EEMessages.PREFIX.get() + EEMessages.ENCHANT_NOT_FOUND.get());
-				return false;
-			}
-		} else {
-			player.sendMessage(EEMessages.PREFIX.get() + EAMessages.EMPTY_ITEM_IN_HAND.get());
-			return false;
-		}
-	}
-	
-	public boolean commandEnchant(final EPlayer player, String enchantname) {
-		if (player.getItemInMainHand().isPresent()){
-			ItemStack item = player.getItemInMainHand().get();
-			Optional<Enchantment> optEnchantment = UtilsEnchantment.getID("minecraft:" + enchantname);
-			if (optEnchantment.isPresent()){
-				Enchantment enchantment = optEnchantment.get();
-				ItemEnchantment itemEnchant = new ItemEnchantment(enchantment, enchantment.getMaximumLevel());
-				EnchantmentData enchantmentData = item.getOrCreate(EnchantmentData.class).get();
-				if (itemEnchant.getEnchantment().canBeAppliedToStack(item)){
-					enchantmentData.set(enchantmentData.enchantments().add(itemEnchant));
-					item.offer(enchantmentData);
-					player.setItemInMainHand(item);
-					player.sendMessage(EEMessages.PREFIX.get() 
-							+ EEMessages.ENCHANT_SUCCESSFULL.get());
-					return true;
+				// Le level est trop élevé
 				} else {
-					player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
-							.append(EEMessages.ENCHANT_INCOMPATIBLE.get())
-							.replace("<item>", EChat.getButtomItem(item, 
-									EChat.getTextColor(EEMessages.MORE_ITEM_COLOR.get())))
-							.build());
-					return false;
+					player.sendMessage(EEMessages.PREFIX.get() + EEMessages.ENCHANT_LEVEL_TOO_HIGHT.get()
+							.replaceAll("<number>", String.valueOf(level)));
 				}
+			// Le level est trop faible
 			} else {
-				player.sendMessage(EEMessages.PREFIX.get() + EEMessages.ENCHANT_NOT_FOUND.get());
-				return false;
+				player.sendMessage(EEMessages.PREFIX.get() + EEMessages.ENCHANT_LEVEL_TOO_LOW.get()
+						.replaceAll("<number>", String.valueOf(level)));
 			}
+		// Le joueur n'a pas d'item dans la main
 		} else {
 			player.sendMessage(EEMessages.PREFIX.get() + EAMessages.EMPTY_ITEM_IN_HAND.get());
-			return false;
 		}
+		return false;
 	}
 	
-	private List<Enchantment> getApplicableEnchant(EnchantmentData enchantmentData, ItemStack item){
-		List<Enchantment> list = UtilsEnchantment.getEnchantments();
-		for (Enchantment enchant : UtilsEnchantment.getEnchantments()){
-			for(ItemEnchantment ench : enchantmentData.enchantments()){
-				if(!enchant.canBeAppliedToStack(item) || !enchant.isCompatibleWith(ench.getEnchantment())){
-					list.remove(enchant);
-				}
-			}
-		}
-		return list;
+	private Optional<Enchantment> getEnchantment(String enchant) {
+		return UtilsEnchantment.getID("minecraft:" + enchant.toLowerCase().replace("minecraft:", ""));
 	}
 }

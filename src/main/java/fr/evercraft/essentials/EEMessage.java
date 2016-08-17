@@ -123,15 +123,17 @@ public class EEMessage extends EMessage {
 		COLOR_LIST_TITLE("color.listMessage", 				"<color>█ &0: <id>-<name>"), 
 		
 		EFFECT_DESCRIPTION("effect.description", 			"Ajoute un effet de potion sur un joueur."),
-		EFFECT_ERROR_NAME("effect.errorName", 				"&cErreur : nom de l'effet invalide."),
-		EFFECT_ERROR_DURATION("effect.errorDuration", 		"&cErreur : la durée de l'effet doit être compris entre <min> et <max>."),
-		EFFECT_ERROR_AMPLIFIER("effect.errorAmplifier", 	"&cErreur : l'amplification de l'effet doit être compris entre <min> et <max>."),
+		EFFECT_ERROR_NAME("effect.errorName", 				"&cErreur : Nom de l'effet invalide."),
+		EFFECT_ERROR_DURATION("effect.errorDuration", 		"&cErreur : Ma durée de l'effet doit être compris entre <min> et <max>."),
+		EFFECT_ERROR_AMPLIFIER("effect.errorAmplifier", 	"&cErreur : L'amplification de l'effet doit être compris entre <min> et <max>."),
 		
 		ENCHANT_DESCRIPTION("enchant.description", 			"Enchante l'objet dans votre main."),
-		ENCHANT_NOT_FOUND("enchant.notFound", 				"&cErreur : cet enchantement n'existe pas."),
-		ENCHANT_LEVEL_TOO_HIGHT("enchant.levelTooHight", 	"&cErreur : le niveau de cet enchantement est trop élevé."),
-		ENCHANT_INCOMPATIBLE("enchant.incompatible", 		"&cErreur : cet enchantement est incompatible avec &6<item>"),
+		ENCHANT_NOT_FOUND("enchant.notFound", 				"&cErreur : Cet enchantement n'existe pas."),
+		ENCHANT_LEVEL_TOO_HIGHT("enchant.levelTooHight", 	"&cErreur : Le niveau de cet enchantement est trop élevé."),
+		ENCHANT_LEVEL_TOO_LOW("enchant.levelTooLow", 		"&cErreur : Le niveau de cet enchantement est trop faible."),
+		ENCHANT_INCOMPATIBLE("enchant.incompatible", 		"&cErreur : Cet enchantement est incompatible avec &6<item>"),
 		ENCHANT_NAME("enchant.name", 						"&6<item>"),
+		ENCHANT_ITEM_COLOR("enchant.itemColor", 			"&6"),
 		ENCHANT_SUCCESSFULL("enchant.successfull", 			"&7L'enchantement a bien été appliqué sur l'objet."),
 				
 		EXP_DESCRIPTION("exp.description", 							"Modifie l'expérience d'un joueur."),

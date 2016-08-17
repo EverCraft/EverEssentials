@@ -103,7 +103,7 @@ public class EEEffect extends EReloadCommand<EverEssentials> {
 			EPlayer player = (EPlayer) source;
 			// Affichage de l'aide
 			if (args.size() == 0) {
-				player.sendMessage(help(source));
+				player.sendMessage(this.help(source));
 			// Ajout de l'effect avec amplifier et durée par défaut
 			} else if (args.size() == 1) {
 				resultat = this.commandEffect(player, args.get(0));
@@ -161,7 +161,7 @@ public class EEEffect extends EReloadCommand<EverEssentials> {
 		if (effect.isPresent()) {
 			// Si la valeur de l'amplifieur est correcte
 			if (1 <= amplifier && (this.unsafe || amplifier <= effect.get().getMaxAmplifier())) {
-				player.addPotion(createPotionEffect(effect.get().getType(), amplifier - 1, this.default_duration));
+				player.addPotion(this.createPotionEffect(effect.get().getType(), amplifier - 1, this.default_duration));
 			// La valeur de l'amplifieur n'est pas correcte
 			} else {
 				player.sendMessage(EEMessages.PREFIX.get() + EEMessages.EFFECT_ERROR_AMPLIFIER.get()
@@ -203,8 +203,8 @@ public class EEEffect extends EReloadCommand<EverEssentials> {
 			return true;
 		// L'effet n'existe pas
 		} else {
-			player.sendMessage(EEMessages.PREFIX.get() 
-					+ EEMessages.EFFECT_ERROR_NAME.get());
+			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.EFFECT_ERROR_NAME.get()
+					.replaceAll("<effect>", name_effect));
 			return false;
 		}
 	}
