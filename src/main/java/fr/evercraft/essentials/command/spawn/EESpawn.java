@@ -124,7 +124,8 @@ public class EESpawn extends EReloadCommand<EverEssentials> {
 								resultat = this.commandSpawn((EPlayer) source, group.getIdentifier());
 							// Groupe inexistant
 							} else {
-								source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.SPAWN_ERROR_GROUP.get()));
+								source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.SPAWN_ERROR_GROUP.get()
+										.replaceAll("<name>", args.get(0))));
 							}
 						} else {
 							source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.SPAWN_ERROR_GROUP.get()));
