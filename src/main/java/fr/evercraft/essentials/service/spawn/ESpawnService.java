@@ -163,7 +163,7 @@ private final EverEssentials plugin;
 							+ "FROM `" + this.plugin.getDataBases().getTableSpawns() + "` ;";
 			preparedStatement = connection.prepareStatement(query);
 			ResultSet list = preparedStatement.executeQuery();
-			if (list.next()) {
+			while (list.next()) {
 				LocationSQL location = new LocationSQL(this.plugin,	list.getString("world"), 
 														list.getDouble("x"),
 														list.getDouble("y"),

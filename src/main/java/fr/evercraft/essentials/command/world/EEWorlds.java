@@ -19,6 +19,7 @@ package fr.evercraft.essentials.command.world;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
@@ -130,7 +131,7 @@ public class EEWorlds extends ECommand<EverEssentials> {
 			if(this.plugin.getManagerServices().getEssentials().hasPermissionWorld(player, world)) {
 				lists.add(ETextBuilder.toBuilder(EEMessages.WORLDS_LIST_LINE.get()
 						.replaceAll("<world>", world.getName()))
-					.replace("<teleport>", getButtonTeleport(world.getName()))
+					.replace("<teleport>", getButtonTeleport(world.getName(), world.getUniqueId()))
 					.build());
 			}
 		}
@@ -140,7 +141,7 @@ public class EEWorlds extends ECommand<EverEssentials> {
 	}
 	
 	public boolean commandWorldTeleport(final EPlayer player, final String world_name) {
-		Optional<World> optWorld = this.plugin.getEServer().getWorld(world_name);
+		Optional<World> optWorld = this.plugin.getEServer().getEWorld(world_name);
 		if(optWorld.isPresent()) {
 			if(this.plugin.getManagerServices().getEssentials().hasPermissionWorld(player, optWorld.get())) {
 				if(player.teleport(optWorld.get().getSpawnLocation())) {
@@ -204,11 +205,11 @@ public class EEWorlds extends ECommand<EverEssentials> {
 		return false;
 	}
 	
-	public Text getButtonTeleport(final String name){
+	public Text getButtonTeleport(final String name, final UUID uuid){
 		return EEMessages.WORLDS_LIST_TELEPORT.getText().toBuilder()
 					.onHover(TextActions.showText(EChat.of(EEMessages.WORLDS_LIST_TELEPORT_HOVER.get()
 							.replaceAll("<world>", name))))
-					.onClick(TextActions.runCommand("/worlds " + name))
+					.onClick(TextActions.runCommand("/worlds \"" + uuid + "\""))
 					.build();
 	}
 	
