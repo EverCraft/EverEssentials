@@ -25,6 +25,7 @@ import org.spongepowered.api.CatalogType;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.item.ItemType;
+import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
@@ -114,8 +115,13 @@ public class EEItem extends EReloadCommand<EverEssentials> {
 	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Résultat de la commande :
 		boolean resultat = false;
+		if(args.size() == 0){
+			ItemStack item = ItemStack.of(ItemTypes.STONE, 64);
+			if(item.getItem().getBlock().isPresent()){
+				this.plugin.getEServer().broadcast("" + item.getItem().getBlock().get().getDefaultState());
+			}
 		// Si on ne connait pas le joueur
-		if(args.size() == 1) {
+		} else if(args.size() == 1) {
 			// Si la source est un joueur
 			if(source instanceof EPlayer) {
 				resultat = commandItem((EPlayer) source, args.get(0));
