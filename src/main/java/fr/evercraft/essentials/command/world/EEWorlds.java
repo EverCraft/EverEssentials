@@ -143,7 +143,7 @@ public class EEWorlds extends ECommand<EverEssentials> {
 		Optional<World> optWorld = this.plugin.getEServer().getWorld(world_name);
 		if(optWorld.isPresent()) {
 			if(this.plugin.getManagerServices().getEssentials().hasPermissionWorld(player, optWorld.get())) {
-				if(player.teleportSafe(optWorld.get().getSpawnLocation())) {
+				if(player.teleport(optWorld.get().getSpawnLocation())) {
 					player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
 							.append(EEMessages.WORLDS_TELEPORT_PLAYER.get())
 							.replace("<world>", getButtonPosition(player.getLocation()))
