@@ -64,8 +64,8 @@ public class EESpawnSet extends ECommand<EverEssentials> {
 	
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		ArrayList<String> suggest = new ArrayList<String>();
-		if(args.size() == 1 && this.plugin.getEverAPI().getManagerService().getPermission().isPresent()) {
-			for(Subject group : this.plugin.getEverAPI().getManagerService().getPermission().get().getGroupSubjects().getAllSubjects()) {
+		if (args.size() == 1 && this.plugin.getEverAPI().getManagerService().getPermission().isPresent()) {
+			for (Subject group : this.plugin.getEverAPI().getManagerService().getPermission().get().getGroupSubjects().getAllSubjects()) {
 				suggest.add(group.getIdentifier());
 			}
 		}
@@ -76,21 +76,21 @@ public class EESpawnSet extends ECommand<EverEssentials> {
 		// Résultat de la commande :
 		boolean resultat = false;
 		
-		if(args.size() == 0) {
+		if (args.size() == 0) {
 			// Si la source est un joueur
-			if(source instanceof EPlayer) {
+			if (source instanceof EPlayer) {
 				resultat = this.commandSetSpawn((EPlayer) source, SpawnService.DEFAULT);
 			// La source n'est pas un joueur
 			} else {
 				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
 			}
 		// Si on ne connait pas le joueur
-		} else if(args.size() == 1) {
+		} else if (args.size() == 1) {
 			// Si la source est un joueur
-			if(source instanceof EPlayer) {
-				if(this.plugin.getEverAPI().getManagerService().getPermission().isPresent()) {
+			if (source instanceof EPlayer) {
+				if (this.plugin.getEverAPI().getManagerService().getPermission().isPresent()) {
 					Subject group = this.plugin.getEverAPI().getManagerService().getPermission().get().getGroupSubjects().get(args.get(0));
-					if(group != null) {
+					if (group != null) {
 						resultat = this.commandSetSpawn((EPlayer) source, group.getIdentifier());
 					} else {
 						source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.SETSPAWN_ERROR_GROUP.get()
@@ -113,8 +113,8 @@ public class EESpawnSet extends ECommand<EverEssentials> {
 	
 	private boolean commandSetSpawn(final EPlayer player, final String group_name) throws ServerDisableException {
 		Optional<Transform<World>> group = this.plugin.getManagerServices().getSpawn().get(group_name);
-		if(group.isPresent()) {
-			if(this.plugin.getManagerServices().getSpawn().update(group_name, player.getTransform())) {
+		if (group.isPresent()) {
+			if (this.plugin.getManagerServices().getSpawn().update(group_name, player.getTransform())) {
 				player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
 						.append(EEMessages.SETSPAWN_REPLACE.get())
 						.replace("<name>", getButtonSpawn(group_name, player.getLocation()))
@@ -124,7 +124,7 @@ public class EESpawnSet extends ECommand<EverEssentials> {
 				player.sendMessage(EEMessages.PREFIX.get() + EAMessages.COMMAND_ERROR.get());
 			}
 		} else {
-			if(this.plugin.getManagerServices().getSpawn().add(group_name, player.getTransform())) {
+			if (this.plugin.getManagerServices().getSpawn().add(group_name, player.getTransform())) {
 				player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
 						.append(EEMessages.SETSPAWN_NEW.get())
 						.replace("<name>", getButtonSpawn(group_name, player.getLocation()))

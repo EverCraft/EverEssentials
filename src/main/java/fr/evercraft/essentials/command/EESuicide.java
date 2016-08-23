@@ -62,9 +62,9 @@ public class EESuicide extends ECommand<EverEssentials> {
 		// Résultat de la commande :
 		boolean resultat = false;
 		// Si on ne connait pas le joueur
-		if(args.size() == 0) {
+		if (args.size() == 0) {
 			// Si la source est un joueur
-			if(source instanceof EPlayer) {
+			if (source instanceof EPlayer) {
 				resultat = commandSuicide((EPlayer) source);
 			// La source n'est pas un joueur
 			} else {

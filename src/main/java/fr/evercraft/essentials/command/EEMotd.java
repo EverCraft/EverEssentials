@@ -61,9 +61,9 @@ public class EEMotd extends ECommand<EverEssentials> {
 		// Résultat de la commande :
 		boolean resultat = false;
 		// Si on ne connait pas le joueur
-		if(args.size() == 0) {
+		if (args.size() == 0) {
 			// Si la source est un joueur
-			if(source instanceof EPlayer) {
+			if (source instanceof EPlayer) {
 				resultat = commandMotd((EPlayer) source);
 			// La source n'est pas un joueur
 			} else {
@@ -82,7 +82,7 @@ public class EEMotd extends ECommand<EverEssentials> {
 	}
 	
     private void sendListMessage(EPlayer player, List<String> list){
-    	for(String line : list){
+    	for (String line : list){
     		player.sendMessage(
     				this.plugin.getChat().replace(
     						this.plugin.getChat().replaceGlobal(

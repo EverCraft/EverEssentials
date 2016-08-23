@@ -133,10 +133,10 @@ public class EUserSubject implements SubjectUserEssentials {
 	
 	public void connect() {
 		Optional<EPlayer> optPlayer = this.getEPlayer();
-		if(optPlayer.isPresent()) {
+		if (optPlayer.isPresent()) {
 			EPlayer player = optPlayer.get();
 			
-			if(player.get(Keys.INVISIBLE).orElse(false) != vanish) {
+			if (player.get(Keys.INVISIBLE).orElse(false) != vanish) {
 				player.offer(Keys.INVISIBLE, vanish);
 			}
 			
@@ -150,11 +150,11 @@ public class EUserSubject implements SubjectUserEssentials {
 	
 	public void disconnect() {
 		Optional<EPlayer> player = this.getEPlayer();
-		if(player.isPresent()) {
-			if(this.plugin.getConfigs().removeVanishOnDisconnect() && this.vanish) {
+		if (player.isPresent()) {
+			if (this.plugin.getConfigs().removeVanishOnDisconnect() && this.vanish) {
 				this.setVanish(false);
 			}
-			if(this.plugin.getConfigs().removeGodOnDisconnect() && this.god) {
+			if (this.plugin.getConfigs().removeGodOnDisconnect() && this.god) {
 				this.setGod(false);
 			}
 			this.stopTotalTimePlayed();
@@ -348,11 +348,11 @@ public class EUserSubject implements SubjectUserEssentials {
 	
 	public boolean setVanish(final boolean vanish) {
 		Optional<EPlayer> player = this.getEPlayer();
-		if(this.vanish != vanish && player.isPresent()) {
+		if (this.vanish != vanish && player.isPresent()) {
 			this.vanish = vanish;
 			player.get().offer(Keys.INVISIBLE, vanish);
 			
-			if(this.plugin.getManagerEvent().vanish(player.get(), this.vanish)) {
+			if (this.plugin.getManagerEvent().vanish(player.get(), this.vanish)) {
 				this.vanish = !vanish;
 				player.get().offer(Keys.INVISIBLE, !vanish);
 			} else {
@@ -386,11 +386,11 @@ public class EUserSubject implements SubjectUserEssentials {
 	}
 	
 	public boolean setAfk(final boolean afk, final AfkEvent.Action action) {
-		if(this.afk != afk) {
+		if (this.afk != afk) {
 			this.afk = afk;
 			
 			// Event
-			if(this.plugin.getManagerEvent().afk(this.getUniqueId(), this.afk, action)) {
+			if (this.plugin.getManagerEvent().afk(this.getUniqueId(), this.afk, action)) {
 				this.afk = !afk;
 			} else {
 				return true;
@@ -406,7 +406,7 @@ public class EUserSubject implements SubjectUserEssentials {
 	
 	@Override
 	public boolean setAfkAutoFake(final boolean afk) {
-		if(this.afk_auto_fake != afk) {
+		if (this.afk_auto_fake != afk) {
 			this.afk_auto_fake = afk;
 			return true;
 		}
@@ -420,7 +420,7 @@ public class EUserSubject implements SubjectUserEssentials {
 	
 	@Override
 	public boolean setAfkKickFake(final boolean afk) {
-		if(this.afk_kick_fake != afk) {
+		if (this.afk_kick_fake != afk) {
 			this.afk_kick_fake = afk;
 			return true;
 		}
@@ -430,13 +430,13 @@ public class EUserSubject implements SubjectUserEssentials {
 	@Override
 	public void updateLastActivated() {
 		this.last_activated = System.currentTimeMillis();
-		if(this.afk) {
+		if (this.afk) {
 			this.setAfk(false, AfkEvent.Action.PLAYER);
 			
 			Optional<EPlayer> player = this.plugin.getEServer().getEPlayer(this.identifier);
-			if(player.isPresent()) {
+			if (player.isPresent()) {
 				player.get().sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.AFK_OFF_PLAYER.getText()));
-				if(EEMessages.AFK_OFF_ALL.has()) {
+				if (EEMessages.AFK_OFF_ALL.has()) {
 					player.get().broadcastMessage(EEMessages.PREFIX.getText().concat(player.get().replaceVariable(EEMessages.AFK_OFF_ALL.get())));
 				}
 			}
@@ -456,7 +456,7 @@ public class EUserSubject implements SubjectUserEssentials {
 
 	@Override
 	public long getTotalTimePlayed() {
-		if(this.last_played.isPresent()) {
+		if (this.last_played.isPresent()) {
 			return this.total_played + (System.currentTimeMillis() - this.last_played.get());
 		}
 		return this.total_played;
@@ -470,7 +470,7 @@ public class EUserSubject implements SubjectUserEssentials {
 	
 	@Override
 	public boolean stopTotalTimePlayed() {
-		if(this.last_played.isPresent()) {
+		if (this.last_played.isPresent()) {
 			this.total_played = this.total_played + (System.currentTimeMillis() - this.last_played.get());
 			this.plugin.getThreadAsync().execute(() -> this.plugin.getDataBases().setTotalTimePlayed(this.getIdentifier(), this.total_played));
 		}
@@ -489,10 +489,10 @@ public class EUserSubject implements SubjectUserEssentials {
 
 	@Override
 	public boolean setGod(final boolean god) {		
-		if(this.god != god) {
+		if (this.god != god) {
 			this.god = god;
 			
-			if(this.plugin.getManagerEvent().god(this.getUniqueId(), god)) {
+			if (this.plugin.getManagerEvent().god(this.getUniqueId(), god)) {
 				this.god = !god;
 			} else {
 				this.plugin.getThreadAsync().execute(() -> this.plugin.getDataBases().setGod(this.getIdentifier(), god));
@@ -513,10 +513,10 @@ public class EUserSubject implements SubjectUserEssentials {
 
 	@Override
 	public boolean setToggle(final boolean toggle) {		
-		if(this.toggle != toggle) {
+		if (this.toggle != toggle) {
 			this.toggle = toggle;
 			
-			if(this.plugin.getManagerEvent().toggle(this.getUniqueId(), toggle)) {
+			if (this.plugin.getManagerEvent().toggle(this.getUniqueId(), toggle)) {
 				this.toggle = !toggle;
 			} else {
 				this.plugin.getThreadAsync().execute(() -> this.plugin.getDataBases().setToggle(this.getIdentifier(), toggle));
@@ -537,10 +537,10 @@ public class EUserSubject implements SubjectUserEssentials {
 
 	@Override
 	public boolean setFreeze(final boolean freeze) {		
-		if(this.freeze != freeze) {
+		if (this.freeze != freeze) {
 			this.freeze = freeze;
 			
-			if(this.plugin.getManagerEvent().freeze(this.getUniqueId(), freeze)) {
+			if (this.plugin.getManagerEvent().freeze(this.getUniqueId(), freeze)) {
 				this.freeze = !freeze;
 			} else {
 				this.plugin.getThreadAsync().execute(() -> this.plugin.getDataBases().setFreeze(this.getIdentifier(), freeze));
@@ -557,9 +557,9 @@ public class EUserSubject implements SubjectUserEssentials {
 	@Override
 	public Map<String, Transform<World>> getHomes() {
 		ImmutableMap.Builder<String, Transform<World>> homes = ImmutableMap.builder();
-		for(Entry<String, LocationSQL> home : this.homes.entrySet()) {
+		for (Entry<String, LocationSQL> home : this.homes.entrySet()) {
 			Optional<Transform<World>> transform = home.getValue().getTransform();
-			if(transform.isPresent()) {
+			if (transform.isPresent()) {
 				homes.put(home.getKey(), transform.get());
 			}
 		}
@@ -581,7 +581,7 @@ public class EUserSubject implements SubjectUserEssentials {
 	public Optional<Transform<World>> getHome(final String identifier) {
 		Preconditions.checkNotNull(identifier, "identifier");
 		
-		if(this.homes.containsKey(identifier)) {
+		if (this.homes.containsKey(identifier)) {
 			return this.homes.get(identifier).getTransform();
 		}
 		return Optional.empty();
@@ -590,7 +590,7 @@ public class EUserSubject implements SubjectUserEssentials {
 	public Optional<LocationSQL> getHomeLocation(final String identifier) {
 		Preconditions.checkNotNull(identifier, "identifier");
 		
-		if(this.homes.containsKey(identifier)) {
+		if (this.homes.containsKey(identifier)) {
 			return Optional.ofNullable(this.homes.get(identifier));
 		}
 		return Optional.empty();
@@ -601,11 +601,11 @@ public class EUserSubject implements SubjectUserEssentials {
 		Preconditions.checkNotNull(identifier, "identifier");
 		Preconditions.checkNotNull(location, "location");
 		
-		if(!this.homes.containsKey(identifier)) {
+		if (!this.homes.containsKey(identifier)) {
 			final LocationSQL locationSQL = new LocationSQL(this.plugin, location);
 			this.homes.put(identifier, locationSQL);
 			
-			if(this.plugin.getManagerEvent().homeAdd(this.getUniqueId(), identifier, location)) {
+			if (this.plugin.getManagerEvent().homeAdd(this.getUniqueId(), identifier, location)) {
 				this.homes.remove(identifier);
 			} else {
 				this.plugin.getThreadAsync().execute(() -> this.plugin.getDataBases().addHome(this.getIdentifier(), identifier, locationSQL));
@@ -621,11 +621,11 @@ public class EUserSubject implements SubjectUserEssentials {
 		Preconditions.checkNotNull(location, "location");
 		
 		LocationSQL before_sql = this.homes.get(identifier);
-		if(before_sql != null) {
+		if (before_sql != null) {
 			final LocationSQL after_sql = new LocationSQL(this.plugin, location);
 			this.homes.put(identifier, after_sql);
 			
-			if(this.plugin.getManagerEvent().homeMove(this.getUniqueId(), identifier, before_sql.getTransform(), location)) {
+			if (this.plugin.getManagerEvent().homeMove(this.getUniqueId(), identifier, before_sql.getTransform(), location)) {
 				this.homes.put(identifier, before_sql);
 			} else {
 				this.plugin.getThreadAsync().execute(() -> this.plugin.getDataBases().moveHome(this.getIdentifier(), identifier, after_sql));
@@ -640,10 +640,10 @@ public class EUserSubject implements SubjectUserEssentials {
 		Preconditions.checkNotNull(identifier, "identifier");
 		
 		LocationSQL location = this.homes.get(identifier);
-		if(location != null) {
+		if (location != null) {
 			this.homes.remove(identifier);
 
-			if(this.plugin.getManagerEvent().homeRemove(this.getUniqueId(), identifier, location.getTransform())) {
+			if (this.plugin.getManagerEvent().homeRemove(this.getUniqueId(), identifier, location.getTransform())) {
 				this.homes.put(identifier, location);
 			} else {
 				this.plugin.getThreadAsync().execute(() -> this.plugin.getDataBases().removeHome(this.getIdentifier(), identifier));
@@ -659,7 +659,7 @@ public class EUserSubject implements SubjectUserEssentials {
 
 	@Override
 	public Optional<Transform<World>> getBack() {
-		if(this.back.isPresent()) {
+		if (this.back.isPresent()) {
 			return this.back.get().getTransform();
 		}
 		return Optional.empty();
@@ -670,8 +670,8 @@ public class EUserSubject implements SubjectUserEssentials {
 		Preconditions.checkNotNull(location, "location");
 		
 		Optional<EPlayer> player = this.getEPlayer();
-		if(this.plugin.getManagerServices().getEssentials().hasPermissionWorld(player.get(), location.getExtent())) {
-			if(!this.back.isPresent()) {
+		if (this.plugin.getManagerServices().getEssentials().hasPermissionWorld(player.get(), location.getExtent())) {
+			if (!this.back.isPresent()) {
 				final LocationSQL locationSQL = new LocationSQL(this.plugin, location);
 				this.back = Optional.of(locationSQL);
 				this.plugin.getThreadAsync().execute(() -> this.plugin.getDataBases().addBack(this.getIdentifier(), locationSQL));
@@ -688,7 +688,7 @@ public class EUserSubject implements SubjectUserEssentials {
 
 	@Override
 	public boolean clearBack() {
-		if(this.back.isPresent()) {
+		if (this.back.isPresent()) {
 			this.back = Optional.empty();
 			this.plugin.getThreadAsync().execute(() -> this.plugin.getDataBases().clearBack(this.getIdentifier()));
 			return true;
@@ -714,10 +714,10 @@ public class EUserSubject implements SubjectUserEssentials {
 	public boolean addIgnore(UUID uuid) {
 		Preconditions.checkNotNull(uuid, "uuid");
 		
-		if(!this.ignores.contains(uuid)) {
+		if (!this.ignores.contains(uuid)) {
 			this.ignores.add(uuid);
 			
-			if(this.plugin.getManagerEvent().ignore(this.getUniqueId(), uuid,IgnoreEvent.Action.ADD)) {
+			if (this.plugin.getManagerEvent().ignore(this.getUniqueId(), uuid,IgnoreEvent.Action.ADD)) {
 				this.ignores.remove(uuid);
 			} else {
 				this.plugin.getThreadAsync().execute(() -> this.plugin.getDataBases().addIgnore(this.getIdentifier(), uuid.toString()));
@@ -731,10 +731,10 @@ public class EUserSubject implements SubjectUserEssentials {
 	public boolean removeIgnore(UUID uuid) {
 		Preconditions.checkNotNull(uuid, "uuid");
 		
-		if(this.ignores.contains(uuid)) {
+		if (this.ignores.contains(uuid)) {
 			this.ignores.remove(uuid);
 			
-			if(this.plugin.getManagerEvent().ignore(this.getUniqueId(), uuid,IgnoreEvent.Action.REMOVE)) {
+			if (this.plugin.getManagerEvent().ignore(this.getUniqueId(), uuid,IgnoreEvent.Action.REMOVE)) {
 				this.ignores.add(uuid);
 			} else {
 				this.plugin.getThreadAsync().execute(() -> this.plugin.getDataBases().removeIgnore(this.getIdentifier(), uuid.toString()));
@@ -767,7 +767,7 @@ public class EUserSubject implements SubjectUserEssentials {
 			found = mail.getID() == id;
 		}
 		
-		if(found) {
+		if (found) {
 			return Optional.of(mail);
 		}
 		return Optional.empty();
@@ -788,7 +788,7 @@ public class EUserSubject implements SubjectUserEssentials {
 		Preconditions.checkNotNull(to, "to");
 		Preconditions.checkNotNull(message, "message");
 		
-		if(!this.plugin.getManagerEvent().mail(this.getUniqueId(), to, message)) {
+		if (!this.plugin.getManagerEvent().mail(this.getUniqueId(), to, message)) {
 			this.plugin.getThreadAsync().execute(() -> this.plugin.getDataBases().sendMail(this, to.getIdentifier(), message));
 			return true;
 		}
@@ -799,8 +799,8 @@ public class EUserSubject implements SubjectUserEssentials {
 	public boolean removeMail(Mail mail) {
 		Preconditions.checkNotNull(mail, "mail");
 		
-		if(this.mails.remove(mail)) {
-			if(this.plugin.getManagerEvent().mail(this.getUniqueId(), mail, MailEvent.Action.REMOVE)) {
+		if (this.mails.remove(mail)) {
+			if (this.plugin.getManagerEvent().mail(this.getUniqueId(), mail, MailEvent.Action.REMOVE)) {
 				this.mails.add(mail);
 			} else {
 				this.plugin.getThreadAsync().execute(() -> this.plugin.getDataBases().removeMails(this.getIdentifier(), mail.getID()));
@@ -814,11 +814,11 @@ public class EUserSubject implements SubjectUserEssentials {
 	public boolean readMail(Mail mail) {
 		Preconditions.checkNotNull(mail, "mail");
 		
-		if(this.mails.contains(mail)) {
-			if(!mail.isRead()) {
+		if (this.mails.contains(mail)) {
+			if (!mail.isRead()) {
 				mail.setRead(true);
 				
-				if(this.plugin.getManagerEvent().mail(this.getUniqueId(), mail, MailEvent.Action.READ)) {
+				if (this.plugin.getManagerEvent().mail(this.getUniqueId(), mail, MailEvent.Action.READ)) {
 					mail.setRead(false);
 				} else {
 					this.plugin.getThreadAsync().execute(() -> this.plugin.getDataBases().updateMail(mail));
@@ -831,12 +831,12 @@ public class EUserSubject implements SubjectUserEssentials {
 	
 	@Override
 	public boolean clearMails() {
-		if(!this.mails.isEmpty()) {
+		if (!this.mails.isEmpty()) {
 			List<Mail> mails = new ArrayList<Mail>(this.mails);
 			this.mails.clear();
 			
-			for(Mail mail : mails) {
-				if(this.plugin.getManagerEvent().mail(this.getUniqueId(), mail, MailEvent.Action.REMOVE)) {
+			for (Mail mail : mails) {
+				if (this.plugin.getManagerEvent().mail(this.getUniqueId(), mail, MailEvent.Action.REMOVE)) {
 					this.mails.add(mail);
 				} else {
 					this.plugin.getThreadAsync().execute(() -> this.plugin.getDataBases().removeMails(this.getIdentifier(), mail.getID()));
@@ -859,7 +859,7 @@ public class EUserSubject implements SubjectUserEssentials {
 	@Override
 	public boolean addTeleportAsk(UUID uuid, long delay) {
 		TeleportRequest teleport = this.teleports.get(uuid);
-		if(teleport == null || teleport.isExpire()) {
+		if (teleport == null || teleport.isExpire()) {
 			this.teleports.put(uuid, new TeleportRequest(Type.TPA, delay));
 			return true;
 		} else {
@@ -871,7 +871,7 @@ public class EUserSubject implements SubjectUserEssentials {
 	@Override
 	public boolean addTeleportAskHere(UUID uuid, long delay, @Nullable Transform<World> location) {
 		TeleportRequest teleport = this.teleports.get(uuid);
-		if(teleport == null || teleport.isExpire()) {
+		if (teleport == null || teleport.isExpire()) {
 			this.teleports.put(uuid, new TeleportRequest(Type.TPAHERE, delay, location));
 			return true;
 		} else {
@@ -883,7 +883,7 @@ public class EUserSubject implements SubjectUserEssentials {
 	
 	@Override
 	public boolean removeTeleportAsk(UUID uuid) {
-		if(this.teleports.containsKey(uuid)) {
+		if (this.teleports.containsKey(uuid)) {
 			this.teleports.remove(uuid);
 			return true;
 		}
@@ -921,7 +921,7 @@ public class EUserSubject implements SubjectUserEssentials {
 	public boolean setTeleport(long delay, Runnable runnable, boolean canMove) {
 		Preconditions.checkNotNull(runnable, "runnable");
 		
-		if(!this.teleport.isPresent()) {
+		if (!this.teleport.isPresent()) {
 			this.teleport = Optional.of(new TeleportDelay(delay, runnable, canMove));
 			return true;
 		}
@@ -930,7 +930,7 @@ public class EUserSubject implements SubjectUserEssentials {
 	
 	@Override
 	public boolean runTeleportDelay() {
-		if(this.teleport.isPresent()) {
+		if (this.teleport.isPresent()) {
 			TeleportDelay teleport = this.teleport.get();
 			this.teleport = Optional.empty();
 			teleport.run();
@@ -941,7 +941,7 @@ public class EUserSubject implements SubjectUserEssentials {
 	
 	@Override
 	public boolean cancelTeleportDelay() {
-		if(this.teleport.isPresent()) {
+		if (this.teleport.isPresent()) {
 			this.teleport = Optional.empty();
 			return true;
 		}

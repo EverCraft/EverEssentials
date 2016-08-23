@@ -63,12 +63,12 @@ public class EESeeInventory extends ECommand<EverEssentials> {
 		// Résultat de la commande :
 		boolean resultat = false;
 		// Si on ne connait pas le joueur
-		if(args.size() == 1) {
+		if (args.size() == 1) {
 			// Si la source est un joueur
-			if(source instanceof EPlayer) {
+			if (source instanceof EPlayer) {
 				Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(args.get(0));
 				// Le joueur existe
-				if(optPlayer.isPresent()){
+				if (optPlayer.isPresent()){
 					resultat = commandSeeInventory((EPlayer) source, optPlayer.get());
 				// Joueur introuvable
 				} else {

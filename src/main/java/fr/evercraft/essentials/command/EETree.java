@@ -94,7 +94,7 @@ public class EETree extends ECommand<EverEssentials> {
 	
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		List<String> suggests = new ArrayList<String>();
-		if(args.size() == 1){
+		if (args.size() == 1){
 			suggests.add("birch");
 			suggests.add("mushroom_brown");
 			suggests.add("canopy");
@@ -119,20 +119,20 @@ public class EETree extends ECommand<EverEssentials> {
 		// Résultat de la commande :
 		boolean resultat = false;
 		// Si on ne connait pas le joueur
-		if(args.size() == 0) {
+		if (args.size() == 0) {
 			// Si la source est un joueur
-			if(source instanceof EPlayer) {
+			if (source instanceof EPlayer) {
 				resultat = commandTree((EPlayer) source, PopulatorObjects.OAK);
 			// La source n'est pas un joueur
 			} else {
 				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
 			}
 		// On connais le joueur
-		} else if(args.size() == 1) {
+		} else if (args.size() == 1) {
 			// Si la source est un joueur
-			if(source instanceof EPlayer) {
+			if (source instanceof EPlayer) {
 				Optional<PopulatorObject> optGenerator = getGenerator(args.get(0));
-				if(optGenerator.isPresent()){
+				if (optGenerator.isPresent()){
 					resultat = commandTree((EPlayer) source, optGenerator.get());
 				} else {
 					source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.TREE_INCONNU.get()
@@ -151,9 +151,9 @@ public class EETree extends ECommand<EverEssentials> {
 	
 	public boolean commandTree(final EPlayer player, PopulatorObject generator) throws CommandException {
 		Optional<Vector3i> optBlock = player.getViewBlock();
-		if(optBlock.isPresent()) {
+		if (optBlock.isPresent()) {
 			Vector3i block = optBlock.get().add(0, 1, 0);
-			if(generator.canPlaceAt(player.getWorld(), block.getX(), block.getY(), block.getZ())) {
+			if (generator.canPlaceAt(player.getWorld(), block.getX(), block.getY(), block.getZ())) {
 				generator.placeObject(player.getWorld(), player.getRandom(), block.getX(), block.getY(), block.getZ());
 				return true;
 			} else {
@@ -167,37 +167,37 @@ public class EETree extends ECommand<EverEssentials> {
 	
 	private Optional<PopulatorObject> getGenerator(String tree_name) {
 		PopulatorObject generator = null;
-		if(tree_name.equalsIgnoreCase("birch")) {
+		if (tree_name.equalsIgnoreCase("birch")) {
 			generator = PopulatorObjects.BIRCH;
-		} else if(tree_name.equalsIgnoreCase("mushroom_brown")) {
+		} else if (tree_name.equalsIgnoreCase("mushroom_brown")) {
 			generator = MushroomTypes.BROWN.getPopulatorObject();
-		} else if(tree_name.equalsIgnoreCase("canopy")) {
+		} else if (tree_name.equalsIgnoreCase("canopy")) {
 			generator = PopulatorObjects.CANOPY;
-		} else if(tree_name.equalsIgnoreCase("jungle")) {
+		} else if (tree_name.equalsIgnoreCase("jungle")) {
 			generator = PopulatorObjects.JUNGLE;
-		} else if(tree_name.equalsIgnoreCase("jungle_bush")) {
+		} else if (tree_name.equalsIgnoreCase("jungle_bush")) {
 			generator = PopulatorObjects.JUNGLE_BUSH;
-		} else if(tree_name.equalsIgnoreCase("mega_birch")) {
+		} else if (tree_name.equalsIgnoreCase("mega_birch")) {
 			generator = PopulatorObjects.MEGA_BIRCH;
-		} else if(tree_name.equalsIgnoreCase("mega_jungle")) {
+		} else if (tree_name.equalsIgnoreCase("mega_jungle")) {
 			generator = PopulatorObjects.MEGA_JUNGLE;
-		} else if(tree_name.equalsIgnoreCase("mega_oak")) {
+		} else if (tree_name.equalsIgnoreCase("mega_oak")) {
 			generator = PopulatorObjects.MEGA_OAK;
-		} else if(tree_name.equalsIgnoreCase("mega_pointy_taiga")) {
+		} else if (tree_name.equalsIgnoreCase("mega_pointy_taiga")) {
 			generator = PopulatorObjects.MEGA_POINTY_TAIGA;
-		} else if(tree_name.equalsIgnoreCase("mega_tall_taiga")) {
+		} else if (tree_name.equalsIgnoreCase("mega_tall_taiga")) {
 			generator = PopulatorObjects.MEGA_TALL_TAIGA;
-		} else if(tree_name.equalsIgnoreCase("oak")) {
+		} else if (tree_name.equalsIgnoreCase("oak")) {
 			generator = PopulatorObjects.OAK;
-		} else if(tree_name.equalsIgnoreCase("pointy_taiga")) {
+		} else if (tree_name.equalsIgnoreCase("pointy_taiga")) {
 			generator = PopulatorObjects.POINTY_TAIGA;
-		} else if(tree_name.equalsIgnoreCase("mushroom_red")) {
+		} else if (tree_name.equalsIgnoreCase("mushroom_red")) {
 			generator = MushroomTypes.RED.getPopulatorObject();
-		} else if(tree_name.equalsIgnoreCase("savanna")) {
+		} else if (tree_name.equalsIgnoreCase("savanna")) {
 			generator = PopulatorObjects.SAVANNA;
-		} else if(tree_name.equalsIgnoreCase("swamp")) {
+		} else if (tree_name.equalsIgnoreCase("swamp")) {
 			generator = PopulatorObjects.SWAMP;
-		} else if(tree_name.equalsIgnoreCase("tall_taiga")) {
+		} else if (tree_name.equalsIgnoreCase("tall_taiga")) {
 			generator = PopulatorObjects.TALL_TAIGA;
 		}
 		return Optional.ofNullable(generator);

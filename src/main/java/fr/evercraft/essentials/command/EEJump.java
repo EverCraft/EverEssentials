@@ -64,9 +64,9 @@ public class EEJump extends ECommand<EverEssentials> {
 		// Résultat de la commande :
 		boolean resultat = false;
 		// Si on ne connait pas le joueur
-		if(args.size() == 0) {
+		if (args.size() == 0) {
 			// Si la source est un joueur
-			if(source instanceof EPlayer) {
+			if (source instanceof EPlayer) {
 				resultat = commandJump((EPlayer) source);
 			// La source n'est pas un joueur
 			} else {
@@ -81,8 +81,8 @@ public class EEJump extends ECommand<EverEssentials> {
 	
 	public boolean commandJump(final EPlayer player) {
 		Optional<Vector3i> optBlock = player.getViewBlock();
-		if(optBlock.isPresent()) {
-			if(player.teleportSafe(player.getWorld().getLocation(optBlock.get().add(0, 1, 0)))) {
+		if (optBlock.isPresent()) {
+			if (player.teleportSafe(player.getWorld().getLocation(optBlock.get().add(0, 1, 0)))) {
 				player.sendMessage(EEMessages.PREFIX.get() + EEMessages.JUMP_TELEPORT.get());
 			} else {
 				player.sendMessage(EEMessages.PREFIX.get() + EEMessages.JUMP_TELEPORT_ERROR.get());

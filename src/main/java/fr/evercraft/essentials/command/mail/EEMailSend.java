@@ -68,12 +68,12 @@ public class EEMailSend extends ESubCommand<EverEssentials> {
 	public boolean subExecute(final CommandSource source, final List<String> args) {
 		// Résultat de la commande :
 		boolean resultat = false;
-		if(args.size() == 2){
+		if (args.size() == 2){
 			// Si il a la permission
-			if(source.hasPermission(EEPermissions.MAIL_SEND.get())) {
-				if(args.get(0).equalsIgnoreCase("*") || args.get(0).equalsIgnoreCase("all")) {
+			if (source.hasPermission(EEPermissions.MAIL_SEND.get())) {
+				if (args.get(0).equalsIgnoreCase("*") || args.get(0).equalsIgnoreCase("all")) {
 					// Si il a la permission
-					if(source.hasPermission(EEPermissions.MAIL_SENDALL.get())){
+					if (source.hasPermission(EEPermissions.MAIL_SENDALL.get())){
 						resultat = commandSendAll(source, args.get(1));
 					// Il n'a pas la permission
 					} else {
@@ -82,7 +82,7 @@ public class EEMailSend extends ESubCommand<EverEssentials> {
 				} else {
 					Optional<User> optUser = this.plugin.getEServer().getUser(args.get(0));
 					// Le joueur existe
-					if(optUser.isPresent()){
+					if (optUser.isPresent()){
 						resultat = commandSend(source, optUser.get(), args.get(1));
 					// Le joueur est introuvable
 					} else {
@@ -105,9 +105,9 @@ public class EEMailSend extends ESubCommand<EverEssentials> {
 	
 	private boolean commandSend(CommandSource staff, User player, String message) {
 		Optional<SubjectUserEssentials> subject = this.plugin.getManagerServices().getEssentials().get(player.getUniqueId());
-		if(subject.isPresent()) {
-			if(subject.get().addMail(staff, message)) {
-				if(staff.getIdentifier().equals(player.getIdentifier())) {
+		if (subject.isPresent()) {
+			if (subject.get().addMail(staff, message)) {
+				if (staff.getIdentifier().equals(player.getIdentifier())) {
 					staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.MAIL_SEND_MESSAGE.get()
 							.replaceAll("<player>", player.getName())));
 				} else {

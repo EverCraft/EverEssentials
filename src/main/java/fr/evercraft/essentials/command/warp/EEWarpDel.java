@@ -61,11 +61,11 @@ public class EEWarpDel extends ECommand<EverEssentials> {
 	
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		List<String> suggests = new ArrayList<String>();
-		if(args.size() == 1){
-			for(String warp : this.plugin.getManagerServices().getWarp().getAll().keySet()){
+		if (args.size() == 1){
+			for (String warp : this.plugin.getManagerServices().getWarp().getAll().keySet()){
 				suggests.add(warp);
 			}
-		} else if(args.size() == 2){
+		} else if (args.size() == 2){
 			suggests.add("confirmation");
 		}
 		return suggests;
@@ -75,9 +75,9 @@ public class EEWarpDel extends ECommand<EverEssentials> {
 		// Résultat de la commande :
 		boolean resultat = false;
 		// Si on ne connait pas le joueur
-		if(args.size() == 1) {
+		if (args.size() == 1) {
 			commandDeleteWarp((EPlayer) source, args.get(0));
-		} else if(args.size() == 2 && args.get(1).equalsIgnoreCase("confirmation")) {
+		} else if (args.size() == 2 && args.get(1).equalsIgnoreCase("confirmation")) {
 			commandDeleteWarpConfirmation((EPlayer) source, args.get(0));
 		// Nombre d'argument incorrect
 		} else {
@@ -90,7 +90,7 @@ public class EEWarpDel extends ECommand<EverEssentials> {
 		String name = EChat.fixLength(warp_name, this.plugin.getEverAPI().getConfigs().get("maxCaractere").getInt(16));
 		Optional<Transform<World>> warp = this.plugin.getManagerServices().getWarp().get(name);
 		// Le serveur a un warp qui porte ce nom
-		if(warp.isPresent()) {
+		if (warp.isPresent()) {
 			player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
 					.append(EEMessages.DELWARP_CONFIRMATION.get())
 					.replace("<warp>", getButtonWarp(name, warp.get()))
@@ -107,9 +107,9 @@ public class EEWarpDel extends ECommand<EverEssentials> {
 		String name = EChat.fixLength(warp_name, this.plugin.getEverAPI().getConfigs().get("maxCaractere").getInt(16));
 		Optional<Transform<World>> warp = this.plugin.getManagerServices().getWarp().get(name);
 		// Le serveur a un warp qui porte ce nom
-		if(warp.isPresent()) {
+		if (warp.isPresent()) {
 			// Si le warp a bien été supprimer
-			if(this.plugin.getManagerServices().getWarp().remove(name)) {
+			if (this.plugin.getManagerServices().getWarp().remove(name)) {
 				player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
 						.append(EEMessages.DELWARP_DELETE.get())
 						.replace("<warp>", getButtonWarp(name, warp.get()))

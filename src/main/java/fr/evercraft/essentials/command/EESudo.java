@@ -50,7 +50,7 @@ public class EESudo extends ECommand<EverEssentials> {
 	}
 
 	public Text help(final CommandSource source) {
-		if(source.hasPermission(EEPermissions.SUDO_CONSOLE.get())){
+		if (source.hasPermission(EEPermissions.SUDO_CONSOLE.get())){
 			return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_PLAYER.get() + "|console> <" + EAMessages.ARGS_COMMAND.get() + ">")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
@@ -64,9 +64,9 @@ public class EESudo extends ECommand<EverEssentials> {
 	
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		List<String> suggests = new ArrayList<String>();
-		if(args.size() == 1) {
+		if (args.size() == 1) {
 			suggests.add("console");
-			for(EPlayer player : this.plugin.getEServer().getOnlineEPlayers()) {
+			for (EPlayer player : this.plugin.getEServer().getOnlineEPlayers()) {
 				suggests.add(player.getName());
 			}
 		}
@@ -77,11 +77,11 @@ public class EESudo extends ECommand<EverEssentials> {
 		// Résultat de la commande :
 		boolean resultat = false;
 		// Si on ne connait pas le joueur
-		if(args.size() > 1) {
-			if(!args.get(0).equalsIgnoreCase("console")) {
+		if (args.size() > 1) {
+			if (!args.get(0).equalsIgnoreCase("console")) {
 				Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(args.get(0));
 				// Le joueur existe
-				if(optPlayer.isPresent()){
+				if (optPlayer.isPresent()){
 					resultat = commandSudo(source, optPlayer.get(), getCommand(args));
 				// Le joueur est introuvable
 				} else {
@@ -89,7 +89,7 @@ public class EESudo extends ECommand<EverEssentials> {
 				} 
 			} else {
 				// Si il a la permission
-				if(source.hasPermission(EEPermissions.SUDO_CONSOLE.get())){
+				if (source.hasPermission(EEPermissions.SUDO_CONSOLE.get())){
 					resultat = commandSudoConsole(source, getCommand(args));
 				// Il n'a pas la permission
 				} else {
@@ -105,8 +105,8 @@ public class EESudo extends ECommand<EverEssentials> {
 	
 	public boolean commandSudo(final CommandSource staff, final EPlayer player, final String command) {
 		// Si le joueur n'a pas la permission bypass
-		if(!player.hasPermission(EEPermissions.SUDO_BYPASS.get())) {
-			if(player.getCommandSource().isPresent()) {
+		if (!player.hasPermission(EEPermissions.SUDO_BYPASS.get())) {
+			if (player.getCommandSource().isPresent()) {
 				this.plugin.getGame().getCommandManager().process(player.getCommandSource().get(), command);
 				staff.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
 						.append(EEMessages.SUDO_PLAYER.get()
@@ -126,7 +126,7 @@ public class EESudo extends ECommand<EverEssentials> {
 	}
 	
 	public boolean commandSudoConsole(final CommandSource staff, final String command) {
-		if(this.plugin.getGame().getServer().getConsole().getCommandSource().isPresent()) {
+		if (this.plugin.getGame().getServer().getConsole().getCommandSource().isPresent()) {
 			this.plugin.getGame().getCommandManager().process(this.plugin.getGame().getServer().getConsole().getCommandSource().get(), command);
 			staff.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
 					.append(EEMessages.SUDO_CONSOLE.get())
@@ -142,7 +142,7 @@ public class EESudo extends ECommand<EverEssentials> {
 		args.remove(0);
 		String command = args.get(0).replace("/", "");
 		args.remove(0);
-		for(String arg : args) {
+		for (String arg : args) {
 			command += " " + arg;
 		}
 		return command;

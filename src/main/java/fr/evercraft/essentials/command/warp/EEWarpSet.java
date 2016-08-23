@@ -68,9 +68,9 @@ public class EEWarpSet extends ECommand<EverEssentials> {
 		// Résultat de la commande :
 		boolean resultat = false;
 		
-		if(args.size() == 1) {
+		if (args.size() == 1) {
 			// Si la source est un joueur
-			if(source instanceof EPlayer) {
+			if (source instanceof EPlayer) {
 				resultat = commandSetWarp((EPlayer) source, args.get(0)); 
 			// La source n'est pas un joueur
 			} else {
@@ -86,8 +86,8 @@ public class EEWarpSet extends ECommand<EverEssentials> {
 	public boolean commandSetWarp(final EPlayer player, final String warp_name) throws ServerDisableException {
 		String name = EChat.fixLength(warp_name, this.plugin.getEverAPI().getConfigs().get("maxCaractere").getInt(16));
 		Optional<Transform<World>> warp = this.plugin.getManagerServices().getWarp().get(name);
-		if(warp.isPresent()) {
-			if(this.plugin.getManagerServices().getWarp().remove(name) && this.plugin.getManagerServices().getWarp().add(name, player.getTransform())) {
+		if (warp.isPresent()) {
+			if (this.plugin.getManagerServices().getWarp().remove(name) && this.plugin.getManagerServices().getWarp().add(name, player.getTransform())) {
 				player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
 						.append(EEMessages.SETWARP_REPLACE.get())
 						.replace("<warp>", getButtonWarp(name, player.getLocation()))
@@ -97,7 +97,7 @@ public class EEWarpSet extends ECommand<EverEssentials> {
 				player.sendMessage(EEMessages.PREFIX.get() + EAMessages.COMMAND_ERROR.get());
 			}
 		} else {
-			if(this.plugin.getManagerServices().getWarp().add(name, player.getTransform())) {
+			if (this.plugin.getManagerServices().getWarp().add(name, player.getTransform())) {
 				player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
 						.append(EEMessages.SETWARP_NEW.get())
 						.replace("<warp>", getButtonWarp(name, player.getLocation()))

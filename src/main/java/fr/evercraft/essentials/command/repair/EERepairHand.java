@@ -85,10 +85,10 @@ public class EERepairHand extends ECommand<EverEssentials> {
 		if (player.getItemInMainHand().isPresent()){
 			ItemStack item = player.getItemInMainHand().get();
 			Optional<Integer> data = item.get(Keys.ITEM_DURABILITY);
-			if(data.isPresent()){
+			if (data.isPresent()){
 				int value = data.get();
 				item.offer(Keys.ITEM_DURABILITY, Integer.MAX_VALUE);
-				if(item.get(Keys.ITEM_DURABILITY).get() != value){
+				if (item.get(Keys.ITEM_DURABILITY).get() != value){
 		            player.setItemInMainHand(item);
 		            player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
 		            		.append(EEMessages.REPAIR_HAND_PLAYER.get())

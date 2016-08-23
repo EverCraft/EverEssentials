@@ -61,7 +61,7 @@ public class EEBroadcast extends ECommand<EverEssentials> {
 
 	@Override
 	protected List<String> getArg(final String arg){
-		if(arg.isEmpty()) {
+		if (arg.isEmpty()) {
 			return Arrays.asList();
 		}
 		return Arrays.asList(arg);
@@ -70,7 +70,7 @@ public class EEBroadcast extends ECommand<EverEssentials> {
 	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Résultat de la commande :
 		boolean resultat = false;
-		if(args.size() == 1) {
+		if (args.size() == 1) {
 			resultat = this.commandBroadcast(args.get(0));
 		} else {
 			source.sendMessage(this.help(source));

@@ -83,7 +83,7 @@ public class EMail implements Mail {
 	@Override
 	public String getToName() {
 		Optional<User> user = this.getToPlayer();
-		if(user.isPresent()) {
+		if (user.isPresent()) {
 			return user.get().getName();
 		}
 		return getTo();

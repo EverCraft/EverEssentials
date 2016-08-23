@@ -58,7 +58,7 @@ public class EEHomeSet extends EReloadCommand<EverEssentials> {
 		Map<String, Integer> permissions = new HashMap<String, Integer>();
 		this.permission_default = this.plugin.getConfigs().get("sethome-multiple.default").getInt(1);
 		for (Entry<Object, ? extends ConfigurationNode> key : this.plugin.getConfigs().get("sethome-multiple").getChildrenMap().entrySet()) {
-			if(key.getKey() instanceof String) {
+			if (key.getKey() instanceof String) {
 				permissions.put((String) key.getKey(), key.getValue().getInt(this.permission_default));
 			}
 		}
@@ -86,7 +86,7 @@ public class EEHomeSet extends EReloadCommand<EverEssentials> {
 	}
 
 	public Text help(final CommandSource source) {
-		if(source.hasPermission(EEPermissions.SETHOME_MULTIPLE.get())) {
+		if (source.hasPermission(EEPermissions.SETHOME_MULTIPLE.get())) {
 			return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_HOME.get() + ">")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
@@ -106,20 +106,20 @@ public class EEHomeSet extends EReloadCommand<EverEssentials> {
 		// Résultat de la commande :
 		boolean resultat = false;
 		
-		if(args.size() == 0 || 
+		if (args.size() == 0 || 
 				(!source.hasPermission(EEPermissions.SETHOME_MULTIPLE.get()) && 
 				!source.hasPermission(EEPermissions.SETHOME_MULTIPLE_UNLIMITED.get()))) {
 			// Si la source est un joueur
-			if(source instanceof EPlayer) {
+			if (source instanceof EPlayer) {
 				resultat = commandSetHome((EPlayer) source);
 			// La source n'est pas un joueur
 			} else {
 				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
 			}
 		// Si on ne connait pas le joueur
-		} else if(args.size() == 1) {
+		} else if (args.size() == 1) {
 			// Si la source est un joueur
-			if(source instanceof EPlayer) {
+			if (source instanceof EPlayer) {
 				resultat = commandSetHome((EPlayer) source, args.get(0)); 
 				
 			// La source n'est pas un joueur
@@ -139,10 +139,10 @@ public class EEHomeSet extends EReloadCommand<EverEssentials> {
 		
 		boolean hasHome = player.hasHome(DEFAULT_HOME);
 		// Si le joueur à un home qui porte déjà ce nom ou il peut encore avoir un home supplémentaire
-		if(hasHome || homes == 0 || homes < max) {
+		if (hasHome || homes == 0 || homes < max) {
 			// Ajout d'un home
-			if(!hasHome) {
-				if(player.addHome(DEFAULT_HOME)) {
+			if (!hasHome) {
+				if (player.addHome(DEFAULT_HOME)) {
 					player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
 							.append(EEMessages.SETHOME_SET.get())
 							.replace("<home>", getButtonHome(DEFAULT_HOME, player.getLocation()))
@@ -156,7 +156,7 @@ public class EEHomeSet extends EReloadCommand<EverEssentials> {
 				}
 			// Modifie un home
 			} else {
-				if(player.moveHome(DEFAULT_HOME)) {
+				if (player.moveHome(DEFAULT_HOME)) {
 					player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
 							.append(EEMessages.SETHOME_MOVE.get())
 							.replace("<home>", getButtonHome(DEFAULT_HOME, player.getLocation()))
@@ -180,16 +180,16 @@ public class EEHomeSet extends EReloadCommand<EverEssentials> {
 	public boolean commandSetHome(final EPlayer player, final String home_name) {
 		String name = EChat.fixLength(home_name, this.plugin.getEverAPI().getConfigs().get("maxCaractere").getInt(16));
 		// Si il a la permission multihome
-		if(player.hasPermission(EEPermissions.SETHOME_MULTIPLE.get())){
+		if (player.hasPermission(EEPermissions.SETHOME_MULTIPLE.get())){
 			int max = getMaxHome(player);
 			boolean hasHome = player.hasHome(name);
 			
 			// Si le joueur à la permissions un unlimited ou un home qui porte déjà ce nom ou il peut encore avoir un home supplémentaire
-			if(player.hasPermission(EEPermissions.SETHOME_MULTIPLE_UNLIMITED.get()) || 
+			if (player.hasPermission(EEPermissions.SETHOME_MULTIPLE_UNLIMITED.get()) || 
 					hasHome || player.getHomes().size() < max) {
 				// Ajout d'un home
-				if(!hasHome) {
-					if(player.addHome(name)) {
+				if (!hasHome) {
+					if (player.addHome(name)) {
 						player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
 								.append(EEMessages.SETHOME_MULTIPLE_SET.get())
 								.replace("<home>", getButtonHome(name, player.getLocation()))
@@ -203,7 +203,7 @@ public class EEHomeSet extends EReloadCommand<EverEssentials> {
 					}
 				// Modifie un home
 				} else {
-					if(player.moveHome(name)) {
+					if (player.moveHome(name)) {
 						player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
 								.append(EEMessages.SETHOME_MULTIPLE_MOVE.get())
 								.replace("<home>", getButtonHome(name, player.getLocation()))

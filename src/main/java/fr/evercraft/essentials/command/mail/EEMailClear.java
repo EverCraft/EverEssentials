@@ -58,9 +58,9 @@ public class EEMailClear extends ESubCommand<EverEssentials> {
 	public boolean subExecute(final CommandSource source, final List<String> args) {
 		// Résultat de la commande :
 		boolean resultat = false;
-		if(args.size() == 0){
+		if (args.size() == 0){
 			// Si la source est un joueur
-			if(source instanceof EPlayer) {
+			if (source instanceof EPlayer) {
 				resultat = commandClear((EPlayer) source);
 			// La source n'est pas un joueur
 			} else {
@@ -77,8 +77,8 @@ public class EEMailClear extends ESubCommand<EverEssentials> {
 	 */
 	
 	private boolean commandClear(EPlayer player) {
-		if(!player.getMails().isEmpty()) {
-			if(player.clearMails()) {
+		if (!player.getMails().isEmpty()) {
+			if (player.clearMails()) {
 				player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.MAIL_CLEAR_MESSAGE.getText()));
 				return true;
 			} else {

@@ -49,14 +49,14 @@ public class EEFlyStatus extends ESubCommand<EverEssentials> {
 	
 	public List<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		List<String> suggests = new ArrayList<String>();
-		if(!(args.size() == 1 && source.hasPermission(EEPermissions.FLY_OTHERS.get()))){
+		if (!(args.size() == 1 && source.hasPermission(EEPermissions.FLY_OTHERS.get()))){
 			suggests = null;
 		}
 		return suggests;
 	}
 
 	public Text help(final CommandSource source) {
-		if(source.hasPermission(EEPermissions.FLY_OTHERS.get())){
+		if (source.hasPermission(EEPermissions.FLY_OTHERS.get())){
 			return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_PLAYER.get() + "]")
 						.onClick(TextActions.suggestCommand("/" + this.getName()))
 						.color(TextColors.RED)
@@ -72,18 +72,18 @@ public class EEFlyStatus extends ESubCommand<EverEssentials> {
 	public boolean subExecute(final CommandSource source, final List<String> args) throws CommandException {
 		// Résultat de la commande :
 		boolean resultat = false;
-		if(args.size() == 0) {
-			if(source instanceof EPlayer) {
+		if (args.size() == 0) {
+			if (source instanceof EPlayer) {
 				resultat = commandFlyStatus((EPlayer) source);
 			} else {
 				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
 			}
-		} else if(args.size() == 1) {
+		} else if (args.size() == 1) {
 			// Si il a la permission
-			if(source.hasPermission(EEPermissions.FLY_OTHERS.get())){
+			if (source.hasPermission(EEPermissions.FLY_OTHERS.get())){
 				Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(args.get(0));
 				// Le joueur existe
-				if(optPlayer.isPresent()){
+				if (optPlayer.isPresent()){
 					resultat = commandFlyStatusOthers(source, optPlayer.get());
 				// Le joueur est introuvable
 				} else {
@@ -101,7 +101,7 @@ public class EEFlyStatus extends ESubCommand<EverEssentials> {
 
 	public boolean commandFlyStatus(final EPlayer player) {
 		// Fly activé
-		if(player.getAllowFlight()){
+		if (player.getAllowFlight()){
 			player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.FLY_STATUS_PLAYER_ON.get()
 					.replaceAll("<player>", player.getDisplayName())));
 		// Fly désactivé
@@ -113,9 +113,9 @@ public class EEFlyStatus extends ESubCommand<EverEssentials> {
 	}
 	
 	public boolean commandFlyStatusOthers(final CommandSource staff, final EPlayer player) {
-		if(!player.equals(staff)) {
+		if (!player.equals(staff)) {
 			// Fly activé
-			if(player.getAllowFlight()){
+			if (player.getAllowFlight()){
 				staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.FLY_STATUS_OTHERS_ON.get()
 						.replaceAll("<player>", player.getDisplayName())));
 			// Fly désactivé

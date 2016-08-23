@@ -60,9 +60,9 @@ private final EverEssentials plugin;
 	@Override
 	public Map<String, Transform<World>> getAll() {
 		ImmutableMap.Builder<String, Transform<World>> spawns = ImmutableMap.builder();
-		for(Entry<String, LocationSQL> spawn : this.spawns.entrySet()) {
+		for (Entry<String, LocationSQL> spawn : this.spawns.entrySet()) {
 			Optional<Transform<World>> transform = spawn.getValue().getTransform();
-			if(transform.isPresent()) {
+			if (transform.isPresent()) {
 				spawns.put(spawn.getKey(), transform.get());
 			}
 		}
@@ -84,7 +84,7 @@ private final EverEssentials plugin;
 	public Optional<Transform<World>> get(final String identifier) {
 		Preconditions.checkNotNull(identifier, "identifier");
 		
-		if(this.spawns.containsKey(identifier)) {
+		if (this.spawns.containsKey(identifier)) {
 			return this.spawns.get(identifier).getTransform();
 		}
 		return Optional.empty();
@@ -93,7 +93,7 @@ private final EverEssentials plugin;
 	@Override
 	public Transform<World> getDefault() {
 		Optional<Transform<World>> spawn = this.get(SpawnService.DEFAULT);
-		if(spawn.isPresent()) {
+		if (spawn.isPresent()) {
 			return spawn.get();
 		}
 		return this.plugin.getEServer().getSpawn();
@@ -104,7 +104,7 @@ private final EverEssentials plugin;
 		Preconditions.checkNotNull(identifier, "identifier");
 		Preconditions.checkNotNull(location, "location");
 		
-		if(!this.spawns.containsKey(identifier)) {
+		if (!this.spawns.containsKey(identifier)) {
 			final LocationSQL locationSQL = new LocationSQL(this.plugin, location);
 			this.spawns.put(identifier, locationSQL);
 			this.plugin.getThreadAsync().execute(() -> this.addAsync(identifier, locationSQL));
@@ -118,7 +118,7 @@ private final EverEssentials plugin;
 		Preconditions.checkNotNull(identifier, "identifier");
 		Preconditions.checkNotNull(location, "location");
 		
-		if(this.spawns.containsKey(identifier)) {
+		if (this.spawns.containsKey(identifier)) {
 			final LocationSQL locationSQL = new LocationSQL(this.plugin, location);
 			this.spawns.put(identifier, locationSQL);
 			this.plugin.getThreadAsync().execute(() -> this.updateAsync(identifier, locationSQL));
@@ -131,7 +131,7 @@ private final EverEssentials plugin;
 	public boolean remove(final String identifier) {
 		Preconditions.checkNotNull(identifier, "identifier");
 		
-		if(this.spawns.containsKey(identifier)) {
+		if (this.spawns.containsKey(identifier)) {
 			this.spawns.remove(identifier);
 			this.plugin.getThreadAsync().execute(() -> this.removeAsync(identifier));
 			return true;
@@ -141,7 +141,7 @@ private final EverEssentials plugin;
 
 	@Override
 	public boolean clearAll() {
-		if(!this.spawns.isEmpty()) {
+		if (!this.spawns.isEmpty()) {
 			this.spawns.clear();
 			this.plugin.getThreadAsync().execute(() -> this.clearAsync());
 			return true;

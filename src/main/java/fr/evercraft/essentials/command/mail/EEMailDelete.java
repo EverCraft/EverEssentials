@@ -51,7 +51,7 @@ public class EEMailDelete extends ESubCommand<EverEssentials> {
 	
 	public List<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		List<String> suggests = new ArrayList<String>();
-		if(args.size() == 1){
+		if (args.size() == 1){
 			suggests.add("1");
 		}
 		return suggests;
@@ -67,17 +67,17 @@ public class EEMailDelete extends ESubCommand<EverEssentials> {
 	public boolean subExecute(final CommandSource source, final List<String> args) {
 		// Résultat de la commande :
 		boolean resultat = false;
-		if(args.size() == 1){
+		if (args.size() == 1){
 			// Si la source est un joueur
-			if(source instanceof EPlayer) {
+			if (source instanceof EPlayer) {
 				resultat = commandDelete((EPlayer) source, args.get(0));
 			// La source n'est pas un joueur
 			} else {
 				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
 			}
-		} else if(args.size() == 2 && args.get(1).equalsIgnoreCase("confirmation")) {
+		} else if (args.size() == 2 && args.get(1).equalsIgnoreCase("confirmation")) {
 			// Si la source est un joueur
-			if(source instanceof EPlayer) {
+			if (source instanceof EPlayer) {
 				resultat = commandDeleteConfirmation((EPlayer) source, args.get(0));
 			// La source n'est pas un joueur
 			} else {
@@ -96,7 +96,7 @@ public class EEMailDelete extends ESubCommand<EverEssentials> {
 	private boolean commandDelete(EPlayer player, String id_string) {
 		try {
 			Optional<Mail> mail = player.getMail(Integer.parseInt(id_string));
-			if(mail.isPresent()) {	
+			if (mail.isPresent()) {	
 				player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
 						.append(EEMessages.MAIL_DELETE_MESSAGE.get()
 							.replaceAll("<id>", String.valueOf(mail.get().getID()))
@@ -121,8 +121,8 @@ public class EEMailDelete extends ESubCommand<EverEssentials> {
 	private boolean commandDeleteConfirmation(EPlayer player, String id_string) {
 		try {
 			Optional<Mail> mail = player.getMail(Integer.parseInt(id_string));
-			if(mail.isPresent()) {
-				if(player.removeMail(mail.get())) {
+			if (mail.isPresent()) {
+				if (player.removeMail(mail.get())) {
 					player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
 							.append(EEMessages.MAIL_DELETE_CONFIRMATION.get()
 								.replaceAll("<id>", String.valueOf(mail.get().getID()))

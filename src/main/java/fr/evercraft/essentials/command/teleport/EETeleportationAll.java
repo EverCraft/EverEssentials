@@ -53,7 +53,7 @@ public class EETeleportationAll extends ECommand<EverEssentials> {
 	}
 
 	public Text help(final CommandSource source) {
-		if(source.hasPermission(EEPermissions.TPALL_OTHERS.get())){
+		if (source.hasPermission(EEPermissions.TPALL_OTHERS.get())){
 			return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_PLAYER.get() + "]")
 						.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 						.color(TextColors.RED)
@@ -67,7 +67,7 @@ public class EETeleportationAll extends ECommand<EverEssentials> {
 	
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		List<String> suggests = new ArrayList<String>();
-		if(args.size() == 1 && source.hasPermission(EEPermissions.TPALL_OTHERS.get())){
+		if (args.size() == 1 && source.hasPermission(EEPermissions.TPALL_OTHERS.get())){
 			suggests = null;
 		}
 		return suggests;
@@ -77,20 +77,20 @@ public class EETeleportationAll extends ECommand<EverEssentials> {
 		// Résultat de la commande :
 		boolean resultat = false;
 		// Si connait que la location ou aussi peut être le monde
-		if(args.size() == 0) {
+		if (args.size() == 0) {
 			// Si la source est bien un joueur
-			if(source instanceof EPlayer) {
+			if (source instanceof EPlayer) {
 				resultat = commandTeleportationAll((EPlayer) source);
 			// Si la source est une console ou un commande block
 			} else {
 				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
 			}
-		} else if(args.size() == 1) {
+		} else if (args.size() == 1) {
 			// Si il a la permission
-			if(source.hasPermission(EEPermissions.TPALL_OTHERS.get())) {
+			if (source.hasPermission(EEPermissions.TPALL_OTHERS.get())) {
 				Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(args.get(0));
 				// Le joueur existe
-				if(optPlayer.isPresent()){
+				if (optPlayer.isPresent()){
 					resultat = commandTeleportationAllOthers(source, optPlayer.get());
 				// Joueur introuvable
 				} else {
@@ -109,10 +109,10 @@ public class EETeleportationAll extends ECommand<EverEssentials> {
 	
 	private boolean commandTeleportationAll(EPlayer staff) {
 		Optional<Transform<World>> optTransform = teleport(staff);
-		if(optTransform.isPresent()) {
-			for(EPlayer player : this.plugin.getEServer().getOnlineEPlayers()) {
-				if(!staff.equals(player)) {
-					if(player.getWorld().equals(optTransform.get().getExtent()) || 
+		if (optTransform.isPresent()) {
+			for (EPlayer player : this.plugin.getEServer().getOnlineEPlayers()) {
+				if (!staff.equals(player)) {
+					if (player.getWorld().equals(optTransform.get().getExtent()) || 
 							this.plugin.getManagerServices().getEssentials().hasPermissionWorld(player, optTransform.get().getExtent())) {
 						player.setTransform(optTransform.get());
 						player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
@@ -135,15 +135,15 @@ public class EETeleportationAll extends ECommand<EverEssentials> {
 	}
 
 	private boolean commandTeleportationAllOthers(CommandSource staff, EPlayer destination) {
-		if(!destination.equals(staff)) {
+		if (!destination.equals(staff)) {
 			Optional<Transform<World>> optTransform = teleport(destination);
-			if(optTransform.isPresent()) {
-				for(EPlayer player : this.plugin.getEServer().getOnlineEPlayers()) {
-					if(!destination.equals(player)) {
-						if(player.getWorld().equals(optTransform.get().getExtent()) || 
+			if (optTransform.isPresent()) {
+				for (EPlayer player : this.plugin.getEServer().getOnlineEPlayers()) {
+					if (!destination.equals(player)) {
+						if (player.getWorld().equals(optTransform.get().getExtent()) || 
 								this.plugin.getManagerServices().getEssentials().hasPermissionWorld(player, optTransform.get().getExtent())) {
 							player.setTransform(optTransform.get());
-							if(!player.equals(staff)) {
+							if (!player.equals(staff)) {
 								player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
 										.append(EEMessages.TPALL_OTHERS_PLAYER.get()
 												.replaceAll("<staff>", staff.getName()))
@@ -169,7 +169,7 @@ public class EETeleportationAll extends ECommand<EverEssentials> {
 	}
 	
 	private Optional<Transform<World>> teleport(EPlayer destination){
-		if(destination.isFlying()) {
+		if (destination.isFlying()) {
 			return this.plugin.getEverAPI().getManagerUtils().getLocation().getBlockSafe(destination.getTransform());
 		} else {
 			return Optional.of(destination.getTransform());

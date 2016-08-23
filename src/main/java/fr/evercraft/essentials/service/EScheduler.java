@@ -61,7 +61,7 @@ public class EScheduler {
 	}
 
 	public boolean start() {
-		if(this.task == null && !this.plugin.getEServer().getOnlinePlayers().isEmpty()) {
+		if (this.task == null && !this.plugin.getEServer().getOnlinePlayers().isEmpty()) {
 			this.task = this.plugin.getGame().getScheduler().createTaskBuilder()
 							.async()
 							.execute(() -> this.async())
@@ -74,7 +74,7 @@ public class EScheduler {
 	}
 	
 	public boolean stop() {
-		if(this.task != null) {
+		if (this.task != null) {
 			this.task.cancel();
 			this.task = null;
 			return true;
@@ -87,31 +87,31 @@ public class EScheduler {
 		
 		final Set<UUID> players = new HashSet<UUID>();
 		
-		for(EUserSubject player : this.plugin.getManagerServices().getEssentials().getOnlines()) {			
+		for (EUserSubject player : this.plugin.getManagerServices().getEssentials().getOnlines()) {			
 			// Teleport Ask
-			for(Entry<UUID, TeleportRequest> teleport : player.getAllTeleportsAsk().entrySet()) {
-				if(!teleport.getValue().isExpire() && teleport.getValue().getTime().isPresent() &&  teleport.getValue().getTime().get() <= current_time) {
+			for (Entry<UUID, TeleportRequest> teleport : player.getAllTeleportsAsk().entrySet()) {
+				if (!teleport.getValue().isExpire() && teleport.getValue().getTime().isPresent() &&  teleport.getValue().getTime().get() <= current_time) {
 					players.add(player.getUniqueId());
 				}
 			}
 			
 			// Teleport Delay
-			if(player.getTeleportDelay().isPresent() && player.getTeleportDelay().get().getTime() <= current_time) {
+			if (player.getTeleportDelay().isPresent() && player.getTeleportDelay().get().getTime() <= current_time) {
 				players.add(player.getUniqueId());
 			}
 			
 			// AFK
-			if(this.afk && !(player.isAfk() || player.isAfkAutoFake()) && player.getLastActivated() + this.afk_time <= current_time) {
+			if (this.afk && !(player.isAfk() || player.isAfkAutoFake()) && player.getLastActivated() + this.afk_time <= current_time) {
 				players.add(player.getUniqueId());
 			}
 			
 			// AFK Kick
-			if(this.afk_kick && !player.isAfkKickFake() && player.getLastActivated() + this.afk_kick_time <= current_time) {
+			if (this.afk_kick && !player.isAfkKickFake() && player.getLastActivated() + this.afk_kick_time <= current_time) {
 				players.add(player.getUniqueId());
 			}
 		}
 		
-		if(!players.isEmpty()) {
+		if (!players.isEmpty()) {
 			this.plugin.getGame().getScheduler().createTaskBuilder()
 												.execute(() -> this.sync(players))
 												.name("EScheduler")
@@ -123,22 +123,22 @@ public class EScheduler {
 	public void sync(final Set<UUID> players) {
 		long current_time = System.currentTimeMillis();
 		
-		for(UUID uuid : players) {
+		for (UUID uuid : players) {
 			Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(uuid);
-			if(optPlayer.isPresent()) {
+			if (optPlayer.isPresent()) {
 				EPlayer player = optPlayer.get();
 				
 				// Teleport Ask
-				for(Entry<UUID, TeleportRequest> teleport : player.getAllTeleportsAsk().entrySet()) {
-					if(!teleport.getValue().isExpire() && teleport.getValue().getTime().isPresent() &&  teleport.getValue().getTime().get() <= current_time) {
+				for (Entry<UUID, TeleportRequest> teleport : player.getAllTeleportsAsk().entrySet()) {
+					if (!teleport.getValue().isExpire() && teleport.getValue().getTime().isPresent() &&  teleport.getValue().getTime().get() <= current_time) {
 						teleport.getValue().setExpire(true);
 						
 						Optional<EPlayer> others = this.plugin.getEServer().getEPlayer(teleport.getKey());
-						if(others.isPresent()) {
-							if(teleport.getValue().getType().equals(Type.TPA)) {
+						if (others.isPresent()) {
+							if (teleport.getValue().getType().equals(Type.TPA)) {
 								others.get().sendMessage(EEMessages.PREFIX.get() + EEMessages.TPA_STAFF_EXPIRE.get()
 										.replaceAll("<player>", player.getName()));
-							} else if(teleport.getValue().getType().equals(Type.TPAHERE)) {
+							} else if (teleport.getValue().getType().equals(Type.TPAHERE)) {
 								others.get().sendMessage(EEMessages.PREFIX.get() + EEMessages.TPAHERE_STAFF_EXPIRE.get()
 										.replaceAll("<player>", player.getName()));
 							}
@@ -148,20 +148,20 @@ public class EScheduler {
 				
 				// Teleport Delay
 				Optional<TeleportDelay> teleport = player.getTeleportDelay();
-				if(teleport.isPresent() && teleport.get().getTime() <= current_time) {
+				if (teleport.isPresent() && teleport.get().getTime() <= current_time) {
 					player.runTeleportDelay();
 				}
 				
 				// AFK
-				if(this.afk && !(player.isAfk() || player.isAfkAutoFake()) && player.getLastActivated() + this.afk_time <= current_time) {
-					if(player.hasPermission(EEPermissions.AFK_BYPASS_AUTO.get())) {
+				if (this.afk && !(player.isAfk() || player.isAfkAutoFake()) && player.getLastActivated() + this.afk_time <= current_time) {
+					if (player.hasPermission(EEPermissions.AFK_BYPASS_AUTO.get())) {
 						player.setAfkAutoFake(true);
 					} else {
 						Optional<EUserSubject> subject = this.plugin.getManagerServices().getEssentials().getSubject(player.getUniqueId());
-						if(subject.isPresent()) {
-							if(subject.get().setAfkAuto(true)) {
+						if (subject.isPresent()) {
+							if (subject.get().setAfkAuto(true)) {
 								player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.AFK_ON_PLAYER.getText()));
-								if(EEMessages.AFK_ON_ALL.has()) {
+								if (EEMessages.AFK_ON_ALL.has()) {
 									player.broadcastMessage(EEMessages.PREFIX.getText().concat(player.replaceVariable(EEMessages.AFK_ON_ALL.get())));
 								}
 							} else {
@@ -172,8 +172,8 @@ public class EScheduler {
 				}
 				
 				// AFK Kick
-				if(this.afk_kick && !player.isAfkKickFake() && player.getLastActivated() + this.afk_kick_time <= current_time) {
-					if(player.hasPermission(EEPermissions.AFK_BYPASS_KICK.get())) {
+				if (this.afk_kick && !player.isAfkKickFake() && player.getLastActivated() + this.afk_kick_time <= current_time) {
+					if (player.hasPermission(EEPermissions.AFK_BYPASS_KICK.get())) {
 						player.setAfkKickFake(true);
 					} else {
 						player.kick(EEMessages.AFK_KICK.getText());

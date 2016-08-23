@@ -62,9 +62,9 @@ public class EESpawnDel extends ECommand<EverEssentials> {
 	
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		List<String> suggests = new ArrayList<String>();
-		if(args.size() == 1 && source instanceof Player){
+		if (args.size() == 1 && source instanceof Player){
 			suggests.addAll(this.plugin.getManagerServices().getSpawn().getAll().keySet());
-		} else if(args.size() == 2){
+		} else if (args.size() == 2){
 			suggests.add("confirmation");
 		}
 		return suggests;
@@ -74,9 +74,9 @@ public class EESpawnDel extends ECommand<EverEssentials> {
 		// Résultat de la commande :
 		boolean resultat = false;
 		// Si on ne connait pas le joueur
-		if(args.size() == 1) {
+		if (args.size() == 1) {
 			commandDeleteSpawn((EPlayer) source, args.get(0));
-		} else if(args.size() == 2 && args.get(1).equalsIgnoreCase("confirmation")) {
+		} else if (args.size() == 2 && args.get(1).equalsIgnoreCase("confirmation")) {
 			commandDeleteSpawnConfirmation((EPlayer) source, args.get(0));
 		// Nombre d'argument incorrect
 		} else {
@@ -88,7 +88,7 @@ public class EESpawnDel extends ECommand<EverEssentials> {
 	public boolean commandDeleteSpawn(final EPlayer player, final String spawn_name) {
 		Optional<Transform<World>> spawn = this.plugin.getManagerServices().getSpawn().get(spawn_name);
 		// Le serveur a un spawn qui porte ce nom
-		if(spawn.isPresent()) {
+		if (spawn.isPresent()) {
 			player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
 					.append(EEMessages.DELSPAWN_CONFIRMATION.get())
 					.replace("<spawn>", getButtonSpawn(spawn_name, spawn.get()))
@@ -104,9 +104,9 @@ public class EESpawnDel extends ECommand<EverEssentials> {
 	public boolean commandDeleteSpawnConfirmation(final EPlayer player, final String spawn_name) throws ServerDisableException {
 		Optional<Transform<World>> spawn = this.plugin.getManagerServices().getSpawn().get(spawn_name);
 		// Le serveur a un spawn qui porte ce nom
-		if(spawn.isPresent()) {
+		if (spawn.isPresent()) {
 			// Si le spawn a bien été supprimer
-			if(this.plugin.getManagerServices().getSpawn().remove(spawn_name)) {
+			if (this.plugin.getManagerServices().getSpawn().remove(spawn_name)) {
 				player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
 						.append(EEMessages.DELSPAWN_DELETE.get())
 						.replace("<spawn>", getButtonSpawn(spawn_name, spawn.get()))

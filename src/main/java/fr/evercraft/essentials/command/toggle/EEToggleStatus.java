@@ -49,14 +49,14 @@ public class EEToggleStatus extends ESubCommand<EverEssentials> {
 	
 	public List<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		List<String> suggests = new ArrayList<String>();
-		if(!(args.size() == 1 && source.hasPermission(EEPermissions.TOGGLE_OTHERS.get()))){
+		if (!(args.size() == 1 && source.hasPermission(EEPermissions.TOGGLE_OTHERS.get()))){
 			suggests = null;
 		}
 		return suggests;
 	}
 
 	public Text help(final CommandSource source) {
-		if(source.hasPermission(EEPermissions.TOGGLE_OTHERS.get())){
+		if (source.hasPermission(EEPermissions.TOGGLE_OTHERS.get())){
 			return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_PLAYER.get() + "]")
 						.onClick(TextActions.suggestCommand("/" + this.getName()))
 						.color(TextColors.RED)
@@ -72,18 +72,18 @@ public class EEToggleStatus extends ESubCommand<EverEssentials> {
 	public boolean subExecute(final CommandSource source, final List<String> args) throws CommandException {
 		// Résultat de la commande :
 		boolean resultat = false;
-		if(args.size() == 0) {
-			if(source instanceof EPlayer) {
+		if (args.size() == 0) {
+			if (source instanceof EPlayer) {
 				resultat = commandToggleStatus((EPlayer) source);
 			} else {
 				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
 			}
-		} else if(args.size() == 1) {
+		} else if (args.size() == 1) {
 			// Si il a la permission
-			if(source.hasPermission(EEPermissions.TOGGLE_OTHERS.get())){
+			if (source.hasPermission(EEPermissions.TOGGLE_OTHERS.get())){
 				Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(args.get(0));
 				// Le joueur existe
-				if(optPlayer.isPresent()){
+				if (optPlayer.isPresent()){
 					resultat = commandToggleStatusOthers(source, optPlayer.get());
 				// Le joueur est introuvable
 				} else {
@@ -101,7 +101,7 @@ public class EEToggleStatus extends ESubCommand<EverEssentials> {
 
 	public boolean commandToggleStatus(final EPlayer player) {
 		// Toggle activé
-		if(player.isToggle()){
+		if (player.isToggle()){
 			player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.TOGGLE_STATUS_PLAYER_ON.get()
 					.replaceAll("<player>", player.getDisplayName())));
 		// Toggle désactivé
@@ -113,9 +113,9 @@ public class EEToggleStatus extends ESubCommand<EverEssentials> {
 	}
 	
 	public boolean commandToggleStatusOthers(final CommandSource staff, final EPlayer player) {
-		if(!player.equals(staff)) {
+		if (!player.equals(staff)) {
 			// Toggle activé
-			if(player.isToggle()){
+			if (player.isToggle()){
 				staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.TOGGLE_STATUS_OTHERS_ON.get()
 						.replaceAll("<player>", player.getDisplayName())));
 			// Toggle désactivé

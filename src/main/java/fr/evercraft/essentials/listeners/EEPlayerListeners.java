@@ -76,7 +76,7 @@ public class EEPlayerListeners {
 		/*
 		 * Optional<EPlayer> player =
 		 * this.plugin.getEverAPI().getEServer().getEPlayer
-		 * (event.getTargetEntity()); if(player.isPresent()) {
+		 * (event.getTargetEntity()); if (player.isPresent()) {
 		 * sendListMessage(player.get(), this.plugin.getMotd().getMotd()); }
 		 */
 	}
@@ -88,7 +88,7 @@ public class EEPlayerListeners {
 	public void onClientConnectionEvent(final ClientConnectionEvent.Disconnect event) {
 		this.plugin.getManagerServices().getEssentials().removePlayer(event.getTargetEntity().getUniqueId());
 		
-		if(this.plugin.getEServer().getOnlinePlayers().size() <= 1) {
+		if (this.plugin.getEServer().getOnlinePlayers().size() <= 1) {
 			this.plugin.getScheduler().stop();
 		}
 	}
@@ -135,7 +135,7 @@ public class EEPlayerListeners {
 		if (event.getTargetEntity() instanceof Player) {
 			Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer((Player) event.getTargetEntity());
 			
-			if(optPlayer.isPresent()) {
+			if (optPlayer.isPresent()) {
 				EPlayer player = optPlayer.get();
 				
 				player.setBack();
@@ -148,7 +148,7 @@ public class EEPlayerListeners {
 	public void onPlayerInteract(InteractEntityEvent event, @First Player player_sponge) {
 		Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(player_sponge);
 		
-		if(optPlayer.isPresent()) {
+		if (optPlayer.isPresent()) {
 			EPlayer player = optPlayer.get();
 			
 			// GameMode : Painting
@@ -171,19 +171,19 @@ public class EEPlayerListeners {
 	
 	@Listener
 	public void onPlayerMove(MoveEntityEvent event) {
-		if(event.getTargetEntity() instanceof Player) {
+		if (event.getTargetEntity() instanceof Player) {
 			Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer((Player) event.getTargetEntity());
-			if(optPlayer.isPresent()) {
+			if (optPlayer.isPresent()) {
 				EPlayer player = optPlayer.get();
 				
 				// AFK
-				if(event.getToTransform().getPitch() != event.getFromTransform().getPitch() || event.getToTransform().getYaw() != event.getFromTransform().getYaw()) {
+				if (event.getToTransform().getPitch() != event.getFromTransform().getPitch() || event.getToTransform().getYaw() != event.getFromTransform().getYaw()) {
 					player.updateLastActivated();
 				}
 				
 				// Teleport
 				Optional<TeleportDelay> teleport = player.getTeleportDelay();
-				if(teleport.isPresent() && !teleport.get().canMove() && (!event.getFromTransform().getExtent().equals(event.getToTransform().getExtent()) ||
+				if (teleport.isPresent() && !teleport.get().canMove() && (!event.getFromTransform().getExtent().equals(event.getToTransform().getExtent()) ||
 						Math.round(event.getFromTransform().getPosition().getX()) != Math.round(event.getToTransform().getPosition().getX()) ||
 						Math.round(event.getFromTransform().getPosition().getY()) != Math.round(event.getToTransform().getPosition().getY()) ||
 						Math.round(event.getFromTransform().getPosition().getZ()) != Math.round(event.getToTransform().getPosition().getZ()))) {
@@ -199,7 +199,7 @@ public class EEPlayerListeners {
 	public void onPlayerInteractInventory(InteractInventoryEvent event, @First Player player_sponge) {
 		// AFK
 		Optional<EPlayer> player = this.plugin.getEServer().getEPlayer(player_sponge);
-		if(player.isPresent()) {
+		if (player.isPresent()) {
 			player.get().updateLastActivated();
 		}
 	}
@@ -208,7 +208,7 @@ public class EEPlayerListeners {
 	public void onPlayerChangeInventory(ChangeInventoryEvent event, @First Player player_sponge) {
 		// AFK
 		Optional<EPlayer> player = this.plugin.getEServer().getEPlayer(player_sponge);
-		if(player.isPresent()) {
+		if (player.isPresent()) {
 			player.get().updateLastActivated();
 		}
 	}
@@ -217,7 +217,7 @@ public class EEPlayerListeners {
     public void onPlayerWriteChat(MessageChannelEvent.Chat event, @First Player player_sponge) {
 		// AFK
 		Optional<EPlayer> player = this.plugin.getEServer().getEPlayer(player_sponge);
-		if(player.isPresent()) {
+		if (player.isPresent()) {
 			player.get().updateLastActivated();
 		}
     }
@@ -225,9 +225,9 @@ public class EEPlayerListeners {
 	@Listener
     public void onPlayerSendCommand(SendCommandEvent event, @First Player player_sponge) {
 		// AFK
-		if(!event.getCommand().equalsIgnoreCase("afk")) {
+		if (!event.getCommand().equalsIgnoreCase("afk")) {
 			Optional<EPlayer> player = this.plugin.getEServer().getEPlayer(player_sponge);
-			if(player.isPresent()) {
+			if (player.isPresent()) {
 				player.get().updateLastActivated();
 			}
 		}
@@ -238,10 +238,10 @@ public class EEPlayerListeners {
 		if (event.getTargetEntity() instanceof Player && event.getBaseHealAmount() > event.getFinalHealAmount()) {
 			Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer((Player) event.getTargetEntity());
 			
-			if(optPlayer.isPresent()) {
+			if (optPlayer.isPresent()) {
 				EPlayer player = optPlayer.get();
 				
-				if(player.isGod()) {
+				if (player.isGod()) {
 					event.setCancelled(true);
 					this.plugin.getEServer().broadcast("EverEssentials : Test HealEntityEvent");
 				}
@@ -256,7 +256,7 @@ public class EEPlayerListeners {
 	
 	@Listener
 	public void onPlayerAFK(AfkEvent event) {
-		if(event.getValue()) {
+		if (event.getValue()) {
 			event.getPlayer().stopTotalTimePlayed();
 		} else {
 			event.getPlayer().startTotalTimePlayed();

@@ -59,7 +59,7 @@ public class EERepair extends ECommand<EverEssentials> {
 
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		List<String> suggests = new ArrayList<String>();
-		if(args.size() == 1){
+		if (args.size() == 1){
 			suggests.add("all");
 			suggests.add("hand");
 			suggests.add("hotbar");
@@ -70,12 +70,12 @@ public class EERepair extends ECommand<EverEssentials> {
 	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Résultat de la commande :
 		boolean resultat = false;
-		if(args.size() == 1) {
-			if(args.get(0).equalsIgnoreCase("all")) {
+		if (args.size() == 1) {
+			if (args.get(0).equalsIgnoreCase("all")) {
 				resultat = commandRepairAll(source);
-			} else if(args.get(0).equalsIgnoreCase("hand")) {
+			} else if (args.get(0).equalsIgnoreCase("hand")) {
 				resultat = commandRepairHand(source);
-			} else if(args.get(0).equalsIgnoreCase("hotbar")) {
+			} else if (args.get(0).equalsIgnoreCase("hotbar")) {
 				resultat = commandRepairHotbar(source);
 			} else {
 				source.sendMessage(help(source));

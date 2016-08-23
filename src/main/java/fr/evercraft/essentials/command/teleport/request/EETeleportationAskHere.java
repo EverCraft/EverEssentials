@@ -59,7 +59,7 @@ public class EETeleportationAskHere extends ECommand<EverEssentials> {
 	}
 	
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
-		if(args.size() == 1){
+		if (args.size() == 1){
 			return null;
 		}
 		return new ArrayList<String>();
@@ -69,12 +69,12 @@ public class EETeleportationAskHere extends ECommand<EverEssentials> {
 		// Résultat de la commande :
 		boolean resultat = false;
 		// Si connait que la location ou aussi peut être le monde
-		if(args.size() == 1) {
+		if (args.size() == 1) {
 			// Si la source est bien un joueur
-			if(source instanceof EPlayer) {
+			if (source instanceof EPlayer) {
 				Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(args.get(0));
 				// Le joueur existe
-				if(optPlayer.isPresent()) {
+				if (optPlayer.isPresent()) {
 					resultat = commandTeleportation((EPlayer) source, optPlayer.get());
 				// Joueur introuvable
 				} else {
@@ -92,13 +92,13 @@ public class EETeleportationAskHere extends ECommand<EverEssentials> {
 	}
 
 	private boolean commandTeleportation(EPlayer staff, EPlayer player) {
-		if(!staff.equals(player)) {
-			if(player.isToggle()) {
-				if(player.getWorld().equals(staff.getWorld()) || this.plugin.getManagerServices().getEssentials().hasPermissionWorld(player, staff.getWorld())) {
+		if (!staff.equals(player)) {
+			if (player.isToggle()) {
+				if (player.getWorld().equals(staff.getWorld()) || this.plugin.getManagerServices().getEssentials().hasPermissionWorld(player, staff.getWorld())) {
 					long delay = this.plugin.getConfigs().getTpaAcceptCancellation();
 					String delay_format = this.plugin.getEverAPI().getManagerUtils().getDate().formatDateDiff(System.currentTimeMillis() + delay);
 					
-					if(player.addTeleportAskHere(staff.getUniqueId(), delay, staff.getTransform())) {
+					if (player.addTeleportAskHere(staff.getUniqueId(), delay, staff.getTransform())) {
 						staff.sendMessage(EEMessages.PREFIX.get() + EEMessages.TPAHERE_STAFF_QUESTION.get()
 								.replaceAll("<player>", player.getName())
 								.replaceAll("<delay>", delay_format));

@@ -50,15 +50,15 @@ public class EEWorldborderCenter extends ESubCommand<EverEssentials> {
 	
 	public List<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		List<String> suggests = new ArrayList<String>();
-		if(args.size() == 1){
+		if (args.size() == 1){
 			suggests.add("0");
 			suggests.add("100");
-		} else if(args.size() == 2){
+		} else if (args.size() == 2){
 			suggests.add("0");
 			suggests.add("100");
-		} else if(args.size() == 3){
+		} else if (args.size() == 3){
 			for (World world : this.plugin.getEServer().getWorlds()) {
-				if(this.plugin.getManagerServices().getEssentials().hasPermissionWorld(source, world)) {
+				if (this.plugin.getManagerServices().getEssentials().hasPermissionWorld(source, world)) {
 					suggests.add(world.getProperties().getWorldName());
 				}
 			}
@@ -76,17 +76,17 @@ public class EEWorldborderCenter extends ESubCommand<EverEssentials> {
 	public boolean subExecute(final CommandSource source, final List<String> args) {
 		// Résultat de la commande :
 		boolean resultat = false;
-		if(args.size() == 0){
+		if (args.size() == 0){
 			source.sendMessage(this.help(source));
-		} else if(args.size() == 2){
-			if(source instanceof EPlayer){
+		} else if (args.size() == 2){
+			if (source instanceof EPlayer){
 				commandWorldborderCenter(source, ((EPlayer) source).getWorld(), args);
 			} else {
 				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
 			}
-		} else if(args.size() == 3){
+		} else if (args.size() == 3){
 			Optional<World> optWorld = this.plugin.getEServer().getWorld(args.get(2));
-			if(optWorld.isPresent()){
+			if (optWorld.isPresent()){
 				commandWorldborderCenter(source, optWorld.get(), args);
 			} else {
 				source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.WORLD_NOT_FOUND.get()

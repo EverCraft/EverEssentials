@@ -50,9 +50,9 @@ public class EEWhitelistAdd extends ESubCommand<EverEssentials> {
 	
 	public List<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		List<String> suggests = new ArrayList<String>();
-		if(args.size() == 1) {
-			for(GameProfile player : this.plugin.getEServer().getGameProfileManager().getCache().getProfiles()) {
-				if(player.getName().isPresent()) {
+		if (args.size() == 1) {
+			for (GameProfile player : this.plugin.getEServer().getGameProfileManager().getCache().getProfiles()) {
+				if (player.getName().isPresent()) {
 					suggests.add(player.getName().orElse(player.getUniqueId().toString()));
 				}
 			}
@@ -68,7 +68,7 @@ public class EEWhitelistAdd extends ESubCommand<EverEssentials> {
 	}
 	
 	public boolean subExecute(final CommandSource source, final List<String> args) {
-		if(args.size() == 1) {
+		if (args.size() == 1) {
 			this.plugin.getGame().getScheduler().createTaskBuilder()
 												.async()
 												.execute(() -> this.commandWhitelistAdd(source, args.get(0)))
@@ -82,10 +82,10 @@ public class EEWhitelistAdd extends ESubCommand<EverEssentials> {
 	private boolean commandWhitelistAdd(final CommandSource player, final String identifier) {
 		Optional<GameProfile> gameprofile = this.plugin.getEServer().getGameProfile(identifier);
 		// Le joueur existe
-		if(gameprofile.isPresent()) {
+		if (gameprofile.isPresent()) {
 			Optional<WhitelistService> whitelist = this.plugin.getEverAPI().getManagerService().getWhitelist();
-			if(whitelist.isPresent()){				
-				if(!whitelist.get().addProfile(gameprofile.get())) {
+			if (whitelist.isPresent()){				
+				if (!whitelist.get().addProfile(gameprofile.get())) {
 					player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.WHITELIST_ADD_PLAYER.get()
 							.replaceAll("<player>", gameprofile.get().getName().orElse(identifier))));
 				} else {

@@ -50,20 +50,20 @@ public class EEWorldborderAdd extends ESubCommand<EverEssentials> {
 	
 	public List<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		List<String> suggests = new ArrayList<String>();
-		if(args.size() == 1){
+		if (args.size() == 1){
 			suggests.add("100");
 			suggests.add("1000");
-		} else if(args.size() == 2){
+		} else if (args.size() == 2){
 			suggests.add("30");
 			suggests.add("60");
 			for (World world : this.plugin.getEServer().getWorlds()) {
-				if(this.plugin.getManagerServices().getEssentials().hasPermissionWorld(source, world)) {
+				if (this.plugin.getManagerServices().getEssentials().hasPermissionWorld(source, world)) {
 					suggests.add(world.getProperties().getWorldName());
 				}
 			}
-		} else if(args.size() == 3){
+		} else if (args.size() == 3){
 			for (World world : this.plugin.getEServer().getWorlds()) {
-				if(this.plugin.getManagerServices().getEssentials().hasPermissionWorld(source, world)) {
+				if (this.plugin.getManagerServices().getEssentials().hasPermissionWorld(source, world)) {
 					suggests.add(world.getProperties().getWorldName());
 				}
 			}
@@ -82,26 +82,26 @@ public class EEWorldborderAdd extends ESubCommand<EverEssentials> {
 	public boolean subExecute(final CommandSource source, final List<String> args) {
 		// Résultat de la commande :
 		boolean resultat = false;
-		if(args.size() == 0){
+		if (args.size() == 0){
 			source.sendMessage(this.help(source));
-		} else if(args.size() == 1){
-			if(source instanceof EPlayer) {
+		} else if (args.size() == 1){
+			if (source instanceof EPlayer) {
 				resultat = commandWorldborderAdd(source, ((EPlayer) source).getWorld(), args.get(0));
 			} else {
 				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
 			}
-		} else if(args.size() == 2){
+		} else if (args.size() == 2){
 			Optional<World> optWorld = this.plugin.getEServer().getWorld(args.get(1));
-			if(optWorld.isPresent()){
+			if (optWorld.isPresent()){
 				resultat = commandWorldborderAdd(source, optWorld.get(), args.get(0));
 			} else {
-				if(source instanceof EPlayer) {
+				if (source instanceof EPlayer) {
 					commandWorldborderAdd(source, ((EPlayer) source).getWorld(), args);
 				} else {
 					source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
 				}
 			}
-		} else if(args.size() == 3){
+		} else if (args.size() == 3){
 			commandWorldborderAdd(source, args);
 		} else {
 			source.sendMessage(this.help(source));
@@ -130,7 +130,7 @@ public class EEWorldborderAdd extends ESubCommand<EverEssentials> {
 			double time = Integer.parseInt(args.get(1));
 			String message;
 			world.getWorldBorder().setDiameter(world.getWorldBorder().getDiameter(), diameter, (long) (time * 1000));
-			if(world.getWorldBorder().getDiameter() > diameter){
+			if (world.getWorldBorder().getDiameter() > diameter){
 				message = EEMessages.WORLDBORDER_ADD_BORDER_DECREASE.get();
 			} else {
 				message = EEMessages.WORLDBORDER_ADD_BORDER_INCREASE.get();
@@ -152,11 +152,11 @@ public class EEWorldborderAdd extends ESubCommand<EverEssentials> {
 			double time = Integer.parseInt(args.get(1));
 			String message;
 			Optional<World> optWorld = this.plugin.getEServer().getWorld(args.get(2));
-			if(optWorld.isPresent()){
+			if (optWorld.isPresent()){
 				World world = optWorld.get();
 				double diameter = world.getWorldBorder().getDiameter() + Integer.parseInt(args.get(0));
 				world.getWorldBorder().setDiameter(world.getWorldBorder().getDiameter(), diameter, (long) (time * 1000));
-				if(world.getWorldBorder().getDiameter() > diameter){
+				if (world.getWorldBorder().getDiameter() > diameter){
 					message = EEMessages.WORLDBORDER_ADD_BORDER_DECREASE.get();
 				} else {
 					message = EEMessages.WORLDBORDER_ADD_BORDER_INCREASE.get();

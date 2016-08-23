@@ -59,9 +59,9 @@ public class EEHelp extends ECommand<EverEssentials> {
 	
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		List<String> suggests = new ArrayList<String>();
-		if(args.size() == 1) {
+		if (args.size() == 1) {
 			TreeSet<String> commands = new TreeSet<String>();
-			for(CommandMapping command : Collections2.filter(this.plugin.getGame().getCommandManager().getAll().values(), input -> input.getCallable().testPermission(source))) {
+			for (CommandMapping command : Collections2.filter(this.plugin.getGame().getCommandManager().getAll().values(), input -> input.getCallable().testPermission(source))) {
 				commands.add(command.getPrimaryAlias());
 			}
 			suggests.addAll(commands);
@@ -74,10 +74,10 @@ public class EEHelp extends ECommand<EverEssentials> {
 		boolean resultat = false;
 		
 		// Si on ne connait pas le joueur
-		if(args.size() == 0) {
+		if (args.size() == 0) {
 			resultat = commandHelp(source);
 		// On connais le joueur
-		} else if(args.size() == 1) {
+		} else if (args.size() == 1) {
 			resultat = commandHelp(source, args.get(0));
 		// Nombre d'argument incorrect
 		} else {
@@ -101,8 +101,8 @@ public class EEHelp extends ECommand<EverEssentials> {
 	
 	public boolean commandHelp(final CommandSource source, final String alias) {
 		Optional<? extends CommandMapping> command = this.plugin.getGame().getCommandManager().get(alias);
-		if(command.isPresent()) {
-			if(command.get().getCallable().testPermission(source)) {
+		if (command.isPresent()) {
+			if (command.get().getCallable().testPermission(source)) {
 				source.sendMessage(command.get().getCallable().getHelp(source).orElse(Text.of("/" + command.get().getPrimaryAlias())));
 				return true;
 			} else {
@@ -115,8 +115,8 @@ public class EEHelp extends ECommand<EverEssentials> {
 					.build();
 			
 			TreeSet<CommandMapping> commands = new TreeSet<CommandMapping>((o1, o2) -> o1.getPrimaryAlias().compareTo(o2.getPrimaryAlias()));
-			for(CommandMapping mapping : this.plugin.getGame().getCommandManager().getAll().values()) {
-				if(mapping.getPrimaryAlias().contains(alias)) {
+			for (CommandMapping mapping : this.plugin.getGame().getCommandManager().getAll().values()) {
+				if (mapping.getPrimaryAlias().contains(alias)) {
 					commands.add(mapping);
 				}
 			}

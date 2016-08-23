@@ -50,7 +50,7 @@ public class EEPlayed extends ECommand<EverEssentials> {
 	}
 
 	public Text help(final CommandSource source) {
-		if(source.hasPermission(EEPermissions.PLAYED_OTHERS.get())){
+		if (source.hasPermission(EEPermissions.PLAYED_OTHERS.get())){
 			return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_PLAYER.get() + "]")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
@@ -64,9 +64,9 @@ public class EEPlayed extends ECommand<EverEssentials> {
 	
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		List<String> suggests = new ArrayList<String>();
-		if(args.size() == 1 && source.hasPermission(EEPermissions.PLAYED_OTHERS.get())){
-			for(GameProfile player : this.plugin.getEServer().getGameProfileManager().getCache().getProfiles()) {
-				if(player.getName().isPresent()) {
+		if (args.size() == 1 && source.hasPermission(EEPermissions.PLAYED_OTHERS.get())){
+			for (GameProfile player : this.plugin.getEServer().getGameProfileManager().getCache().getProfiles()) {
+				if (player.getName().isPresent()) {
 					suggests.add(player.getName().orElse(player.getUniqueId().toString()));
 				}
 			}
@@ -78,21 +78,21 @@ public class EEPlayed extends ECommand<EverEssentials> {
 		// Résultat de la commande :
 		boolean resultat = false;
 		// Si on ne connait pas le joueur
-		if(args.size() == 0) {
+		if (args.size() == 0) {
 			// Si la source est un joueur
-			if(source instanceof EPlayer) {
+			if (source instanceof EPlayer) {
 				resultat = commandPlayed((EPlayer) source);
 			// La source n'est pas un joueur
 			} else {
 				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
 			}
 		// On connais le joueur
-		} else if(args.size() == 1) {
+		} else if (args.size() == 1) {
 			// Si il a la permission
-			if(source.hasPermission(EEPermissions.PLAYED_OTHERS.get())){
+			if (source.hasPermission(EEPermissions.PLAYED_OTHERS.get())){
 				Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(args.get(0));
 				// Le joueur existe
-				if(optPlayer.isPresent()){
+				if (optPlayer.isPresent()){
 					resultat = commandPlayedOthers(source, optPlayer.get());
 				// Le joueur est introuvable
 				} else {
@@ -117,7 +117,7 @@ public class EEPlayed extends ECommand<EverEssentials> {
 	
 	public boolean commandPlayedOthers(final CommandSource staff, final EPlayer player) throws CommandException {
 		// La source et le joueur sont différent
-		if(!player.equals(staff)){
+		if (!player.equals(staff)){
 			staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.PLAYED_OTHERS.get()
 					.replaceAll("<player>", player.getName())
 					.replaceAll("<time>", this.plugin.getEverAPI().getManagerUtils().getDate().diff(player.getTotalTimePlayed()))));

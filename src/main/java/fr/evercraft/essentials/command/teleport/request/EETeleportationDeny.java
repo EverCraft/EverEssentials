@@ -70,20 +70,20 @@ public class EETeleportationDeny extends ECommand<EverEssentials> {
 		// Résultat de la commande :
 		boolean resultat = false;
 		
-		if(args.size() == 0) {
+		if (args.size() == 0) {
 			// Si la source est bien un joueur
-			if(source instanceof EPlayer) {
+			if (source instanceof EPlayer) {
 				resultat = commandTeleportationDeny((EPlayer) source);
 			// Si la source est une console ou un commande block
 			} else {
 				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
 			}
-		} else if(args.size() == 1) {
+		} else if (args.size() == 1) {
 			// Si la source est bien un joueur
-			if(source instanceof EPlayer) {
+			if (source instanceof EPlayer) {
 				Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(args.get(0));
 				// Le joueur existe
-				if(optPlayer.isPresent()){
+				if (optPlayer.isPresent()){
 					resultat = commandTeleportationDeny((EPlayer) source, optPlayer.get());
 				// Joueur introuvable
 				} else {
@@ -106,18 +106,18 @@ public class EETeleportationDeny extends ECommand<EverEssentials> {
 		
 		Optional<EPlayer> one_player = Optional.empty();
 		
-		for(Entry<UUID, TeleportRequest> teleport : teleports.entrySet()) {
+		for (Entry<UUID, TeleportRequest> teleport : teleports.entrySet()) {
 			Optional<EPlayer> player_request = this.plugin.getEServer().getEPlayer(teleport.getKey());
 			
-			if(player_request.isPresent()) {
+			if (player_request.isPresent()) {
 				one_player = player_request;
-				if(teleport.getValue().getType().equals(Type.TPA)) {
+				if (teleport.getValue().getType().equals(Type.TPA)) {
 					lists.add(ETextBuilder.toBuilder(EEMessages.TPA_PLAYER_LIST_LINE.get()
 							.replaceAll("<player>", player_request.get().getName()))
 						.replace("<accept>", EETeleportationAsk.getButtonAccept(player_request.get().getName()))
 						.replace("<deny>", EETeleportationAsk.getButtonDeny(player_request.get().getName()))
 						.build());
-				} else if(teleport.getValue().getType().equals(Type.TPAHERE)) {
+				} else if (teleport.getValue().getType().equals(Type.TPAHERE)) {
 					lists.add(ETextBuilder.toBuilder(EEMessages.TPA_PLAYER_LIST_LINE.get()
 							.replaceAll("<player>", player_request.get().getName()))
 						.replace("<accept>", EETeleportationAskHere.getButtonAccept(player_request.get().getName()))
@@ -127,8 +127,8 @@ public class EETeleportationDeny extends ECommand<EverEssentials> {
 			}
 		}
 
-		if(!(lists.size() == 1 && one_player.isPresent())) {
-			if(lists.isEmpty()) {
+		if (!(lists.size() == 1 && one_player.isPresent())) {
+			if (lists.isEmpty()) {
 				lists.add(EEMessages.TPA_PLAYER_LIST_EMPTY.getText());
 			}
 			
@@ -145,17 +145,17 @@ public class EETeleportationDeny extends ECommand<EverEssentials> {
 		Optional<TeleportRequest> teleports = player.getTeleportAsk(player_request.getUniqueId());
 		
 		// Il y a une demande de téléportation
-		if(teleports.isPresent()) {
+		if (teleports.isPresent()) {
 			// La demande est toujours valide
-			if(!teleports.get().isExpire()) {
+			if (!teleports.get().isExpire()) {
 				player.removeTeleportAsk(player_request.getUniqueId());
 				
-				if(teleports.get().getType().equals(Type.TPA)) {
+				if (teleports.get().getType().equals(Type.TPA)) {
 					player.sendMessage(EEMessages.PREFIX.get() + EEMessages.TPAHERE_PLAYER_DENY.get()
 							.replaceAll("<player>", player_request.getName()));
 					player_request.sendMessage(EEMessages.PREFIX.get() + EEMessages.TPA_STAFF_DENY.get()
 							.replaceAll("<player>", player.getName()));
-				} else if(teleports.get().getType().equals(Type.TPAHERE)) {
+				} else if (teleports.get().getType().equals(Type.TPAHERE)) {
 					player.sendMessage(EEMessages.PREFIX.get() + EEMessages.TPAHERE_PLAYER_DENY.get()
 							.replaceAll("<player>", player_request.getName()));
 					player_request.sendMessage(EEMessages.PREFIX.get() + EEMessages.TPA_STAFF_DENY.get()

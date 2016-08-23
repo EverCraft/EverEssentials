@@ -64,7 +64,7 @@ public class EEGameMode extends ECommand<EverEssentials> {
 				.append(Text.builder("empty").onClick(TextActions.suggestCommand("/" + this.getName() + " empty ")).build())
 				.append(Text.of(">"));
 		
-		if(source.hasPermission(EEPermissions.GAMEMODE_OTHERS.get())){
+		if (source.hasPermission(EEPermissions.GAMEMODE_OTHERS.get())){
 			build = build.append(Text.of(" [" + EAMessages.ARGS_PLAYER.get() + "]"));
 		}
 		
@@ -74,13 +74,13 @@ public class EEGameMode extends ECommand<EverEssentials> {
 	
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		List<String> suggests = new ArrayList<String>();
-		if(args.size() == 1){
+		if (args.size() == 1){
 			suggests.add("survival");
 			suggests.add("creative");
 			suggests.add("adventure");
 			suggests.add("spectator");
 			suggests.add("empty");
-		} else if(args.size() == 2 && source.hasPermission(EEPermissions.GAMEMODE_OTHERS.get())){
+		} else if (args.size() == 2 && source.hasPermission(EEPermissions.GAMEMODE_OTHERS.get())){
 			suggests = null;
 		}
 		return suggests;
@@ -90,9 +90,9 @@ public class EEGameMode extends ECommand<EverEssentials> {
 		// Résultat de la commande :
 		boolean resultat = false;
 		// Si on connait que le gamemode
-		if(args.size() == 1) {
+		if (args.size() == 1) {
 			// Si la source est bien un joueur
-			if(source instanceof EPlayer) {
+			if (source instanceof EPlayer) {
 				resultat = commandGameMode((EPlayer) source, args.get(0));
 				// Si la source est une console ou un commande block
 			} else {
@@ -100,12 +100,12 @@ public class EEGameMode extends ECommand<EverEssentials> {
 			}
 			
 			// Si on connait le gamemode et le joueur
-		} else if(args.size() == 2) {
+		} else if (args.size() == 2) {
 			// Si il a la permission
-			if(source.hasPermission(EEPermissions.GAMEMODE_OTHERS.get())){
+			if (source.hasPermission(EEPermissions.GAMEMODE_OTHERS.get())){
 				Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(args.get(1));
 				// Le joueur existe
-				if(optPlayer.isPresent()){
+				if (optPlayer.isPresent()){
 					resultat = commandGameModeOthers(source, optPlayer.get(), args.get(0));
 				// Le joueur est introuvable
 				} else {
@@ -125,10 +125,10 @@ public class EEGameMode extends ECommand<EverEssentials> {
 	public boolean commandGameMode(final EPlayer player, final String gamemode_name) {
 		Optional<GameMode> optGamemode = UtilsGameMode.getGameMode(gamemode_name); 
 		// Si gamemode est correct
-		if(optGamemode.isPresent()) {
+		if (optGamemode.isPresent()) {
 			GameMode gamemode = optGamemode.get();
 			// Si le nouveau gamemode est différent à celui du joueur
-			if(!gamemode.equals(player.getGameMode())) {
+			if (!gamemode.equals(player.getGameMode())) {
 				player.setGameMode(gamemode);
 				player.sendMessage(EEMessages.PREFIX.get() + EEMessages.GAMEMODE_PLAYER_CHANGE.get()
 						.replaceAll("<gamemode>", this.plugin.getEverAPI().getManagerUtils().getGameMode().getName(gamemode)));
@@ -148,12 +148,12 @@ public class EEGameMode extends ECommand<EverEssentials> {
 	public boolean commandGameModeOthers(final CommandSource staff, final EPlayer player, final String gamemode_name) throws CommandException {
 		Optional<GameMode> optGamemode = UtilsGameMode.getGameMode(gamemode_name); 
 		// La source et le joueur sont différent
-		if(!player.equals(staff)){
+		if (!player.equals(staff)){
 			// Si gamemode est correct
-			if(optGamemode.isPresent()) {
+			if (optGamemode.isPresent()) {
 				GameMode gamemode = optGamemode.get();
 				// Si le nouveau gamemode est différent à celui du joueur
-				if(!gamemode.equals(player.getGameMode())) {
+				if (!gamemode.equals(player.getGameMode())) {
 					player.setGameMode(gamemode);
 					staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.GAMEMODE_OTHERS_STAFF_CHANGE.get()
 							.replaceAll("<player>", player.getName())

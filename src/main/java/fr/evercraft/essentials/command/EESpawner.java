@@ -65,11 +65,11 @@ public class EESpawner extends ECommand<EverEssentials> {
 	
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		List<String> suggests = new ArrayList<String>();
-		if(args.size() == 1){
-			for(UtilsEntity type : UtilsEntity.values()){
+		if (args.size() == 1){
+			for (UtilsEntity type : UtilsEntity.values()){
 				suggests.add(type.getName());
 			}
-		} else if(args.size() == 2){
+		} else if (args.size() == 2){
 			suggests.add("60");
 		}
 		return suggests;
@@ -79,9 +79,9 @@ public class EESpawner extends ECommand<EverEssentials> {
 		// Résultat de la commande :
 		boolean resultat = false;
 		// Si on ne connait pas le joueur
-		if(args.size() == 1) {
+		if (args.size() == 1) {
 			// Si la source est un joueur
-			if(source instanceof EPlayer) {
+			if (source instanceof EPlayer) {
 				Optional<UtilsEntity> optEntity = UtilsEntity.get(args.get(0));
 				if (optEntity.isPresent()){
 					resultat = commandSpawner((EPlayer) source, optEntity.get());
@@ -101,23 +101,23 @@ public class EESpawner extends ECommand<EverEssentials> {
 	
 	public boolean commandSpawner(final EPlayer player, UtilsEntity entity) {
 		Optional<Vector3i> optBlock = player.getViewBlock();
-		if(optBlock.isPresent()) {
+		if (optBlock.isPresent()) {
 			Location<World> location = player.getWorld().getLocation(optBlock.get());
-			if(location.getBlock().getType().equals(BlockTypes.MOB_SPAWNER)) {				
-				if(location.getTileEntity().isPresent()) {
+			if (location.getBlock().getType().equals(BlockTypes.MOB_SPAWNER)) {				
+				if (location.getTileEntity().isPresent()) {
 					MobSpawner spawner = (MobSpawner) location.getTileEntity().get();
-					if(spawner.getOrCreate(MobSpawnerData.class).isPresent()) {
+					if (spawner.getOrCreate(MobSpawnerData.class).isPresent()) {
 						player.sendMessage("MobSpawner : present");
 					} else {
 						player.sendMessage("MobSpawner : no present");
 					}
-					if(spawner.offer(spawner.getMobSpawnerData().nextEntityToSpawn().set(entity.getType(), null)).isSuccessful()) {
+					if (spawner.offer(spawner.getMobSpawnerData().nextEntityToSpawn().set(entity.getType(), null)).isSuccessful()) {
 						player.sendMessage("MobSpawner : add");
 					} else {
 						player.sendMessage("MobSpawner : error");
 					}
 					
-					if(spawner.offer(Keys.SPAWNABLE_ENTITY_TYPE, entity.getType()).isSuccessful()) {
+					if (spawner.offer(Keys.SPAWNABLE_ENTITY_TYPE, entity.getType()).isSuccessful()) {
 						player.sendMessage("MobSpawner : add");
 					} else {
 						player.sendMessage("MobSpawner : error");

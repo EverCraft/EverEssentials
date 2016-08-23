@@ -66,17 +66,17 @@ public class EEEnchant extends ECommand<EverEssentials> {
 		List<String> suggests = new ArrayList<String>();
 		if (source instanceof Player){
 			Optional<EPlayer> player = this.plugin.getEServer().getEPlayer(((Player) source).getUniqueId());
-			if(player.isPresent() && player.get().getItemInMainHand().isPresent()) {
-				if(args.size() == 1) {
+			if (player.isPresent() && player.get().getItemInMainHand().isPresent()) {
+				if (args.size() == 1) {
 					ItemStack item = player.get().getItemInMainHand().get();
 					EnchantmentData enchantmentData = item.getOrCreate(EnchantmentData.class).get();
 					
 					// Si il y a plusieurs enchantements
 					if (!enchantmentData.enchantments().isEmpty()) {
 						for (Enchantment enchant : UtilsEnchantment.getEnchantments()) {
-							if(enchant.canBeAppliedToStack(item)) {
-								for(ItemEnchantment ench : enchantmentData.enchantments()) {
-									if(enchant.isCompatibleWith(ench.getEnchantment())){
+							if (enchant.canBeAppliedToStack(item)) {
+								for (ItemEnchantment ench : enchantmentData.enchantments()) {
+									if (enchant.isCompatibleWith(ench.getEnchantment())){
 										suggests.add(enchant.getId().toLowerCase().replace("minecraft:", ""));
 									}
 								}
@@ -90,7 +90,7 @@ public class EEEnchant extends ECommand<EverEssentials> {
 							}
 						}
 					}
-				} else if(args.size() == 2){
+				} else if (args.size() == 2){
 					Optional<Enchantment> enchantment = this.getEnchantment(args.get(0));
 					if (enchantment.isPresent()) {
 						for (int cpt = enchantment.get().getMinimumLevel() ; cpt <= enchantment.get().getMaximumLevel() ; cpt++){
@@ -108,23 +108,23 @@ public class EEEnchant extends ECommand<EverEssentials> {
 		boolean resultat = false;
 		
 		// Si la source est un joueur
-		if(source instanceof EPlayer) {
+		if (source instanceof EPlayer) {
 			EPlayer player = (EPlayer) source;
 			
-			if(args.size() == 1) {
+			if (args.size() == 1) {
 				Optional<Enchantment> enchantment = this.getEnchantment(args.get(0));
 				
 				// Si l'enchantement existe
-				if(enchantment.isPresent()) {
+				if (enchantment.isPresent()) {
 					resultat = this.commandEnchant(player, enchantment.get(), enchantment.get().getMaximumLevel());
 				} else {
 					player.sendMessage(EEMessages.PREFIX.get() + EEMessages.ENCHANT_NOT_FOUND.get());
 				}
-			} else if(args.size() == 2) {
+			} else if (args.size() == 2) {
 				Optional<Enchantment> enchantment = this.getEnchantment(args.get(0));
 				
 				// Si l'enchantement existe
-				if(enchantment.isPresent()) {
+				if (enchantment.isPresent()) {
 					try {
 						int level = Integer.parseInt(args.get(1));
 						resultat = this.commandEnchant(player, enchantment.get(), level);

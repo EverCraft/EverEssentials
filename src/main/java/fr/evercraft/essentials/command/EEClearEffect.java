@@ -49,7 +49,7 @@ public class EEClearEffect extends ECommand<EverEssentials> {
 	}
 
 	public Text help(final CommandSource source) {
-		if(source.hasPermission(EEPermissions.CLEAREFFECT_OTHERS.get())){
+		if (source.hasPermission(EEPermissions.CLEAREFFECT_OTHERS.get())){
 			return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_PLAYER.get() + "]")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
@@ -62,7 +62,7 @@ public class EEClearEffect extends ECommand<EverEssentials> {
 	}
 	
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
-		if(args.size() == 1 && source.hasPermission(EEPermissions.CLEAREFFECT_OTHERS.get())){
+		if (args.size() == 1 && source.hasPermission(EEPermissions.CLEAREFFECT_OTHERS.get())){
 			return null;
 		}
 		return new ArrayList<String>();
@@ -73,21 +73,21 @@ public class EEClearEffect extends ECommand<EverEssentials> {
 		boolean resultat = false;
 		
 		// Si on ne connait pas le joueur
-		if(args.size() == 0) {
+		if (args.size() == 0) {
 			// Si la source est un joueur
-			if(source instanceof EPlayer) {
+			if (source instanceof EPlayer) {
 				resultat = this.commandClearEffect((EPlayer) source);
 			// La source n'est pas un joueur
 			} else {
 				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText()));
 			}
 		// On connais le joueur
-		} else if(args.size() == 1) {
+		} else if (args.size() == 1) {
 			// Si il a la permission
-			if(source.hasPermission(EEPermissions.CLEAREFFECT_OTHERS.get())){
+			if (source.hasPermission(EEPermissions.CLEAREFFECT_OTHERS.get())){
 				Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(args.get(0));
 				// Le joueur existe
-				if(optPlayer.isPresent()){
+				if (optPlayer.isPresent()){
 					resultat = this.commandClearEffectOthers(source, optPlayer.get());
 				// Le joueur est introuvable
 				} else {
@@ -120,7 +120,7 @@ public class EEClearEffect extends ECommand<EverEssentials> {
 	
 	private boolean commandClearEffectOthers(final CommandSource staff, final EPlayer player) throws CommandException{
 		// La source et le joueur sont différent
-		if(!player.equals(staff)) {
+		if (!player.equals(staff)) {
 			// Si il a des effets de potions
 			if (!player.getPotionEffects().isEmpty()) {
 				player.clearPotions();

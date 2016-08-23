@@ -98,7 +98,7 @@ public class EEssentialsService implements EssentialsService {
 	public Optional<EUserSubject> getSubject(UUID uuid) {
 		Preconditions.checkNotNull(uuid, "uuid");
 		try {
-			if(!this.subjects.containsKey(uuid)) {
+			if (!this.subjects.containsKey(uuid)) {
 				return Optional.of(this.cache.get(uuid));
 	    	}
 	    	return Optional.ofNullable(this.subjects.get(uuid));
@@ -130,7 +130,7 @@ public class EEssentialsService implements EssentialsService {
 		this.world = this.plugin.getConfigs().isWorldTeleportPermissions();
 		
 		this.cache.cleanUp();
-		for(EUserSubject subject : this.subjects.values()) {
+		for (EUserSubject subject : this.subjects.values()) {
 			subject.reloadData();
 		}
 	}
@@ -144,7 +144,7 @@ public class EEssentialsService implements EssentialsService {
 		
 		EUserSubject player = this.cache.getIfPresent(uuid);
 		// Si le joueur est dans le cache
-		if(player != null) {
+		if (player != null) {
 			player.connect();
 			this.subjects.putIfAbsent(uuid, player);
 			this.plugin.getLogger().debug("Loading player cache : " + uuid.toString());
@@ -168,7 +168,7 @@ public class EEssentialsService implements EssentialsService {
 		
 		EUserSubject player = this.subjects.remove(uuid);
 		// Si le joueur existe
-		if(player != null) {
+		if (player != null) {
 			player.disconnect();
 			this.cache.put(uuid, player);
 			//this.plugin.getManagerEvent().post(player, PermUserEvent.Action.USER_REMOVED);

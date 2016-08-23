@@ -63,7 +63,7 @@ public class EEReply extends ECommand<EverEssentials> {
 	}
 	
 	protected List<String> getArg(final String arg){
-		if(arg.isEmpty()) {
+		if (arg.isEmpty()) {
 			return Arrays.asList();
 		}
 		return Arrays.asList(arg);
@@ -72,14 +72,14 @@ public class EEReply extends ECommand<EverEssentials> {
 	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Résultat de la commande :
 		boolean resultat = false;
-		if(args.size() == 1) {
+		if (args.size() == 1) {
 			String message = EEMsg.replaceMessage(this.plugin.getChat(), source, args.get(0));
 			
 			// La source est un joueur
-			if(source instanceof EPlayer) {
+			if (source instanceof EPlayer) {
 				resultat = commandReply(source, ((EPlayer) source).getReplyTo(), message);
 			// La source est une console
-			} else if(source.equals(this.plugin.getGame().getServer().getConsole())) {
+			} else if (source.equals(this.plugin.getGame().getServer().getConsole())) {
 				resultat = commandReply(source, this.plugin.getManagerServices().getEssentials().getConsole().getReplyTo(), message);
 			} else {
 				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText()));
@@ -94,11 +94,11 @@ public class EEReply extends ECommand<EverEssentials> {
 		// Résultat de la commande :
 		boolean resultat = false;
 		
-		if(receive.isPresent()) {
+		if (receive.isPresent()) {
 			// Le destinataire est le console
-			if(receive.get().equalsIgnoreCase(EEMsg.CONSOLE)) {
+			if (receive.get().equalsIgnoreCase(EEMsg.CONSOLE)) {
 				// La source est un joueur
-				if(player instanceof EPlayer) {
+				if (player instanceof EPlayer) {
 					resultat = this.commandMsgConsole((EPlayer) player, this.plugin.getEServer().getConsole(), message);
 				// La source est une console
 				} else {
@@ -108,9 +108,9 @@ public class EEReply extends ECommand<EverEssentials> {
 			} else {
 				try {
 					Optional<EPlayer> replyTo = this.plugin.getEServer().getEPlayer(UUID.fromString(receive.get()));
-					if(replyTo.isPresent()) {
+					if (replyTo.isPresent()) {
 						// La source est un joueur
-						if(player instanceof EPlayer) {
+						if (player instanceof EPlayer) {
 							resultat = this.commandMsgPlayer((EPlayer) player, replyTo.get(), message);
 						// La source est une console
 						} else {

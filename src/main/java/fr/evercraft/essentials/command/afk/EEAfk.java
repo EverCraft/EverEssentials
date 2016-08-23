@@ -56,7 +56,7 @@ public class EEAfk extends EParentCommand<EverEssentials> {
 		boolean resultat = false;
 				
 		// Si la source est un joueur
-		if(source instanceof EPlayer) {
+		if (source instanceof EPlayer) {
 			resultat = this.commandAfk((EPlayer) source);
 		// La source n'est pas un joueur
 		} else {
@@ -68,21 +68,21 @@ public class EEAfk extends EParentCommand<EverEssentials> {
 	
 	private boolean commandAfk(final EPlayer player) {
 		boolean afk = !player.isAfk();
-		if(player.setAfk(afk)) {
-			if(afk) {
+		if (player.setAfk(afk)) {
+			if (afk) {
 				player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.AFK_ON_PLAYER.getText()));
-				if(EEMessages.AFK_ON_ALL.has()) {
+				if (EEMessages.AFK_ON_ALL.has()) {
 					player.broadcastMessage(EEMessages.PREFIX.getText().concat(player.replaceVariable(EEMessages.AFK_ON_ALL.get())));
 				}
 			} else {
 				player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.AFK_OFF_PLAYER.getText()));
-				if(EEMessages.AFK_OFF_ALL.has()) {
+				if (EEMessages.AFK_OFF_ALL.has()) {
 					player.broadcastMessage(EEMessages.PREFIX.getText().concat(player.replaceVariable(EEMessages.AFK_OFF_ALL.get())));
 				}
 			}
 			return true;
 		} else {
-			if(afk) {
+			if (afk) {
 				player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.AFK_ON_PLAYER_CANCEL.getText()));
 			} else {
 				player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.AFK_OFF_PLAYER_CANCEL.getText()));

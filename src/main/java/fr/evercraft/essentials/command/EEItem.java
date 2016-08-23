@@ -76,32 +76,32 @@ public class EEItem extends EReloadCommand<EverEssentials> {
 	
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		List<String> suggests = new ArrayList<String>();
-		if(args.size() == 1){
-			for(ItemType type : this.items){
+		if (args.size() == 1){
+			for (ItemType type : this.items){
 				suggests.add(type.getName().replaceAll("minecraft:", ""));
 			}
-		} else if(args.size() == 2){
+		} else if (args.size() == 2){
 			Optional<ItemStack> optItem = UtilsItemStack.getItem(args.get(0));
-			if(optItem.isPresent()){
+			if (optItem.isPresent()){
 				Optional<Class<? extends CatalogType>> catalogType = UtilsItemTypes.getCatalogType(optItem.get());
-				if(catalogType.isPresent()) {
-					for(CatalogType type : this.plugin.getGame().getRegistry().getAllOf(catalogType.get())){
+				if (catalogType.isPresent()) {
+					for (CatalogType type : this.plugin.getGame().getRegistry().getAllOf(catalogType.get())){
 						suggests.add(type.getName());
 					}
 				} else {
 					suggests.add(String.valueOf(optItem.get().getMaxStackQuantity()));
-					if(!suggests.contains("1")){
+					if (!suggests.contains("1")){
 						suggests.add("1");
 					}
 				}
 			}
-		} else if(args.size() == 3){
+		} else if (args.size() == 3){
 			Optional<ItemStack> optItem = UtilsItemStack.getItem(args.get(0));
-			if(optItem.isPresent()){
+			if (optItem.isPresent()){
 				Optional<Class<? extends CatalogType>> catalogType = UtilsItemTypes.getCatalogType(optItem.get());
-				if(catalogType.isPresent()) {
-					for(CatalogType type : this.plugin.getGame().getRegistry().getAllOf(catalogType.get())){
-						if(type.getName().equalsIgnoreCase(args.get(1))){
+				if (catalogType.isPresent()) {
+					for (CatalogType type : this.plugin.getGame().getRegistry().getAllOf(catalogType.get())){
+						if (type.getName().equalsIgnoreCase(args.get(1))){
 							suggests.add("1");
 							suggests.add(String.valueOf(optItem.get().getMaxStackQuantity()));
 						}
@@ -115,32 +115,32 @@ public class EEItem extends EReloadCommand<EverEssentials> {
 	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Résultat de la commande :
 		boolean resultat = false;
-		if(args.size() == 0){
+		if (args.size() == 0){
 			ItemStack item = ItemStack.of(ItemTypes.STONE, 64);
-			if(item.getItem().getBlock().isPresent()){
+			if (item.getItem().getBlock().isPresent()){
 				this.plugin.getEServer().broadcast("" + item.getItem().getBlock().get().getDefaultState());
 			}
 		// Si on ne connait pas le joueur
-		} else if(args.size() == 1) {
+		} else if (args.size() == 1) {
 			// Si la source est un joueur
-			if(source instanceof EPlayer) {
+			if (source instanceof EPlayer) {
 				resultat = commandItem((EPlayer) source, args.get(0));
 			// La source n'est pas un joueur
 			} else {
 				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
 			}
 		// On connais le joueur
-		} else if(args.size() == 2) {
+		} else if (args.size() == 2) {
 			// Si la source est un joueur
-			if(source instanceof EPlayer) {
+			if (source instanceof EPlayer) {
 				resultat = commandItem((EPlayer) source, args.get(0),  args.get(1));
 			// La source n'est pas un joueur
 			} else {
 				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
 			}
-		} else if(args.size() == 3) {
+		} else if (args.size() == 3) {
 			// Si la source est un joueur
-			if(source instanceof EPlayer) {
+			if (source instanceof EPlayer) {
 				resultat = commandItem((EPlayer) source, args.get(0), args.get(1), args.get(2));
 			// La source n'est pas un joueur
 			} else {
@@ -155,9 +155,9 @@ public class EEItem extends EReloadCommand<EverEssentials> {
 	
 	public boolean commandItem(final EPlayer player, String item_name) {
 		Optional<ItemType> optItem = UtilsItemTypes.getItemType(item_name);
-		if(optItem.isPresent()){
+		if (optItem.isPresent()){
 			ItemType type = optItem.get();
-			if(!this.blacklist.contains(type)){
+			if (!this.blacklist.contains(type)){
 				ItemStack item = ItemStack.of(type, optItem.get().getMaxStackQuantity());
 				int quantity = item.getQuantity(); 
 				player.giveItem(item);
@@ -179,18 +179,18 @@ public class EEItem extends EReloadCommand<EverEssentials> {
 
 	public boolean commandItem(final EPlayer player, String item_name, String value) {
 		Optional<ItemType> optItemType = UtilsItemTypes.getItemType(item_name);
-		if(optItemType.isPresent()){
+		if (optItemType.isPresent()){
 			ItemType itemType = optItemType.get();
-			if(!this.blacklist.contains(itemType)){
+			if (!this.blacklist.contains(itemType)){
 				ItemStack item = ItemStack.of(itemType, optItemType.get().getMaxStackQuantity());
 				Optional<ItemStack> optItemStack = UtilsItemTypes.getCatalogType(item, value);
 				int quantity;
-				if(optItemStack.isPresent()){
+				if (optItemStack.isPresent()){
 					item = optItemStack.get();
 				} else {
 					try {
 						quantity = Integer.parseInt(value);
-						if(quantity <= itemType.getMaxStackQuantity() && quantity > 0){
+						if (quantity <= itemType.getMaxStackQuantity() && quantity > 0){
 							item = ItemStack.of(itemType, quantity);
 						} else {
 							player.sendMessage(EEMessages.PREFIX.get() + EEMessages.ITEM_ERROR_QUANTITY.get()
@@ -222,16 +222,16 @@ public class EEItem extends EReloadCommand<EverEssentials> {
 
 	public boolean commandItem(final EPlayer player, String item_name, String data, String item_quantity) {
 		Optional<ItemType> optItem = UtilsItemTypes.getItemType(item_name);
-		if(optItem.isPresent()){
+		if (optItem.isPresent()){
 			ItemType itemType = optItem.get();
-			if(!this.blacklist.contains(itemType)){
+			if (!this.blacklist.contains(itemType)){
 				ItemStack item = ItemStack.of(itemType, itemType.getMaxStackQuantity());
 				Optional<ItemStack> optItemStack = UtilsItemTypes.getCatalogType(item, data);
-				if(optItemStack.isPresent()){
+				if (optItemStack.isPresent()){
 					item = optItemStack.get();
 					try {
 						int quantity = Integer.parseInt(item_quantity);
-						if(quantity <= itemType.getMaxStackQuantity() && quantity > 0){
+						if (quantity <= itemType.getMaxStackQuantity() && quantity > 0){
 							item.setQuantity(quantity);
 							player.giveItem(item);
 							player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
@@ -265,9 +265,9 @@ public class EEItem extends EReloadCommand<EverEssentials> {
 	
 	private Collection<ItemType> getBlacklist(){
 		Collection<ItemType> blacklist = new ArrayList<ItemType>();
-		for(String bl : this.plugin.getConfigs().getListString("blacklist")){
+		for (String bl : this.plugin.getConfigs().getListString("blacklist")){
 			Optional<ItemType> optItemType = UtilsItemTypes.getItemType(bl);
-			if(optItemType.isPresent()){
+			if (optItemType.isPresent()){
 				blacklist.add(optItemType.get());
 			} else {
 				this.plugin.getLogger().warn("Erreur : " + bl + "n'est pas un nom d'un objet de minecraft.");

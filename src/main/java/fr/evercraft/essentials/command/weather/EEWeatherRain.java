@@ -58,7 +58,7 @@ public class EEWeatherRain extends ECommand<EverEssentials> {
 		List<String> suggests = new ArrayList<String>();
 		if (args.size() == 1) {
 			for (World world : this.plugin.getEServer().getWorlds()) {
-				if(world.getProperties().getDimensionType().equals(DimensionTypes.OVERWORLD)) {
+				if (world.getProperties().getDimensionType().equals(DimensionTypes.OVERWORLD)) {
 					suggests.add(world.getName());
 				}
 			}
@@ -72,7 +72,7 @@ public class EEWeatherRain extends ECommand<EverEssentials> {
 		// Si on ne connait pas le joueur
 		if (args.size() == 0) {
 			resultat = commandWeatherRain(source);
-		} else if(args.size() == 1){
+		} else if (args.size() == 1){
 			resultat = commandWeatherRain(source, args.get(0));
 		// Nombre d'argument incorrect
 		} else {

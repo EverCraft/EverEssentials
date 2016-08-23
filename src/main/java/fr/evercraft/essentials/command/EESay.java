@@ -64,7 +64,7 @@ public class EESay extends ECommand<EverEssentials> {
 	}
 	
 	protected List<String> getArg(final String arg){
-		if(arg.isEmpty()) {
+		if (arg.isEmpty()) {
 			return Arrays.asList();
 		}
 		return Arrays.asList(arg);
@@ -73,7 +73,7 @@ public class EESay extends ECommand<EverEssentials> {
 	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Résultat de la commande :
 		boolean resultat = false;
-		if(args.size() == 1) {
+		if (args.size() == 1) {
 			// Si la source est un joueur
 			if (source instanceof EPlayer) {
 				resultat = commandSayPlayer((EPlayer) source, args.get(0));

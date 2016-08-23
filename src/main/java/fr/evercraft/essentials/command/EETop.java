@@ -68,9 +68,9 @@ public class EETop extends ECommand<EverEssentials> {
 		// Résultat de la commande :
 		boolean resultat = false;
 		// Si connait que la location ou aussi peut être le monde
-		if(args.size() == 0) {
+		if (args.size() == 0) {
 			// Si la source est bien un joueur
-			if(source instanceof EPlayer) {
+			if (source instanceof EPlayer) {
 				resultat = commandTop((EPlayer) source);
 			// Si la source est une console ou un commande block
 			} else {
@@ -87,10 +87,10 @@ public class EETop extends ECommand<EverEssentials> {
 															player.getTransform(), 
 															!(player.isGod() || player.getGameMode().equals(GameModes.CREATIVE)));
 		
-		if(transform.isPresent()) {
+		if (transform.isPresent()) {
 			long delay = this.plugin.getConfigs().getTeleportDelay(player);
 			
-			if(delay > 0) {
+			if (delay > 0) {
 				player.sendMessage(EEMessages.PREFIX.get() + EEMessages.TOP_DELAY.get()
 						.replaceAll("<delay>", this.plugin.getEverAPI().getManagerUtils().getDate().formatDateDiff(System.currentTimeMillis() + delay)));
 			}
@@ -104,8 +104,8 @@ public class EETop extends ECommand<EverEssentials> {
 	}
 	
 	public void teleport(final EPlayer player, final Transform<World> location) {
-		if(player.isOnline()) {
-			if(player.teleport(location)) {
+		if (player.isOnline()) {
+			if (player.teleport(location)) {
 				player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
 						.append(EEMessages.TOP_TELEPORT.get())
 						.replace("<position>", getButtonPosition(player.getLocation()))

@@ -58,7 +58,7 @@ public class EEWhitelistStatus extends ESubCommand<EverEssentials> {
 	public boolean subExecute(final CommandSource source, final List<String> args) {
 		// Résultat de la commande :
 		boolean resultat = false;
-		if(args.size() == 0) {
+		if (args.size() == 0) {
 			resultat = commandWhitelistStatus(source);
 		} else {
 			source.sendMessage(this.help(source));
@@ -68,7 +68,7 @@ public class EEWhitelistStatus extends ESubCommand<EverEssentials> {
 
 	private boolean commandWhitelistStatus(final CommandSource player) {
 		String message;
-		if(this.plugin.getEServer().hasWhitelist()){
+		if (this.plugin.getEServer().hasWhitelist()){
 			message = EEMessages.WHITELIST_STATUS_ACTIVATED.get();
 		} else {
 			message = EEMessages.WHITELIST_STATUS_DISABLED.get();

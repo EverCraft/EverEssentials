@@ -59,7 +59,7 @@ public class EEConfig extends EConfig {
 						  				"To remove the home limit entirely, give people 'everessentials.sethome.multiple.unlimited'.",
 						  				"To grant different home amounts to different people, you need to define a 'home-rank' below.",
 						  				"Create the 'home-rank' below, and give the matching permission: everessentials.sethome.multiple.<home-rank>");
-		if(this.get("sethome-multiple").isVirtual()) {
+		if (this.get("sethome-multiple").isVirtual()) {
 			addDefault("sethome-multiple.moderator", 2);	
 		}
 		addDefault("sethome-multiple.default", 1);
@@ -83,7 +83,7 @@ public class EEConfig extends EConfig {
 										"Set to -1 for no timeout.");
 						
 		// Near
-		if(this.get("near-distance").isVirtual()) {
+		if (this.get("near-distance").isVirtual()) {
 			addDefault("near-distance.moderator", 300);
 		}
 		addDefault("near-distance.default", 200);
@@ -130,7 +130,7 @@ public class EEConfig extends EConfig {
 		addDefault("vanish.remove-on-disconnect", true);
 		
 		// List
-		if(this.get("list").isVirtual()) {
+		if (this.get("list").isVirtual()) {
 			addDefault("list.Admins", "owner admin", "To merge groups, list the groups you wish to merge", "Staff: owner admin moderator");
 			addDefault("list.builder", 20, "To limit groups, set a max user limit");
 			addDefault("list.default", "hidden", "To hide groups, set the group as hidden");
@@ -271,7 +271,7 @@ public class EEConfig extends EConfig {
 	}
 	
 	public long getTeleportDelay(EPlayer player) {
-		if(player.hasPermission(EEPermissions.TELEPORT_BYPASS_TIME.get())) {
+		if (player.hasPermission(EEPermissions.TELEPORT_BYPASS_TIME.get())) {
 			return 0;
 		}
 		return this.get("teleport-delay").getLong(0) * 1000;

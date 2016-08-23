@@ -53,7 +53,7 @@ public class EENear extends EReloadCommand<EverEssentials> {
 		Map<String, Integer> permissions = new HashMap<String, Integer>();
 		this.permission_default = this.plugin.getConfigs().get("near-distance.default").getInt(1);
 		for (Entry<Object, ? extends ConfigurationNode> key : this.plugin.getConfigs().get("near-distance").getChildrenMap().entrySet()) {
-			if(key.getKey() instanceof String) {
+			if (key.getKey() instanceof String) {
 				permissions.put((String) key.getKey(), key.getValue().getInt(this.permission_default));
 			}
 		}
@@ -95,9 +95,9 @@ public class EENear extends EReloadCommand<EverEssentials> {
 		// Résultat de la commande :
 		boolean resultat = false;
 		
-		if(args.size() == 0) {
+		if (args.size() == 0) {
 			// Si la source est un joueur
-			if(source instanceof EPlayer) {
+			if (source instanceof EPlayer) {
 				resultat = commandNear((EPlayer) source);
 			// La source n'est pas un joueur
 			} else {
@@ -112,11 +112,11 @@ public class EENear extends EReloadCommand<EverEssentials> {
 	
 	public boolean commandNear(final EPlayer player) {
 		Map <EPlayer, Integer> list = player.getEPlayers(getValue(player));		
-		if(list.isEmpty()) {
+		if (list.isEmpty()) {
 			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.NEAR_NOPLAYER.get());
 		} else {
 			List<Text> lists = new ArrayList<Text>();
-			for(Entry<EPlayer, Integer> position : UtilsMap.valueASC(list)){
+			for (Entry<EPlayer, Integer> position : UtilsMap.valueASC(list)){
 				lists.add(EChat.of(EEMessages.NEAR_LIST_LINE.get()
 						.replaceAll("<player>", position.getKey().getName())
 						.replaceAll("<distance>", position.getValue().toString())));

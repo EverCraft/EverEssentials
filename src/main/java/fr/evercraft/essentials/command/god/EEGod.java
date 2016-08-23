@@ -56,7 +56,7 @@ public class EEGod extends EParentCommand<EverEssentials> {
 		boolean resultat = false;
 				
 		// Si la source est un joueur
-		if(source instanceof EPlayer) {
+		if (source instanceof EPlayer) {
 			resultat = this.commandGod((EPlayer) source);
 		// La source n'est pas un joueur
 		} else {
@@ -68,15 +68,15 @@ public class EEGod extends EParentCommand<EverEssentials> {
 	
 	private boolean commandGod(final EPlayer player) {
 		boolean god = !player.isGod();
-		if(player.setGod(god)) {
-			if(god) {
+		if (player.setGod(god)) {
+			if (god) {
 				player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.GOD_ON_PLAYER.getText()));
 			} else {
 				player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.GOD_OFF_PLAYER.getText()));
 			}
 			return true;
 		} else {
-			if(god) {
+			if (god) {
 				player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.GOD_ON_PLAYER_CANCEL.getText()));
 			} else {
 				player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.GOD_OFF_PLAYER_CANCEL.getText()));

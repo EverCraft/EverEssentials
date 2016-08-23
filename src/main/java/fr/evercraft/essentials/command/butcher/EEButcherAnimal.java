@@ -53,8 +53,8 @@ public class EEButcherAnimal extends ESubCommand<EverEssentials> {
 	
 	public List<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		List<String> suggests = new ArrayList<String>();
-		if(args.size() == 1) {
-			if(source.hasPermission(EEPermissions.BUTCHER_WORLD.get())){
+		if (args.size() == 1) {
+			if (source.hasPermission(EEPermissions.BUTCHER_WORLD.get())){
 				suggests.add("all");
 			}
 			suggests.add("100");
@@ -73,11 +73,11 @@ public class EEButcherAnimal extends ESubCommand<EverEssentials> {
 	public boolean subExecute(final CommandSource source, final List<String> args) {
 		// Résultat de la commande :
 		boolean resultat = false;
-		if(source instanceof EPlayer){
+		if (source instanceof EPlayer){
 			EPlayer player = (EPlayer) source;
-			if(args.size() == 1) {
+			if (args.size() == 1) {
 				if (args.get(0).equals("all")){
-					if(player.hasPermission(EEPermissions.BUTCHER_WORLD.get())){
+					if (player.hasPermission(EEPermissions.BUTCHER_WORLD.get())){
 						resultat = commandButcherAnimal(player);
 					// Il n'a pas la permission
 					} else {
@@ -86,7 +86,7 @@ public class EEButcherAnimal extends ESubCommand<EverEssentials> {
 				} else {
 					try {
 						int radius = Integer.parseInt(args.get(0));
-						if(radius > 0  && radius <= this.plugin.getConfigs().getButcherMaxRadius()) {
+						if (radius > 0  && radius <= this.plugin.getConfigs().getButcherMaxRadius()) {
 							resultat = commandButcherAnimal(player, radius);
 						} else {
 							player.sendMessage(EEMessages.PREFIX.get() + EAMessages.NUMBER_INVALID.getText());
@@ -107,7 +107,7 @@ public class EEButcherAnimal extends ESubCommand<EverEssentials> {
 		Predicate<Entity> predicate = new Predicate<Entity>() {
 		    @Override
 		    public boolean test(Entity entity) {
-		    	if(UtilsEntityType.ANIMALS.contains(entity.getType()) && !entity.get(Keys.ANGRY).orElse(false)) {
+		    	if (UtilsEntityType.ANIMALS.contains(entity.getType()) && !entity.get(Keys.ANGRY).orElse(false)) {
 		    		return true;
 		    	}
 		    	return false;
@@ -129,8 +129,8 @@ public class EEButcherAnimal extends ESubCommand<EverEssentials> {
 		Predicate<Entity> predicate = new Predicate<Entity>() {
 		    @Override
 		    public boolean test(Entity entity) {
-		    	if(UtilsEntityType.ANIMALS.contains(entity.getType()) && !entity.get(Keys.ANGRY).orElse(false)) {
-			    	if(entity.getLocation().getPosition().distance(player.getLocation().getPosition()) <= radius) {
+		    	if (UtilsEntityType.ANIMALS.contains(entity.getType()) && !entity.get(Keys.ANGRY).orElse(false)) {
+			    	if (entity.getLocation().getPosition().distance(player.getLocation().getPosition()) <= radius) {
 			    		return true;
 			    	}
 		    	}

@@ -50,7 +50,7 @@ public class EEVanish extends ECommand<EverEssentials> {
 
 	public Text help(final CommandSource source) {
 		Text help;
-		if(source.hasPermission(EEPermissions.VANISH_OTHERS.get())){
+		if (source.hasPermission(EEPermissions.VANISH_OTHERS.get())){
 			help = Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_PLAYER.get() + " [on|off]]")
 					.onClick(TextActions.suggestCommand("/vanish "))
 					.color(TextColors.RED)
@@ -66,9 +66,9 @@ public class EEVanish extends ECommand<EverEssentials> {
 	
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		List<String> suggests = new ArrayList<String>();
-		if(args.size() == 1 && source.hasPermission(EEPermissions.VANISH_OTHERS.get())){
+		if (args.size() == 1 && source.hasPermission(EEPermissions.VANISH_OTHERS.get())){
 			suggests = null;
-		} else if(args.size() == 2 && source.hasPermission(EEPermissions.VANISH_OTHERS.get())){
+		} else if (args.size() == 2 && source.hasPermission(EEPermissions.VANISH_OTHERS.get())){
 			suggests.add("on");
 			suggests.add("off");
 		}
@@ -79,21 +79,21 @@ public class EEVanish extends ECommand<EverEssentials> {
 		// Résultat de la commande :
 		boolean resultat = false;
 		// Si on ne connait pas le joueur
-		if(args.size() == 0) {
+		if (args.size() == 0) {
 			// Si la source est un joueur
-			if(source instanceof EPlayer) {
+			if (source instanceof EPlayer) {
 				resultat = commandVanish((EPlayer) source);
 			// La source n'est pas un joueur
 			} else {
 				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
 			}
 		// On connais le joueur
-		} else if(args.size() == 1) {
+		} else if (args.size() == 1) {
 			// Si il a la permission
-			if(source.hasPermission(EEPermissions.VANISH_OTHERS.get())) {
+			if (source.hasPermission(EEPermissions.VANISH_OTHERS.get())) {
 				Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(args.get(0));
 				// Le joueur existe
-				if(optPlayer.isPresent()){
+				if (optPlayer.isPresent()){
 					resultat = commandVanishOthers(source, optPlayer.get());
 				// Le joueur est introuvable
 				} else {
@@ -104,15 +104,15 @@ public class EEVanish extends ECommand<EverEssentials> {
 				source.sendMessage(EAMessages.NO_PERMISSION.getText());
 			}
 		// On connais le joueur et si on doit lui activé ou lui désactivé le vanish
-		} else if(args.size() == 2) {
+		} else if (args.size() == 2) {
 			// Si il a la permission
-			if(source.hasPermission(EEPermissions.VANISH_OTHERS.get())) {
+			if (source.hasPermission(EEPermissions.VANISH_OTHERS.get())) {
 				Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(args.get(0));
 				// Le joueur existe
-				if(optPlayer.isPresent()){
-					if(args.get(1).equalsIgnoreCase("on")) {
+				if (optPlayer.isPresent()){
+					if (args.get(1).equalsIgnoreCase("on")) {
 						resultat = commandVanishOthers(source, optPlayer.get(), true);
-					} else if(args.get(1).equalsIgnoreCase("off")) {
+					} else if (args.get(1).equalsIgnoreCase("off")) {
 						resultat = commandVanishOthers(source, optPlayer.get(), false);
 					} else {
 						source.sendMessage(help(source));
@@ -134,9 +134,9 @@ public class EEVanish extends ECommand<EverEssentials> {
 	
 	public boolean commandVanish(final EPlayer player) {
 		boolean vanish = player.isVanish();
-		if(player.setVanish(!vanish)) {
+		if (player.setVanish(!vanish)) {
 			// Si le vanish est déjà activé
-			if(vanish){
+			if (vanish){
 				player.sendMessage(EEMessages.PREFIX.get() + EEMessages.VANISH_PLAYER_DISABLE.get());
 			// Vanish est déjà désactivé
 			} else {
@@ -151,11 +151,11 @@ public class EEVanish extends ECommand<EverEssentials> {
 	
 	public boolean commandVanishOthers(final CommandSource staff, final EPlayer player) throws CommandException {
 		// La source et le joueur sont différent
-		if(!player.equals(staff)){
+		if (!player.equals(staff)){
 			boolean vanish = player.isVanish();
-			if(player.setVanish(!vanish)) {
+			if (player.setVanish(!vanish)) {
 				// Si le vanish est déjà activé
-				if(vanish){
+				if (vanish){
 					player.sendMessage(EEMessages.PREFIX.get() + EEMessages.VANISH_OTHERS_PLAYER_DISABLE.get()
 							.replaceAll("<staff>", staff.getName()));
 					staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.VANISH_OTHERS_STAFF_DISABLE.get()
@@ -181,15 +181,15 @@ public class EEVanish extends ECommand<EverEssentials> {
 	public boolean commandVanishOthers(final CommandSource staff, final EPlayer player, final boolean etat) throws CommandException {
 		boolean vanish = player.isVanish();
 		// La source et le joueur sont différent
-		if(!player.equals(staff)){
-			if(etat) {
+		if (!player.equals(staff)){
+			if (etat) {
 				// Si le Vanish est déjà activé
-				if(vanish){
+				if (vanish){
 					staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.VANISH_OTHERS_STAFF_ENABLE_ERROR.get()
 							.replaceAll("<player>", player.getName())));
 				// Vanish est désactivé
 				} else {
-					if(player.setVanish(etat)) {
+					if (player.setVanish(etat)) {
 						player.sendMessage(EEMessages.PREFIX.get() + EEMessages.VANISH_OTHERS_PLAYER_ENABLE.get()
 								.replaceAll("<staff>", staff.getName()));
 						staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.VANISH_OTHERS_STAFF_ENABLE.get()
@@ -201,8 +201,8 @@ public class EEVanish extends ECommand<EverEssentials> {
 				}
 			} else {
 				// Si le Vanish est déjà activé
-				if(vanish){
-					if(player.setVanish(etat)) {
+				if (vanish){
+					if (player.setVanish(etat)) {
 						player.sendMessage(EEMessages.PREFIX.get() + EEMessages.VANISH_OTHERS_PLAYER_DISABLE.get()
 								.replaceAll("<staff>", staff.getName()));
 						staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.VANISH_OTHERS_STAFF_DISABLE.get()
@@ -219,13 +219,13 @@ public class EEVanish extends ECommand<EverEssentials> {
 			}
 		// La source et le joueur sont identique
 		} else {
-			if(etat) {
+			if (etat) {
 				// Si le vanish est déjà activé
-				if(vanish){
+				if (vanish){
 					player.sendMessage(EEMessages.PREFIX.get() + EEMessages.VANISH_PLAYER_ENABLE_ERROR.get());
 				// Vanish est désactivé
 				} else {
-					if(player.setVanish(etat)) {
+					if (player.setVanish(etat)) {
 						player.sendMessage(EEMessages.PREFIX.get() + EEMessages.VANISH_PLAYER_ENABLE.get());
 						return true;
 					} else {
@@ -234,8 +234,8 @@ public class EEVanish extends ECommand<EverEssentials> {
 				}
 			} else {
 				// Si le vanish est déjà activé
-				if(vanish){
-					if(player.setVanish(etat)) {
+				if (vanish){
+					if (player.setVanish(etat)) {
 						player.sendMessage(EEMessages.PREFIX.get() + EEMessages.VANISH_PLAYER_DISABLE.get());
 						return true;
 					} else {

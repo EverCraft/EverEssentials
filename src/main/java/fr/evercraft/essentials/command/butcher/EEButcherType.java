@@ -55,15 +55,15 @@ public class EEButcherType extends ESubCommand<EverEssentials> {
 	
 	public List<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		List<String> suggests = new ArrayList<String>();
-		if(args.size() == 1) {
-			for(EntityType entity : UtilsEntityType.ANIMALS){
+		if (args.size() == 1) {
+			for (EntityType entity : UtilsEntityType.ANIMALS){
 				suggests.add(entity.getName());
 			}
-			for(EntityType entity : UtilsEntityType.MONSTERS){
+			for (EntityType entity : UtilsEntityType.MONSTERS){
 				suggests.add(entity.getName());
 			}
-		} else if(args.size() == 2){
-			if(source.hasPermission(EEPermissions.BUTCHER_WORLD.get())){
+		} else if (args.size() == 2){
+			if (source.hasPermission(EEPermissions.BUTCHER_WORLD.get())){
 				suggests.add("all");
 			}
 			suggests.add("100");
@@ -83,14 +83,14 @@ public class EEButcherType extends ESubCommand<EverEssentials> {
 	public boolean subExecute(final CommandSource source, final List<String> args) {
 		// Résultat de la commande :
 		boolean resultat = false;
-		if(source instanceof EPlayer){
+		if (source instanceof EPlayer){
 			EPlayer player = (EPlayer) source;
 			if (args.size() == 2) {
 				Optional<EntityType> optType = getEntityType(args.get(0));
 				if (args.get(1).equals("all")){
-					if(optType.isPresent()) {
+					if (optType.isPresent()) {
 						// Si il a la permission
-						if(player.hasPermission(EEPermissions.BUTCHER_WORLD.get())){
+						if (player.hasPermission(EEPermissions.BUTCHER_WORLD.get())){
 							resultat = commandButcherType(player, optType.get());
 						// Il n'a pas la permission
 						} else {
@@ -100,7 +100,7 @@ public class EEButcherType extends ESubCommand<EverEssentials> {
 				} else {
 					try {
 						int radius = Integer.parseInt(args.get(1));
-						if(radius > 0  && radius <= this.plugin.getConfigs().getButcherMaxRadius()) {
+						if (radius > 0  && radius <= this.plugin.getConfigs().getButcherMaxRadius()) {
 							resultat = commandButcherType(player, optType.get(), radius);
 						} else {
 							player.sendMessage(EEMessages.PREFIX.get() + EAMessages.NUMBER_INVALID.getText());
@@ -121,7 +121,7 @@ public class EEButcherType extends ESubCommand<EverEssentials> {
 		Predicate<Entity> predicate = new Predicate<Entity>() {
 		    @Override
 		    public boolean test(Entity entity) {
-		    	if(entity.getType().equals(type)) {
+		    	if (entity.getType().equals(type)) {
 			    	return true;
 		    	}
 		    	return false;
@@ -146,8 +146,8 @@ public class EEButcherType extends ESubCommand<EverEssentials> {
 		Predicate<Entity> predicate = new Predicate<Entity>() {
 		    @Override
 		    public boolean test(Entity entity) {
-		    	if(entity.getType().equals(type)) {
-		    		if(entity.getLocation().getPosition().distance(player.getLocation().getPosition()) <= radius) {
+		    	if (entity.getType().equals(type)) {
+		    		if (entity.getLocation().getPosition().distance(player.getLocation().getPosition()) <= radius) {
 			    		return true;
 			    	}
 		    	}
@@ -178,7 +178,7 @@ public class EEButcherType extends ESubCommand<EverEssentials> {
 	
 	public Optional<EntityType> getEntityType(String name){
 		Optional<EntityType> type = UtilsEntityType.getMonsters(name);
-		if(!type.isPresent()) {
+		if (!type.isPresent()) {
 			type = UtilsEntityType.getAnimals(name);
 		}
 		return type;

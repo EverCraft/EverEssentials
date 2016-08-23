@@ -55,7 +55,7 @@ public class EEName extends ECommand<EverEssentials> {
 	}
 
 	public Text help(final CommandSource source) {
-		if(source.hasPermission(EEPermissions.NAMES_OTHERS.get())){
+		if (source.hasPermission(EEPermissions.NAMES_OTHERS.get())){
 			return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_PLAYER.get() + "]")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
@@ -68,7 +68,7 @@ public class EEName extends ECommand<EverEssentials> {
 	}
 	
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
-		if(args.size() == 1 && source.hasPermission(EEPermissions.NAMES_OTHERS.get())){
+		if (args.size() == 1 && source.hasPermission(EEPermissions.NAMES_OTHERS.get())){
 			return null;
 		}
 		return new ArrayList<String>();
@@ -78,9 +78,9 @@ public class EEName extends ECommand<EverEssentials> {
 		// Résultat de la commande :
 		boolean resultat = false;
 		// Si on ne connait pas le joueur
-		if(args.size() == 0) {
+		if (args.size() == 0) {
 			// Si la source est un joueur
-			if(source instanceof EPlayer) {
+			if (source instanceof EPlayer) {
 				this.plugin.getGame().getScheduler().createTaskBuilder()
 						.async()
 						.execute(() -> commandNames((EPlayer) source))
@@ -91,9 +91,9 @@ public class EEName extends ECommand<EverEssentials> {
 				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
 			}
 		// On connais le joueur
-		} else if(args.size() == 1) {
+		} else if (args.size() == 1) {
 			// Si il a la permission
-			if(source.hasPermission(EEPermissions.NAMES_OTHERS.get())){
+			if (source.hasPermission(EEPermissions.NAMES_OTHERS.get())){
 				this.plugin.getGame().getScheduler().createTaskBuilder()
 							.async()
 							.execute(() -> commandNames(source, args.get(0)))
@@ -112,12 +112,12 @@ public class EEName extends ECommand<EverEssentials> {
 
 	private void commandNames(final EPlayer player) {
 		Optional<MojangService> service = this.plugin.getEverAPI().getManagerService().getMojangService();
-		if(service.isPresent()) {
+		if (service.isPresent()) {
 			try {
 				List<Text> lists = new ArrayList<Text>();
 		
-				for(NameHistory name : service.get().getNameHistory().get(player.getUniqueId())) {
-					if(!name.getDate().isPresent()) {
+				for (NameHistory name : service.get().getNameHistory().get(player.getUniqueId())) {
+					if (!name.getDate().isPresent()) {
 						lists.add(EChat.of(EEMessages.NAMES_PLAYER_LINE_ORIGINAL.get()
 								.replaceAll("<name>", name.getName())));
 					} else {
@@ -128,7 +128,7 @@ public class EEName extends ECommand<EverEssentials> {
 								.replaceAll("<datetime>", this.plugin.getEverAPI().getManagerUtils().getDate().parseDateTime(name.getDate().get()))));
 					}
 				}
-				if(lists.size() <= 1) {
+				if (lists.size() <= 1) {
 					lists.clear();
 					lists.add(EChat.of(EEMessages.NAMES_PLAYER_EMPTY.get()
 							.replaceAll("<player>", player.getName())));
@@ -150,14 +150,14 @@ public class EEName extends ECommand<EverEssentials> {
 	private void commandNames(final CommandSource player, String name) {
 		try {
 			CompletableFuture<GameProfile> future = null;
-			if(name.length() == 36) {
+			if (name.length() == 36) {
 				future = this.plugin.getEServer().getGameProfileManager().get(UUID.fromString(name));
 			} else {
 				future = this.plugin.getEServer().getGameProfileManager().get(name);
 			}
 			future.exceptionally(e -> null).thenApplyAsync(profile -> {
 				if (profile != null && profile.isFilled() && profile.getName().isPresent()) {
-					if(player instanceof EPlayer && ((EPlayer) player).getProfile().equals(profile)) {
+					if (player instanceof EPlayer && ((EPlayer) player).getProfile().equals(profile)) {
 						this.commandNames((EPlayer) player);
 					} else {
 						this.commandNames(player, profile);
@@ -174,12 +174,12 @@ public class EEName extends ECommand<EverEssentials> {
 	
 	private void commandNames(CommandSource staff, GameProfile gameprofile) {
 		Optional<MojangService> service = this.plugin.getEverAPI().getManagerService().getMojangService();
-		if(service.isPresent()) {
+		if (service.isPresent()) {
 			try {
 				List<Text> lists = new ArrayList<Text>();
 		
-				for(NameHistory name : service.get().getNameHistory().get(gameprofile.getUniqueId())) {
-					if(!name.getDate().isPresent()) {
+				for (NameHistory name : service.get().getNameHistory().get(gameprofile.getUniqueId())) {
+					if (!name.getDate().isPresent()) {
 						lists.add(EChat.of(EEMessages.NAMES_OTHERS_LINE_ORIGINAL.get()
 								.replaceAll("<name>", name.getName())));
 					} else {
@@ -191,7 +191,7 @@ public class EEName extends ECommand<EverEssentials> {
 					}
 				}
 				
-				if(lists.size() <= 1) {
+				if (lists.size() <= 1) {
 					lists.clear();
 					lists.add(EChat.of(EEMessages.NAMES_OTHERS_EMPTY.get()
 							.replaceAll("<player>", gameprofile.getName().get())));

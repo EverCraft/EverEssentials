@@ -71,11 +71,11 @@ public class EESpawnMob extends EReloadCommand<EverEssentials> {
 	
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		List<String> suggests = new ArrayList<String>();
-		if(args.size() == 1){
-			for(UtilsEntity type : UtilsEntity.values()){
+		if (args.size() == 1){
+			for (UtilsEntity type : UtilsEntity.values()){
 				suggests.add(type.getName());
 			}
-		} else if(args.size() == 2){
+		} else if (args.size() == 2){
 			suggests.add("1");
 			suggests.add(String.valueOf(this.limit));
 		}
@@ -86,9 +86,9 @@ public class EESpawnMob extends EReloadCommand<EverEssentials> {
 		// Résultat de la commande :
 		boolean resultat = false;
 		// Si on ne connait pas le joueur
-		if(args.size() == 1) {
+		if (args.size() == 1) {
 			// Si la source est un joueur
-			if(source instanceof EPlayer) {
+			if (source instanceof EPlayer) {
 				Optional<UtilsEntity> optEntity = UtilsEntity.get(args.get(0));
 				if (optEntity.isPresent()){
 					resultat = commandSpawnMob((EPlayer) source, optEntity.get(), 1);
@@ -99,8 +99,8 @@ public class EESpawnMob extends EReloadCommand<EverEssentials> {
 			} else {
 				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
 			}
-		} else if(args.size() == 2){
-			if(source instanceof EPlayer) {
+		} else if (args.size() == 2){
+			if (source instanceof EPlayer) {
 				Optional<UtilsEntity> optEntity = UtilsEntity.get(args.get(0));
 				if (optEntity.isPresent()){
 					try {
@@ -125,7 +125,7 @@ public class EESpawnMob extends EReloadCommand<EverEssentials> {
 	
 	public boolean commandSpawnMob(final EPlayer player, UtilsEntity utilsEntity, int amount) {
 		Optional<Vector3i> optBlock = player.getViewBlock();
-		if(optBlock.isPresent()) {
+		if (optBlock.isPresent()) {
 			Location<World> spawnLocation = player.getWorld().getLocation(optBlock.get().add(0, 1, 0));
 			for (int cpt = 0; cpt < amount; cpt++){
 				utilsEntity.spawnEntity(spawnLocation);

@@ -64,7 +64,7 @@ public class EEStop extends ECommand<EverEssentials> {
 	}
 	
 	protected List<String> getArg(final String arg){
-		if(arg.isEmpty()) {
+		if (arg.isEmpty()) {
 			return Arrays.asList();
 		}
 		return Arrays.asList(arg);
@@ -73,7 +73,7 @@ public class EEStop extends ECommand<EverEssentials> {
 	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Résultat de la commande :
 		boolean resultat = false;
-		if(args.size() == 0) {
+		if (args.size() == 0) {
 			resultat = commandStop(source);
 		} else {
 			resultat = commandStop(source, args.get(0));
@@ -83,7 +83,7 @@ public class EEStop extends ECommand<EverEssentials> {
 
 	public boolean commandStop(final CommandSource player) {
 		this.plugin.getLogger().info("Server shutdown by '" + player.getName() + "'");
-		if(player instanceof ConsoleSource) {
+		if (player instanceof ConsoleSource) {
 			this.plugin.getGame().getServer().shutdown(
 				EChat.of(this.plugin.getChat().replaceGlobal(
 					EEMessages.STOP_CONSOLE_MESSAGE.get()
@@ -99,7 +99,7 @@ public class EEStop extends ECommand<EverEssentials> {
 	
 	public boolean commandStop(final CommandSource player, String message) {
 		this.plugin.getLogger().info("Server shutdown by '" + player.getName() + "' (reason='" + message + "')");
-		if(player instanceof ConsoleSource) {
+		if (player instanceof ConsoleSource) {
 			this.plugin.getGame().getServer().shutdown(
 				EChat.of(this.plugin.getChat().replaceGlobal(
 					EEMessages.STOP_CONSOLE_MESSAGE_REASON.get()

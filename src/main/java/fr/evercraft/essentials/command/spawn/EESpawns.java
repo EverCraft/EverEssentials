@@ -79,10 +79,10 @@ public class EESpawns extends ECommand<EverEssentials> {
 		TreeMap<String, LocationSQL> spawns = new TreeMap<String, LocationSQL>(this.plugin.getManagerServices().getSpawn().getAllSQL());
 		
 		List<Text> lists = new ArrayList<Text>();
-		if(player.hasPermission(EEPermissions.DELSPAWN.get())) {
+		if (player.hasPermission(EEPermissions.DELSPAWN.get())) {
 			for (Entry<String, LocationSQL> spawn : spawns.entrySet()) {
 				Optional<World> world = spawn.getValue().getWorld();
-				if(world.isPresent()){
+				if (world.isPresent()){
 					lists.add(ETextBuilder.toBuilder(EEMessages.SPAWNS_LINE_DELETE.get())
 						.replace("<spawn>", getButtonSpawn(spawn.getKey(), spawn.getValue()))
 						.replace("<teleport>", getButtonTeleport(spawn.getKey(), spawn.getValue()))
@@ -98,7 +98,7 @@ public class EESpawns extends ECommand<EverEssentials> {
 		} else {
 			for (Entry<String, LocationSQL> spawn : spawns.entrySet()) {
 				Optional<World> world = spawn.getValue().getWorld();
-				if(world.isPresent()){
+				if (world.isPresent()){
 					lists.add(ETextBuilder.toBuilder(EEMessages.SPAWNS_LINE.get())
 						.replace("<spawn>", getButtonSpawn(spawn.getKey(), spawn.getValue()))
 						.replace("<teleport>", getButtonTeleport(spawn.getKey(), spawn.getValue()))
@@ -107,7 +107,7 @@ public class EESpawns extends ECommand<EverEssentials> {
 			}
 		}
 		
-		if(lists.size() == 0) {
+		if (lists.size() == 0) {
 			player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.SPAWNS_EMPTY.get()));
 		} else {
 			this.plugin.getEverAPI().getManagerService().getEPagination().sendTo(EEMessages.SPAWNS_TITLE.getText().toBuilder()

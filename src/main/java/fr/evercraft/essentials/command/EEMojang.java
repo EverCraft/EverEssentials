@@ -81,7 +81,7 @@ public class EEMojang extends ECommand<EverEssentials> {
 	
 	private void commandMojang(final CommandSource player) {
 		Optional<MojangService> service = this.plugin.getEverAPI().getManagerService().getMojangService();
-		if(service.isPresent()) {
+		if (service.isPresent()) {
 			try {
 				service.get().getCheck().update();
 
@@ -113,7 +113,7 @@ public class EEMojang extends ECommand<EverEssentials> {
 	public Text server(final MojangServer server) {
 		Optional<EEMessages> server_name = EEMojang.getMojangServer(server);
 		Optional<EEMessages> color_name = EEMojang.getMojangColor(server.getColor());
-		if(server_name.isPresent() && color_name.isPresent()) {
+		if (server_name.isPresent() && color_name.isPresent()) {
 			return EChat.of(EEMessages.MOJANG_LINE.get()
 					.replaceAll("<server>", server_name.get().get())
 					.replaceAll("<color>", color_name.get().get()));

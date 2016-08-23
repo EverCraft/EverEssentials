@@ -49,7 +49,7 @@ public class EEHeal extends ECommand<EverEssentials> {
 	}
 
 	public Text help(final CommandSource source) {
-		if(source.hasPermission(EEPermissions.HEAL_OTHERS.get())){
+		if (source.hasPermission(EEPermissions.HEAL_OTHERS.get())){
 			return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_PLAYER.get() + "|*]")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
@@ -63,7 +63,7 @@ public class EEHeal extends ECommand<EverEssentials> {
 	
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		List<String> suggests = null;
-		if(!(args.size() == 1 && source.hasPermission(EEPermissions.HEAL_OTHERS.get()))){
+		if (!(args.size() == 1 && source.hasPermission(EEPermissions.HEAL_OTHERS.get()))){
 			suggests = new ArrayList<String>();
 		}
 		return suggests;
@@ -73,26 +73,26 @@ public class EEHeal extends ECommand<EverEssentials> {
 		// Résultat de la commande :
 		boolean resultat = false;
 		// Si on ne connait pas le joueur
-		if(args.size() == 0) {
+		if (args.size() == 0) {
 			// Si la source est un joueur
-			if(source instanceof EPlayer) {
+			if (source instanceof EPlayer) {
 				resultat = commandHeal((EPlayer) source);
 			// La source n'est pas un joueur
 			} else {
 				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
 			}
 		// On connais le joueur
-		} else if(args.size() == 1) {
+		} else if (args.size() == 1) {
 			// Si il a la permission
-			if(source.hasPermission(EEPermissions.HEAL_OTHERS.get())){
+			if (source.hasPermission(EEPermissions.HEAL_OTHERS.get())){
 				// Pour tous les joueurs
-				if(args.get(0).equals("*")) {
+				if (args.get(0).equals("*")) {
 					resultat = commandHealAll(source);
 				// Pour un joueur
 				} else {
 					Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(args.get(0));
 					// Le joueur existe
-					if(optPlayer.isPresent()){
+					if (optPlayer.isPresent()){
 						resultat = commandHealOthers(source, optPlayer.get());
 					// Le joueur est introuvable
 					} else {
@@ -112,7 +112,7 @@ public class EEHeal extends ECommand<EverEssentials> {
 	
 	public boolean commandHeal(final EPlayer player) {
 		// Si le joueur n'est pas mort
-		if(!player.isDead()) {
+		if (!player.isDead()) {
 			player.heal();
 			player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.HEAL_PLAYER.getText()));
 			return true;
@@ -125,12 +125,12 @@ public class EEHeal extends ECommand<EverEssentials> {
 	
 	public boolean commandHealAll(final CommandSource staff) {
 		// Pour tous les joueurs connecté
-		for(EPlayer player : this.plugin.getEServer().getOnlineEPlayers()){
+		for (EPlayer player : this.plugin.getEServer().getOnlineEPlayers()){
 			// Si le joueur n'est pas mort
-			if(!player.isDead()) {
+			if (!player.isDead()) {
 				player.heal();
 				// La source et le joueur sont différent
-				if(!staff.equals(player)) {
+				if (!staff.equals(player)) {
 					player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.HEAL_OTHERS_PLAYER.get()
 							.replaceAll("<staff>", staff.getName())));
 				}
@@ -142,9 +142,9 @@ public class EEHeal extends ECommand<EverEssentials> {
 	
 	public boolean commandHealOthers(final CommandSource staff, final EPlayer player) throws CommandException {
 		// La source et le joueur sont différent
-		if(!player.equals(staff)){
+		if (!player.equals(staff)){
 			// Si le joueur n'est pas mort
-			if(!player.isDead()) {
+			if (!player.isDead()) {
 				player.heal();
 				player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.HEAL_OTHERS_PLAYER.get()
 						.replaceAll("<staff>", staff.getName())));

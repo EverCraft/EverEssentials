@@ -49,14 +49,14 @@ public class EEFlyOff extends ESubCommand<EverEssentials> {
 	
 	public List<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		List<String> suggests = new ArrayList<String>();
-		if(args.size() == 1 && source.hasPermission(EEPermissions.FLY_OTHERS.get())){
+		if (args.size() == 1 && source.hasPermission(EEPermissions.FLY_OTHERS.get())){
 			suggests = null;
 		}
 		return suggests;
 	}
 
 	public Text help(final CommandSource source) {
-		if(source.hasPermission(EEPermissions.FLY_OTHERS.get())){
+		if (source.hasPermission(EEPermissions.FLY_OTHERS.get())){
 			return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_PLAYER.get() + "]")
 						.onClick(TextActions.suggestCommand("/" + this.getName()))
 						.color(TextColors.RED)
@@ -72,18 +72,18 @@ public class EEFlyOff extends ESubCommand<EverEssentials> {
 	public boolean subExecute(final CommandSource source, final List<String> args) throws CommandException {
 		// Résultat de la commande :
 		boolean resultat = false;
-		if(args.size() == 0) {
-			if(source instanceof EPlayer) {
+		if (args.size() == 0) {
+			if (source instanceof EPlayer) {
 				resultat = commandFlyOff((EPlayer) source);
 			} else {
 				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
 			}
-		} else if(args.size() == 1) {
+		} else if (args.size() == 1) {
 			// Si il a la permission
-			if(source.hasPermission(EEPermissions.FLY_OTHERS.get())){
+			if (source.hasPermission(EEPermissions.FLY_OTHERS.get())){
 				Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(args.get(0));
 				// Le joueur existe
-				if(optPlayer.isPresent()){
+				if (optPlayer.isPresent()){
 					resultat = commandFlyOffOthers(source, optPlayer.get());
 				// Le joueur est introuvable
 				} else {
@@ -102,9 +102,9 @@ public class EEFlyOff extends ESubCommand<EverEssentials> {
 	public boolean commandFlyOff(final EPlayer player) {
 		boolean fly = player.getAllowFlight();
 		// Fly activé
-		if(fly){
-			if(!player.isCreative()){
-				if(player.setAllowFlight(false)) {
+		if (fly){
+			if (!player.isCreative()){
+				if (player.setAllowFlight(false)) {
 					player.setFlying(false);
 					player.teleportBottom();
 					player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.FLY_OFF_PLAYER.getText()));
@@ -123,12 +123,12 @@ public class EEFlyOff extends ESubCommand<EverEssentials> {
 	
 	public boolean commandFlyOffOthers(final CommandSource staff, final EPlayer player) throws CommandException {
 		// La source et le joueur sont différent
-		if(!player.equals(staff)){
+		if (!player.equals(staff)){
 			boolean fly = player.getAllowFlight();
 			// Fly activé
-			if(fly){
-				if(!player.isCreative()){
-					if(player.setAllowFlight(false)) {
+			if (fly){
+				if (!player.isCreative()){
+					if (player.setAllowFlight(false)) {
 						player.setFlying(false);
 						player.teleportBottom();
 						player.sendMessage(EEMessages.PREFIX.get() + EEMessages.FLY_OFF_OTHERS_PLAYER.get()

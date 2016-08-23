@@ -72,9 +72,9 @@ public class EEWarp extends EReloadCommand<EverEssentials> {
 	
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		List<String> suggests = new ArrayList<String>();
-		if(args.size() == 1 && source instanceof Player){
+		if (args.size() == 1 && source instanceof Player){
 			suggests.addAll(this.plugin.getManagerServices().getWarp().getAll().keySet());
-		} else if(args.size() == 2 && source.hasPermission(EEPermissions.WARP_OTHERS.get())) {
+		} else if (args.size() == 2 && source.hasPermission(EEPermissions.WARP_OTHERS.get())) {
 			suggests = null;
 		}
 		return suggests;
@@ -87,7 +87,7 @@ public class EEWarp extends EReloadCommand<EverEssentials> {
 		if (args.size() == 0) {
 			resultat = commandWarpList(source);
 		// Nom du warp connu
-		} else if(args.size() == 1) {
+		} else if (args.size() == 1) {
 			// Si la source est un joueur
 			if (source instanceof EPlayer) {
 				resultat = commandWarpTeleport((EPlayer) source, args.get(0));
@@ -95,12 +95,12 @@ public class EEWarp extends EReloadCommand<EverEssentials> {
 			} else {
 				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
 			}
-		} else if(args.size() == 2) {
+		} else if (args.size() == 2) {
 			// Si il a la permission
-			if(source.hasPermission(EEPermissions.WARP_OTHERS.get())){
+			if (source.hasPermission(EEPermissions.WARP_OTHERS.get())){
 				Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(args.get(1));
 				// Le joueur existe
-				if(optPlayer.isPresent()){
+				if (optPlayer.isPresent()){
 					resultat = commandWarpTeleportOthers(source, optPlayer.get(), args.get(0));
 				// Le joueur est introuvable
 				} else {
@@ -121,11 +121,11 @@ public class EEWarp extends EReloadCommand<EverEssentials> {
 		TreeMap<String, LocationSQL> warps = new TreeMap<String, LocationSQL>(this.plugin.getManagerServices().getWarp().getAllSQL());
 		
 		List<Text> lists = new ArrayList<Text>();
-		if(player.hasPermission(EEPermissions.DELWARP.get())) {
+		if (player.hasPermission(EEPermissions.DELWARP.get())) {
 			for (Entry<String, LocationSQL> warp : warps.entrySet()) {
-				if(hasPermission(player, warp.getKey())) {
+				if (hasPermission(player, warp.getKey())) {
 					Optional<World> world = warp.getValue().getWorld();
-					if(world.isPresent()){
+					if (world.isPresent()){
 						lists.add(ETextBuilder.toBuilder(EEMessages.WARP_LIST_LINE_DELETE.get())
 							.replace("<warp>", getButtonWarp(warp.getKey(), warp.getValue()))
 							.replace("<teleport>", getButtonTeleport(warp.getKey(), warp.getValue()))
@@ -141,9 +141,9 @@ public class EEWarp extends EReloadCommand<EverEssentials> {
 			}
 		} else {
 			for (Entry<String, LocationSQL> warp : warps.entrySet()) {
-				if(hasPermission(player, warp.getKey())) {
+				if (hasPermission(player, warp.getKey())) {
 					Optional<World> world = warp.getValue().getWorld();
-					if(world.isPresent()){
+					if (world.isPresent()){
 						lists.add(ETextBuilder.toBuilder(EEMessages.WARP_LIST_LINE.get())
 							.replace("<warp>", getButtonWarp(warp.getKey(), warp.getValue()))
 							.replace("<teleport>", getButtonTeleport(warp.getKey(), warp.getValue()))
@@ -153,7 +153,7 @@ public class EEWarp extends EReloadCommand<EverEssentials> {
 			}
 		}
 		
-		if(lists.size() == 0) {
+		if (lists.size() == 0) {
 			player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.WARP_EMPTY.get()));
 		} else {
 			this.plugin.getEverAPI().getManagerService().getEPagination().sendTo(EEMessages.WARP_LIST_TITLE.getText().toBuilder()
@@ -166,10 +166,10 @@ public class EEWarp extends EReloadCommand<EverEssentials> {
 		String name = EChat.fixLength(warp_name, this.plugin.getEverAPI().getConfigs().get("maxCaractere").getInt(16));
 		Optional<Transform<World>> warp = this.plugin.getManagerServices().getWarp().get(name);
 		// Le serveur a un warp qui porte ce nom
-		if(warp.isPresent()) {
-			if(hasPermission(player, name)) {
+		if (warp.isPresent()) {
+			if (hasPermission(player, name)) {
 				// Le joueur a bien été téléporter au warp
-				if(player.teleportSafe(warp.get())){
+				if (player.teleportSafe(warp.get())){
 					player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
 							.append(EEMessages.WARP_TELEPORT_PLAYER.get())
 							.replace("<warp>", getButtonWarp(name, warp.get()))
@@ -198,9 +198,9 @@ public class EEWarp extends EReloadCommand<EverEssentials> {
 		String name = EChat.fixLength(warp_name, this.plugin.getEverAPI().getConfigs().get("maxCaractere").getInt(16));
 		Optional<Transform<World>> warp = this.plugin.getManagerServices().getWarp().get(name);
 		// Le serveur a un warp qui porte ce nom
-		if(warp.isPresent()) {
+		if (warp.isPresent()) {
 			// Le joueur a bien été téléporter au warp
-			if(player.teleportSafe(warp.get())){
+			if (player.teleportSafe(warp.get())){
 				player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
 						.append(EEMessages.WARP_TELEPORT_OTHERS_PLAYER.get()
 								.replaceAll("<staff>", staff.getName()))

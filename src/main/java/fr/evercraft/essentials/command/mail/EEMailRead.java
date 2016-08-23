@@ -66,17 +66,17 @@ public class EEMailRead extends ESubCommand<EverEssentials> {
 	public boolean subExecute(final CommandSource source, final List<String> args) {
 		// Résultat de la commande :
 		boolean resultat = false;
-		if(args.size() == 0){
+		if (args.size() == 0){
 			// Si la source est un joueur
-			if(source instanceof EPlayer) {
+			if (source instanceof EPlayer) {
 				resultat = commandRead((EPlayer) source);
 			// La source n'est pas un joueur
 			} else {
 				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
 			}
-		} else if(args.size() == 1){
+		} else if (args.size() == 1){
 			// Si la source est un joueur
-			if(source instanceof EPlayer) {
+			if (source instanceof EPlayer) {
 				resultat = commandRead((EPlayer) source, args.get(0));
 			// La source n'est pas un joueur
 			} else {
@@ -94,22 +94,22 @@ public class EEMailRead extends ESubCommand<EverEssentials> {
 
 	private boolean commandRead(EPlayer player) {
 		Set<Mail> mails = player.getMails();
-		if(mails.size() == 0) {
+		if (mails.size() == 0) {
 			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.MAIL_READ_EMPTY.get());
 		} else {
 			List<Text> lists = new ArrayList<Text>();
 			
 			TreeMap<Long, Mail> noread = new TreeMap<Long, Mail>();
 			TreeMap<Long, Mail> read = new TreeMap<Long, Mail>();
-			for(Mail mail : mails) {
-				if(mail.isRead()) {
+			for (Mail mail : mails) {
+				if (mail.isRead()) {
 					read.put(mail.getDateTime(), mail);
 				} else {
 					noread.put(mail.getDateTime(), mail);
 				}
 			}
 			
-			for(Mail mail : noread.descendingMap().values()) {
+			for (Mail mail : noread.descendingMap().values()) {
 				lists.add(ETextBuilder.toBuilder(EEMessages.MAIL_READ_LINE_NO_READ.get()
 							.replaceAll("<player>", mail.getToName())
 							.replaceAll("<time>", this.plugin.getEverAPI().getManagerUtils().getDate().parseTime(mail.getDateTime()))
@@ -120,7 +120,7 @@ public class EEMailRead extends ESubCommand<EverEssentials> {
 						.build());
 			}
 			
-			for(Mail mail : read.descendingMap().values()) {
+			for (Mail mail : read.descendingMap().values()) {
 				lists.add(ETextBuilder.toBuilder(EEMessages.MAIL_READ_LINE_READ.get()
 							.replaceAll("<player>", mail.getToName())
 							.replaceAll("<time>", this.plugin.getEverAPI().getManagerUtils().getDate().parseTime(mail.getDateTime()))
@@ -140,8 +140,8 @@ public class EEMailRead extends ESubCommand<EverEssentials> {
 	private boolean commandRead(EPlayer player, String id_string) {
 		try {
 			Optional<Mail> mail = player.getMail(Integer.parseInt(id_string));
-			if(mail.isPresent()) {
-				if(player.readMail(mail.get())) {
+			if (mail.isPresent()) {
+				if (player.readMail(mail.get())) {
 					BookView.Builder book = BookView.builder();
 					book = book.addPage(mail.get().getText());
 					player.sendBookView(book.build());

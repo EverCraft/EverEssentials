@@ -91,7 +91,7 @@ public class EETime extends ECommand<EverEssentials> {
 			suggests.add("4000");
 		} else if (args.size() == 2) {
 			for (World world : this.plugin.getEServer().getWorlds()) {
-				if(world.getProperties().getDimensionType().equals(DimensionTypes.OVERWORLD)) {
+				if (world.getProperties().getDimensionType().equals(DimensionTypes.OVERWORLD)) {
 					suggests.add(world.getName());
 				}
 			}
@@ -125,7 +125,7 @@ public class EETime extends ECommand<EverEssentials> {
 			}
 		// On connais le joueur
 		} else if (args.size() == 2) {
-			if(args.get(1).equals("*")){
+			if (args.get(1).equals("*")){
 				resultat = commandTimeSetAll(source, parseTime(args.get(0)));
 			} else {
 				Optional<World> optWorld = this.plugin.getEServer().getWorld(args.get(1));
@@ -153,7 +153,7 @@ public class EETime extends ECommand<EverEssentials> {
 	}
 	
 	private boolean commandTimeSet(final CommandSource player, final Optional<Long> time, final World world) {
-		if(time.isPresent()) {
+		if (time.isPresent()) {
 			setWorldTime(world.getProperties(), time.get());
 			player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.TIME_SET_WORLD.get()
 					.replaceAll("<world>", world.getName())
@@ -167,9 +167,9 @@ public class EETime extends ECommand<EverEssentials> {
 	}
 	
 	private boolean commandTimeSetAll(final CommandSource player, final Optional<Long> time) {
-		if(time.isPresent()) {
+		if (time.isPresent()) {
 			for (World world : this.plugin.getEServer().getWorlds()) {
-				if(world.getProperties().getDimensionType().equals(DimensionTypes.OVERWORLD)) {
+				if (world.getProperties().getDimensionType().equals(DimensionTypes.OVERWORLD)) {
 					setWorldTime(world.getProperties(), time.get());
 				}
 			}
@@ -188,20 +188,20 @@ public class EETime extends ECommand<EverEssentials> {
 	}
 	
 	public Optional<Long> parseTime(final String arg){
-		if(arg.equalsIgnoreCase("day")) {
+		if (arg.equalsIgnoreCase("day")) {
 			return Optional.of(TIME_DAY);
-		} else if(arg.equalsIgnoreCase("night")) {
+		} else if (arg.equalsIgnoreCase("night")) {
 			return Optional.of(TIME_NIGHT);
-		} else if(arg.equalsIgnoreCase("dawn")) {
+		} else if (arg.equalsIgnoreCase("dawn")) {
 			return Optional.of(TIME_DAWN);
-		} else if(arg.contains(":")) {
+		} else if (arg.contains(":")) {
 			String args[] = arg.split(":", 2);
-			if(args.length == 2) {
+			if (args.length == 2) {
 				return parseTime(args[0], args[1]);
 			}
-		} else if(arg.contains("h")) {
+		} else if (arg.contains("h")) {
 			String args[] = arg.split("h", 2);
-			if(args.length == 2) {
+			if (args.length == 2) {
 				return parseTime(args[0], args[1]);
 			}
 		} else {
@@ -218,10 +218,10 @@ public class EETime extends ECommand<EverEssentials> {
 		try {
 			Integer hours = Integer.parseInt(name_hours);
 			Integer minutes = Integer.parseInt(name_minutes);
-			if(hours >= 0 && hours <= 23 && minutes >= 0 && minutes <= 59) {
+			if (hours >= 0 && hours <= 23 && minutes >= 0 && minutes <= 59) {
 				Double time = (hours * DIFF_HOURS_TIME) + (minutes * DIFF_MINUTES_TIME);
 				time = time + DIFF_TIME;
-				if(time < 0) {
+				if (time < 0) {
 					time = MAX_TIME + time;
 				}
 				return Optional.of(time.longValue());

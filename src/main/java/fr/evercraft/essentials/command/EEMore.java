@@ -65,9 +65,9 @@ public class EEMore extends ECommand<EverEssentials> {
 		boolean resultat = false;
 		
 		// Si on ne connait pas le joueur
-		if(args.size() == 0) {
+		if (args.size() == 0) {
 			// Si la source est un joueur
-			if(source instanceof EPlayer) {
+			if (source instanceof EPlayer) {
 				resultat = commandMore((EPlayer) source);
 			// La source n'est pas un joueur
 			} else {
@@ -82,17 +82,17 @@ public class EEMore extends ECommand<EverEssentials> {
 	
 	public boolean commandMore(final EPlayer player) {
 		// Si le joueur a bien un item dans la main
-		if(player.getItemInMainHand().isPresent()) {
+		if (player.getItemInMainHand().isPresent()) {
 			ItemStack item = player.getItemInMainHand().get();
 			
 			Integer max = item.getMaxStackQuantity();
-			/*if(player.hasPermission(EEPermissions.MORE_UNLIMITED"))) {
+			/*if (player.hasPermission(EEPermissions.MORE_UNLIMITED"))) {
 				max = 64;
 			} else {
 				max = item.getMaxStackQuantity();
 			}*/
 			
-			if(item.getQuantity() < max) {
+			if (item.getQuantity() < max) {
 				item.setQuantity(max);
 				player.setItemInMainHand(item);		
 				player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())

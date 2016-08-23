@@ -54,7 +54,7 @@ public class EEWorldsEnd extends ECommand<EverEssentials> {
 
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		List<String> suggests = null;
-		if(!(args.size() == 1 && source.hasPermission(EEPermissions.WORLDS_OTHERS.get()))){
+		if (!(args.size() == 1 && source.hasPermission(EEPermissions.WORLDS_OTHERS.get()))){
 			suggests = new ArrayList<String>();
 		}
 		return suggests;

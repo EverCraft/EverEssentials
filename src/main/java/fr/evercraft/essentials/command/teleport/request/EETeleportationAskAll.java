@@ -52,7 +52,7 @@ public class EETeleportationAskAll extends ECommand<EverEssentials> {
 	}
 
 	public Text help(final CommandSource source) {
-		if(source.hasPermission(EEPermissions.TPAALL_OTHERS.get())){
+		if (source.hasPermission(EEPermissions.TPAALL_OTHERS.get())){
 			return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_PLAYER.get() + "]")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
@@ -66,7 +66,7 @@ public class EETeleportationAskAll extends ECommand<EverEssentials> {
 	
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		List<String> suggests = new ArrayList<String>();
-		if(args.size() == 1 && source.hasPermission(EEPermissions.TPAALL_OTHERS.get())){
+		if (args.size() == 1 && source.hasPermission(EEPermissions.TPAALL_OTHERS.get())){
 			suggests = null;
 		}
 		return suggests;
@@ -76,20 +76,20 @@ public class EETeleportationAskAll extends ECommand<EverEssentials> {
 		// Résultat de la commande :
 		boolean resultat = false;
 		// Si connait que la location ou aussi peut être le monde
-		if(args.size() == 0) {
+		if (args.size() == 0) {
 			// Si la source est bien un joueur
-			if(source instanceof EPlayer) {
+			if (source instanceof EPlayer) {
 				resultat = commandTeleportationAskAll((EPlayer) source);
 			// Si la source est une console ou un commande block
 			} else {
 				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
 			}
-		} else if(args.size() == 1) {
+		} else if (args.size() == 1) {
 			// Si il a la permission
-			if(source.hasPermission(EEPermissions.TPAALL_OTHERS.get())) {
+			if (source.hasPermission(EEPermissions.TPAALL_OTHERS.get())) {
 				Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(args.get(0));
 				// Le joueur existe
-				if(optPlayer.isPresent()){
+				if (optPlayer.isPresent()){
 					resultat = commandTeleportationAskAllOthers(source, optPlayer.get());
 				// Joueur introuvable
 				} else {
@@ -107,17 +107,17 @@ public class EETeleportationAskAll extends ECommand<EverEssentials> {
 	}
 	
 	private boolean commandTeleportationAskAll(EPlayer staff) {
-		if(this.plugin.getEServer().getOnlinePlayers().size() > 1) {
+		if (this.plugin.getEServer().getOnlinePlayers().size() > 1) {
 			Transform<World> location = staff.getTransform();
 			
-			if(this.plugin.getEverAPI().getManagerUtils().getLocation().isPositionSafe(location)) {
+			if (this.plugin.getEverAPI().getManagerUtils().getLocation().isPositionSafe(location)) {
 				long delay = this.plugin.getConfigs().getTpaAcceptCancellation();
 				String delay_format = this.plugin.getEverAPI().getManagerUtils().getDate().formatDateDiff(System.currentTimeMillis() + delay);
 				
-				for(EPlayer player : this.plugin.getEServer().getOnlineEPlayers()) {
-					if(!staff.equals(player)) {
-						if(player.isToggle()) {
-							if(player.addTeleportAskHere(staff.getUniqueId(), delay, location)) {							
+				for (EPlayer player : this.plugin.getEServer().getOnlineEPlayers()) {
+					if (!staff.equals(player)) {
+						if (player.isToggle()) {
+							if (player.addTeleportAskHere(staff.getUniqueId(), delay, location)) {							
 								player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.getText())
 											.append(EEMessages.TPAHERE_PLAYER_QUESTION.get()
 												.replaceAll("<player>", staff.getName())
@@ -141,10 +141,10 @@ public class EETeleportationAskAll extends ECommand<EverEssentials> {
 	}
 
 	private boolean commandTeleportationAskAllOthers(CommandSource staff, EPlayer destination) {
-		if(!destination.equals(staff)) {
-			if(this.plugin.getEServer().getOnlinePlayers().size() > 1) {
+		if (!destination.equals(staff)) {
+			if (this.plugin.getEServer().getOnlinePlayers().size() > 1) {
 				Transform<World> location = destination.getTransform();
-				if(this.plugin.getEverAPI().getManagerUtils().getLocation().isPositionSafe(location)) {
+				if (this.plugin.getEverAPI().getManagerUtils().getLocation().isPositionSafe(location)) {
 					long delay = this.plugin.getConfigs().getTpaAcceptCancellation();
 					String delay_format = this.plugin.getEverAPI().getManagerUtils().getDate().formatDateDiff(System.currentTimeMillis() + delay);
 					
@@ -153,10 +153,10 @@ public class EETeleportationAskAll extends ECommand<EverEssentials> {
 					destination.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.TPAALL_OTHERS_PLAYER.get()
 							.replaceAll("<staff>", staff.getName())));
 					
-					for(EPlayer player : this.plugin.getEServer().getOnlineEPlayers()) {
-						if(!destination.equals(player)) {
-							if(player.isToggle()) {
-								if(player.addTeleportAskHere(destination.getUniqueId(), delay, location)) {							
+					for (EPlayer player : this.plugin.getEServer().getOnlineEPlayers()) {
+						if (!destination.equals(player)) {
+							if (player.isToggle()) {
+								if (player.addTeleportAskHere(destination.getUniqueId(), delay, location)) {							
 									player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.getText())
 												.append(EEMessages.TPAHERE_PLAYER_QUESTION.get()
 													.replaceAll("<player>", destination.getName())

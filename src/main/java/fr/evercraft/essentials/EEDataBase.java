@@ -601,7 +601,7 @@ public class EEDataBase extends EDataBase<EverEssentials> {
 			preparedStatement.executeUpdate();
 			
 			ResultSet tableKeys = preparedStatement.getGeneratedKeys();
-			if(tableKeys.next()) {
+			if (tableKeys.next()) {
 				subject.addMail(new EMail(this.plugin, tableKeys.getInt(1), datetime.getTime(), to, false, message));
 				this.plugin.getLogger().debug("Adding to the database : ("
 								+ "id='" + tableKeys.getInt(1) + "';"
@@ -703,7 +703,7 @@ public class EEDataBase extends EDataBase<EverEssentials> {
 				sendMail(connection, datetime, identifier, list.getString("uuid"), message);
 			}
 			
-			for(EUserSubject subject : this.plugin.getManagerServices().getEssentials().getAll()) {
+			for (EUserSubject subject : this.plugin.getManagerServices().getEssentials().getAll()) {
 				subject.loadMails(connection);
 			}
     	} catch (SQLException e) {

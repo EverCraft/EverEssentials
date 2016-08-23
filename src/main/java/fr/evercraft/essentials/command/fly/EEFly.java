@@ -56,7 +56,7 @@ public class EEFly extends EParentCommand<EverEssentials> {
 		boolean resultat = false;
 				
 		// Si la source est un joueur
-		if(source instanceof EPlayer) {
+		if (source instanceof EPlayer) {
 			resultat = this.commandFly((EPlayer) source);
 		// La source n'est pas un joueur
 		} else {
@@ -68,9 +68,9 @@ public class EEFly extends EParentCommand<EverEssentials> {
 	
 	private boolean commandFly(final EPlayer player) {
 		boolean fly = !player.getAllowFlight();
-		if(!(player.isCreative() && !fly)) {
-			if(player.setAllowFlight(fly)) {
-				if(fly) {
+		if (!(player.isCreative() && !fly)) {
+			if (player.setAllowFlight(fly)) {
+				if (fly) {
 					player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.FLY_ON_PLAYER.getText()));
 				} else {
 					player.setFlying(false);
@@ -79,7 +79,7 @@ public class EEFly extends EParentCommand<EverEssentials> {
 				}
 				return true;
 			} else {
-				if(fly) {
+				if (fly) {
 					player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.FLY_ON_PLAYER_CANCEL.getText()));
 				} else {
 					player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.FLY_OFF_PLAYER_CANCEL.getText()));

@@ -60,7 +60,7 @@ public class EEMe extends ECommand<EverEssentials> {
 	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Résultat de la commande :
 		boolean resultat = false;
-		if(args.size() > 0) {
+		if (args.size() > 0) {
 			// Si la source est un joueur
 			if (source instanceof EPlayer) {
 				resultat = commandMe((EPlayer) source, getMessage(args));

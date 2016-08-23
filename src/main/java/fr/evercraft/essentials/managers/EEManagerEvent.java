@@ -49,14 +49,14 @@ public class EEManagerEvent {
 	
 	public boolean afk(UUID uuid, boolean value, AfkEvent.Action action) {
 		Optional<EPlayer> player = this.plugin.getEServer().getEPlayer(uuid);
-		if(player.isPresent()) {
+		if (player.isPresent()) {
 			return this.afk(player.get(), value, action);
 		}
 		return false;
 	}
 	
 	public boolean afk(final EPlayer player, final boolean value, final AfkEvent.Action action) {
-		if(value) {
+		if (value) {
 			this.plugin.getLogger().debug("Event AfkEvent.Enable : (UUID='" + player.getIdentifier() + "';value='" + value + "';Action='" + action.name() +"')");
 			return this.plugin.getGame().getEventManager().post(new EAfkEnableEvent(player, action, this.getCause()));
 		} else {
@@ -71,14 +71,14 @@ public class EEManagerEvent {
 	
 	public boolean toggle(UUID uuid, boolean value) {
 		Optional<EPlayer> player = this.plugin.getEServer().getEPlayer(uuid);
-		if(player.isPresent()) {
+		if (player.isPresent()) {
 			return this.toggle(player.get(), value);
 		}
 		return false;
 	}
 	
 	public boolean toggle(final EPlayer player, final boolean value) {
-		if(value) {
+		if (value) {
 			this.plugin.getLogger().debug("Event ToogleEvent.Enable : (UUID='" + player.getIdentifier() + "';value='" + value + "')");
 			return this.plugin.getGame().getEventManager().post(new EToggleEnableEvent(player, this.getCause()));
 		} else {
@@ -93,14 +93,14 @@ public class EEManagerEvent {
 	
 	public boolean freeze(UUID uuid, boolean value) {
 		Optional<EPlayer> player = this.plugin.getEServer().getEPlayer(uuid);
-		if(player.isPresent()) {
+		if (player.isPresent()) {
 			return this.freeze(player.get(), value);
 		}
 		return false;
 	}
 	
 	public boolean freeze(final EPlayer player, final boolean value) {
-		if(value) {
+		if (value) {
 			this.plugin.getLogger().debug("Event FreezeEvent.Enable : (UUID='" + player.getIdentifier() + "';value='" + value + "')");
 			return this.plugin.getGame().getEventManager().post(new EFreezeEnableEvent(player, this.getCause()));
 		} else {
@@ -115,14 +115,14 @@ public class EEManagerEvent {
 	
 	public boolean god(UUID uuid, boolean value) {
 		Optional<EPlayer> player = this.plugin.getEServer().getEPlayer(uuid);
-		if(player.isPresent()) {
+		if (player.isPresent()) {
 			return this.god(player.get(), value);
 		}
 		return false;
 	}
 	
 	public boolean god(final EPlayer player, final boolean value) {
-		if(value) {
+		if (value) {
 			this.plugin.getLogger().debug("Event GodEvent.Enable : (UUID='" + player.getIdentifier() + "';value='" + value + "')");
 			return this.plugin.getGame().getEventManager().post(new EGodEnableEvent(player, this.getCause()));
 		} else {
@@ -137,14 +137,14 @@ public class EEManagerEvent {
 	
 	public boolean vanish(UUID uuid, boolean value) {
 		Optional<EPlayer> player = this.plugin.getEServer().getEPlayer(uuid);
-		if(player.isPresent()) {
+		if (player.isPresent()) {
 			return this.vanish(player.get(), value);
 		}
 		return false;
 	}
 	
 	public boolean vanish(final EPlayer player, final boolean value) {
-		if(value) {
+		if (value) {
 			this.plugin.getLogger().debug("Event VanishEvent.Enable : (UUID='" + player.getIdentifier() + "';value='" + value + "')");
 			return this.plugin.getGame().getEventManager().post(new EVanishEnableEvent(player, this.getCause()));
 		} else {
@@ -159,7 +159,7 @@ public class EEManagerEvent {
 	
 	public boolean mail(UUID uuid, final CommandSource source, final String message) {
 		Optional<EPlayer> player = this.plugin.getEServer().getEPlayer(uuid);
-		if(player.isPresent()) {
+		if (player.isPresent()) {
 			return this.mail(player.get(), source, message);
 		}
 		return false;
@@ -172,17 +172,17 @@ public class EEManagerEvent {
 	
 	public boolean mail(UUID uuid, final Mail mail, final MailEvent.Action action) {
 		Optional<EPlayer> player = this.plugin.getEServer().getEPlayer(uuid);
-		if(player.isPresent()) {
+		if (player.isPresent()) {
 			return this.mail(player.get(), mail, action);
 		}
 		return false;
 	}
 	
 	public boolean mail(final EPlayer player, final Mail mail, final MailEvent.Action action) {
-		if(action.equals(MailEvent.Action.REMOVE)) {
+		if (action.equals(MailEvent.Action.REMOVE)) {
 			this.plugin.getLogger().debug("Event MailEvent.Remove : (UUID='" + player.getIdentifier() + "';mail='" + mail + "')");
 			return this.plugin.getGame().getEventManager().post(new EMailRemoveEvent(player, mail, this.getCause()));
-		} else if(action.equals(MailEvent.Action.READ)) {
+		} else if (action.equals(MailEvent.Action.READ)) {
 			this.plugin.getLogger().debug("Event MailEvent.Read : (UUID='" + player.getIdentifier() + "';mail='" + mail + "')");
 			return this.plugin.getGame().getEventManager().post(new EMailReadEvent(player, mail, this.getCause()));
 		}
@@ -195,7 +195,7 @@ public class EEManagerEvent {
 	
 	public boolean back(UUID uuid, final Optional<Transform<World>> before, final Optional<Transform<World>> after) {
 		Optional<EPlayer> player = this.plugin.getEServer().getEPlayer(uuid);
-		if(player.isPresent()) {
+		if (player.isPresent()) {
 			return this.back(player.get(), before, after);
 		}
 		return false;
@@ -212,7 +212,7 @@ public class EEManagerEvent {
 	
 	public boolean homeAdd(UUID uuid, final String name, final Transform<World> location) {
 		Optional<EPlayer> player = this.plugin.getEServer().getEPlayer(uuid);
-		if(player.isPresent()) {
+		if (player.isPresent()) {
 			return this.homeAdd(player.get(), name, location);
 		}
 		return false;
@@ -225,7 +225,7 @@ public class EEManagerEvent {
 	
 	public boolean homeRemove(UUID uuid, final String name, final Optional<Transform<World>> location) {
 		Optional<EPlayer> player = this.plugin.getEServer().getEPlayer(uuid);
-		if(player.isPresent()) {
+		if (player.isPresent()) {
 			return this.homeRemove(player.get(), name, location);
 		}
 		return false;
@@ -238,7 +238,7 @@ public class EEManagerEvent {
 	
 	public boolean homeMove(UUID uuid, final String name, final Optional<Transform<World>> before, final Transform<World> after) {
 		Optional<EPlayer> player = this.plugin.getEServer().getEPlayer(uuid);
-		if(player.isPresent()) {
+		if (player.isPresent()) {
 			return this.homeMove(player.get(), name, before, after);
 		}
 		return false;
@@ -255,17 +255,17 @@ public class EEManagerEvent {
 	
 	public boolean ignore(final UUID uuid, final UUID ignore, final IgnoreEvent.Action action) {
 		Optional<EPlayer> player = this.plugin.getEServer().getEPlayer(uuid);
-		if(player.isPresent()) {
+		if (player.isPresent()) {
 			return this.ignore(player.get(), ignore, action);
 		}
 		return false;
 	}
 	
 	public boolean ignore(final EPlayer player, final UUID ignore, final IgnoreEvent.Action action) {
-		if(action.equals(IgnoreEvent.Action.ADD)) {
+		if (action.equals(IgnoreEvent.Action.ADD)) {
 			this.plugin.getLogger().debug("Event IgnoreEvent.Add : (UUID='" + player.getIdentifier() + "';ignore='" + ignore + "')");
 			return this.plugin.getGame().getEventManager().post(new EIgnoreAddEvent(player, ignore, this.getCause()));
-		} else if(action.equals(IgnoreEvent.Action.REMOVE)) {
+		} else if (action.equals(IgnoreEvent.Action.REMOVE)) {
 			this.plugin.getLogger().debug("Event IgnoreEvent.Remove : (UUID='" + player.getIdentifier() + "';ignore='" + ignore + "')");
 			return this.plugin.getGame().getEventManager().post(new EIgnoreRemoveEvent(player, ignore, this.getCause()));
 		}

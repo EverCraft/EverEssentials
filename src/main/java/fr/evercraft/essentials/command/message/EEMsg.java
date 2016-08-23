@@ -62,9 +62,9 @@ public class EEMsg extends ECommand<EverEssentials> {
 	
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		List<String> suggests = new ArrayList<String>();
-		if(args.size() == 1) {
-			for(EPlayer player : this.plugin.getEServer().getOnlineEPlayers()) {
-				if(!player.equals(source)) {
+		if (args.size() == 1) {
+			for (EPlayer player : this.plugin.getEServer().getOnlineEPlayers()) {
+				if (!player.equals(source)) {
 					suggests.add(player.getName());
 				}
 			}
@@ -76,7 +76,7 @@ public class EEMsg extends ECommand<EverEssentials> {
 	protected List<String> getArg(final String arg) {
 		List<String> args = super.getArg(arg);
 		// Le message est transformer en un seul argument
-		if(args.size() > 2) {
+		if (args.size() > 2) {
 			List<String> args_send = new ArrayList<String>();
 			args_send.add(args.get(0));
 			args_send.add(Pattern.compile("^[ \"]*" + args.get(0) + "[ \"][ ]*").matcher(arg).replaceAll(""));
@@ -88,19 +88,19 @@ public class EEMsg extends ECommand<EverEssentials> {
 	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Résultat de la commande :
 		boolean resultat = false;
-		if(args.size() == 2) {
+		if (args.size() == 2) {
 			String message = EEMsg.replaceMessage(this.plugin.getChat(), source, args.get(1));
 			
 			// Le destinataire est la console
-			if(args.get(0).equalsIgnoreCase(EEMsg.CONSOLE)) {
+			if (args.get(0).equalsIgnoreCase(EEMsg.CONSOLE)) {
 				// La source est un joueur
-				if(source instanceof EPlayer) {
+				if (source instanceof EPlayer) {
 					resultat = this.commandMsgConsole((EPlayer) source, this.plugin.getEServer().getConsole(), message);
 				// La source est la console
-				} else if(this.plugin.getEServer().getConsole().equals(source)) {
+				} else if (this.plugin.getEServer().getConsole().equals(source)) {
 					source.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.MSG_CONSOLE_ERROR.getText()));
 				// La source est un commande block
-				} else if(source.getIdentifier().equals("@")) {
+				} else if (source.getIdentifier().equals("@")) {
 					resultat = this.commandMsgCommandBloc(source, this.plugin.getEServer().getConsole(), message);
 				// La source est inconnue
 				} else {
@@ -110,15 +110,15 @@ public class EEMsg extends ECommand<EverEssentials> {
 			} else {
 				Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(args.get(0));
 				// Le joueur existe
-				if(optPlayer.isPresent()) {
+				if (optPlayer.isPresent()) {
 					// La source est un joueur
-					if(source instanceof EPlayer) {
+					if (source instanceof EPlayer) {
 						resultat = commandMsgPlayer((EPlayer) source, optPlayer.get(), message);
 					// La source est la console
-					} else if(this.plugin.getGame().getServer().getConsole().equals(source)) {
+					} else if (this.plugin.getGame().getServer().getConsole().equals(source)) {
 						resultat = commandMsgConsole(source, optPlayer.get(), args.get(1));
 					// La source est un commande block
-					} else if(source.getIdentifier().equals("@")) {
+					} else if (source.getIdentifier().equals("@")) {
 						resultat = this.commandMsgCommandBloc(source, optPlayer.get(), message);
 					// La source est inconnue
 					} else {
@@ -221,19 +221,19 @@ public class EEMsg extends ECommand<EverEssentials> {
 	}
 	
 	public static String replaceMessage(final EChat chat, final Subject player, String message) {
-		if(!player.hasPermission(EEPermissions.MSG_COLOR.get())) {
+		if (!player.hasPermission(EEPermissions.MSG_COLOR.get())) {
 			message = message.replaceAll(EChat.REGEX_COLOR, "");
 		}
-		if(!player.hasPermission(EEPermissions.MSG_FORMAT.get())) {
+		if (!player.hasPermission(EEPermissions.MSG_FORMAT.get())) {
 			message = message.replaceAll(EChat.REGEX_FORMAT, "");
 		}
-		if(!player.hasPermission(EEPermissions.MSG_MAGIC.get())) {
+		if (!player.hasPermission(EEPermissions.MSG_MAGIC.get())) {
 			message = message.replaceAll(EChat.REGEX_MAGIC, "");
 		}
-		if(player.hasPermission(EEPermissions.MSG_CHARACTER.get())) {
+		if (player.hasPermission(EEPermissions.MSG_CHARACTER.get())) {
 			message = chat.replaceCharacter(message);
 		}
-		if(player.hasPermission(EEPermissions.MSG_ICONS.get())) {
+		if (player.hasPermission(EEPermissions.MSG_ICONS.get())) {
 			message = chat.replaceIcons(message);
 		}
 		return message;

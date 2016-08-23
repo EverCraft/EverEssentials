@@ -61,7 +61,7 @@ public class EEHat extends ECommand<EverEssentials> {
 	
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		List<String> suggests = new ArrayList<String>();
-		if(args.size() == 1){
+		if (args.size() == 1){
 			suggests.add("remove");
 		}
 		return suggests;
@@ -106,7 +106,7 @@ public class EEHat extends ECommand<EverEssentials> {
 						.build());
 			// Le joueur peut avoir l'ojet sur la tête
 			} else {
-				if(player.getHelmet().isPresent()) {
+				if (player.getHelmet().isPresent()) {
 					player.giveItemAndDrop(player.getHelmet().get());
 				}
 				
@@ -134,7 +134,7 @@ public class EEHat extends ECommand<EverEssentials> {
 	
 	public boolean commandHatRemove(final EPlayer player) {
 		// Le joueur a un objet sur la tête
-		if(player.getHelmet().isPresent() && player.getHelmet().get().getItem().getBlock().isPresent()) {
+		if (player.getHelmet().isPresent() && player.getHelmet().get().getItem().getBlock().isPresent()) {
 			ItemStack item = player.getHelmet().get();
 			player.setHelmet(null);
 			player.giveItemAndDrop(item);

@@ -63,7 +63,7 @@ public class EEWhitelistList extends ESubCommand<EverEssentials> {
 	public boolean subExecute(final CommandSource source, final List<String> args) {
 		// Résultat de la commande :
 		boolean resultat = false;
-		if(args.size() == 0) {
+		if (args.size() == 0) {
 			resultat = commandWhitelistList(source);
 		} else {
 			source.sendMessage(this.help(source));
@@ -73,12 +73,12 @@ public class EEWhitelistList extends ESubCommand<EverEssentials> {
 
 	private boolean commandWhitelistList(final CommandSource player) {
 		Optional<WhitelistService> optWhitelist = this.plugin.getEverAPI().getManagerService().getWhitelist();
-		if(optWhitelist.isPresent()){
+		if (optWhitelist.isPresent()){
 			List<Text> lists = new ArrayList<Text>();
 			WhitelistService whitelist = optWhitelist.get();
-			if(!whitelist.getWhitelistedProfiles().isEmpty()){
-				if(player.hasPermission(EEPermissions.WHITELIST_MANAGE.get())) {
-					for(GameProfile profile : whitelist.getWhitelistedProfiles()) {
+			if (!whitelist.getWhitelistedProfiles().isEmpty()){
+				if (player.hasPermission(EEPermissions.WHITELIST_MANAGE.get())) {
+					for (GameProfile profile : whitelist.getWhitelistedProfiles()) {
 						String name = profile.getName().orElse(profile.getUniqueId().toString());
 						lists.add(ETextBuilder.toBuilder(EEMessages.WHITELIST_LIST_LINE_DELETE.get()
 									.replaceAll("<player>", name))
@@ -86,7 +86,7 @@ public class EEWhitelistList extends ESubCommand<EverEssentials> {
 								.build());
 					}
 				} else {
-					for(GameProfile profile : whitelist.getWhitelistedProfiles()) {
+					for (GameProfile profile : whitelist.getWhitelistedProfiles()) {
 						lists.add(EChat.of(EEMessages.WHITELIST_LIST_LINE.get()
 									.replaceAll("<player>", profile.getName().orElse(profile.getUniqueId().toString()))));
 						}

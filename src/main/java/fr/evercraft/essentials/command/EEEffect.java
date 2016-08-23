@@ -144,7 +144,7 @@ public class EEEffect extends EReloadCommand<EverEssentials> {
 	private boolean commandEffect(final EPlayer player, final String name_effect) {
 		Optional<UtilsEffect> effect = UtilsEffect.getEffect(name_effect);
 		// Si l'effet existe
-		if(effect.isPresent()) {
+		if (effect.isPresent()) {
 			player.addPotion(this.createPotionEffect(effect.get().getType(), this.default_amplifier, this.default_duration));
 			return true;
 		// L'effet n'existe pas

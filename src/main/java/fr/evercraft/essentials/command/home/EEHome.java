@@ -66,11 +66,11 @@ public class EEHome extends ECommand<EverEssentials> {
 	
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		List<String> suggests = new ArrayList<String>();
-		if(args.size() == 1 && source instanceof Player){
+		if (args.size() == 1 && source instanceof Player){
 			Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer((Player) source);
 			// Le joueur existe
 			if (optPlayer.isPresent()) {
-				for(String home : optPlayer.get().getHomes().keySet()){
+				for (String home : optPlayer.get().getHomes().keySet()){
 					suggests.add(home);
 				}
 			}
@@ -91,7 +91,7 @@ public class EEHome extends ECommand<EverEssentials> {
 				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
 			}
 		// Nom du home connu
-		} else if(args.size() == 1) {
+		} else if (args.size() == 1) {
 			// Si la source est un joueur
 			if (source instanceof EPlayer) {
 				resultat = commandHomeTeleport((EPlayer) source, args.get(0));
@@ -108,16 +108,16 @@ public class EEHome extends ECommand<EverEssentials> {
 	
 	public boolean commandHomeList(final EPlayer player) throws CommandException {
 		Optional<EUserSubject> subject = this.plugin.getManagerServices().getEssentials().getSubject(player.getUniqueId());
-		if(subject.isPresent()) {
+		if (subject.isPresent()) {
 			Map<String, LocationSQL> homes = subject.get().getAllHomes();
 			// Le joueur n'as pas de home
-			if(homes.size() == 0) {
+			if (homes.size() == 0) {
 				player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.HOME_EMPTY.getText()));
 			// Le joueur a un home
-			} else if(homes.size() == 1) {
+			} else if (homes.size() == 1) {
 				List<String> args = new ArrayList<String>();
 				Entry<String, LocationSQL> home = homes.entrySet().iterator().next();
-				if(home.getValue().getWorld().isPresent()) {
+				if (home.getValue().getWorld().isPresent()) {
 					args.add(homes.entrySet().iterator().next().getKey());
 					return execute(player, args);
 				} else {
@@ -128,7 +128,7 @@ public class EEHome extends ECommand<EverEssentials> {
 				List<Text> lists = new ArrayList<Text>();
 				for (Entry<String, LocationSQL> home : (new TreeMap<String, LocationSQL>(homes)).entrySet()) {
 					Optional<World> world = home.getValue().getWorld();
-					if(world.isPresent()){
+					if (world.isPresent()){
 						lists.add(ETextBuilder.toBuilder(EEMessages.HOME_LIST_LINE.get())
 							.replace("<home>", getButtonHome(home.getKey(), home.getValue()))
 							.replace("<teleport>", getButtonTeleport(home.getKey(), home.getValue()))
@@ -154,7 +154,7 @@ public class EEHome extends ECommand<EverEssentials> {
 		String name = EChat.fixLength(home_name, this.plugin.getEverAPI().getConfigs().get("maxCaractere").getInt(16));
 		Optional<Transform<World>> home = player.getHome(home_name);
 		// Le joueur a home qui porte ce nom
-		if(home.isPresent()){
+		if (home.isPresent()){
 			player.setBack();
 			player.setTransform(home.get());
 			player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.getText())

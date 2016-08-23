@@ -57,7 +57,7 @@ public class EEKick extends ECommand<EverEssentials> {
 	}
 	
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
-		if(args.size() == 1){
+		if (args.size() == 1){
 			return null;
 		}
 		return new ArrayList<String>();
@@ -66,10 +66,10 @@ public class EEKick extends ECommand<EverEssentials> {
 	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Résultat de la commande :
 		boolean resultat = false;
-		if(args.size() >= 2) {
+		if (args.size() >= 2) {
 			Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(args.get(0));
 			// Le joueur existe
-			if(optPlayer.isPresent()){
+			if (optPlayer.isPresent()){
 				args.remove(0);
 				resultat = commandKick(source, optPlayer.get(), EChat.of(getMessage(args)));
 			// Le joueur est introuvable

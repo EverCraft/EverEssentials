@@ -56,7 +56,7 @@ public class EEKickall extends ECommand<EverEssentials> {
 	}
 	
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
-		if(args.size() == 1){
+		if (args.size() == 1){
 			return null;
 		}
 		return new ArrayList<String>();
@@ -65,7 +65,7 @@ public class EEKickall extends ECommand<EverEssentials> {
 	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Résultat de la commande :
 		boolean resultat = false;
-		if(args.size() >= 1) {
+		if (args.size() >= 1) {
 			resultat = commandKick(source, EChat.of(getMessage(args)));
 		// Nombre d'argument incorrect
 		} else {
@@ -79,7 +79,7 @@ public class EEKickall extends ECommand<EverEssentials> {
 							.replaceAll("<staff>", staff.getName()))
 						.replace("<message>", message)
 						.build();
-		for(EPlayer player : this.plugin.getEServer().getOnlineEPlayers()) {
+		for (EPlayer player : this.plugin.getEServer().getOnlineEPlayers()) {
 			player.kick(raison);
 		}
 		return true;

@@ -86,15 +86,15 @@ public class EEBack extends ECommand<EverEssentials> {
 	private boolean commandBack(final EPlayer player){
 		final Optional<Transform<World>> back = player.getBack();
 		// Le joueur a une position de retour
-		if(back.isPresent()){
+		if (back.isPresent()){
 			// Si il y a la permission d'aller dans le monde
-			if(this.plugin.getManagerServices().getEssentials().hasPermissionWorld(player, back.get().getExtent())) {
+			if (this.plugin.getManagerServices().getEssentials().hasPermissionWorld(player, back.get().getExtent())) {
 				// Si la position est safe
-				if(this.plugin.getEverAPI().getManagerUtils().getLocation().isPositionSafe(back.get())) {
+				if (this.plugin.getEverAPI().getManagerUtils().getLocation().isPositionSafe(back.get()) || player.isGod() || player.isCreative()) {
 					long delay = this.plugin.getConfigs().getTeleportDelay(player);
 					
 					// Si il y a un delay de téléportation
-					if(delay > 0) {
+					if (delay > 0) {
 						player.sendMessage(EEMessages.PREFIX.get() + EEMessages.BACK_DELAY.get()
 								.replaceAll("<delay>", this.plugin.getEverAPI().getManagerUtils().getDate().formatDateDiff(System.currentTimeMillis() + delay)));
 					}
@@ -117,9 +117,9 @@ public class EEBack extends ECommand<EverEssentials> {
 	}
 	
 	private void teleport(final EPlayer player, final Transform<World> teleport) {
-		if(player.isOnline()) {
+		if (player.isOnline()) {
 			// Le joueur a bien été téléporter
-			if(player.teleportSafe(teleport)) {
+			if (player.teleportSafe(teleport)) {
 				player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.getText())
 						.append(EEMessages.BACK_TELEPORT.get())
 						.replace("<back>", getButtonLocation(teleport.getLocation()))

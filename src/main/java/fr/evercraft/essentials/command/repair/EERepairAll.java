@@ -84,19 +84,19 @@ public class EERepairAll extends ECommand<EverEssentials> {
 		UtilsInventory.repair(player.getInventory().query(Hotbar.class));
 		UtilsInventory.repair(player.getInventory().query(GridInventory.class));
 		
-		if(player.getHelmet().isPresent()){
+		if (player.getHelmet().isPresent()){
 			player.setHelmet(UtilsItemStack.repairInventory(player.getHelmet().get()));
 		}
 		
-		if(player.getChestplate().isPresent()){
+		if (player.getChestplate().isPresent()){
 			player.setChestplate(UtilsItemStack.repairInventory(player.getChestplate().get()));
 		}
 		
-		if(player.getLeggings().isPresent()){
+		if (player.getLeggings().isPresent()){
 			player.setLeggings(UtilsItemStack.repairInventory(player.getLeggings().get()));
 		}
 		
-		if(player.getBoots().isPresent()){
+		if (player.getBoots().isPresent()){
 			player.setBoots(UtilsItemStack.repairInventory(player.getBoots().get()));
 		}
 		

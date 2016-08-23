@@ -52,7 +52,7 @@ public class EETeleportation extends ECommand<EverEssentials> {
 	}
 
 	public Text help(final CommandSource source) {
-		if(source.hasPermission(EEPermissions.TP_OTHERS.get())){
+		if (source.hasPermission(EEPermissions.TP_OTHERS.get())){
 			return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_RECIPIENT.get() + "] <" + EAMessages.ARGS_PLAYER.get() + ">")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
@@ -66,7 +66,7 @@ public class EETeleportation extends ECommand<EverEssentials> {
 	
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		List<String> suggests = new ArrayList<String>();
-		if(args.size() == 1){
+		if (args.size() == 1){
 			suggests = null;
 		} else if (args.size() == 2 && source.hasPermission(EEPermissions.TP_OTHERS.get())){
 			suggests = null;
@@ -78,12 +78,12 @@ public class EETeleportation extends ECommand<EverEssentials> {
 		// Résultat de la commande :
 		boolean resultat = false;
 		// Si connait que la location ou aussi peut être le monde
-		if(args.size() == 1) {
+		if (args.size() == 1) {
 			// Si la source est bien un joueur
-			if(source instanceof EPlayer) {
+			if (source instanceof EPlayer) {
 				Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(args.get(0));
 				// Le joueur existe
-				if(optPlayer.isPresent()){
+				if (optPlayer.isPresent()){
 					resultat = commandTeleportation((EPlayer) source, optPlayer.get());
 				// Joueur introuvable
 				} else {
@@ -93,15 +93,15 @@ public class EETeleportation extends ECommand<EverEssentials> {
 			} else {
 				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
 			}
-		} else if(args.size() == 2) {
+		} else if (args.size() == 2) {
 			// Si il a la permission
-			if(source.hasPermission(EEPermissions.TP_OTHERS.get())) {
+			if (source.hasPermission(EEPermissions.TP_OTHERS.get())) {
 				Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(args.get(0));
 				// Le joueur existe
-				if(optPlayer.isPresent()){
+				if (optPlayer.isPresent()){
 					Optional<EPlayer> optDestination = this.plugin.getEServer().getEPlayer(args.get(1));
 					// Le joueur existe
-					if(optPlayer.isPresent()){
+					if (optPlayer.isPresent()){
 						resultat = commandTeleportation(source, optPlayer.get(), optDestination.get());
 					// Joueur introuvable
 					} else {
@@ -123,9 +123,9 @@ public class EETeleportation extends ECommand<EverEssentials> {
 	}
 	
 	private boolean commandTeleportation(EPlayer player, EPlayer destination) {
-		if(!player.equals(destination)) {
-			if(player.getWorld().equals(destination.getWorld()) || this.plugin.getManagerServices().getEssentials().hasPermissionWorld(player, destination.getWorld())) {
-				if(teleport(player, destination)) {
+		if (!player.equals(destination)) {
+			if (player.getWorld().equals(destination.getWorld()) || this.plugin.getManagerServices().getEssentials().hasPermissionWorld(player, destination.getWorld())) {
+				if (teleport(player, destination)) {
 					player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
 							.append(EEMessages.TP_PLAYER.get())
 							.replace("<destination>", getButtonPosition(destination.getName(), player.getLocation()))
@@ -145,14 +145,14 @@ public class EETeleportation extends ECommand<EverEssentials> {
 	}
 	
 	private boolean commandTeleportation(CommandSource staff, EPlayer player, EPlayer destination) {
-		if(player.getWorld().equals(destination.getWorld()) || this.plugin.getManagerServices().getEssentials().hasPermissionWorld(player, destination.getWorld())) {
-			if(destination.equals(player)) {
-				if(destination.equals(staff)) {
+		if (player.getWorld().equals(destination.getWorld()) || this.plugin.getManagerServices().getEssentials().hasPermissionWorld(player, destination.getWorld())) {
+			if (destination.equals(player)) {
+				if (destination.equals(staff)) {
 					player.reposition();
 					player.sendMessage(EEMessages.PREFIX.get() + EEMessages.TP_PLAYER_EQUALS.get());
 					return true;
 				} else {
-					if(teleport(player, player)) {
+					if (teleport(player, player)) {
 						player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
 								.append(EEMessages.TP_OTHERS_PLAYER_REPOSITION.get()
 										.replaceAll("<staff>", staff.getName()))
@@ -169,13 +169,13 @@ public class EETeleportation extends ECommand<EverEssentials> {
 					}
 				}
 			} else {
-				if(teleport(player, destination)) {
-					if(player.equals(staff)) {
+				if (teleport(player, destination)) {
+					if (player.equals(staff)) {
 						player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
 								.append(EEMessages.TP_PLAYER.get())
 								.replace("<destination>", getButtonPosition(destination.getName(), player.getLocation()))
 								.build());
-					} else if(destination.equals(staff)) {
+					} else if (destination.equals(staff)) {
 						player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
 								.append(EEMessages.TP_OTHERS_STAFF_EQUALS_DESTINATION_PLAYER.get()
 										.replaceAll("<staff>", staff.getName()))
@@ -210,10 +210,10 @@ public class EETeleportation extends ECommand<EverEssentials> {
 	}
 	
 	private boolean teleport(EPlayer player, EPlayer destination) {
-		if(player.equals(destination)) {
+		if (player.equals(destination)) {
 			player.reposition();
 		} else {
-			if(destination.isFlying()) {
+			if (destination.isFlying()) {
 				return player.teleportSafe(destination.getTransform());
 			} else {
 				player.setTransform(destination.getTransform());

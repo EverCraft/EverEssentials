@@ -56,7 +56,7 @@ public class EEKill  extends ECommand<EverEssentials> {
 	}
 	
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
-		if(args.size() == 1) {
+		if (args.size() == 1) {
 			return null;
 		}
 		return new ArrayList<String>();
@@ -67,9 +67,9 @@ public class EEKill  extends ECommand<EverEssentials> {
 		boolean resultat = false;
 		
 		// Si on ne connait pas le joueur
-		if(args.size() == 1) {
+		if (args.size() == 1) {
 			Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(args.get(0));
-			if(optPlayer.isPresent()){
+			if (optPlayer.isPresent()){
 				resultat = commandKill(source, optPlayer.get());
 			} else {
 				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
@@ -82,7 +82,7 @@ public class EEKill  extends ECommand<EverEssentials> {
 	
 	public boolean commandKill(final CommandSource staff, final EPlayer player) {
 		player.setHealth(0);
-		if(!player.equals(staff)) {
+		if (!player.equals(staff)) {
 			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.KILL_PLAYER.get()
 					.replaceAll("<staff>", staff.getName()));
 			staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.KILL_STAFF.get()

@@ -67,9 +67,9 @@ public class EEColor extends ECommand<EverEssentials> {
 		boolean resultat = false;
 		
 		// Si on ne connait pas le joueur
-		if(args.size() == 0) {
+		if (args.size() == 0) {
 			// Si la source est un joueur
-			if(source instanceof EPlayer) {
+			if (source instanceof EPlayer) {
 				resultat = this.commandColor((EPlayer) source);
 			// La source n'est pas un joueur
 			} else {
@@ -116,7 +116,7 @@ public class EEColor extends ECommand<EverEssentials> {
 	
 	private Text getButtomColor(String id, TextColor text) {
 		Optional<EAMessages> color = EAMessages.getColor(text);
-		if(color.isPresent()) {
+		if (color.isPresent()) {
 			return ETextBuilder.toBuilder(EEMessages.COLOR_LIST_MESSAGE.get()
 					.replaceAll("<color>", "&" + id)
 					.replaceAll("<name>", color.get().get()))

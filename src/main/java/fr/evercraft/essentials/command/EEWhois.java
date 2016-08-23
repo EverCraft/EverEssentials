@@ -54,7 +54,7 @@ public class EEWhois extends ECommand<EverEssentials> {
 	}
 
 	public Text help(final CommandSource source) {
-		if(source.hasPermission(EEPermissions.WHOIS_OTHERS.get())) {
+		if (source.hasPermission(EEPermissions.WHOIS_OTHERS.get())) {
 			return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_PLAYER.get() + "]")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
@@ -67,7 +67,7 @@ public class EEWhois extends ECommand<EverEssentials> {
 	}
 	
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
-		if(args.size() == 1){
+		if (args.size() == 1){
 			return null;
 		}
 		return new ArrayList<String>();
@@ -86,12 +86,12 @@ public class EEWhois extends ECommand<EverEssentials> {
 				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
 			}
 		// Nom du home connu
-		} else if(args.size() == 1) {
+		} else if (args.size() == 1) {
 			// Si il a la permission
-			if(source.hasPermission(EEPermissions.WHOIS_OTHERS.get())) {
+			if (source.hasPermission(EEPermissions.WHOIS_OTHERS.get())) {
 				Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(args.get(0));
 				// Le joueur existe
-				if(optPlayer.isPresent()) {
+				if (optPlayer.isPresent()) {
 					resultat = commandWhoisPlayer(source, optPlayer.get());
 				// Joueur introuvable
 				} else {
@@ -123,7 +123,7 @@ public class EEWhois extends ECommand<EverEssentials> {
 		lists.add(getSpeedWalk(player));
 		lists.add(getSpeedFly(player));
 		lists.add(getLocation(player));
-		if(this.plugin.getEverAPI().getManagerService().getEconomy().isPresent()) {
+		if (this.plugin.getEverAPI().getManagerService().getEconomy().isPresent()) {
 			lists.add(getBalance(player));
 		}
 		lists.add(getGameMode(player));
@@ -191,7 +191,7 @@ public class EEWhois extends ECommand<EverEssentials> {
 	
 	public Text getFood(final EPlayer player) {
 		int saturation = (int) Math.ceil(player.getSaturation());
-		if(saturation > 0) {
+		if (saturation > 0) {
 			return EChat.of(EEMessages.WHOIS_FOOD_SATURATION.get()
 				.replaceAll("<food>", String.valueOf(player.getFood()))
 				.replaceAll("<max_food>", String.valueOf(EPlayer.MAX_FOOD))
@@ -262,7 +262,7 @@ public class EEWhois extends ECommand<EverEssentials> {
 	}
 	
 	public Text getGod(final EPlayer player){
-		if(player.isGod()) {
+		if (player.isGod()) {
 			return EChat.of(EEMessages.WHOIS_GOD_ENABLE.get());
 		} else {
 			return EChat.of(EEMessages.WHOIS_GOD_DISABLE.get());
@@ -270,8 +270,8 @@ public class EEWhois extends ECommand<EverEssentials> {
 	}
 	
 	public Text getFly(final EPlayer player){
-		if(player.getAllowFlight()) {
-			if(player.isFlying()) {
+		if (player.getAllowFlight()) {
+			if (player.isFlying()) {
 				return EChat.of(EEMessages.WHOIS_FLY_ENABLE_FLY.get());
 			} else {
 				return EChat.of(EEMessages.WHOIS_FLY_ENABLE_WALK.get());
@@ -285,7 +285,7 @@ public class EEWhois extends ECommand<EverEssentials> {
 		// TODO EverSanctions
 		return EChat.of(EEMessages.WHOIS_MUTE_DISABLE.get());
 		/*
-		if(player.isMute()) {
+		if (player.isMute()) {
 			return EChat.of(EEMessages.WHOIS_MUTE_ENABLE.get());
 		} else {
 			return EChat.of(EEMessages.WHOIS_MUTE_DISABLE.get());
@@ -293,7 +293,7 @@ public class EEWhois extends ECommand<EverEssentials> {
 	}
 	
 	public Text getVanish(final EPlayer player){
-		if(player.isVanish()) {
+		if (player.isVanish()) {
 			return EChat.of(EEMessages.WHOIS_VANISH_ENABLE.get());
 		} else {
 			return EChat.of(EEMessages.WHOIS_VANISH_DISABLE.get());
@@ -301,7 +301,7 @@ public class EEWhois extends ECommand<EverEssentials> {
 	}
 	
 	public Text getAFK(final EPlayer player){
-		if(player.isAfk()) {
+		if (player.isAfk()) {
 			return EChat.of(EEMessages.WHOIS_AFK_ENABLE.get());
 		} else {
 			return EChat.of(EEMessages.WHOIS_AFK_DISABLE.get());
@@ -348,7 +348,7 @@ public class EEWhois extends ECommand<EverEssentials> {
 	}
 	
 	public Text getToggle(final EPlayer player){
-		if(player.isToggle()) {
+		if (player.isToggle()) {
 			return EChat.of(EEMessages.WHOIS_TOGGLE_ENABLE.get());
 		} else {
 			return EChat.of(EEMessages.WHOIS_TOGGLE_DISABLE.get());

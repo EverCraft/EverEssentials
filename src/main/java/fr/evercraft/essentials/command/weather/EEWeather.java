@@ -76,7 +76,7 @@ public class EEWeather extends ECommand<EverEssentials> {
 			suggests.add("storm");
 		} else if (args.size() == 2) {
 			for (World world : this.plugin.getEServer().getWorlds()) {
-				if(world.getProperties().getDimensionType().equals(DimensionTypes.OVERWORLD)) {
+				if (world.getProperties().getDimensionType().equals(DimensionTypes.OVERWORLD)) {
 					suggests.add(world.getName());
 				}
 			}
@@ -129,7 +129,7 @@ public class EEWeather extends ECommand<EverEssentials> {
 
 	public boolean commandWeather(final CommandSource player, final Optional<Weather> weather, final World world) {
 		if (world.getProperties().getDimensionType().equals(DimensionTypes.OVERWORLD)) {			
-			if(weather.isPresent()) {
+			if (weather.isPresent()) {
 				world.setWeather(weather.get());
 				player.sendMessage(EChat.of(EEMessages.PREFIX.get() + getMessage(weather.get())
 							.replaceAll("<world>", world.getName())
@@ -147,7 +147,7 @@ public class EEWeather extends ECommand<EverEssentials> {
 		try {
 			int duration = Integer.parseInt(name_duration);
 			if (world.getProperties().getDimensionType().equals(DimensionTypes.OVERWORLD)) {			
-				if(weather.isPresent()) {
+				if (weather.isPresent()) {
 					world.setWeather(weather.get(), UtilsTick.parseMinutes(duration));
 					player.sendMessage(EChat.of(EEMessages.PREFIX.get() + getMessageDuration(weather.get())
 								.replaceAll("<world>", world.getName())
@@ -168,11 +168,11 @@ public class EEWeather extends ECommand<EverEssentials> {
 	
 	public Optional<Weather> getWeather(final String weather_name) {
 		Weather weather = null;
-		if(weather_name.equalsIgnoreCase("sun")) {
+		if (weather_name.equalsIgnoreCase("sun")) {
 			weather = Weathers.CLEAR;
-		} else if(weather_name.equalsIgnoreCase("rain")) {
+		} else if (weather_name.equalsIgnoreCase("rain")) {
 			weather = Weathers.RAIN;
-		} else if(weather_name.equalsIgnoreCase("storm")) {
+		} else if (weather_name.equalsIgnoreCase("storm")) {
 			weather = Weathers.THUNDER_STORM;
 		}
 		return Optional.ofNullable(weather);
@@ -180,9 +180,9 @@ public class EEWeather extends ECommand<EverEssentials> {
 	
 	public String getMessage(final Weather weather) {
 		String message = null;
-		if(weather.equals(Weathers.RAIN)) {
+		if (weather.equals(Weathers.RAIN)) {
 			message = EEMessages.WEATHER_RAIN.get();
-		} else if(weather.equals(Weathers.THUNDER_STORM)) {
+		} else if (weather.equals(Weathers.THUNDER_STORM)) {
 			message = EEMessages.WEATHER_STORM.get();
 		} else {
 			message = EEMessages.WEATHER_SUN.get();
@@ -192,9 +192,9 @@ public class EEWeather extends ECommand<EverEssentials> {
 	
 	public String getMessageDuration(final Weather weather) {
 		String message = null;
-		if(weather.equals(Weathers.RAIN)) {
+		if (weather.equals(Weathers.RAIN)) {
 			message = EEMessages.WEATHER_RAIN_DURATION.get();
-		} else if(weather.equals(Weathers.THUNDER_STORM)) {
+		} else if (weather.equals(Weathers.THUNDER_STORM)) {
 			message = EEMessages.WEATHER_STORM_DURATION.get();
 		} else {
 			message = EEMessages.WEATHER_SUN_DURATION.get();

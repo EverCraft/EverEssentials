@@ -61,7 +61,7 @@ public class EEReloadAll extends ECommand<EverEssentials>{
 		// Résultat de la commande :
 		boolean resultat = false;
 		// Si on ne connait pas le joueur
-		if(args.size() == 0) {
+		if (args.size() == 0) {
 			resultat = commandReload(source);
 		} else {
 			source.sendMessage(help(source));

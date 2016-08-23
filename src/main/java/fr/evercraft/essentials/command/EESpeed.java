@@ -53,17 +53,17 @@ public class EESpeed extends ECommand<EverEssentials> {
 	}
 
 	public Text help(final CommandSource source) {
-		if(source.hasPermission(EEPermissions.SPEED_WALK.get()) && source.hasPermission(EEPermissions.SPEED_FLY.get())) {
+		if (source.hasPermission(EEPermissions.SPEED_WALK.get()) && source.hasPermission(EEPermissions.SPEED_FLY.get())) {
 			return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_SPEED.get() + "] [walk|fly] [" + EAMessages.ARGS_PLAYER.get() + "]")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
 					.build();
-		} else if(source.hasPermission(EEPermissions.SPEED_FLY.get())) {
+		} else if (source.hasPermission(EEPermissions.SPEED_FLY.get())) {
 			return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_SPEED.get() + "] [fly] [" + EAMessages.ARGS_PLAYER.get() + "]")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
 					.build();
-		} else if(source.hasPermission(EEPermissions.SPEED_WALK.get())) {
+		} else if (source.hasPermission(EEPermissions.SPEED_WALK.get())) {
 			return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_SPEED.get() + "] [walk] [" + EAMessages.ARGS_PLAYER.get() + "]")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
@@ -80,10 +80,10 @@ public class EESpeed extends ECommand<EverEssentials> {
 		if (args.size() == 1) {
 			suggests.add("1");
 		} else if (args.size() == 2) {
-			if(source.hasPermission(EEPermissions.SPEED_WALK.get())) {
+			if (source.hasPermission(EEPermissions.SPEED_WALK.get())) {
 				suggests.add("walk");
 			}
-			if(source.hasPermission(EEPermissions.SPEED_FLY.get())) {
+			if (source.hasPermission(EEPermissions.SPEED_FLY.get())) {
 				suggests.add("fly");
 			}
 		} else if (args.size() == 3 && source.hasPermission(EEPermissions.SPEED_OTHERS.get())) {
@@ -107,7 +107,7 @@ public class EESpeed extends ECommand<EverEssentials> {
 			// Si la source est un joueur
 			if (source instanceof EPlayer) {
 				Optional<Double> optSpeed = getSpeed(args.get(0));
-				if(optSpeed.isPresent()) {
+				if (optSpeed.isPresent()) {
 					resultat = commandSpeed((EPlayer) source, optSpeed.get());
 				} else {
 					source.sendMessage(EChat.of(EAMessages.IS_NOT_NUMBER.get().replaceAll("<number>", args.get(0))));
@@ -120,10 +120,10 @@ public class EESpeed extends ECommand<EverEssentials> {
 		} else if (args.size() == 2) {
 			if (source instanceof EPlayer) {
 				Optional<Double> optSpeed = getSpeed(args.get(0));
-				if(optSpeed.isPresent()) {
-					if(args.get(1).equalsIgnoreCase("walk")) {
+				if (optSpeed.isPresent()) {
+					if (args.get(1).equalsIgnoreCase("walk")) {
 						resultat = commandSpeedWalk((EPlayer) source, optSpeed.get());
-					} else if(args.get(1).equalsIgnoreCase("fly")) {
+					} else if (args.get(1).equalsIgnoreCase("fly")) {
 						resultat = commandSpeedFly((EPlayer) source, optSpeed.get());
 					} else {
 						source.sendMessage(help(source));
@@ -136,14 +136,14 @@ public class EESpeed extends ECommand<EverEssentials> {
 			}
 		// On connais le joueur
 		} else if (args.size() == 3) {
-			if(source.hasPermission(EEPermissions.SPEED_OTHERS.get())) {
+			if (source.hasPermission(EEPermissions.SPEED_OTHERS.get())) {
 				Optional<Double> optSpeed = getSpeed(args.get(0));
-				if(optSpeed.isPresent()) {
+				if (optSpeed.isPresent()) {
 					Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(args.get(2));
-					if(optPlayer.isPresent()){
-						if(args.get(1).equalsIgnoreCase("walk")) {
+					if (optPlayer.isPresent()){
+						if (args.get(1).equalsIgnoreCase("walk")) {
 							resultat = commandSpeedWalkOthers(source, optPlayer.get(), optSpeed.get());
-						} else if(args.get(1).equalsIgnoreCase("fly")) {
+						} else if (args.get(1).equalsIgnoreCase("fly")) {
 							resultat = commandSpeedFlyOthers(source, optPlayer.get(), optSpeed.get());
 						} else {
 							source.sendMessage(help(source));
@@ -166,7 +166,7 @@ public class EESpeed extends ECommand<EverEssentials> {
 	}
 	
 	private boolean commandSpeedInfo(EPlayer player) {
-		if(player.isFlying()) {
+		if (player.isFlying()) {
 			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.SPEED_INFO_FLY.get()
 					.replaceAll("<speed>", UtilsDouble.round(player.getFlySpeed() / EPlayer.CONVERSION_FLY, 3).toString()));
 		} else {
@@ -177,7 +177,7 @@ public class EESpeed extends ECommand<EverEssentials> {
 	}
 
 	private boolean commandSpeed(EPlayer player, Double speed) {
-		if(player.isFlying()) {
+		if (player.isFlying()) {
 			return commandSpeedFly(player, speed);
 		} else {
 			return commandSpeedWalk(player, speed);
@@ -185,7 +185,7 @@ public class EESpeed extends ECommand<EverEssentials> {
 	}
 
 	private boolean commandSpeedWalk(EPlayer player, Double speed) {
-		if(player.hasPermission(EEPermissions.SPEED_WALK.get())) {
+		if (player.hasPermission(EEPermissions.SPEED_WALK.get())) {
 			player.setWalkSpeed(speed * EPlayer.CONVERSION_WALF);
 			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.SPEED_PLAYER_WALK.get()
 					.replaceAll("<speed>", speed.toString()));
@@ -197,7 +197,7 @@ public class EESpeed extends ECommand<EverEssentials> {
 	}
 
 	private boolean commandSpeedFly(EPlayer player, Double speed) {
-		if(player.hasPermission(EEPermissions.SPEED_FLY.get())) {
+		if (player.hasPermission(EEPermissions.SPEED_FLY.get())) {
 			player.setFlySpeed(speed * EPlayer.CONVERSION_FLY);
 			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.SPEED_PLAYER_FLY.get()
 					.replaceAll("<speed>", speed.toString()));
@@ -209,7 +209,7 @@ public class EESpeed extends ECommand<EverEssentials> {
 	}
 
 	private boolean commandSpeedWalkOthers(CommandSource staff, EPlayer player, Double speed) {
-		if(staff.hasPermission(EEPermissions.SPEED_WALK.get())) {
+		if (staff.hasPermission(EEPermissions.SPEED_WALK.get())) {
 			player.setWalkSpeed(speed * EPlayer.CONVERSION_WALF);
 			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.SPEED_OTHERS_PLAYER_WALK.get()
 					.replaceAll("<speed>", speed.toString())
@@ -225,7 +225,7 @@ public class EESpeed extends ECommand<EverEssentials> {
 	}
 
 	private boolean commandSpeedFlyOthers(CommandSource staff, EPlayer player, Double speed) {
-		if(staff.hasPermission(EEPermissions.SPEED_FLY.get())) {
+		if (staff.hasPermission(EEPermissions.SPEED_FLY.get())) {
 			player.setFlySpeed(speed * EPlayer.CONVERSION_FLY);
 			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.SPEED_OTHERS_PLAYER_FLY.get()
 					.replaceAll("<speed>", speed.toString())

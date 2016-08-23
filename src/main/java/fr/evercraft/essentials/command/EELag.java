@@ -63,7 +63,7 @@ public class EELag extends ECommand<EverEssentials> {
 		this.scheduler = this.plugin.getGame().getScheduler().createTaskBuilder().execute(new Runnable() {
 			    public void run() {
 			    	historys.add(getTPS());
-			    	if(historys.size() > HISTORY_LENGTH) {
+			    	if (historys.size() > HISTORY_LENGTH) {
 			    		historys.remove(0);
 			    	}
 			    }
@@ -102,7 +102,7 @@ public class EELag extends ECommand<EverEssentials> {
 		ManagementFactory.getRuntimeMXBean().getStartTime();
 		// Résultat de la commande :
 		boolean resultat = false;
-		if(args.size() == 0) {
+		if (args.size() == 0) {
 			resultat = commandLag(source);
 		} else {
 			source.sendMessage(help(source));
@@ -126,7 +126,7 @@ public class EELag extends ECommand<EverEssentials> {
 				.replaceAll("<usage>", String.valueOf(Runtime.getRuntime().totalMemory()/1024/1024))
 				.replaceAll("<total>", String.valueOf(Runtime.getRuntime().maxMemory()/1024/1024))));
 		list.add(EChat.of(EEMessages.LAG_WORLDS.get()));
-		for(World world : this.plugin.getEServer().getWorlds()) {
+		for (World world : this.plugin.getEServer().getWorlds()) {
 			list.add(EChat.of(EEMessages.LAG_WORLDS_LINE.get().replaceAll("<world>", world.getName())).toBuilder()
 					.onHover(TextActions.showText(EChat.of(EEMessages.LAG_WORLDS_LINE_HOVER.get()
 							.replaceAll("<entities>", String.valueOf(world.getEntities().size()))
@@ -141,7 +141,7 @@ public class EELag extends ECommand<EverEssentials> {
 	
 	public Text getHistoryTPS() {
 		Builder resultat = Text.builder();
-		for(int cpt = 0; cpt < this.historys.size(); cpt++) {
+		for (int cpt = 0; cpt < this.historys.size(); cpt++) {
 			double tps = this.historys.get(this.historys.size() - cpt - 1);
 			resultat.append(getHistoryTPSIcon(tps, cpt + 1));
 		}
@@ -150,15 +150,15 @@ public class EELag extends ECommand<EverEssentials> {
 	
 	public Text getHistoryTPSIcon(final double tps, final int num) {
 		Builder resultat = null;
-		if(tps >= 20) {
+		if (tps >= 20) {
 			resultat = Text.builder("▇").color(TextColors.GREEN);
-		} else if(tps >= 18) {
+		} else if (tps >= 18) {
 			resultat = Text.builder("▆").color(TextColors.GREEN);
-		} else if(tps >= 14) {
+		} else if (tps >= 14) {
 			resultat = Text.builder("▅").color(TextColors.YELLOW);
-		} else if(tps >= 10) {
+		} else if (tps >= 10) {
 			resultat = Text.builder("▃").color(TextColors.YELLOW);
-		} else if(tps >= 5) {
+		} else if (tps >= 5) {
 			resultat = Text.builder("▂").color(TextColors.RED);
 		} else {
 			resultat = Text.builder("▁").color(TextColors.RED);
@@ -173,9 +173,9 @@ public class EELag extends ECommand<EverEssentials> {
 	
 	public TextColor getColorTPS(final double tps) {
 		TextColor color;
-		if(tps >= 18) {
+		if (tps >= 18) {
 			color = TextColors.GREEN;
-		} else if(tps >= 15) {
+		} else if (tps >= 15) {
 			color = TextColors.YELLOW;
 		} else {
 			color = TextColors.RED;

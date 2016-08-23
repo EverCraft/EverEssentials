@@ -60,9 +60,9 @@ public class EWarpService implements WarpService {
 	@Override
 	public Map<String, Transform<World>> getAll() {
 		ImmutableMap.Builder<String, Transform<World>> warps = ImmutableMap.builder();
-		for(Entry<String, LocationSQL> warp : this.warps.entrySet()) {
+		for (Entry<String, LocationSQL> warp : this.warps.entrySet()) {
 			Optional<Transform<World>> transform = warp.getValue().getTransform();
-			if(transform.isPresent()) {
+			if (transform.isPresent()) {
 				warps.put(warp.getKey(), transform.get());
 			}
 		}
@@ -84,7 +84,7 @@ public class EWarpService implements WarpService {
 	public Optional<Transform<World>> get(final String identifier) {
 		Preconditions.checkNotNull(identifier, "identifier");
 		
-		if(this.warps.containsKey(identifier)) {
+		if (this.warps.containsKey(identifier)) {
 			return this.warps.get(identifier).getTransform();
 		}
 		return Optional.empty();
@@ -95,7 +95,7 @@ public class EWarpService implements WarpService {
 		Preconditions.checkNotNull(identifier, "identifier");
 		Preconditions.checkNotNull(location, "location");
 		
-		if(!this.warps.containsKey(identifier)) {
+		if (!this.warps.containsKey(identifier)) {
 			final LocationSQL locationSQL = new LocationSQL(this.plugin, location);
 			this.warps.put(identifier, locationSQL);
 			this.plugin.getThreadAsync().execute(() -> this.addAsync(identifier, locationSQL));
@@ -109,7 +109,7 @@ public class EWarpService implements WarpService {
 		Preconditions.checkNotNull(identifier, "identifier");
 		Preconditions.checkNotNull(location, "location");
 		
-		if(this.warps.containsKey(identifier)) {
+		if (this.warps.containsKey(identifier)) {
 			final LocationSQL locationSQL = new LocationSQL(this.plugin, location);
 			this.warps.put(identifier, locationSQL);
 			this.plugin.getThreadAsync().execute(() -> this.updateAsync(identifier, locationSQL));
@@ -122,7 +122,7 @@ public class EWarpService implements WarpService {
 	public boolean remove(final String identifier) {
 		Preconditions.checkNotNull(identifier, "identifier");
 		
-		if(this.warps.containsKey(identifier)) {
+		if (this.warps.containsKey(identifier)) {
 			this.warps.remove(identifier);
 			this.plugin.getThreadAsync().execute(() -> this.removeAsync(identifier));
 			return true;
@@ -132,7 +132,7 @@ public class EWarpService implements WarpService {
 
 	@Override
 	public boolean clearAll() {
-		if(!this.warps.isEmpty()) {
+		if (!this.warps.isEmpty()) {
 			this.warps.clear();
 			this.plugin.getThreadAsync().execute(() -> this.clearAsync());
 			return true;

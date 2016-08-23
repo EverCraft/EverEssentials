@@ -59,7 +59,7 @@ public class EEExp extends ECommand<EverEssentials> {
 										.onClick(TextActions.suggestCommand("/xp set "))
 										.build())
 							.append(Text.of("> <lvl|exp> <" + EAMessages.ARGS_AMOUNT.get() + ">"));
-		if(source.hasPermission(EEPermissions.EXP_OTHERS.get())) {
+		if (source.hasPermission(EEPermissions.EXP_OTHERS.get())) {
 			build = build.append(Text.of(" [" + EAMessages.ARGS_PLAYER.get() + "]"));
 		}
 		return build.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
@@ -88,7 +88,7 @@ public class EEExp extends ECommand<EverEssentials> {
 		boolean resultat = false;
 		if (args.size() == 3) {
 			// Si la source est bien un joueur
-			if(source instanceof EPlayer) {
+			if (source instanceof EPlayer) {
 				if (args.get(0).equals("give")){
 					if (args.get(1).equals("lvl")){
 						resultat = commandGiveLevel((EPlayer) source, args.get(2));
@@ -114,11 +114,11 @@ public class EEExp extends ECommand<EverEssentials> {
 			}
 		} else if (args.size() == 4) {
 			// Si il a la permission
-			if(source.hasPermission(EEPermissions.EXP_OTHERS.get())){
+			if (source.hasPermission(EEPermissions.EXP_OTHERS.get())){
 				// Si la source est bien un joueur
 				Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(args.get(3));
 				// Le joueur existe
-				if(optPlayer.isPresent()){
+				if (optPlayer.isPresent()){
 					EPlayer player = optPlayer.get();
 					if (!player.equals(source)){
 						if (args.get(0).equals("give")){

@@ -50,17 +50,17 @@ public class EEWhitelistRemove extends ESubCommand<EverEssentials> {
 	
 	public List<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		List<String> suggests = new ArrayList<String>();
-		if(args.size() == 1) {
+		if (args.size() == 1) {
 			Optional<WhitelistService> whitelist = this.plugin.getEverAPI().getManagerService().getWhitelist();
-			if(whitelist.isPresent()){
-				for(GameProfile player : whitelist.get().getWhitelistedProfiles()) {
-					if(player.getName().isPresent()) {
+			if (whitelist.isPresent()){
+				for (GameProfile player : whitelist.get().getWhitelistedProfiles()) {
+					if (player.getName().isPresent()) {
 						suggests.add(player.getName().orElse(player.getUniqueId().toString()));
 					}
 				}
 			} else {
-				for(GameProfile player : this.plugin.getEServer().getGameProfileManager().getCache().getProfiles()) {
-					if(player.getName().isPresent()) {
+				for (GameProfile player : this.plugin.getEServer().getGameProfileManager().getCache().getProfiles()) {
+					if (player.getName().isPresent()) {
 						suggests.add(player.getName().orElse(player.getUniqueId().toString()));
 					}
 				}
@@ -79,7 +79,7 @@ public class EEWhitelistRemove extends ESubCommand<EverEssentials> {
 	public boolean subExecute(final CommandSource source, final List<String> args) {
 		// Résultat de la commande :
 		boolean resultat = false;
-		if(args.size() == 1) {
+		if (args.size() == 1) {
 			this.plugin.getGame().getScheduler().createTaskBuilder()
 												.async()
 												.execute(() -> this.commandWhitelistRemove(source, args.get(0)))
@@ -93,10 +93,10 @@ public class EEWhitelistRemove extends ESubCommand<EverEssentials> {
 	private boolean commandWhitelistRemove(final CommandSource player, final String identifier) {
 		Optional<GameProfile> gameprofile = this.plugin.getEServer().getGameProfile(identifier);
 		// Le joueur existe
-		if(gameprofile.isPresent()) {
+		if (gameprofile.isPresent()) {
 			Optional<WhitelistService> whitelist = this.plugin.getEverAPI().getManagerService().getWhitelist();
-			if(whitelist.isPresent()) {
-				if(whitelist.get().removeProfile(gameprofile.get())){
+			if (whitelist.isPresent()) {
+				if (whitelist.get().removeProfile(gameprofile.get())){
 					player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.WHITELIST_REMOVE_PLAYER.get()
 							.replaceAll("<player>", gameprofile.get().getName().orElse(identifier))));
 				} else {

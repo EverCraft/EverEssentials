@@ -60,7 +60,7 @@ public class EETeleportationHere extends ECommand<EverEssentials> {
 	
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		List<String> suggests = new ArrayList<String>();
-		if(args.size() == 1){
+		if (args.size() == 1){
 			suggests = null;
 		}
 		return suggests;
@@ -70,12 +70,12 @@ public class EETeleportationHere extends ECommand<EverEssentials> {
 		// Résultat de la commande :
 		boolean resultat = false;
 		// Si connait que la location ou aussi peut être le monde
-		if(args.size() == 1) {
+		if (args.size() == 1) {
 			// Si la source est bien un joueur
-			if(source instanceof EPlayer) {
+			if (source instanceof EPlayer) {
 				Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(args.get(0));
 				// Le joueur existe
-				if(optPlayer.isPresent()){
+				if (optPlayer.isPresent()){
 					resultat = commandTeleportationHere((EPlayer) source, optPlayer.get());
 				// Joueur introuvable
 				} else {
@@ -93,9 +93,9 @@ public class EETeleportationHere extends ECommand<EverEssentials> {
 	}
 	
 	private boolean commandTeleportationHere(EPlayer staff, EPlayer player) {
-		if(!player.equals(staff)) {
-			if(player.getWorld().equals(staff.getWorld()) || this.plugin.getManagerServices().getEssentials().hasPermissionWorld(player, staff.getWorld())) {
-				if(teleport(player, staff)) {
+		if (!player.equals(staff)) {
+			if (player.getWorld().equals(staff.getWorld()) || this.plugin.getManagerServices().getEssentials().hasPermissionWorld(player, staff.getWorld())) {
+				if (teleport(player, staff)) {
 					player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
 							.append(EEMessages.TPHERE_PLAYER.get()
 									.replaceAll("<staff>", staff.getName()))
@@ -121,7 +121,7 @@ public class EETeleportationHere extends ECommand<EverEssentials> {
 	}
 	
 	private boolean teleport(EPlayer player, EPlayer destination){
-		if(destination.isFlying()) {
+		if (destination.isFlying()) {
 			return player.teleportSafe(destination.getTransform());
 		} else {
 			player.setTransform(destination.getTransform());

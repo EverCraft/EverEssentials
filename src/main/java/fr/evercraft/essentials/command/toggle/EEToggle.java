@@ -56,7 +56,7 @@ public class EEToggle extends EParentCommand<EverEssentials> {
 		boolean resultat = false;
 				
 		// Si la source est un joueur
-		if(source instanceof EPlayer) {
+		if (source instanceof EPlayer) {
 			resultat = this.commandToggle((EPlayer) source);
 		// La source n'est pas un joueur
 		} else {
@@ -68,15 +68,15 @@ public class EEToggle extends EParentCommand<EverEssentials> {
 	
 	private boolean commandToggle(final EPlayer player) {
 		boolean toggle = !player.isToggle();
-		if(player.setToggle(toggle)) {
-			if(toggle) {
+		if (player.setToggle(toggle)) {
+			if (toggle) {
 				player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.TOGGLE_ON_PLAYER.getText()));
 			} else {
 				player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.TOGGLE_OFF_PLAYER.getText()));
 			}
 			return true;
 		} else {
-			if(toggle) {
+			if (toggle) {
 				player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.TOGGLE_ON_PLAYER_CANCEL.getText()));
 			} else {
 				player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.TOGGLE_OFF_PLAYER_CANCEL.getText()));

@@ -66,9 +66,9 @@ public class EEInfo extends ECommand<EverEssentials> {
 		boolean resultat = false;
 		
 		// Si on ne connait pas le joueur
-		if(args.size() == 0) {
+		if (args.size() == 0) {
 			// Si la source est un joueur
-			if(source instanceof EPlayer) {
+			if (source instanceof EPlayer) {
 				resultat = commandInfo((EPlayer) source);
 			// La source n'est pas un joueur
 			} else {
@@ -83,7 +83,7 @@ public class EEInfo extends ECommand<EverEssentials> {
 	
 	public boolean commandInfo(final EPlayer player) {
 		// Si le joueur a bien un item dans la main
-		if(player.getItemInMainHand().isPresent()) {
+		if (player.getItemInMainHand().isPresent()) {
 			ItemStack item = player.getItemInMainHand().get();
 			player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
 					.append(EEMessages.INFO_PLAYER.get()

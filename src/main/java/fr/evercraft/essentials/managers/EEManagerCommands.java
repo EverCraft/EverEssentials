@@ -220,15 +220,15 @@ public class EEManagerCommands extends HashSet<ECommand<EverEssentials>> {
 		
 		// Help
 		Optional<? extends CommandMapping> help = this.plugin.getGame().getCommandManager().get("help");
-        if(help.isPresent()) {
+        if (help.isPresent()) {
         	this.plugin.getGame().getCommandManager().removeMapping(help.get());
         }
         register(new EEHelp(this.plugin));
 	}
 	
 	public void reload(){
-		for(ECommand<EverEssentials> command : this) {
-			if(command instanceof EReloadCommand) {
+		for (ECommand<EverEssentials> command : this) {
+			if (command instanceof EReloadCommand) {
 				((EReloadCommand<EverEssentials>) command).reload();
 			}
 		}

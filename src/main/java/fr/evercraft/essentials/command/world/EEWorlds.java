@@ -53,7 +53,7 @@ public class EEWorlds extends ECommand<EverEssentials> {
 	}
 
 	public Text help(final CommandSource source) {
-		if(source.hasPermission(EEPermissions.WORLDS_OTHERS.get())){
+		if (source.hasPermission(EEPermissions.WORLDS_OTHERS.get())){
 			return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_WORLD.get() + " [" + EAMessages.ARGS_PLAYER.get() + "]]")
 						.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 						.color(TextColors.RED)
@@ -69,11 +69,11 @@ public class EEWorlds extends ECommand<EverEssentials> {
 		List<String> suggests = new ArrayList<String>();
 		if (args.size() == 1) {
 			for (World world : this.plugin.getEServer().getWorlds()) {
-				if(this.plugin.getManagerServices().getEssentials().hasPermissionWorld(source, world)) {
+				if (this.plugin.getManagerServices().getEssentials().hasPermissionWorld(source, world)) {
 					suggests.add(world.getProperties().getWorldName());
 				}
 			}
-		} else if(args.size() == 2 && source.hasPermission(EEPermissions.WORLDS_OTHERS.get())) {
+		} else if (args.size() == 2 && source.hasPermission(EEPermissions.WORLDS_OTHERS.get())) {
 			suggests = null;
 		}
 		return suggests;
@@ -86,7 +86,7 @@ public class EEWorlds extends ECommand<EverEssentials> {
 			resultat = commandWorldList(source);
 		} else if (args.size() == 1) {
 			// Si la source est bien un joueur
-			if(source instanceof EPlayer) {
+			if (source instanceof EPlayer) {
 				resultat = commandWorldTeleport((EPlayer) source, args.get(0));
 			// Si la source est une console ou un commande block
 			} else {
@@ -96,12 +96,12 @@ public class EEWorlds extends ECommand<EverEssentials> {
 			// Si il a la permission
 			if (source.hasPermission(EEPermissions.WORLDS_OTHERS.get())){
 				// Si la source est bien un joueur
-				if(source instanceof EPlayer) {
+				if (source instanceof EPlayer) {
 					EPlayer player = (EPlayer) source;
 					Optional<EPlayer> optTarget = this.plugin.getEServer().getEPlayer(args.get(1));
 					// Le joueur existe
-					if(optTarget.isPresent()){
-						if(!player.equals(optTarget.get())){
+					if (optTarget.isPresent()){
+						if (!player.equals(optTarget.get())){
 							resultat = commandWorldTeleportOthers((EPlayer) source, optTarget.get(), args.get(0));
 						} else {
 							args.remove(args.size() - 1);
@@ -128,7 +128,7 @@ public class EEWorlds extends ECommand<EverEssentials> {
 	public boolean commandWorldList(final CommandSource player) {
 		List<Text> lists = new ArrayList<Text>();
 		for (World world : this.plugin.getEServer().getWorlds()) {
-			if(this.plugin.getManagerServices().getEssentials().hasPermissionWorld(player, world)) {
+			if (this.plugin.getManagerServices().getEssentials().hasPermissionWorld(player, world)) {
 				lists.add(ETextBuilder.toBuilder(EEMessages.WORLDS_LIST_LINE.get()
 						.replaceAll("<world>", world.getName()))
 					.replace("<teleport>", getButtonTeleport(world.getName(), world.getUniqueId()))
@@ -142,9 +142,9 @@ public class EEWorlds extends ECommand<EverEssentials> {
 	
 	public boolean commandWorldTeleport(final EPlayer player, final String world_name) {
 		Optional<World> optWorld = this.plugin.getEServer().getEWorld(world_name);
-		if(optWorld.isPresent()) {
-			if(this.plugin.getManagerServices().getEssentials().hasPermissionWorld(player, optWorld.get())) {
-				if(player.teleport(optWorld.get().getSpawnLocation())) {
+		if (optWorld.isPresent()) {
+			if (this.plugin.getManagerServices().getEssentials().hasPermissionWorld(player, optWorld.get())) {
+				if (player.teleport(optWorld.get().getSpawnLocation())) {
 					player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
 							.append(EEMessages.WORLDS_TELEPORT_PLAYER.get())
 							.replace("<world>", getButtonPosition(player.getLocation()))
@@ -171,9 +171,9 @@ public class EEWorlds extends ECommand<EverEssentials> {
 	
 	public boolean commandWorldTeleportOthers(final CommandSource staff, final EPlayer player, String world_name) {
 		Optional<World> optWorld = this.plugin.getEServer().getWorld(world_name);
-		if(optWorld.isPresent()) {
-			if(this.plugin.getManagerServices().getEssentials().hasPermissionWorld(player, optWorld.get())) {
-				if(player.teleportSafe(optWorld.get().getSpawnLocation())) {
+		if (optWorld.isPresent()) {
+			if (this.plugin.getManagerServices().getEssentials().hasPermissionWorld(player, optWorld.get())) {
+				if (player.teleportSafe(optWorld.get().getSpawnLocation())) {
 					player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
 							.append(EEMessages.WORLDS_TELEPORT_OTHERS_PLAYER.get()
 									.replaceAll("<staff>", staff.getName()))

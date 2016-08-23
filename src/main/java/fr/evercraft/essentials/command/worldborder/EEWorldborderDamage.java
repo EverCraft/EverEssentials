@@ -50,16 +50,16 @@ public class EEWorldborderDamage extends ESubCommand<EverEssentials> {
 	
 	public List<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		List<String> suggests = new ArrayList<String>();
-		if(args.size() == 1){
+		if (args.size() == 1){
 			suggests.add("buffer");
 			suggests.add("amount");
-		} else if(args.size() == 2){
+		} else if (args.size() == 2){
 			suggests.add("1");
 			suggests.add("5");
 			suggests.add("10");
-		} else if(args.size() == 3){
+		} else if (args.size() == 3){
 			for (World world : this.plugin.getEServer().getWorlds()) {
-				if(this.plugin.getManagerServices().getEssentials().hasPermissionWorld(source, world)) {
+				if (this.plugin.getManagerServices().getEssentials().hasPermissionWorld(source, world)) {
 					suggests.add(world.getProperties().getWorldName());
 				}
 			}
@@ -91,25 +91,25 @@ public class EEWorldborderDamage extends ESubCommand<EverEssentials> {
 	public boolean subExecute(final CommandSource source, final List<String> args) {
 		// Résultat de la commande :
 		boolean resultat = false;
-		if(args.size() == 0){
+		if (args.size() == 0){
 			source.sendMessage(this.help(source));
-		} else if(args.size() == 1){
-			if(args.get(0).equalsIgnoreCase("amount")){
+		} else if (args.size() == 1){
+			if (args.get(0).equalsIgnoreCase("amount")){
 				source.sendMessage(helpAmount(source));
-			} else if(args.get(0).equalsIgnoreCase("buffer")){
+			} else if (args.get(0).equalsIgnoreCase("buffer")){
 				source.sendMessage(helpBuffer(source));
 			} else {
 				source.sendMessage(this.help(source));
 			}
-		} else if(args.size() == 2){
-			if(source instanceof EPlayer){
+		} else if (args.size() == 2){
+			if (source instanceof EPlayer){
 				resultat = commandWorldborderDamage(source, ((EPlayer)source).getWorld(), args);
 			} else {
 				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
 			}
-		} else if(args.size() == 3){
+		} else if (args.size() == 3){
 			Optional<World> optWorld = this.plugin.getEServer().getWorld(args.get(2));
-			if(optWorld.isPresent()){
+			if (optWorld.isPresent()){
 				resultat = commandWorldborderDamage(source, optWorld.get(), args);
 			} else {
 				source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.WORLD_NOT_FOUND.get()
@@ -124,13 +124,13 @@ public class EEWorldborderDamage extends ESubCommand<EverEssentials> {
 	private boolean commandWorldborderDamage(CommandSource source, World world, List<String> args) {
 		try {
 			double value = Integer.parseInt(args.get(1));
-			if(args.get(0).equalsIgnoreCase("amount")){
+			if (args.get(0).equalsIgnoreCase("amount")){
 				world.getWorldBorder().setDamageAmount(value);
 				source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.WORLDBORDER_DAMAGE_AMOUNT.get()
 						.replaceAll("<nb>", String.valueOf(value))
 						.replaceAll("<world>", world.getName())));
 				return true;
-			} else if(args.get(0).equalsIgnoreCase("buffer")){
+			} else if (args.get(0).equalsIgnoreCase("buffer")){
 				world.getWorldBorder().setDamageThreshold(value);
 				source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.WORLDBORDER_DAMAGE_BUFFER.get()
 						.replaceAll("<nb>", String.valueOf(value))

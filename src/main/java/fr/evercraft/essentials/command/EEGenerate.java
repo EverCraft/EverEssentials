@@ -73,12 +73,12 @@ public class EEGenerate extends EReloadCommand<EverEssentials> {
 		List<String> suggests = new ArrayList<String>();
 		if (args.size() == 1) {
 			for (World world : this.plugin.getEServer().getWorlds()) {
-				if(this.plugin.getManagerServices().getEssentials().hasPermissionWorld(source, world)) {
+				if (this.plugin.getManagerServices().getEssentials().hasPermissionWorld(source, world)) {
 					suggests.add(world.getProperties().getWorldName());
 				}
 			}
 			suggests.add("confirmation");
-		} else if(args.size() == 2){
+		} else if (args.size() == 2){
 			suggests.add("confirmation");
 		}
 		return suggests;
@@ -87,16 +87,16 @@ public class EEGenerate extends EReloadCommand<EverEssentials> {
 	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Résultat de la commande :
 		boolean resultat = false;
-			if(args.size() == 0){
-				if(source instanceof EPlayer) {
+			if (args.size() == 0){
+				if (source instanceof EPlayer) {
 					EPlayer player = (EPlayer) source;
 					resultat = commandGenerateWarning(player);
 				} else {
 					source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
 				}
-			} else if(args.size() == 1) {
-				if(args.get(0).equalsIgnoreCase("confirmation")){
-					if(source instanceof EPlayer) {
+			} else if (args.size() == 1) {
+				if (args.get(0).equalsIgnoreCase("confirmation")){
+					if (source instanceof EPlayer) {
 						EPlayer player = (EPlayer) source;
 						resultat = commandGenerate(player);
 					} else {
@@ -105,7 +105,7 @@ public class EEGenerate extends EReloadCommand<EverEssentials> {
 				} else {
 					resultat = commandGenerateWarning(source, args.get(0));
 				}
-			} else if(args.size() == 2 && args.get(1).equalsIgnoreCase("confirmation")){
+			} else if (args.size() == 2 && args.get(1).equalsIgnoreCase("confirmation")){
 				resultat = commandGenerate(source, args.get(0));
 			} else {
 				source.sendMessage(help(source));
@@ -127,7 +127,7 @@ public class EEGenerate extends EReloadCommand<EverEssentials> {
 	
 	public boolean commandGenerateWarning(final CommandSource source, final String world_name) {
 		Optional<World> optWorld = this.plugin.getEServer().getWorld(world_name);
-		if(optWorld.isPresent()) {
+		if (optWorld.isPresent()) {
 			World world = optWorld.get();
 			int chunk = (int) Math.round(Math.pow((world.getWorldBorder().getDiameter() / 16), 2)); 
 			source.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.getText())
@@ -146,7 +146,7 @@ public class EEGenerate extends EReloadCommand<EverEssentials> {
 
 	private boolean commandGenerate(final CommandSource source, String world_name) {
 		Optional<World> optWorld = this.plugin.getEServer().getWorld(world_name);
-		if(optWorld.isPresent()) {
+		if (optWorld.isPresent()) {
 			World world = optWorld.get();
 			world.getWorldBorder()
 				.newChunkPreGenerate(world)

@@ -50,7 +50,7 @@ public class EESkull extends ECommand<EverEssentials> {
 	}
 
 	public Text help(final CommandSource source) {
-		if(source.hasPermission(EEPermissions.SKULL_OTHERS.get())) {
+		if (source.hasPermission(EEPermissions.SKULL_OTHERS.get())) {
 			return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_PLAYER.get() + "]")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
