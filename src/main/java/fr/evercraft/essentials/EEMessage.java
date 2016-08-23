@@ -227,6 +227,11 @@ public class EEMessage extends EMessage {
 		GAMEMODE_OTHERS_EQUAL("gamemode.othersEqual", 					"&6<player> &7possède déjà le mode de jeu &6<gamemode>&7."),
 		GAMEMODE_ERROR_NAME("gamemode.errorName", 						"&cMode de jeu inconnu."),
 		
+		GAMERULE_DESCRIPTION("gamerule.description", 					"Gère les différentes règles du serveur"),
+		GAMERULE_LIST_DESCRIPTION("gamerule.list.description", 			"Affiche la liste des règles du serveur"),
+		GAMERULE_LIST_TITLE("gamerule.list.title", "&aListe des règles du monde &6<world>"),
+		GAMERULE_LIST_LINE("gamerule.list.line", "    &6&l➤  <gamerule> &7: <statut>"),
+		
 		GENERATE_DESCRIPTION("generate.description", 								"Initialise tous les chunks d'un monde"),
 		GENERATE_WARNING("generate.warning.message", 								"&cAttention : &7Générer tous les chunks d'un monde peut prendre plusieurs heures et causer des latences."
 				+ "[RT] Le nombre total de chunks a générer est de &6<chunk>&7."
