@@ -32,6 +32,8 @@ import fr.evercraft.essentials.command.butcher.EEButcherMonster;
 import fr.evercraft.essentials.command.butcher.EEButcherType;
 import fr.evercraft.essentials.command.fly.*;
 import fr.evercraft.essentials.command.freeze.*;
+import fr.evercraft.essentials.command.gamerule.EEGamerule;
+import fr.evercraft.essentials.command.gamerule.EEGameruleList;
 import fr.evercraft.essentials.command.god.*;
 import fr.evercraft.essentials.command.home.*;
 import fr.evercraft.essentials.command.mail.*;
@@ -181,6 +183,10 @@ public class EEManagerCommands extends HashSet<ECommand<EverEssentials>> {
 		freeze.add(new EEFreezeOff(this.plugin, freeze));
 		freeze.add(new EEFreezeStatus(this.plugin, freeze));
 		register(freeze);
+		
+		EEGamerule gamerule = new EEGamerule(this.plugin);
+		gamerule.add(new EEGameruleList(this.plugin, gamerule));
+		register(gamerule);
 		
 		EEGod god = new EEGod(this.plugin);
 		god.add(new EEGodOn(this.plugin, god));
