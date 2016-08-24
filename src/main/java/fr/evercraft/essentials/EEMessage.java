@@ -227,7 +227,11 @@ public class EEMessage extends EMessage {
 		GAMEMODE_OTHERS_EQUAL("gamemode.othersEqual", 					"&6<player> &7possède déjà le mode de jeu &6<gamemode>&7."),
 		GAMEMODE_ERROR_NAME("gamemode.errorName", 						"&cMode de jeu inconnu."),
 		
-		GAMERULE_DESCRIPTION("gamerule.description", 					"Gère les différentes règles du serveur"),
+		GAMERULE_DESCRIPTION("gamerule.description", 					"Gère les différentes règles d'un monde"),
+		GAMERULE_ADD_DESCRIPTION("gamerule.add.description", 			"Ajoute une règle personnalisée sur un monde"),
+		GAMERULE_REMOVE_DESCRIPTION("gamerule.remove.description", 		"Supprime une règle personnalisée sur un monde"),
+		GAMERULE_SET_DESCRIPTION("gamerule.set.description", 			"Modifie une règle sur un monde"),
+		
 		GAMERULE_LIST_DESCRIPTION("gamerule.list.description", 			"Affiche la liste des règles du serveur"),
 		GAMERULE_LIST_TITLE("gamerule.list.title", "&aListe des règles du monde &6<world>"),
 		GAMERULE_LIST_LINE("gamerule.list.line", "    &6&l➤  <gamerule> &7: <statut>"),
@@ -528,6 +532,10 @@ public class EEMessage extends EMessage {
 		SAY_DESCRIPTION("say.description", 		"Envoie un message à tous les joueurs."),
 		SAY_PREFIX_PLAYER("say.prefixPlayer", 	"&7[&6<player>&7] <message>"),
 		SAY_PREFIX_CONSOLE("say.prefixConsole", "&7[&6Console&7] <message>"),
+		
+		SEED_DESCRIPTION("seed.description", 	"Affiche le seed d'un monde"),
+		SEED_MESSAGE("seed.message", 			"&7Le seed du monde &6<world> &7est &6<seed>&7."),
+		SEED_NAME("seed.name",					"&6&l<seed>"),
 		
 		SKULL_DESCRIPTION("skull.description", "Donne la tête d'un joueur"),
 		SKULL_MY_HEAD("skull.myHead", "&7Vous avez reçu votre tête."),

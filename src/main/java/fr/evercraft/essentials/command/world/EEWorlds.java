@@ -161,10 +161,8 @@ public class EEWorlds extends ECommand<EverEssentials> {
 			}
 		// Monde introuvable
 		} else {
-			player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
-					.append(EAMessages.WORLD_NOT_FOUND.get())
-					.replace("<world>", getButtonPosition(optWorld.get().getSpawnLocation()))
-					.build());
+			player.sendMessage(EEMessages.PREFIX.get() + EAMessages.WORLD_NOT_FOUND.get()
+					.replace("<world>", world_name));
 		}
 		return false;
 	}
@@ -197,10 +195,8 @@ public class EEWorlds extends ECommand<EverEssentials> {
 			}
 		// Monde introuvable
 		} else {
-			player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
-					.append(EAMessages.WORLD_NOT_FOUND.get())
-					.replace("<world>", getButtonPosition(optWorld.get().getSpawnLocation()))
-					.build());
+			player.sendMessage(EEMessages.PREFIX.get() + EAMessages.WORLD_NOT_FOUND.get()
+					.replace("<world>", world_name));
 		}
 		return false;
 	}

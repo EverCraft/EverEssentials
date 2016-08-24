@@ -18,9 +18,6 @@ package fr.evercraft.essentials.command.gamerule;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.text.Text;
@@ -44,7 +41,7 @@ public class EEGameruleSet extends ESubCommand<EverEssentials> {
 	}
 
 	public Text description(final CommandSource source) {
-		return EChat.of(EEMessages.GAMERULE_LIST_DESCRIPTION.get());
+		return EChat.of(EEMessages.GAMERULE_ADD_DESCRIPTION.get());
 	}
 	
 	public List<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
@@ -61,15 +58,9 @@ public class EEGameruleSet extends ESubCommand<EverEssentials> {
 	public boolean subExecute(final CommandSource source, final List<String> args) throws CommandException {
 		// Résultat de la commande :
 		boolean resultat = false;
-		if(args.size() == 1) {
+		if(args.size() == 0) {
 			if(source instanceof EPlayer) {
-				resultat = commandGameruleStatus((EPlayer) source, args.get(0));
-			} else {
-				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
-			}
-		} else if(args.size() == 2) {
-			if(source instanceof EPlayer) {
-				resultat = commandGameruleModify((EPlayer) source, args.get(0), args.get(1));
+				resultat = commandGameruleAdd((EPlayer) source);
 			} else {
 				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
 			}
@@ -79,29 +70,7 @@ public class EEGameruleSet extends ESubCommand<EverEssentials> {
 		return resultat;
 	}
 
-	public boolean commandGameruleStatus(final EPlayer player, final String name) {
-		Map<String, String> gamerules = player.getLocation().getExtent().getProperties().getGameRules();
-		List<Text> lists = new ArrayList<Text>();
-		for(Entry<String, String> gamerule : gamerules.entrySet()){
-			lists.add(EChat.of(EEMessages.GAMERULE_LIST_LINE.get()
-					.replaceAll("<gamerule>", gamerule.getKey())
-					.replaceAll("<statut>", gamerule.getValue())));
-		}
-		this.plugin.getEverAPI().getManagerService().getEPagination().sendTo(EEMessages.GAMERULE_LIST_TITLE.getText().toBuilder()
-				.onClick(TextActions.runCommand("/" + this.getName())).build(), lists, player);
-		return true;
-	}
-	
-	public boolean commandGameruleModify(final EPlayer player, final String gamerule_name, final String value) {
-		Map<String, String> gamerules = player.getLocation().getExtent().getProperties().getGameRules();
-		List<Text> lists = new ArrayList<Text>();
-		for(Entry<String, String> gamerule : gamerules.entrySet()){
-			lists.add(EChat.of(EEMessages.GAMERULE_LIST_LINE.get()
-					.replaceAll("<gamerule>", gamerule.getKey())
-					.replaceAll("<statut>", gamerule.getValue())));
-		}
-		this.plugin.getEverAPI().getManagerService().getEPagination().sendTo(EEMessages.GAMERULE_LIST_TITLE.getText().toBuilder()
-				.onClick(TextActions.runCommand("/" + this.getName())).build(), lists, player);
+	public boolean commandGameruleAdd(final EPlayer player) {
 		return true;
 	}
 }
