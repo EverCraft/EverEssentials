@@ -66,7 +66,10 @@ public class EEKickall extends ECommand<EverEssentials> {
 	
 	@Override
 	protected List<String> getArg(final String arg) {
-		return Arrays.asList(arg);
+		if(!arg.isEmpty()) {
+			return Arrays.asList(arg);
+		}
+		return Arrays.asList();
 	}
 	
 	@Override

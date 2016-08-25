@@ -46,9 +46,11 @@ public class EENear extends EReloadCommand<EverEssentials> {
 	
 	public EENear(final EverEssentials plugin) {
         super(plugin, "near");
-        reload();
+        
+        this.reload();
     }
 	
+	@Override
 	public void reload(){
 		Map<String, Integer> permissions = new HashMap<String, Integer>();
 		this.permission_default = this.plugin.getConfigs().get("near-distance.default").getInt(1);
@@ -60,7 +62,7 @@ public class EENear extends EReloadCommand<EverEssentials> {
 		this.permissions = UtilsMap.valueDESC(permissions);
 	}
 	
-	public int getValue(final EPlayer player) {
+	private int getValue(final EPlayer player) {
 		int max = this.permission_default;
 		int cpt = 0;
 		while (cpt < this.permissions.size() && max == this.permission_default) {
@@ -72,14 +74,17 @@ public class EENear extends EReloadCommand<EverEssentials> {
 		return max;
 	}
 	
+	@Override
 	public boolean testPermission(final CommandSource source) {
 		return source.hasPermission(EEPermissions.NEAR.get());
 	}
 
+	@Override
 	public Text description(final CommandSource source) {
 		return EEMessages.NEAR_DESCRIPTION.getText();
 	}
 
+	@Override
 	public Text help(final CommandSource source) {
 		return Text.builder("/" + this.getName())
 					.onClick(TextActions.suggestCommand("/" + this.getName()))
@@ -87,6 +92,7 @@ public class EENear extends EReloadCommand<EverEssentials> {
 					.build();
 	}
 	
+	@Override
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		return new ArrayList<String>();
 	}
@@ -98,20 +104,21 @@ public class EENear extends EReloadCommand<EverEssentials> {
 		if (args.size() == 0) {
 			// Si la source est un joueur
 			if (source instanceof EPlayer) {
-				resultat = commandNear((EPlayer) source);
+				resultat = this.commandNear((EPlayer) source);
 			// La source n'est pas un joueur
 			} else {
-				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
+				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText()));
 			}
 		// Si on ne connait pas le joueur
 		} else {
-			source.sendMessage(getHelp(source).get());
+			source.sendMessage(this.help(source));
 		}
+		
 		return resultat;
 	}
 	
 	public boolean commandNear(final EPlayer player) {
-		Map <EPlayer, Integer> list = player.getEPlayers(getValue(player));		
+		Map <EPlayer, Integer> list = player.getEPlayers(this.getValue(player));		
 		if (list.isEmpty()) {
 			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.NEAR_NOPLAYER.get());
 		} else {

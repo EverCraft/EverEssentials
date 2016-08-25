@@ -17,6 +17,7 @@
 package fr.evercraft.essentials.command;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.spongepowered.api.command.CommandException;
@@ -38,14 +39,17 @@ public class EEMe extends ECommand<EverEssentials> {
         super(plugin ,"me", "action", "describe");
     }
 	
+	@Override
 	public boolean testPermission(final CommandSource source) {
 		return source.hasPermission(EEPermissions.ME.get());
 	}
 
+	@Override
 	public Text description(final CommandSource source) {
 		return EEMessages.ME_DESCRIPTION.getText();
 	}
 
+	@Override
 	public Text help(final CommandSource source) {
 		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_MESSAGE.get() + ">")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
@@ -53,33 +57,41 @@ public class EEMe extends ECommand<EverEssentials> {
 					.build();
 	}
 	
+	@Override
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		return new ArrayList<String>();
 	}
 	
+	@Override
+	protected List<String> getArg(final String arg) {
+		if(!arg.isEmpty()) {
+			return Arrays.asList(arg);
+		}
+		return Arrays.asList();
+	}
+	
+	@Override
 	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Résultat de la commande :
 		boolean resultat = false;
-		if (args.size() > 0) {
+		
+		if (args.size() == 1) {
 			// Si la source est un joueur
 			if (source instanceof EPlayer) {
-				resultat = commandMe((EPlayer) source, getMessage(args));
+				resultat = this.commandMe((EPlayer) source, args.get(0));
 			// La source n'est pas un joueur
 			} else {
-				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
+				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText()));
 			}
 		} else {
-			source.sendMessage(help(source));
+			source.sendMessage(this.help(source));
 		}
+		
 		return resultat;
 	}
 	
-	public boolean commandMe(final EPlayer player, String message) {
+	private boolean commandMe(final EPlayer player, String message) {
 		player.broadcastMessage(EEMessages.ME_PREFIX.get().replaceAll("<player>", player.getName()) + message);
 		return true;
-	}
-	
-	public String getMessage(final List<String> args){
-		return String.join(" ", args);
 	}
 }

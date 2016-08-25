@@ -38,14 +38,17 @@ public class EEMotd extends ECommand<EverEssentials> {
         super(plugin, "motd");
     }
 
+	@Override
 	public boolean testPermission(final CommandSource source) {
 		return source.hasPermission(EEPermissions.MOTD.get());
 	}
 
+	@Override
 	public Text description(final CommandSource source) {
 		return EEMessages.MOTD_DESCRIPTION.getText();
 	}
 
+	@Override
 	public Text help(final CommandSource source) {
 		return Text.builder("/" + this.getName())
 					.onClick(TextActions.suggestCommand("/" + this.getName()))
@@ -53,40 +56,37 @@ public class EEMotd extends ECommand<EverEssentials> {
 					.build();
 	}
 	
+	@Override
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		return new ArrayList<String>();
 	}
 	
+	@Override
 	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Résultat de la commande :
 		boolean resultat = false;
+		
 		// Si on ne connait pas le joueur
 		if (args.size() == 0) {
 			// Si la source est un joueur
 			if (source instanceof EPlayer) {
-				resultat = commandMotd((EPlayer) source);
+				resultat = this.commandMotd((EPlayer) source);
 			// La source n'est pas un joueur
 			} else {
-				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
+				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText()));
 			}
 		// Nombre d'argument incorrect
 		} else {
 			source.sendMessage(help(source));
 		}
+		
 		return resultat;
 	}
 	
-	public boolean commandMotd(final EPlayer player) {
-		sendListMessage(player, this.plugin.getMotd().getMotd());
+	private boolean commandMotd(final EPlayer player) {
+		for (String line : this.plugin.getMotd().getMotd()) {
+    		player.sendMessage(player.replaceVariable(line));
+    	}
 		return true;
 	}
-	
-    private void sendListMessage(EPlayer player, List<String> list){
-    	for (String line : list){
-    		player.sendMessage(
-    				this.plugin.getChat().replace(
-    						this.plugin.getChat().replaceGlobal(
-    								this.plugin.getChat().replacePlayer(player, line))));
-    	}
-    }
 }

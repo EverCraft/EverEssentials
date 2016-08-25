@@ -73,12 +73,18 @@ public class EEPlayerListeners {
 		this.plugin.getManagerServices().getEssentials().registerPlayer(event.getTargetEntity().getUniqueId());
 		this.plugin.getScheduler().start();
 		
-		/*
-		 * Optional<EPlayer> player =
-		 * this.plugin.getEverAPI().getEServer().getEPlayer
-		 * (event.getTargetEntity()); if (player.isPresent()) {
-		 * sendListMessage(player.get(), this.plugin.getMotd().getMotd()); }
-		 */
+
+		// Motd
+		if (this.plugin.getMotd().isEnable()) {
+			Optional<EPlayer> optPlayer = this.plugin.getEverAPI().getEServer().getEPlayer(event.getTargetEntity()); 
+			if (optPlayer.isPresent()) {
+				EPlayer player = optPlayer.get();
+				
+				for (String line : this.plugin.getMotd().getMotd()) {
+		    		player.sendMessage(player.replaceVariable(line));
+		    	}
+			}
+		}
 	}
 
 	/**

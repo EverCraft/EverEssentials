@@ -18,6 +18,7 @@ package fr.evercraft.essentials.command;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
@@ -41,14 +42,17 @@ public class EEMore extends ECommand<EverEssentials> {
         super(plugin, "more");
     }
 
+	@Override
 	public boolean testPermission(final CommandSource source) {
 		return source.hasPermission(EEPermissions.MORE.get());
 	}
 
+	@Override
 	public Text description(final CommandSource source) {
 		return EEMessages.MORE_DESCRIPTION.getText();
 	}
 
+	@Override
 	public Text help(final CommandSource source) {
 		return Text.builder("/" + this.getName())
 					.onClick(TextActions.suggestCommand("/" + this.getName()))
@@ -56,10 +60,12 @@ public class EEMore extends ECommand<EverEssentials> {
 					.build();
 	}
 	
+	@Override
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		return new ArrayList<String>();
 	}
 	
+	@Override
 	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Résultat de la commande :
 		boolean resultat = false;
@@ -68,10 +74,10 @@ public class EEMore extends ECommand<EverEssentials> {
 		if (args.size() == 0) {
 			// Si la source est un joueur
 			if (source instanceof EPlayer) {
-				resultat = commandMore((EPlayer) source);
+				resultat = this.commandMore((EPlayer) source);
 			// La source n'est pas un joueur
 			} else {
-				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
+				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR.getText()));
 			}
 		// Nombre d'argument incorrect
 		} else {
@@ -80,32 +86,32 @@ public class EEMore extends ECommand<EverEssentials> {
 		return resultat;
 	}
 	
-	public boolean commandMore(final EPlayer player) {
+	private boolean commandMore(final EPlayer player) {
+		Optional<ItemStack> item = player.getItemInMainHand();
+		
 		// Si le joueur a bien un item dans la main
-		if (player.getItemInMainHand().isPresent()) {
-			ItemStack item = player.getItemInMainHand().get();
-			
-			Integer max = item.getMaxStackQuantity();
+		if (item.isPresent()) {			
+			Integer max = item.get().getMaxStackQuantity();
 			/*if (player.hasPermission(EEPermissions.MORE_UNLIMITED"))) {
 				max = 64;
 			} else {
 				max = item.getMaxStackQuantity();
 			}*/
 			
-			if (item.getQuantity() < max) {
-				item.setQuantity(max);
-				player.setItemInMainHand(item);		
+			if (item.get().getQuantity() < max) {
+				item.get().setQuantity(max);
+				player.setItemInMainHand(item.get());		
 				player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
 						.append(EEMessages.MORE_PLAYER.get()
 								.replaceAll("<quantity>", max.toString()))
-						.replace("<item>", EChat.getButtomItem(item, EChat.getTextColor(EEMessages.MORE_ITEM_COLOR.get())))
+						.replace("<item>", EChat.getButtomItem(item.get(), EChat.getTextColor(EEMessages.MORE_ITEM_COLOR.get())))
 						.build());
 				return true;
 			} else {
 				player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
 						.append(EEMessages.MORE_MAX_QUANTITY.get()
 								.replaceAll("<quantity>", max.toString()))
-						.replace("<item>", EChat.getButtomItem(item, EChat.getTextColor(EEMessages.MORE_ITEM_COLOR.get())))
+						.replace("<item>", EChat.getButtomItem(item.get(), EChat.getTextColor(EEMessages.MORE_ITEM_COLOR.get())))
 						.build());
 			}
 		// Le joueur a aucun item dans la main

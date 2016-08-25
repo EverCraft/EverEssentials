@@ -39,27 +39,31 @@ import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.java.UtilsDouble;
 import fr.evercraft.everapi.plugin.EChat;
-import fr.evercraft.everapi.plugin.command.ECommand;
+import fr.evercraft.everapi.plugin.command.EReloadCommand;
 import fr.evercraft.everapi.text.ETextBuilder;
 
-public class EELag extends ECommand<EverEssentials> {
+public class EELag extends EReloadCommand<EverEssentials> {
 	
 	private static final double HISTORY_LENGTH = 15;
 	private static final int TPS_LENGTH = 2;
 	
 	private Task scheduler;
-	private List<Double> historys;
+	private final List<Double> historys;
 	
 	public EELag(final EverEssentials plugin) {
         super(plugin, "lag", "gc", "tps");
 
         this.historys = new ArrayList<Double>();
-        
-        start();
+        this.reload();
     }
 	
-	private void start() {
-		this.historys = new ArrayList<Double>();
+	@Override
+	public void reload() {
+		if (this.scheduler != null) {
+			this.scheduler.cancel();
+			this.scheduler = null;
+		}
+		
 		this.scheduler = this.plugin.getGame().getScheduler().createTaskBuilder().execute(new Runnable() {
 			    public void run() {
 			    	historys.add(getTPS());
@@ -69,24 +73,18 @@ public class EELag extends ECommand<EverEssentials> {
 			    }
 			}).interval(1, TimeUnit.MINUTES).submit(this.plugin);
 	}
-	
-	private void stop() {
-		this.scheduler.cancel();
-	}
-	
-	public void reload() {
-		this.stop();
-		this.start();
-	}
 
+	@Override
 	public boolean testPermission(final CommandSource source) {
 		return source.hasPermission(EEPermissions.LAG.get());
 	}
 
+	@Override
 	public Text description(final CommandSource source) {
 		return EEMessages.LAG_DESCRIPTION.getText();
 	}
 
+	@Override
 	public Text help(final CommandSource source) {
 		return Text.builder("/" + this.getName())
 					.onClick(TextActions.suggestCommand("/" + this.getName()))
@@ -94,25 +92,28 @@ public class EELag extends ECommand<EverEssentials> {
 					.build();
 	}
 	
+	@Override
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		return new ArrayList<String>();
 	}
 	
+	@Override
 	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
 		ManagementFactory.getRuntimeMXBean().getStartTime();
 		// Résultat de la commande :
 		boolean resultat = false;
+		
 		if (args.size() == 0) {
 			resultat = commandLag(source);
 		} else {
 			source.sendMessage(help(source));
 		}
+		
 		return resultat;
 	}
 	
-	public boolean commandLag(final CommandSource player) {
-		Double tps = getTPS();
-		
+	private boolean commandLag(final CommandSource player) {
+		Double tps = this.getTPS();
 		List<Text> list = new ArrayList<Text>();
 		
 		list.add(EChat.of(EEMessages.LAG_TIME.get()
@@ -134,12 +135,16 @@ public class EELag extends ECommand<EverEssentials> {
 							.replaceAll("<chunks>", String.valueOf(Iterables.size(world.getLoadedChunks()))))))
 					.build());
 		}
-		this.plugin.getEverAPI().getManagerService().getEPagination().sendTo(EChat.of(EEMessages.LAG_TITLE.get()).toBuilder()
-				.onClick(TextActions.runCommand("/lag")).build(), list, player);
+		this.plugin.getEverAPI().getManagerService().getEPagination().sendTo(
+				EChat.of(EEMessages.LAG_TITLE.get()).toBuilder()
+					.onClick(TextActions.runCommand("/lag"))
+					.build(), 
+				list, 
+				player);
 		return true;
 	}
 	
-	public Text getHistoryTPS() {
+	private Text getHistoryTPS() {
 		Builder resultat = Text.builder();
 		for (int cpt = 0; cpt < this.historys.size(); cpt++) {
 			double tps = this.historys.get(this.historys.size() - cpt - 1);
@@ -148,7 +153,7 @@ public class EELag extends ECommand<EverEssentials> {
 		return resultat.build();
 	}
 	
-	public Text getHistoryTPSIcon(final double tps, final int num) {
+	private Text getHistoryTPSIcon(final double tps, final int num) {
 		Builder resultat = null;
 		if (tps >= 20) {
 			resultat = Text.builder("▇").color(TextColors.GREEN);
@@ -171,7 +176,7 @@ public class EELag extends ECommand<EverEssentials> {
 				.build();
 	}
 	
-	public TextColor getColorTPS(final double tps) {
+	private TextColor getColorTPS(final double tps) {
 		TextColor color;
 		if (tps >= 18) {
 			color = TextColors.GREEN;
@@ -183,7 +188,7 @@ public class EELag extends ECommand<EverEssentials> {
 		return color;
 	}
 	
-	public double getTPS(){
+	private double getTPS(){
 		return UtilsDouble.round(plugin.getEServer().getTicksPerSecond(), TPS_LENGTH);
 	}
 }

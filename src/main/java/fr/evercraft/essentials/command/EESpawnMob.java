@@ -46,22 +46,25 @@ public class EESpawnMob extends EReloadCommand<EverEssentials> {
 	
 	public EESpawnMob(final EverEssentials plugin) {
         super(plugin, "spawnmob");
-        reload();
+        this.reload();
     }
 	
 	@Override
 	public void reload() {
-		this.limit = this.plugin.getConfigs().get("spawnmob.limit").getInt();
+		this.limit = this.plugin.getConfigs().getSpawnMobLimit();
 	}
 
+	@Override
 	public boolean testPermission(final CommandSource source) {
 		return source.hasPermission(EEPermissions.SPAWNMOB.get());
 	}
 
+	@Override
 	public Text description(final CommandSource source) {
 		return EEMessages.SPAWNMOB_DESCRIPTION.getText();
 	}
 
+	@Override
 	public Text help(final CommandSource source) {
 		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_ENTITY.get() + "> [" + EAMessages.ARGS_AMOUNT.get() + "]")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
@@ -69,6 +72,7 @@ public class EESpawnMob extends EReloadCommand<EverEssentials> {
 					.build();
 	}
 	
+	@Override
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		List<String> suggests = new ArrayList<String>();
 		if (args.size() == 1){
@@ -82,57 +86,60 @@ public class EESpawnMob extends EReloadCommand<EverEssentials> {
 		return suggests;
 	}
 	
+	@Override
 	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Résultat de la commande :
 		boolean resultat = false;
+		
 		// Si on ne connait pas le joueur
 		if (args.size() == 1) {
 			// Si la source est un joueur
 			if (source instanceof EPlayer) {
 				Optional<UtilsEntity> optEntity = UtilsEntity.get(args.get(0));
 				if (optEntity.isPresent()){
-					resultat = commandSpawnMob((EPlayer) source, optEntity.get(), 1);
+					resultat = this.commandSpawnMob((EPlayer) source, optEntity.get(), 1);
 				} else {
-					source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.SPAWNMOB_ERROR_MOB.get()));
+					source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.SPAWNMOB_ERROR_MOB.get()
+							.replaceAll("<entity>", args.get(0))));
 				}
 			// La source n'est pas un joueur
 			} else {
-				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
+				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText()));
 			}
-		} else if (args.size() == 2){
+		} else if (args.size() == 2) {
 			if (source instanceof EPlayer) {
 				Optional<UtilsEntity> optEntity = UtilsEntity.get(args.get(0));
-				if (optEntity.isPresent()){
+				if (optEntity.isPresent()) {
 					try {
-						int amount = Math.min(Integer.parseInt(args.get(1)), this.limit);
-						resultat = commandSpawnMob((EPlayer) source, optEntity.get(), amount);						
+						int amount = Math.max(Math.min(Integer.parseInt(args.get(1)), this.limit), 1);
+						resultat = this.commandSpawnMob((EPlayer) source, optEntity.get(), amount);						
 					} catch (NumberFormatException e){
 						source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.IS_NOT_NUMBER.get()
 								.replaceAll("<number>", args.get(1))));
 					}
 				} else {
-					source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.SPAWNMOB_ERROR_MOB.get()));
+					source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.SPAWNMOB_ERROR_MOB.get()
+							.replaceAll("<entity>", args.get(0))));
 				}
 			// La source n'est pas un joueur
 			} else {
-				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
+				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText()));
 			}
 		} else {
-			source.sendMessage(help(source));
+			source.sendMessage(this.help(source));
 		}
 		return resultat;
 	}
 	
-	public boolean commandSpawnMob(final EPlayer player, UtilsEntity utilsEntity, int amount) {
+	private boolean commandSpawnMob(final EPlayer player, UtilsEntity utilsEntity, int amount) {
 		Optional<Vector3i> optBlock = player.getViewBlock();
 		if (optBlock.isPresent()) {
 			Location<World> spawnLocation = player.getWorld().getLocation(optBlock.get().add(0, 1, 0));
-			for (int cpt = 0; cpt < amount; cpt++){
-				utilsEntity.spawnEntity(spawnLocation);
-	    	}
+			utilsEntity.spawnEntity(spawnLocation, amount);
 			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.SPAWNMOB_MOB.get()
 					.replaceAll("<amount>", String.valueOf(amount))
 					.replaceAll("<entity>", StringUtils.capitalize(utilsEntity.getName())));
+			return true;
 		} else {
 			player.sendMessage(EEMessages.PREFIX.get() + EAMessages.PLAYER_NO_LOOK_BLOCK.get());
 		}

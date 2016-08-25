@@ -258,6 +258,10 @@ public class EEConfig extends EConfig {
 	 * SpawnMob
 	 */
 	
+	public int getSpawnMobLimit() {
+		return this.get("spawnmob-limit").getInt();
+	}
+	
 	/*
 	 * Teleport
 	 */

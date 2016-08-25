@@ -40,14 +40,17 @@ public class EEPing extends ECommand<EverEssentials> {
         super(plugin, "ping");
     }
 
+	@Override
 	public boolean testPermission(final CommandSource source) {
 		return source.hasPermission(EEPermissions.PING.get());
 	}
 
+	@Override
 	public Text description(final CommandSource source) {
 		return EEMessages.PING_DESCRIPTION.getText();
 	}
 
+	@Override
 	public Text help(final CommandSource source) {
 		if (source.hasPermission(EEPermissions.PING_OTHERS.get())){
 			return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_PLAYER.get() + "]")
@@ -61,6 +64,7 @@ public class EEPing extends ECommand<EverEssentials> {
 					.build();
 	}
 	
+	@Override
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		if (args.size() == 1 && source.hasPermission(EEPermissions.PING_OTHERS.get())){
 			return null;
@@ -68,9 +72,11 @@ public class EEPing extends ECommand<EverEssentials> {
 		return new ArrayList<String>();
 	}
 	
+	@Override
 	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Résultat de la commande :
 		boolean resultat = false;
+		
 		// Si on ne connait pas le joueur
 		if (args.size() == 0) {
 			// Si la source est un joueur
@@ -78,7 +84,7 @@ public class EEPing extends ECommand<EverEssentials> {
 				resultat = commandPing((EPlayer) source);
 			// La source n'est pas un joueur
 			} else {
-				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
+				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText()));
 			}
 		// On connais le joueur
 		} else if (args.size() == 1) {
@@ -100,16 +106,17 @@ public class EEPing extends ECommand<EverEssentials> {
 		} else {
 			source.sendMessage(help(source));
 		}
+		
 		return resultat;
 	}
 	
-	public boolean commandPing(final EPlayer player) {
+	private boolean commandPing(final EPlayer player) {
 		player.sendMessage(EEMessages.PREFIX.get() + EEMessages.PING_PLAYER.get()
 				.replaceAll("<ping>", String.valueOf(player.getConnection().getLatency())));
 		return true;
 	}
 	
-	public boolean commandPingOthers(final CommandSource staff, final EPlayer player) throws CommandException {
+	private boolean commandPingOthers(final CommandSource staff, final EPlayer player) throws CommandException {
 		// La source et le joueur sont différent
 		if (!player.equals(staff)){
 			staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.PING_OTHERS.get()
@@ -118,7 +125,7 @@ public class EEPing extends ECommand<EverEssentials> {
 			return true;
 		// La source et le joueur sont identique
 		} else {
-			return execute(staff, new ArrayList<String>());
+			return this.commandPing(player);
 		}
 	}
 }

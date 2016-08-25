@@ -38,9 +38,14 @@ import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
+import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ECommand;
 import fr.evercraft.everapi.server.player.EPlayer;
 import fr.evercraft.everapi.sponge.UtilsEntity;
+
+/*
+ * Pas encore implémentée
+ */
 
 public class EESpawner extends ECommand<EverEssentials> {
 	
@@ -48,14 +53,17 @@ public class EESpawner extends ECommand<EverEssentials> {
         super(plugin, "spawner", "mobspawner", "changems");
     }
 
+	@Override
 	public boolean testPermission(final CommandSource source) {
 		return source.hasPermission(EEPermissions.SPAWNER.get());
 	}
 
+	@Override
 	public Text description(final CommandSource source) {
 		return EEMessages.SPAWNER_DESCRIPTION.getText();
 	}
 
+	@Override
 	public Text help(final CommandSource source) {
 		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_ENTITY.get() + "> [" + EAMessages.ARGS_SECONDS.get() + "]")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
@@ -63,6 +71,7 @@ public class EESpawner extends ECommand<EverEssentials> {
 					.build();
 	}
 	
+	@Override
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		List<String> suggests = new ArrayList<String>();
 		if (args.size() == 1){
@@ -75,6 +84,7 @@ public class EESpawner extends ECommand<EverEssentials> {
 		return suggests;
 	}
 	
+	@Override
 	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Résultat de la commande :
 		boolean resultat = false;
@@ -86,11 +96,11 @@ public class EESpawner extends ECommand<EverEssentials> {
 				if (optEntity.isPresent()){
 					resultat = commandSpawner((EPlayer) source, optEntity.get());
 				} else {
-					//source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.SPAWNER_ERROR_MOB.get()));
+					source.sendMessage(EChat.of(EEMessages.PREFIX.get() + " inconnu"));
 				}
 			// La source n'est pas un joueur
 			} else {
-				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
+				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText()));
 			}
 		// Nombre d'argument incorrect
 		} else {
@@ -99,7 +109,7 @@ public class EESpawner extends ECommand<EverEssentials> {
 		return resultat;
 	}
 	
-	public boolean commandSpawner(final EPlayer player, UtilsEntity entity) {
+	private boolean commandSpawner(final EPlayer player, UtilsEntity entity) {
 		Optional<Vector3i> optBlock = player.getViewBlock();
 		if (optBlock.isPresent()) {
 			Location<World> location = player.getWorld().getLocation(optBlock.get());

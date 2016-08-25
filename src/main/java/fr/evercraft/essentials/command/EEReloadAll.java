@@ -38,14 +38,17 @@ public class EEReloadAll extends ECommand<EverEssentials>{
         super(plugin, "reload", "rl");
     }
 	
+	@Override
 	public boolean testPermission(final CommandSource source) {
 		return source.hasPermission("sponge.command.plugins.reload");
 	}
 
+	@Override
 	public Text description(final CommandSource source) {
 		return EEMessages.RELOAD_ALL_DESCRIPTION.getText();
 	}
 
+	@Override
 	public Text help(final CommandSource source) {
 		return Text.builder("/" + this.getName())
 					.onClick(TextActions.suggestCommand("/" + this.getName()))
@@ -53,24 +56,28 @@ public class EEReloadAll extends ECommand<EverEssentials>{
 					.build();
 	}
 	
+	@Override
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		return new ArrayList<String>();
 	}
 	
+	@Override
 	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Résultat de la commande :
 		boolean resultat = false;
+		
 		// Si on ne connait pas le joueur
 		if (args.size() == 0) {
-			resultat = commandReload(source);
+			resultat = this.commandReload(source);
 		} else {
-			source.sendMessage(help(source));
+			source.sendMessage(this.help(source));
 		}
+		
 		return resultat;
 	}
 	
 	private boolean commandReload(final CommandSource player) {
-		this.plugin.getEServer().getBroadcastChannel().send(EEMessages.PREFIX.getText().concat(EEMessages.RELOAD_ALL_FIRST.getText()));
+		this.plugin.getEServer().getBroadcastChannel().send(EEMessages.PREFIX.getText().concat(EEMessages.RELOAD_ALL_START.getText()));
 		this.plugin.getGame().getEventManager().post(SpongeEventFactory.createGameReloadEvent(Cause.of(NamedCause.source(player))));
 		this.plugin.getEServer().getBroadcastChannel().send(EEMessages.PREFIX.getText().concat(EEMessages.RELOAD_ALL_END.getText()));
 		return true;

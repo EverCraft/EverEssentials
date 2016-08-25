@@ -50,7 +50,7 @@ public class EEConfigRules extends EConfig {
 		return EChat.of(this.get("rules.title").getString(""));
 	}
 	
-	public List<Text> getList() {
-		return EChat.of(this.getListString("rules.list"));
+	public List<String> getList() {
+		return this.getListString("rules.list");
 	}
 }

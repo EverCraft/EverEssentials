@@ -491,7 +491,7 @@ public class EEMessage extends EMessage {
 		INVSEE_DESCRIPTION("invsee.description", "Regarde l'inventaire d'un autre joueur"),
 		
 		RELOAD_ALL_DESCRIPTION("reload.description", "Recharge tous les plugins"),
-		RELOAD_ALL_FIRST("reload.first", "&cAttention : Rechargement de tous les plugins, risque de latence"),
+		RELOAD_ALL_START("reload.start", "&cAttention : Rechargement de tous les plugins, risque de latence"),
 		RELOAD_ALL_END("reload.end", "&aRechargement terminé"),
 		
 		REPAIR_DESCRIPTION("repair.description", "Répare les objets"),
@@ -534,8 +534,10 @@ public class EEMessage extends EMessage {
 		RULES_DESCRIPTION("rules.description", "Affiche les règles d'Evercraft."),
 		
 		SAY_DESCRIPTION("say.description", 		"Envoie un message à tous les joueurs."),
-		SAY_PREFIX_PLAYER("say.prefixPlayer", 	"&7[&6<player>&7] <message>"),
-		SAY_PREFIX_CONSOLE("say.prefixConsole", "&7[&6Console&7] <message>"),
+		SAY_PLAYER("say.player", 	"&7[&6<player>&7] <message>"),
+		SAY_CONSOLE("say.console", "&7[&6Console&7] <message>"),
+		SAY_COMMANDBLOCK("say.commandblock", "&7[&6CommandBlock&7] <message>"),
+		
 		
 		SEED_DESCRIPTION("seed.description", 	"Affiche le seed d'un monde"),
 		SEED_MESSAGE("seed.message", 			"&7Le seed du monde &6<world> &7est &6<seed>&7."),

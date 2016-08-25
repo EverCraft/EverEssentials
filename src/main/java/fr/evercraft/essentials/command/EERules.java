@@ -28,6 +28,7 @@ import org.spongepowered.api.text.format.TextColors;
 import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
+import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ECommand;
 
 public class EERules extends ECommand<EverEssentials> {
@@ -36,14 +37,17 @@ public class EERules extends ECommand<EverEssentials> {
         super(plugin, "rules", "rule");
     }
 
+	@Override
 	public boolean testPermission(final CommandSource source) {
 		return source.hasPermission(EEPermissions.RULES.get());
 	}
 
+	@Override
 	public Text description(final CommandSource source) {
 		return EEMessages.RULES_DESCRIPTION.getText();
 	}
 
+	@Override
 	public Text help(final CommandSource source) {
 		return Text.builder("/" + this.getName())
 					.onClick(TextActions.suggestCommand("/" + this.getName()))
@@ -51,27 +55,31 @@ public class EERules extends ECommand<EverEssentials> {
 					.build();
 	}
 	
+	@Override
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		return new ArrayList<String>();
 	}
 	
+	@Override
 	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Résultat de la commande :
 		boolean resultat = false;
+		
 		// Nom du warp inconnu
 		if (args.size() == 0) {
-			resultat = commandRules(source);
+			resultat = this.commandRules(source);
 		// Nom du warp connu
 		} else {
-			source.sendMessage(help(source));
+			source.sendMessage(this.help(source));
 		}
+		
 		return resultat;
 	}
 	
-	public boolean commandRules(final CommandSource player){			
+	private boolean commandRules(final CommandSource player) {		
 		this.plugin.getEverAPI().getManagerService().getEPagination().sendTo(
 				this.plugin.getRules().getTitle(),
-				this.plugin.getRules().getList(),
+				EChat.of(this.plugin.getChat().replaceGlobal(this.plugin.getRules().getList())),
 				player);
 		return true;
 	}

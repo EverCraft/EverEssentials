@@ -34,20 +34,27 @@ import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.command.ECommand;
 import fr.evercraft.everapi.server.player.EPlayer;
 
+/*
+ * Pas encore implémentée
+ */
+
 public class EESeeInventory extends ECommand<EverEssentials> {
 	
 	public EESeeInventory(final EverEssentials plugin) {
         super(plugin, "invsee");
     }
 	
+	@Override
 	public boolean testPermission(final CommandSource source) {
 		return source.hasPermission(EEPermissions.INVSEE.get());
 	}
 
+	@Override
 	public Text description(final CommandSource source) {
 		return EEMessages.INVSEE_DESCRIPTION.getText();
 	}
 
+	@Override
 	public Text help(final CommandSource source) {
 		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_PLAYER.get() + ">")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
@@ -55,10 +62,12 @@ public class EESeeInventory extends ECommand<EverEssentials> {
 					.build();
 	}
 	
+	@Override
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		return new ArrayList<String>();
 	}
 	
+	@Override
 	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Résultat de la commande :
 		boolean resultat = false;

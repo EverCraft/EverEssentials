@@ -19,6 +19,7 @@ package fr.evercraft.essentials;
 import java.util.Arrays;
 import java.util.List;
 
+import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.file.EConfig;
 
 public class EEMotd extends EConfig {
@@ -31,13 +32,17 @@ public class EEMotd extends EConfig {
 	public void loadDefault() {
 		List<String> list = Arrays.asList(
 				"&6&m                                                                                &r",	
-				"   &7Bienvenue &6<player>&7 sur le serveur &6&lPVP/Faction&7",
+				"   &7Bienvenue &6" + EChat.DISPLAYNAME_FORMAT + "&7 sur le serveur &6&lPVP/Faction&7",
 				"   &7Adresse du Teamspeak : &6evercraft.fr",
-				"   &7Vous avez &6<money>&f邸",
-				"   &7Nous sommes le &6<date>&7 et il est &6<time>&7",
+				"   &7Vous avez &6" + EChat.BALANCE_FORMAT,
+				"   &7Nous sommes le &6" + EChat.DATE + "&7 et il est &6" + EChat.TIME + "&7",
 				"&6&m                                                                                &r");
 		addDefault("motd", list);
-		
+		addDefault("enable", true);
+	}
+	
+	public boolean isEnable() {
+		return this.get("enable").getBoolean(false);
 	}
 	
 	public List<String> getMotd() {

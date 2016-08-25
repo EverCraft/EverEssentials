@@ -43,14 +43,17 @@ public class EEMojang extends ECommand<EverEssentials> {
         super(plugin, "mojang");
     }
 
+	@Override
 	public boolean testPermission(final CommandSource source) {
 		return source.hasPermission(EEPermissions.MOJANG.get());
 	}
 
+	@Override
 	public Text description(final CommandSource source) {
 		return EEMessages.MOJANG_DESCRIPTION.getText();
 	}
 
+	@Override
 	public Text help(final CommandSource source) {
 		return Text.builder("/" + this.getName())
 					.onClick(TextActions.suggestCommand("/" + this.getName()))
@@ -58,24 +61,28 @@ public class EEMojang extends ECommand<EverEssentials> {
 					.build();
 	}
 	
+	@Override
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		return new ArrayList<String>();
 	}
 	
+	@Override
 	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Résultat de la commande :
 		boolean resultat = false;
+		
 		// Nom du home inconnu
 		if (args.size() == 0) {
 			this.plugin.getGame().getScheduler().createTaskBuilder()
 								.async()
-								.execute(() -> commandMojang(source))
+								.execute(() -> this.commandMojang(source))
 								.name("Command : Mojang").submit(this.plugin);
 			resultat = true;
 		// Nombre d'argument incorrect
 		} else {
-			source.sendMessage(help(source));
+			source.sendMessage(this.help(source));
 		}
+		
 		return resultat;
 	}
 	
@@ -87,16 +94,16 @@ public class EEMojang extends ECommand<EverEssentials> {
 
 				List<Text> lists = new ArrayList<Text>();
 		
-				lists.add(server(MojangServer.ACCOUNT));
-				lists.add(server(MojangServer.API));
-				lists.add(server(MojangServer.MOJANG));
-				lists.add(server(MojangServer.AUTH));
-				lists.add(server(MojangServer.AUTHSERVER));
-				lists.add(server(MojangServer.MINECRAFT_NET));
-				lists.add(server(MojangServer.SESSION));
-				lists.add(server(MojangServer.SESSIONSERVER));
-				lists.add(server(MojangServer.SKINS));
-				lists.add(server(MojangServer.TEXTURES));
+				lists.add(this.server(MojangServer.ACCOUNT));
+				lists.add(this.server(MojangServer.API));
+				lists.add(this.server(MojangServer.MOJANG));
+				lists.add(this.server(MojangServer.AUTH));
+				lists.add(this.server(MojangServer.AUTHSERVER));
+				lists.add(this.server(MojangServer.MINECRAFT_NET));
+				lists.add(this.server(MojangServer.SESSION));
+				lists.add(this.server(MojangServer.SESSIONSERVER));
+				lists.add(this.server(MojangServer.SKINS));
+				lists.add(this.server(MojangServer.TEXTURES));
 				
 				this.plugin.getEverAPI().getManagerService().getEPagination().sendTo(
 						EEMessages.MOJANG_TITLE.getText().toBuilder()
@@ -110,7 +117,7 @@ public class EEMojang extends ECommand<EverEssentials> {
 		}
 	}
 	
-	public Text server(final MojangServer server) {
+	private Text server(final MojangServer server) {
 		Optional<EEMessages> server_name = EEMojang.getMojangServer(server);
 		Optional<EEMessages> color_name = EEMojang.getMojangColor(server.getColor());
 		if (server_name.isPresent() && color_name.isPresent()) {
@@ -121,14 +128,14 @@ public class EEMojang extends ECommand<EverEssentials> {
 		return Text.of();
 	}
 	
-	public static Optional<EEMessages> getMojangServer(MojangServer server) {
+	private static Optional<EEMessages> getMojangServer(MojangServer server) {
 		try {
 			return Optional.of(EEMessages.valueOf("MOJANG_SERVER_" + server.name()));
 		} catch (IllegalArgumentException e) {}
 		return Optional.empty();
 	}
 	
-	public static Optional<EEMessages> getMojangColor(Color color) {
+	private static Optional<EEMessages> getMojangColor(Color color) {
 		try {
 			return Optional.of(EEMessages.valueOf("MOJANG_COLOR_" + color.name()));
 		} catch (IllegalArgumentException e) {}

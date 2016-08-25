@@ -19,7 +19,6 @@ package fr.evercraft.essentials.command;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
@@ -46,14 +45,17 @@ public class EEName extends ECommand<EverEssentials> {
         super(plugin, "name", "names");
     }
 
+	@Override
 	public boolean testPermission(final CommandSource source) {
 		return source.hasPermission(EEPermissions.NAMES.get());
 	}
 
+	@Override
 	public Text description(final CommandSource source) {
 		return EEMessages.NAMES_DESCRIPTION.getText();
 	}
 
+	@Override
 	public Text help(final CommandSource source) {
 		if (source.hasPermission(EEPermissions.NAMES_OTHERS.get())){
 			return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_PLAYER.get() + "]")
@@ -67,6 +69,7 @@ public class EEName extends ECommand<EverEssentials> {
 					.build();
 	}
 	
+	@Override
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		if (args.size() == 1 && source.hasPermission(EEPermissions.NAMES_OTHERS.get())){
 			return null;
@@ -74,21 +77,23 @@ public class EEName extends ECommand<EverEssentials> {
 		return new ArrayList<String>();
 	}
 	
+	@Override
 	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Résultat de la commande :
 		boolean resultat = false;
+		
 		// Si on ne connait pas le joueur
 		if (args.size() == 0) {
 			// Si la source est un joueur
 			if (source instanceof EPlayer) {
 				this.plugin.getGame().getScheduler().createTaskBuilder()
 						.async()
-						.execute(() -> commandNames((EPlayer) source))
+						.execute(() -> this.commandNames((EPlayer) source))
 						.name("Command : Names").submit(this.plugin);
 				resultat = true;
 			// La source n'est pas un joueur
 			} else {
-				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
+				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText()));
 			}
 		// On connais le joueur
 		} else if (args.size() == 1) {
@@ -96,7 +101,7 @@ public class EEName extends ECommand<EverEssentials> {
 			if (source.hasPermission(EEPermissions.NAMES_OTHERS.get())){
 				this.plugin.getGame().getScheduler().createTaskBuilder()
 							.async()
-							.execute(() -> commandNames(source, args.get(0)))
+							.execute(() -> this.commandNames(source, args.get(0)))
 							.name("Command : Names").submit(this.plugin);
 				resultat = true;
 			// Il n'a pas la permission
@@ -105,8 +110,9 @@ public class EEName extends ECommand<EverEssentials> {
 			}
 		// Nombre d'argument incorrect
 		} else {
-			source.sendMessage(help(source));
+			source.sendMessage(this.help(source));
 		}
+		
 		return resultat;
 	}
 
@@ -140,7 +146,7 @@ public class EEName extends ECommand<EverEssentials> {
 							.onClick(TextActions.runCommand("/names ")).build(), 
 						lists, player);
 			} catch (ExecutionException e) {
-				player.sendMessage(Text.of("erreur : " + e.getMessage()));
+				player.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR.getText()));
 			}
 		} else {
 			player.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR.getText()));
@@ -149,12 +155,7 @@ public class EEName extends ECommand<EverEssentials> {
 	
 	private void commandNames(final CommandSource player, String name) {
 		try {
-			CompletableFuture<GameProfile> future = null;
-			if (name.length() == 36) {
-				future = this.plugin.getEServer().getGameProfileManager().get(UUID.fromString(name));
-			} else {
-				future = this.plugin.getEServer().getGameProfileManager().get(name);
-			}
+			CompletableFuture<GameProfile> future = this.plugin.getEServer().getGameProfileFuture(name);
 			future.exceptionally(e -> null).thenApplyAsync(profile -> {
 				if (profile != null && profile.isFilled() && profile.getName().isPresent()) {
 					if (player instanceof EPlayer && ((EPlayer) player).getProfile().equals(profile)) {

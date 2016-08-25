@@ -41,14 +41,17 @@ public class EESkull extends ECommand<EverEssentials> {
 		super(plugin, "skull");
 	}
 
+	@Override
 	public boolean testPermission(final CommandSource source) {
 		return source.hasPermission(EEPermissions.SKULL.get());
 	}
 
+	@Override
 	public Text description(final CommandSource source) {
 		return EEMessages.SKULL_DESCRIPTION.getText();
 	}
 
+	@Override
 	public Text help(final CommandSource source) {
 		if (source.hasPermission(EEPermissions.SKULL_OTHERS.get())) {
 			return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_PLAYER.get() + "]")
@@ -62,6 +65,7 @@ public class EESkull extends ECommand<EverEssentials> {
 					.build();
 	}
 
+	@Override
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		if (args.size() == 1 && source.hasPermission(EEPermissions.SKULL_OTHERS.get())) {
 			return null;
@@ -69,42 +73,45 @@ public class EESkull extends ECommand<EverEssentials> {
 		return new ArrayList<String>();
 	}
 
+	@Override
 	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Résultat de la commande :
 		boolean resultat = false;
+		
 		// Si on ne connait pas le joueur
 		if (args.size() == 0) {
 			// Si la source est un joueur
 			if (source instanceof EPlayer) {
-				resultat = commandSkull((EPlayer) source);
+				resultat = this.commandSkull((EPlayer) source);
 				// La source n'est pas un joueur
 			} else {
-				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
+				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText()));
 			}
 			// On connais le joueur
 		} else if (args.size() == 1) {
 			// Si il a la permission
 			if (source.hasPermission(EEPermissions.SKULL_OTHERS.get())) {
-				resultat = commandSkullOthers((EPlayer) source, args.get(0));
+				resultat = this.commandSkullOthers((EPlayer) source, args.get(0));
 				// Il n'a pas la permission
 			} else {
 				source.sendMessage(EAMessages.NO_PERMISSION.getText());
 			}
-			// Nombre d'argument incorrect
+		// Nombre d'argument incorrect
 		} else {
-			source.sendMessage(help(source));
+			source.sendMessage(this.help(source));
 		}
+		
 		return resultat;
 	}
 
-	public boolean commandSkull(final EPlayer player) {
+	private boolean commandSkull(final EPlayer player) {
 		player.giveItemAndDrop(UtilsItemStack.createPlayerHead(player.getProfile()));
 		player.sendMessage(EEMessages.PREFIX.get() + EEMessages.SKULL_MY_HEAD.get());
 		return true;
 	}
 
-	public boolean commandSkullOthers(final EPlayer player, final String pseudo) throws CommandException {
-		CompletableFuture<GameProfile> future = this.plugin.getEServer().getGameProfileManager().get(pseudo);
+	private boolean commandSkullOthers(final EPlayer player, final String name) throws CommandException {
+		CompletableFuture<GameProfile> future = this.plugin.getEServer().getGameProfileFuture(name);
 		future.exceptionally(e -> null).thenApplyAsync((profile) -> {
 			if (player.isOnline()) {
 				if (profile!= null && profile.getName().isPresent()) {
@@ -121,6 +128,6 @@ public class EESkull extends ECommand<EverEssentials> {
 			}
 			return profile;
 		}, this.plugin.getGame().getScheduler().createAsyncExecutor(this.plugin));
-		return false;
+		return true;
 	}
 }

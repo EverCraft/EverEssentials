@@ -52,14 +52,17 @@ public class EEList extends ECommand<EverEssentials> {
         super(plugin, "list");
     }
 
+	@Override
 	public boolean testPermission(final CommandSource source) {
 		return source.hasPermission(EEPermissions.LIST.get());
 	}
 
+	@Override
 	public Text description(final CommandSource source) {
 		return EEMessages.LIST_DESCRIPTION.getText();
 	}
 
+	@Override
 	public Text help(final CommandSource source) {
 		return Text.builder("/" + this.getName())
 					.onClick(TextActions.suggestCommand("/" + this.getName()))
@@ -67,6 +70,7 @@ public class EEList extends ECommand<EverEssentials> {
 					.build();
 	}
 	
+	@Override
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		return new ArrayList<String>();
 	}
@@ -74,24 +78,26 @@ public class EEList extends ECommand<EverEssentials> {
 	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Résultat de la commande :
 		boolean resultat = false;
+		
 		// Si on ne connait pas le joueur
 		if (args.size() == 0) {
 			// Si la source est un joueur
 			if (source instanceof EPlayer) {
-				resultat = commandList(source, this.plugin.getEServer().getOnlineEPlayers((EPlayer) source));
+				resultat = this.commandList(source, this.plugin.getEServer().getOnlineEPlayers((EPlayer) source));
 			// La source n'est pas un joueur
 			} else {
-				resultat = commandList(source, this.plugin.getEServer().getOnlineEPlayers());
+				resultat = this.commandList(source, this.plugin.getEServer().getOnlineEPlayers());
 			}
 		// Nombre d'argument incorrect
 		} else {
-			source.sendMessage(help(source));
+			source.sendMessage(this.help(source));
 		}
+		
 		return resultat;
 	}
 	
 	private boolean commandList(final CommandSource staff, final Collection<EPlayer> players) throws CommandException {
-		// Liste des groupes avec les joueurs
+		// La liste des groupes avec des joueurs
 		Map<String, TreeMap<String, EPlayer>> groups = new HashMap<String, TreeMap<String, EPlayer>>();
 		for (EPlayer player : players) {
 			Optional<Subject> group = player.getGroup();
@@ -101,10 +107,10 @@ public class EEList extends ECommand<EverEssentials> {
 				}
 				groups.get(group.get().getIdentifier()).put(player.getName(), player);
 			} else {
-				if (!groups.containsKey(GROUPS_DEFAULT)) {
-					groups.put(GROUPS_DEFAULT, new TreeMap<String, EPlayer>());
+				if (!groups.containsKey(EEList.GROUPS_DEFAULT)) {
+					groups.put(EEList.GROUPS_DEFAULT, new TreeMap<String, EPlayer>());
 				}
-				groups.get(GROUPS_DEFAULT).put(player.getName(), player);
+				groups.get(EEList.GROUPS_DEFAULT).put(player.getName(), player);
 			}
 		}
 		
@@ -112,7 +118,7 @@ public class EEList extends ECommand<EverEssentials> {
 		for (Entry<Object, ? extends ConfigurationNode> config : this.plugin.getConfigs().getConfigList().getChildrenMap().entrySet()) {
 			if (config.getKey() instanceof String && groups.containsKey((String) config.getKey())) {
 				// Groupe caché
-				if (config.getValue().getString("").equalsIgnoreCase(HIDDEN)) {
+				if (config.getValue().getString("").equalsIgnoreCase(EEList.HIDDEN)) {
 					groups.remove((String) config.getKey());
 				// Redimensionne
 				} else {

@@ -22,6 +22,7 @@ import java.util.List;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
+import org.spongepowered.api.command.source.CommandBlockSource;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
@@ -40,14 +41,17 @@ public class EESay extends ECommand<EverEssentials> {
         super(plugin ,"say");
     }
 	
+	@Override
 	public boolean testPermission(final CommandSource source) {
 		return source.hasPermission(EEPermissions.SAY.get());
 	}
 
+	@Override
 	public Text description(final CommandSource source) {
 		return EEMessages.SAY_DESCRIPTION.getText();
 	}
 
+	@Override
 	public Text help(final CommandSource source) {
 		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_MESSAGE.get() + ">")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
@@ -55,47 +59,56 @@ public class EESay extends ECommand<EverEssentials> {
 					.build();
 	}
 	
+	@Override
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		return new ArrayList<String>();
 	}
 	
-	public boolean execute(final CommandSource source, final List<String> args, String arg) throws CommandException {
-		return execute(source, Arrays.asList(arg));
-	}
-	
+	@Override
 	protected List<String> getArg(final String arg){
-		if (arg.isEmpty()) {
-			return Arrays.asList();
+		if (!arg.isEmpty()) {
+			return Arrays.asList(arg);
 		}
-		return Arrays.asList(arg);
+		return Arrays.asList();
 	}
-	
+
+	@Override
 	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Résultat de la commande :
 		boolean resultat = false;
+		
 		if (args.size() == 1) {
 			// Si la source est un joueur
 			if (source instanceof EPlayer) {
-				resultat = commandSayPlayer((EPlayer) source, args.get(0));
+				resultat = this.commandSayPlayer((EPlayer) source, args.get(0));
+			} else if(source instanceof CommandBlockSource) {
+				resultat = this.commandSayCommandBlock(source, args.get(0));
 			// La source n'est pas un joueur
 			} else {
-				resultat = commandSayConsole(source, args.get(0));
+				resultat = this.commandSayConsole(source, args.get(0));
 			}
 		} else {
-			source.sendMessage(help(source));
+			source.sendMessage(this.help(source));
 		}
+		
 		return resultat;
 	}
 	
-	public boolean commandSayPlayer(final EPlayer player, String message) {
-		this.plugin.getEServer().getBroadcastChannel().send(EChat.of(EEMessages.SAY_PREFIX_PLAYER.get()
+	private boolean commandSayPlayer(final EPlayer player, String message) {
+		this.plugin.getEServer().getBroadcastChannel().send(EChat.of(EEMessages.SAY_PLAYER.get()
 				.replaceAll("<player>", player.getName())
 				.replaceAll("<message>", message)));
 		return true;
 	}
 	
-	public boolean commandSayConsole(final CommandSource player, String message) {
-		this.plugin.getEServer().getBroadcastChannel().send(EChat.of(EEMessages.SAY_PREFIX_CONSOLE.get()
+	private boolean commandSayCommandBlock(final CommandSource player, String message) {
+		this.plugin.getEServer().getBroadcastChannel().send(EChat.of(EEMessages.SAY_COMMANDBLOCK.get()
+				.replaceAll("<message>", message)));
+		return true;
+	}
+	
+	private boolean commandSayConsole(final CommandSource player, String message) {
+		this.plugin.getEServer().getBroadcastChannel().send(EChat.of(EEMessages.SAY_CONSOLE.get()
 				.replaceAll("<message>", message)));
 		return true;
 	}

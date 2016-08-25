@@ -41,14 +41,17 @@ public class EESeed extends ECommand<EverEssentials> {
         super(plugin, "seed");
     }
 
+	@Override
 	public boolean testPermission(final CommandSource source) {
 		return source.hasPermission("minecraft.command.seed");
 	}
 
+	@Override
 	public Text description(final CommandSource source) {
 		return EEMessages.SEED_DESCRIPTION.getText();
 	}
 
+	@Override
 	public Text help(final CommandSource source) {
 		return Text.builder("/" + this.getName())
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " [" + EAMessages.ARGS_WORLD.get() + "]"))
@@ -56,6 +59,7 @@ public class EESeed extends ECommand<EverEssentials> {
 					.build();
 	}
 	
+	@Override
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		List<String> suggests = new ArrayList<String>();
 		if(args.size() == 1){
@@ -68,53 +72,55 @@ public class EESeed extends ECommand<EverEssentials> {
 		return suggests;
 	}
 	
+	@Override
 	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Résultat de la commande :
 		boolean resultat = false;
+		
 		// Si on ne connait pas le joueur
 		if(args.size() == 0) {
 			// Si la source est un joueur
 			if(source instanceof EPlayer) {
 				EPlayer player = (EPlayer) source;
-				resultat = commandSeed(player, player.getWorld());
+				resultat = this.commandSeed(player, player.getWorld());
 			// La source n'est pas un joueur
 			} else {
-				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
+				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText()));
 			}
 		// On connais le joueur
 		} else if(args.size() == 1) {
 			// Si la source est un joueur
 			if(source instanceof EPlayer) {
-				EPlayer player = (EPlayer) source;
 				Optional<World> optWorld = this.plugin.getEServer().getEWorld(args.get(0));
 				if(optWorld.isPresent()) {
-					resultat = commandSeed(player, optWorld.get());
+					resultat = this.commandSeed((EPlayer) source, optWorld.get());
 				} else {
-					player.sendMessage(EEMessages.PREFIX.get() + EAMessages.WORLD_NOT_FOUND.get()
-							.replace("<world>", args.get(0)));
+					source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.WORLD_NOT_FOUND.get()
+							.replace("<world>", args.get(0))));
 				}
 			}
 		// Nombre d'argument incorrect
 		} else {
 			source.sendMessage(help(source));
 		}
+		
 		return resultat;
 	}
 	
-	public boolean commandSeed(final EPlayer player, final World world) {
+	private boolean commandSeed(final EPlayer player, final World world) {
 		player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
 				.append(EEMessages.SEED_MESSAGE.get()
 				.replaceAll("<world>", world.getName()))
-				.replace("<seed>", getButtonSeed(world.getProperties().getSeed()))
+				.replace("<seed>", this.getButtonSeed(world.getProperties().getSeed()))
 				.build());				
 		return true;
 	}
 	
-	public Text getButtonSeed(final long seed){
-		return EChat.of(EEMessages.SEED_NAME.get().replace("<seed>", String.valueOf(seed))).toBuilder()
+	private Text getButtonSeed(final Long seed){
+		return EChat.of(EEMessages.SEED_NAME.get().replace("<seed>", seed.toString())).toBuilder()
 				.onHover(TextActions.showText(EAMessages.HOVER_COPY.getText()))
-					.onClick(TextActions.suggestCommand(String.valueOf(seed)))
-					.onShiftClick(TextActions.insertText(String.valueOf(seed)))
+					.onClick(TextActions.suggestCommand(seed.toString()))
+					.onShiftClick(TextActions.insertText(seed.toString()))
 					.build();
 	}
 }
