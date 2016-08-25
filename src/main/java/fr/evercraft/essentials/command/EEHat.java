@@ -18,6 +18,7 @@ package fr.evercraft.essentials.command;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
@@ -33,6 +34,7 @@ import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ECommand;
 import fr.evercraft.everapi.server.player.EPlayer;
+import fr.evercraft.everapi.sponge.UtilsItemType;
 import fr.evercraft.everapi.text.ETextBuilder;
 
 public class EEHat extends ECommand<EverEssentials> {
@@ -41,14 +43,17 @@ public class EEHat extends ECommand<EverEssentials> {
         super(plugin ,"hat", "head");
     }
 	
+	@Override
 	public boolean testPermission(final CommandSource source) {
 		return source.hasPermission(EEPermissions.HAT.get());
 	}
 
+	@Override
 	public Text description(final CommandSource source) {
 		return EEMessages.HAT_DESCRIPTION.getText();
 	}
 
+	@Override
 	public Text help(final CommandSource source) {
 		return Text.builder("/" + this.getName() + " ")
 				.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
@@ -59,6 +64,7 @@ public class EEHat extends ECommand<EverEssentials> {
 				.build();
 	}
 	
+	@Override
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		List<String> suggests = new ArrayList<String>();
 		if (args.size() == 1){
@@ -67,47 +73,47 @@ public class EEHat extends ECommand<EverEssentials> {
 		return suggests;
 	}
 	
+	@Override
 	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Résultat de la commande :
 		boolean resultat = false;
-		// Nom du home inconnu
-		if (args.size() == 0) {
-			// Si la source est un joueur
-			if (source instanceof EPlayer) {
-				resultat = commandHat((EPlayer) source);
-			// La source n'est pas un joueur
+		
+		// Si la source est un joueur
+		if (source instanceof EPlayer) {
+			// Nom du home inconnu
+			if (args.size() == 0) {
+				resultat = this.commandHat((EPlayer) source);
+			} else if (args.size() == 1 && args.get(0).equalsIgnoreCase("remove")) {	
+				resultat = this.commandHatRemove((EPlayer) source);
+			// Nombre d'argument incorrect
 			} else {
-				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
+				source.sendMessage(this.help(source));
 			}
-		} else if (args.size() == 1 && args.get(0).equalsIgnoreCase("remove")) {	
-			// Si la source est un joueur
-			if (source instanceof EPlayer) {
-				resultat = commandHatRemove((EPlayer) source);
-			// La source n'est pas un joueur
-			} else {
-				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
-			}
-		// Nombre d'argument incorrect
+		// La source n'est pas un joueur
 		} else {
-			source.sendMessage(help(source));
+			source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText()));
 		}
+		
 		return resultat;
 	}
 	
-	public boolean commandHat(final EPlayer player){
+	private boolean commandHat(final EPlayer player) {
+		Optional<ItemStack> item = player.getItemInMainHand();
+		
 		// Si le joueur a un objet dans la main
-		if (player.getItemInMainHand().isPresent()){
-			ItemStack item = player.getItemInMainHand().get();
-			// Si le joueur a un item sur la tête
-			if (player.getHelmet().isPresent() && !player.getHelmet().get().getItem().getBlock().isPresent()){
+		if (item.isPresent()) {
+			Optional<ItemStack> helmet = player.getHelmet();
+			
+			// Si le joueur a un casque sur la tête
+			if (helmet.isPresent() && UtilsItemType.isHelmet(helmet.get().getItem().getType())) {
 				player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
 						.append(EEMessages.HAT_NO_EMPTY.get())
 						.replace("<item>", EChat.getButtomItem(player.getHelmet().get(), EChat.getTextColor(EEMessages.HAT_ITEM_COLOR.get())))
 						.build());
 			// Le joueur peut avoir l'ojet sur la tête
 			} else {
-				if (player.getHelmet().isPresent()) {
-					player.giveItemAndDrop(player.getHelmet().get());
+				if (helmet.isPresent()) {
+					player.giveItemAndDrop(helmet.get());
 				}
 				
 				ItemStack stack = player.getItemInMainHand().get();
@@ -121,7 +127,7 @@ public class EEHat extends ECommand<EverEssentials> {
 		        player.setHelmet(stack);
 		        player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
 						.append(EEMessages.HAT_IS_HAT.get())
-						.replace("<item>", EChat.getButtomItem(item, EChat.getTextColor(EEMessages.HAT_ITEM_COLOR.get())))
+						.replace("<item>", EChat.getButtomItem(item.get(), EChat.getTextColor(EEMessages.HAT_ITEM_COLOR.get())))
 						.build());
 		        return true;
 			}
@@ -132,15 +138,16 @@ public class EEHat extends ECommand<EverEssentials> {
 		return false;
 	}
 	
-	public boolean commandHatRemove(final EPlayer player) {
-		// Le joueur a un objet sur la tête
-		if (player.getHelmet().isPresent() && player.getHelmet().get().getItem().getBlock().isPresent()) {
-			ItemStack item = player.getHelmet().get();
+	private boolean commandHatRemove(final EPlayer player) {
+		Optional<ItemStack> helmet = player.getHelmet();
+		
+		// Si le joueur a un objet sur la tête
+		if (helmet.isPresent() && !UtilsItemType.isHelmet(helmet.get().getItem().getType())) {
 			player.setHelmet(null);
-			player.giveItemAndDrop(item);
+			player.giveItemAndDrop(helmet.get());
 			player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
 					.append(EEMessages.HAT_REMOVE.get())
-					.replace("<item>", EChat.getButtomItem(item, EChat.getTextColor(EEMessages.HAT_ITEM_COLOR.get())))
+					.replace("<item>", EChat.getButtomItem(helmet.get(), EChat.getTextColor(EEMessages.HAT_ITEM_COLOR.get())))
 					.build());
 		// Le joueur n'a pas d'objet sur la tête
 		} else {

@@ -44,14 +44,17 @@ public class EEBack extends ECommand<EverEssentials> {
         super(plugin, "back", "return");
     }
 	
+	@Override
 	public boolean testPermission(final CommandSource source) {
 		return source.hasPermission(EEPermissions.BACK.get());
 	}
 
+	@Override
 	public Text description(final CommandSource source) {
 		return EEMessages.BACK_DESCRIPTION.getText();
 	}
 
+	@Override
 	public Text help(final CommandSource source) {
 		return Text.builder("/" + this.getName())
 				.onClick(TextActions.suggestCommand("/" + this.getName()))
@@ -59,10 +62,12 @@ public class EEBack extends ECommand<EverEssentials> {
 				.build();
 	}
 	
+	@Override
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		return new ArrayList<String>();
 	}
 	
+	@Override
 	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Résultat de la commande :
 		boolean resultat = false;

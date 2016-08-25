@@ -17,6 +17,7 @@
 package fr.evercraft.essentials.command;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.spongepowered.api.command.CommandException;
@@ -40,14 +41,17 @@ public class EEKickall extends ECommand<EverEssentials> {
         super(plugin, "kickall");
     }
 
+	@Override
 	public boolean testPermission(final CommandSource source) {
 		return source.hasPermission(EEPermissions.KICKALL.get());
 	}
 
+	@Override
 	public Text description(final CommandSource source) {
 		return EEMessages.KICKALL_DESCRIPTION.getText();
 	}
 
+	@Override
 	public Text help(final CommandSource source) {
 		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_REASON.get() +">")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
@@ -55,32 +59,40 @@ public class EEKickall extends ECommand<EverEssentials> {
 					.build();
 	}
 	
+	@Override
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
-		if (args.size() == 1){
-			return null;
-		}
 		return new ArrayList<String>();
 	}
 	
+	@Override
+	protected List<String> getArg(final String arg) {
+		return Arrays.asList(arg);
+	}
+	
+	@Override
 	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Résultat de la commande :
 		boolean resultat = false;
-		if (args.size() >= 1) {
-			resultat = commandKick(source, EChat.of(getMessage(args)));
+		
+		if (args.size() == 1) {
+			resultat = this.commandKick(source, EChat.of(args.get(0)));
 		// Nombre d'argument incorrect
 		} else {
-			source.sendMessage(help(source));
+			source.sendMessage(this.help(source));
 		}
+		
 		return resultat;
 	}
 	
-	public boolean commandKick(final CommandSource staff, final Text message) throws CommandException {
+	private boolean commandKick(final CommandSource staff, final Text message) throws CommandException {
 		Text raison = ETextBuilder.toBuilder(EEMessages.KICKALL_MESSAGE.get()
 							.replaceAll("<staff>", staff.getName()))
 						.replace("<message>", message)
 						.build();
 		for (EPlayer player : this.plugin.getEServer().getOnlineEPlayers()) {
-			player.kick(raison);
+			if (!player.equals(staff) && !player.hasPermission(EEPermissions.KICK_BYPASS.get())) {
+				player.kick(raison);
+			}
 		}
 		return true;
 	}

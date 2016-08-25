@@ -49,6 +49,7 @@ public class EEEffect extends EReloadCommand<EverEssentials> {
 		this.reload();
 	}
 
+	@Override
 	public void reload() {
 		this.default_duration = this.plugin.getConfigs().getEffectDurationDefault();
 		this.max_duration = this.plugin.getConfigs().getEffectDurationMax();
@@ -56,14 +57,17 @@ public class EEEffect extends EReloadCommand<EverEssentials> {
 		this.unsafe = this.plugin.getConfigs().isEffectUnsafe();
 	}
 
+	@Override
 	public boolean testPermission(final CommandSource source) {
 		return source.hasPermission(EEPermissions.EFFECT.get());
 	}
 
+	@Override
 	public Text description(final CommandSource source) {
 		return EEMessages.EFFECT_DESCRIPTION.getText();
 	}
 
+	@Override
 	public Text help(final CommandSource source) {
 		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_EFFECT.get() + "> [" + EAMessages.ARGS_AMPLIFICATION.get() + "] [" + EAMessages.ARGS_SECONDS.get() + "]")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
@@ -71,6 +75,7 @@ public class EEEffect extends EReloadCommand<EverEssentials> {
 					.build();
 	}
 
+	@Override
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		List<String> suggests = new ArrayList<String>();
 		if (source instanceof Player) {
@@ -95,6 +100,7 @@ public class EEEffect extends EReloadCommand<EverEssentials> {
 		return suggests;
 	}
 
+	@Override
 	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Résultat de la commande :
 		boolean resultat = false;

@@ -122,31 +122,31 @@ public class EEWorldborderInfo extends ESubCommand<EverEssentials> {
 	
 	public Text getBorder(final World world){
 		return ETextBuilder.toBuilder(EEMessages.WORLDBORDER_INFO_BORDER.get())
-				.replace("<nb>", UtilsDouble.getString(world.getWorldBorder().getDiameter()))
+				.replace("<amount>", UtilsDouble.getString(world.getWorldBorder().getDiameter()))
 				.build();
 	}
 	
 	public Text getDamageThreshold(final World world){
 		return ETextBuilder.toBuilder(EEMessages.WORLDBORDER_INFO_BUFFER.get())
-				.replace("<nb>", UtilsDouble.getString(world.getWorldBorder().getDamageThreshold()))
+				.replace("<amount>", UtilsDouble.getString(world.getWorldBorder().getDamageThreshold()))
 				.build();
 	}
 	
 	public Text getDamageAmount(final World world){
 		return ETextBuilder.toBuilder(EEMessages.WORLDBORDER_INFO_DAMAGE.get())
-				.replace("<nb>", UtilsDouble.getString(world.getWorldBorder().getDamageAmount()))
+				.replace("<amount>", UtilsDouble.getString(world.getWorldBorder().getDamageAmount()))
 				.build();
 	}
 	
 	public Text getWarningDistance(final World world){
 		return ETextBuilder.toBuilder(EEMessages.WORLDBORDER_INFO_WARNING_DISTANCE.get())
-				.replace("<nb>", UtilsDouble.getString(world.getWorldBorder().getWarningDistance()))
+				.replace("<amount>", UtilsDouble.getString(world.getWorldBorder().getWarningDistance()))
 				.build();
 	}
 	
 	public Text getWarningTime(final World world){
 		return ETextBuilder.toBuilder(EEMessages.WORLDBORDER_INFO_WARNING_TIME.get())
-				.replace("<nb>", UtilsDouble.getString(world.getWorldBorder().getWarningTime()))
+				.replace("<amount>", UtilsDouble.getString(world.getWorldBorder().getWarningTime()))
 				.build();
 	}
 	

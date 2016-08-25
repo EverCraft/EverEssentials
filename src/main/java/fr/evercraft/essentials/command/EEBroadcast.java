@@ -39,14 +39,17 @@ public class EEBroadcast extends ECommand<EverEssentials> {
         super(plugin ,"broadcast", "bcast");
     }
 	
+	@Override
 	public boolean testPermission(final CommandSource source) {
 		return source.hasPermission(EEPermissions.BROADCAST.get());
 	}
 
+	@Override
 	public Text description(final CommandSource source) {
 		return EEMessages.BROADCAST_DESCRIPTION.getText();
 	}
 
+	@Override
 	public Text help(final CommandSource source) {
 		Text help = Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_MESSAGE.get() + ">")
 						.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
@@ -55,6 +58,7 @@ public class EEBroadcast extends ECommand<EverEssentials> {
 		return help;
 	}
 	
+	@Override
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		return new ArrayList<String>();
 	}
@@ -67,6 +71,7 @@ public class EEBroadcast extends ECommand<EverEssentials> {
 		return Arrays.asList(arg);
 	}
 	
+	@Override
 	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Résultat de la commande :
 		boolean resultat = false;

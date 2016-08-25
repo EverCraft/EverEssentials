@@ -131,7 +131,7 @@ public class EESpawnMob extends EReloadCommand<EverEssentials> {
 				utilsEntity.spawnEntity(spawnLocation);
 	    	}
 			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.SPAWNMOB_MOB.get()
-					.replaceAll("<nb>", String.valueOf(amount))
+					.replaceAll("<amount>", String.valueOf(amount))
 					.replaceAll("<entity>", StringUtils.capitalize(utilsEntity.getName())));
 		} else {
 			player.sendMessage(EEMessages.PREFIX.get() + EAMessages.PLAYER_NO_LOOK_BLOCK.get());

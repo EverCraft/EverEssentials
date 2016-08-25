@@ -19,6 +19,7 @@ package fr.evercraft.essentials.command;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
@@ -41,14 +42,17 @@ public class EEKick extends ECommand<EverEssentials> {
         super(plugin, "kick");
     }
 
+	@Override
 	public boolean testPermission(final CommandSource source) {
 		return source.hasPermission(EEPermissions.KICK.get());
 	}
 
+	@Override
 	public Text description(final CommandSource source) {
 		return EEMessages.KICK_DESCRIPTION.getText();
 	}
 
+	@Override
 	public Text help(final CommandSource source) {
 		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_PLAYER.get() + "> <" + EAMessages.ARGS_REASON.get() + ">")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
@@ -56,38 +60,66 @@ public class EEKick extends ECommand<EverEssentials> {
 					.build();
 	}
 	
+	@Override
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
-		if (args.size() == 1){
-			return null;
+		List<String> suggests = new ArrayList<String>();
+		if (args.size() == 1) {
+			for(EPlayer player : this.plugin.getEServer().getOnlineEPlayers()) {
+				if (!player.equals(source) && !player.hasPermission(EEPermissions.KICK_BYPASS.get())) {
+					suggests.add(player.getName());
+				}
+			}
 		}
-		return new ArrayList<String>();
+		return suggests;
 	}
 	
+	@Override
+	protected List<String> getArg(final String arg) {
+		List<String> args = super.getArg(arg);
+		// Le message est transformer en un seul argument
+		if (args.size() > 2) {
+			List<String> args_send = new ArrayList<String>();
+			args_send.add(args.get(0));
+			args_send.add(Pattern.compile("^[ \"]*" + args.get(0) + "[ \"][ ]*").matcher(arg).replaceAll(""));
+			return args_send;
+		}
+		return args;
+	}
+	
+	@Override
 	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Résultat de la commande :
 		boolean resultat = false;
-		if (args.size() >= 2) {
+		
+		if (args.size() == 2) {
 			Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(args.get(0));
 			// Le joueur existe
-			if (optPlayer.isPresent()){
-				args.remove(0);
-				resultat = commandKick(source, optPlayer.get(), EChat.of(getMessage(args)));
+			if (optPlayer.isPresent()) {
+				resultat = this.commandKick(source, optPlayer.get(), EChat.of(args.get(1)));
 			// Le joueur est introuvable
 			} else {
 				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
 			}
+		
 		// Nombre d'argument incorrect
 		} else {
-			source.sendMessage(help(source));
+			source.sendMessage(this.help(source));
 		}
+		
 		return resultat;
 	}
 	
-	public boolean commandKick(final CommandSource staff, final EPlayer player, final Text message) throws CommandException {
-		player.kick(ETextBuilder.toBuilder(EEMessages.KICK_MESSAGE.get()
-								.replaceAll("<staff>", staff.getName()))
-							.replace("<message>", message)
-							.build());
-		return true;
+	private boolean commandKick(final CommandSource staff, final EPlayer player, final Text message) throws CommandException {
+		if(!player.hasPermission(EEPermissions.KICK_BYPASS.get())) {
+			player.kick(ETextBuilder.toBuilder(EEMessages.KICK_MESSAGE.get()
+									.replaceAll("<staff>", staff.getName()))
+								.replace("<message>", message)
+								.build());
+			return true;
+		} else {
+			staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.KICK_BYPASS.get()
+					.replaceAll("<player>", player.getName())));
+		}
+		return false;
 	}
 }

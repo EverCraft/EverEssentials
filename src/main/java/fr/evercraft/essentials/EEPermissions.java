@@ -111,6 +111,7 @@ public enum EEPermissions implements EnumPermission {
 	JUMP("jump.command"),
 	
 	KICK("kick.command"),
+	KICK_BYPASS("kick.bypass"),
 	
 	KICKALL("kickall.command"),
 	

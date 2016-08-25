@@ -46,14 +46,17 @@ public class EEBook extends ECommand<EverEssentials> {
         super(plugin, "book");
     }
 
+	@Override
 	public boolean testPermission(final CommandSource source) {
 		return source.hasPermission(EEPermissions.BOOK.get());
 	}
 
+	@Override
 	public Text description(final CommandSource source) {
 		return EEMessages.BOOK_DESCRIPTION.getText();
 	}
 
+	@Override
 	public Text help(final CommandSource source) {
 		return Text.builder("/book ").onClick(TextActions.suggestCommand("/book "))
 				.append(Text.of("["))
@@ -64,6 +67,7 @@ public class EEBook extends ECommand<EverEssentials> {
 				.color(TextColors.RED).build();
 	}
 	
+	@Override
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		List<String> suggests = new ArrayList<String>();
 		if (args.size() == 1) {
@@ -73,6 +77,7 @@ public class EEBook extends ECommand<EverEssentials> {
 		return suggests;
 	}
 	
+	@Override
 	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Résultat de la commande :
 		boolean resultat = false;

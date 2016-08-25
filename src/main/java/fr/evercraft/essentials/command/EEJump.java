@@ -41,14 +41,17 @@ public class EEJump extends ECommand<EverEssentials> {
         super(plugin, "jump", "j", "jumpto");
     }
 
+	@Override
 	public boolean testPermission(final CommandSource source) {
 		return source.hasPermission(EEPermissions.JUMP.get());
 	}
 
+	@Override
 	public Text description(final CommandSource source) {
 		return EEMessages.JUMP_DESCRIPTION.getText();
 	}
 
+	@Override
 	public Text help(final CommandSource source) {
 		return Text.builder("/" + this.getName())
 					.onClick(TextActions.suggestCommand("/" + this.getName()))
@@ -56,30 +59,34 @@ public class EEJump extends ECommand<EverEssentials> {
 					.build();
 	}
 	
+	@Override
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		return new ArrayList<String>();
 	}
 	
+	@Override
 	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Résultat de la commande :
 		boolean resultat = false;
+		
 		// Si on ne connait pas le joueur
 		if (args.size() == 0) {
 			// Si la source est un joueur
 			if (source instanceof EPlayer) {
-				resultat = commandJump((EPlayer) source);
+				resultat = this.commandJump((EPlayer) source);
 			// La source n'est pas un joueur
 			} else {
-				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
+				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText()));
 			}
 		// Nombre d'argument incorrect
 		} else {
-			source.sendMessage(help(source));
+			source.sendMessage(this.help(source));
 		}
+		
 		return resultat;
 	}
 	
-	public boolean commandJump(final EPlayer player) {
+	private boolean commandJump(final EPlayer player) {
 		Optional<Vector3i> optBlock = player.getViewBlock();
 		if (optBlock.isPresent()) {
 			if (player.teleportSafe(player.getWorld().getLocation(optBlock.get().add(0, 1, 0)))) {

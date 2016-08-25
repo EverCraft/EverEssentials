@@ -40,14 +40,17 @@ public class EEClearEffect extends ECommand<EverEssentials> {
         super(plugin, "cleareffect", "ce", "cleareffects");
     }
 
+	@Override
 	public boolean testPermission(final CommandSource source) {
 		return source.hasPermission(EEPermissions.CLEAREFFECT.get());
 	}
 
+	@Override
 	public Text description(final CommandSource source) {
 		return EEMessages.CLEAREFFECT_DESCRIPTION.getText();
 	}
 
+	@Override
 	public Text help(final CommandSource source) {
 		if (source.hasPermission(EEPermissions.CLEAREFFECT_OTHERS.get())){
 			return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_PLAYER.get() + "]")
@@ -61,6 +64,7 @@ public class EEClearEffect extends ECommand<EverEssentials> {
 				.build();
 	}
 	
+	@Override
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		if (args.size() == 1 && source.hasPermission(EEPermissions.CLEAREFFECT_OTHERS.get())){
 			return null;
@@ -68,6 +72,7 @@ public class EEClearEffect extends ECommand<EverEssentials> {
 		return new ArrayList<String>();
 	}
 	
+	@Override
 	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Résultat de la commande :
 		boolean resultat = false;

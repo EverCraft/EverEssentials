@@ -48,14 +48,17 @@ public class EEBed extends ECommand<EverEssentials> {
         super(plugin, "bed");
     }
 
+	@Override
 	public boolean testPermission(final CommandSource source) {
 		return source.hasPermission(EEPermissions.BED.get());
 	}
 
+	@Override
 	public Text description(final CommandSource source) {
 		return EEMessages.BED_DESCRIPTION.getText();
 	}
 
+	@Override
 	public Text help(final CommandSource source) {
 		if (source.hasPermission(EEPermissions.BED_OTHERS.get())){
 			return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_PLAYER.get() + "]")
@@ -69,6 +72,7 @@ public class EEBed extends ECommand<EverEssentials> {
 					.build();
 	}
 	
+	@Override
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		if (args.size() == 1 && source.hasPermission(EEPermissions.BED_OTHERS.get())){
 			return null;
@@ -76,6 +80,7 @@ public class EEBed extends ECommand<EverEssentials> {
 		return new ArrayList<String>();
 	}
 	
+	@Override
 	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Résultat de la commande :
 		boolean resultat = false;
@@ -111,7 +116,7 @@ public class EEBed extends ECommand<EverEssentials> {
 		return resultat;
 	}
 	
-	public boolean commandBed(final EPlayer player) {
+	private boolean commandBed(final EPlayer player) {
 		Optional<Map<UUID, RespawnLocation>> spawn = player.get(Keys.RESPAWN_LOCATIONS);
 		if (spawn.isPresent()){
 			player.sendMessage(spawn.get().toString());
@@ -119,7 +124,7 @@ public class EEBed extends ECommand<EverEssentials> {
 		return true;
 	}
 	
-	public boolean commandBedOthers(final CommandSource staff, final EPlayer player) throws CommandException {
+	private boolean commandBedOthers(final CommandSource staff, final EPlayer player) throws CommandException {
 		// La source et le joueur sont différent
 		if (!player.equals(staff)){
 			staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.PING_OTHERS.get()

@@ -44,24 +44,27 @@ public class EEGenerate extends EReloadCommand<EverEssentials> {
 	
 	public EEGenerate(final EverEssentials plugin) {
         super(plugin, "generate");
-        reload();
+        this.reload();
     }
 	
 	@Override
 	public void reload() {
-		this.tickPercentLimit =  this.plugin.getConfigs().get("generate.tickPercentLimit").getFloat();
-		this.tickInterval =  this.plugin.getConfigs().get("generate.tickInterval").getInt();
-		this.chunksPerTick =  this.plugin.getConfigs().get("generate.chunksPerTick").getInt();
+		this.tickPercentLimit =  this.plugin.getConfigs().getGenerateTickPercentLimit();
+		this.tickInterval =  this.plugin.getConfigs().getGenerateTickInterval();
+		this.chunksPerTick =  this.plugin.getConfigs().getGenerateChuncksPerTick();
 	}
 
+	@Override
 	public boolean testPermission(final CommandSource source) {
 		return source.hasPermission(EEPermissions.GENERATE.get());
 	}
 
+	@Override
 	public Text description(final CommandSource source) {
 		return EEMessages.GENERATE_DESCRIPTION.getText();
 	}
 
+	@Override
 	public Text help(final CommandSource source) {
 		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_WORLD.get() + ">")
 				.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
@@ -69,6 +72,7 @@ public class EEGenerate extends EReloadCommand<EverEssentials> {
 				.build();
 	}
 	
+	@Override
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		List<String> suggests = new ArrayList<String>();
 		if (args.size() == 1) {
@@ -77,115 +81,77 @@ public class EEGenerate extends EReloadCommand<EverEssentials> {
 					suggests.add(world.getProperties().getWorldName());
 				}
 			}
-			suggests.add("confirmation");
 		} else if (args.size() == 2){
 			suggests.add("confirmation");
 		}
 		return suggests;
 	}
 	
+	@Override
 	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Résultat de la commande :
 		boolean resultat = false;
-			if (args.size() == 0){
-				if (source instanceof EPlayer) {
-					EPlayer player = (EPlayer) source;
-					resultat = commandGenerateWarning(player);
-				} else {
-					source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
-				}
-			} else if (args.size() == 1) {
-				if (args.get(0).equalsIgnoreCase("confirmation")){
-					if (source instanceof EPlayer) {
-						EPlayer player = (EPlayer) source;
-						resultat = commandGenerate(player);
-					} else {
-						source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
-					}
-				} else {
-					resultat = commandGenerateWarning(source, args.get(0));
-				}
-			} else if (args.size() == 2 && args.get(1).equalsIgnoreCase("confirmation")){
-				resultat = commandGenerate(source, args.get(0));
+		
+		if (args.size() == 0) {
+			if (source instanceof EPlayer) {
+				EPlayer player = (EPlayer) source;
+				resultat = this.commandGenerate(player, player.getWorld());
 			} else {
-				source.sendMessage(help(source));
+				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText()));
 			}
+		} else if (args.size() == 1) {
+			Optional<World> world = this.plugin.getEServer().getEWorld(args.get(0));
+			if (world.isPresent()) {
+				resultat = this.commandGenerate(source, world.get());
+			} else {
+				source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.WORLD_NOT_FOUND.get()
+					.replaceAll("<world>", args.get(0))));
+			}
+		} else if (args.size() == 2 && args.get(1).equalsIgnoreCase("confirmation")) {
+			Optional<World> world = this.plugin.getEServer().getEWorld(args.get(0));
+			if (world.isPresent()) {
+				resultat = this.commandGenerateConfirmation(source, world.get());
+			} else {
+				source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.WORLD_NOT_FOUND.get()
+					.replaceAll("<world>", args.get(0))));
+			}
+		} else {
+			source.sendMessage(this.help(source));
+		}
+		
 		return resultat;
 	}
 	
-	public boolean commandGenerateWarning(final EPlayer player) {
-			World world =player.getWorld();
-			int chunk = (int) Math.round(Math.pow((world.getWorldBorder().getDiameter() / 16), 2)); 
-			player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.getText())
-				.append(EEMessages.GENERATE_WARNING.get()
-					.replaceAll("<world>", world.getName())
-					.replaceAll("<chunk>", String.valueOf(chunk)))
-					.replace("<confirmation>", getButtonConfirmation(world.getName()))
-				.build());
-			return true;
-	}
-	
-	public boolean commandGenerateWarning(final CommandSource source, final String world_name) {
-		Optional<World> optWorld = this.plugin.getEServer().getWorld(world_name);
-		if (optWorld.isPresent()) {
-			World world = optWorld.get();
-			int chunk = (int) Math.round(Math.pow((world.getWorldBorder().getDiameter() / 16), 2)); 
-			source.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.getText())
-				.append(EEMessages.GENERATE_WARNING.get()
-					.replaceAll("<world>", world.getName())
-					.replaceAll("<chunk>", String.valueOf(chunk)))
-					.replace("<confirmation>", getButtonConfirmation(world.getName()))
-				.build());
-			return true;
-		} else {
-			source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.WORLD_NOT_FOUND.get()
-				.replaceAll("<world>", world_name)));
-			return false;
-		}
+	private boolean commandGenerate(final CommandSource source, final World world) {
+		int chunk = (int) Math.round(Math.pow((world.getWorldBorder().getDiameter() / 16), 2)); 
+		source.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.getText())
+			.append(EEMessages.GENERATE_WARNING.get()
+				.replaceAll("<world>", world.getName())
+				.replaceAll("<chunk>", String.valueOf(chunk)))
+				.replace("<confirmation>", this.getButtonConfirmation(world))
+			.build());
+		return true;
 	}
 
-	private boolean commandGenerate(final CommandSource source, String world_name) {
-		Optional<World> optWorld = this.plugin.getEServer().getWorld(world_name);
-		if (optWorld.isPresent()) {
-			World world = optWorld.get();
-			world.getWorldBorder()
-				.newChunkPreGenerate(world)
-				.logger(this.plugin.getLogger().getLogger())
-				.owner(this.plugin)
-				.tickPercentLimit(this.tickPercentLimit)
-				.tickInterval(this.tickInterval)
-				.chunksPerTick(this.chunksPerTick)
+	private boolean commandGenerateConfirmation(final CommandSource source, World world) {
+		world.getWorldBorder()
+			.newChunkPreGenerate(world)
+			.logger(this.plugin.getLogger().getLogger())
+			.owner(this.plugin)
+			.tickPercentLimit(this.tickPercentLimit)
+			.tickInterval(this.tickInterval)
+			.chunksPerTick(this.chunksPerTick)
 			.start();
-			source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.GENERATE_LAUNCH.get()
-					.replaceAll("<world>", world.getName())));
-			return true;
-		} else {
-			source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.WORLD_NOT_FOUND.get()
-					.replaceAll("<world>", world_name)));
-			return false;
-		}
+		source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.GENERATE_LAUNCH.get()
+				.replaceAll("<world>", world.getName())));
+		return true;
 	}
 	
-	private boolean commandGenerate(final EPlayer player) {
-			World world = player.getWorld();
-			world.getWorldBorder()
-				.newChunkPreGenerate(world)
-				.logger(this.plugin.getLogger().getLogger())
-				.owner(this.plugin)
-				.tickPercentLimit(this.tickPercentLimit)
-				.tickInterval(this.tickInterval)
-				.chunksPerTick(this.chunksPerTick)
-			.start();
-			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.GENERATE_LAUNCH.get()
-					.replaceAll("<world>", world.getName()));
-			return true;
-	}
-	
-	public Text getButtonConfirmation(final String world_name){
+	private Text getButtonConfirmation(final World world){
 		return EEMessages.GENERATE_WARNING_VALID.getText().toBuilder()
 					.onHover(TextActions.showText(EChat.of(EEMessages.GENERATE_WARNING_VALID_HOVER.get()
-							.replaceAll("<world>", world_name))))
-					.onClick(TextActions.runCommand("/generate " + world_name + " confirmation"))
+							.replaceAll("<world>", world.getName()))))
+					.onClick(TextActions.runCommand("/generate \"" + world.getUniqueId() + "\" confirmation"))
 					.build();
 	}
 }

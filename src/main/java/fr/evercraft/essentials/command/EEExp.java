@@ -41,14 +41,17 @@ public class EEExp extends ECommand<EverEssentials> {
         super(plugin, "xp", "exp");
     }
 
+	@Override
 	public boolean testPermission(final CommandSource source) {
 		return source.hasPermission(EEPermissions.EXP.get());
 	}
 
+	@Override
 	public Text description(final CommandSource source) {
 		return EEMessages.EXP_DESCRIPTION.getText();
 	}
 
+	@Override
 	public Text help(final CommandSource source) {
 		Builder build = Text.builder("/" + this.getName() + " <")
 							.append(Text.builder("give")
@@ -67,6 +70,7 @@ public class EEExp extends ECommand<EverEssentials> {
 							.build();
 	}
 	
+	@Override
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		List<String> suggests = new ArrayList<String>();
 		if (args.size() == 1) {
@@ -83,9 +87,11 @@ public class EEExp extends ECommand<EverEssentials> {
 		return suggests;
 	}
 	
+	@Override
 	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Résultat de la commande :
 		boolean resultat = false;
+		
 		if (args.size() == 3) {
 			// Si la source est bien un joueur
 			if (source instanceof EPlayer) {
@@ -95,7 +101,7 @@ public class EEExp extends ECommand<EverEssentials> {
 					} else if (args.get(1).equals("exp")){
 						resultat = commandGiveExp((EPlayer) source, args.get(2));
 					} else {
-						source.sendMessage(help(source));
+						source.sendMessage(this.help(source));
 					}
 				} else if (args.get(0).equals("set")){
 					if (args.get(1).equals("lvl")){
@@ -103,14 +109,14 @@ public class EEExp extends ECommand<EverEssentials> {
 					} else if (args.get(1).equals("exp")){
 						resultat = commandSetExp((EPlayer) source, args.get(2));
 					} else {
-						source.sendMessage(help(source));
+						source.sendMessage(this.help(source));
 					}
 				} else {
-					source.sendMessage(help(source));
+					source.sendMessage(this.help(source));
 				}
 			// Si la source est une console ou un commande block
 			} else {
-				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
+				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText()));
 			}
 		} else if (args.size() == 4) {
 			// Si il a la permission
@@ -123,26 +129,26 @@ public class EEExp extends ECommand<EverEssentials> {
 					if (!player.equals(source)){
 						if (args.get(0).equals("give")){
 							if (args.get(1).equals("lvl")){
-								resultat = commandOthersGiveLevel(source, player, args.get(2));
+								resultat = this.commandOthersGiveLevel(source, player, args.get(2));
 							} else if (args.get(1).equals("exp")){
-								resultat = commandOthersGiveExp(source, player, args.get(2));
+								resultat = this.commandOthersGiveExp(source, player, args.get(2));
 							} else {
-								source.sendMessage(help(source));
+								source.sendMessage(this.help(source));
 							}
 						} else if (args.get(0).equals("set")){
 							if (args.get(1).equals("lvl")){
-								resultat = commandOthersSetLevel(source, player, args.get(2));
+								resultat = this.commandOthersSetLevel(source, player, args.get(2));
 							} else if (args.get(1).equals("exp")){
-								resultat = commandOthersSetExp(source, player, args.get(2));
+								resultat = this.commandOthersSetExp(source, player, args.get(2));
 							} else {
-								source.sendMessage(help(source));
+								source.sendMessage(this.help(source));
 							}
 						} else {
-							source.sendMessage(help(source));
+							source.sendMessage(this.help(source));
 						}
 					} else {
 						args.remove(3);
-						return execute(source, args);
+						return this.execute(source, args);
 					}
 				// Le joueur est introuvable
 				} else {
@@ -153,131 +159,136 @@ public class EEExp extends ECommand<EverEssentials> {
 				source.sendMessage(EAMessages.NO_PERMISSION.getText());
 			}
 		} else {
-			source.sendMessage(help(source));
+			source.sendMessage(this.help(source));
 		}
+		
 		return resultat;
 	}
 
-	private boolean commandGiveLevel(final EPlayer player, final String level) {
+	private boolean commandGiveLevel(final EPlayer player, final String level_string) {
 		try {
-			int lvl = Integer.parseInt(level);
-			player.addLevel(lvl);
+			Integer level = Integer.parseInt(level_string);
+			player.addLevel(level);
 			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.EXP_GIVE_LEVEL.get()
-					.replaceAll("<level>", String.valueOf(lvl)));
+					.replaceAll("<level>", level.toString()));
 			return true;
 		} catch (NumberFormatException e) {
-			player.sendMessage(EEMessages.PREFIX.get() + EAMessages.IS_NOT_NUMBER.get().replaceAll("<number>", level));
+			player.sendMessage(EEMessages.PREFIX.get() + EAMessages.IS_NOT_NUMBER.get()
+					.replaceAll("<number>", level_string));
 			return false;
 		}
 	}
 	
-	private boolean commandGiveExp(final EPlayer player, final String experience) {
+	private boolean commandGiveExp(final EPlayer player, final String experience_string) {
 		try {
-			int exp = Integer.parseInt(experience);
-			player.addTotalExperience(exp);
+			Integer experience = Integer.parseInt(experience_string);
+			player.addTotalExperience(experience);
 			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.EXP_GIVE_EXP.get()
-					.replaceAll("<experience>", String.valueOf(exp)));
+					.replaceAll("<experience>", experience.toString()));
 			return true;
 		} catch (NumberFormatException e) {
-			player.sendMessage(EEMessages.PREFIX.get() + EAMessages.IS_NOT_NUMBER.get().replaceAll("<number>", experience));
+			player.sendMessage(EEMessages.PREFIX.get() + EAMessages.IS_NOT_NUMBER.get()
+					.replaceAll("<number>", experience_string));
 			return false;
 		}
 	}
 
-	private boolean commandSetLevel(final EPlayer player, final String level) {
+	private boolean commandSetLevel(final EPlayer player, final String level_string) {
 		try {
-			int lvl = Integer.parseInt(level);
-			player.setLevel(lvl);
+			Integer level = Integer.parseInt(level_string);
+			player.setLevel(level);
 			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.EXP_SET_LEVEL.get()
-					.replaceAll("<level>", String.valueOf(level)));
+					.replaceAll("<level>", level.toString()));
 			return true;
 		} catch (NumberFormatException e) {
-			player.sendMessage(EEMessages.PREFIX.get() + EAMessages.IS_NOT_NUMBER.get().replaceAll("<number>", level));
+			player.sendMessage(EEMessages.PREFIX.get() + EAMessages.IS_NOT_NUMBER.get()
+					.replaceAll("<number>", level_string));
 			return false;
 		}
 	}
 	
-	private boolean commandSetExp(final EPlayer player, final String experience) {
+	private boolean commandSetExp(final EPlayer player, final String experience_string) {
 		try {
-			int exp = Integer.parseInt(experience);
-			player.setTotalExperience(exp);
+			Integer experience = Integer.parseInt(experience_string);
+			player.setTotalExperience(experience);
 			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.EXP_SET_EXP.get()
-					.replaceAll("<experience>", String.valueOf(exp)));
+					.replaceAll("<experience>", experience.toString()));
 			return true;
 		} catch (NumberFormatException e) {
-			player.sendMessage(EEMessages.PREFIX.get() + EAMessages.IS_NOT_NUMBER.get().replaceAll("<number>", experience));
+			player.sendMessage(EEMessages.PREFIX.get() + EAMessages.IS_NOT_NUMBER.get()
+					.replaceAll("<number>", experience_string));
 			return false;
 		}
 	}
 	
-	private boolean commandOthersGiveLevel(final CommandSource staff, final EPlayer player, final String level) {
+	private boolean commandOthersGiveLevel(final CommandSource staff, final EPlayer player, final String level_string) {
 		try {
-			int lvl = Integer.parseInt(level);
-			player.addLevel(lvl);
+			Integer level = Integer.parseInt(level_string);
+			player.addLevel(level);
 			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.EXP_OTHERS_PLAYER_GIVE_LEVEL.get()
 					.replaceAll("<staff>", staff.getName())
-					.replaceAll("<level>", String.valueOf(lvl)));
+					.replaceAll("<level>", level.toString()));
 			staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.EXP_OTHERS_STAFF_GIVE_LEVEL.get()
 						.replaceAll("<player>", player.getName())
-						.replaceAll("<level>", String.valueOf(lvl))));
+						.replaceAll("<level>", level.toString())));
 			return true;
 		} catch (NumberFormatException e) {
 			staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.IS_NOT_NUMBER.get()
-					.replaceAll("<number>", level)));
+					.replaceAll("<number>", level_string)));
 			return false;
 		}
 	}
 	
-	private boolean commandOthersGiveExp(final CommandSource staff, final EPlayer player, final String experience) {
+	private boolean commandOthersGiveExp(final CommandSource staff, final EPlayer player, final String experience_string) {
 		try {
-			int exp = Integer.parseInt(experience);
-			player.addTotalExperience(exp);
+			Integer experience = Integer.parseInt(experience_string);
+			player.addTotalExperience(experience);
 			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.EXP_OTHERS_PLAYER_GIVE_EXP.get()
 					.replaceAll("<staff>", staff.getName())
-					.replaceAll("<experience>", String.valueOf(exp)));
+					.replaceAll("<experience>", experience.toString()));
 			staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.EXP_OTHERS_STAFF_GIVE_EXP.get()
 						.replaceAll("<player>", player.getName())
-						.replaceAll("<experience>", String.valueOf(exp))));
+						.replaceAll("<experience>", experience.toString())));
 			return true;
 		} catch (NumberFormatException e) {
 			staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.IS_NOT_NUMBER.get()
-					.replaceAll("<number>", experience)));
+					.replaceAll("<number>", experience_string)));
 			return false;
 		}
 	}
 
-	private boolean commandOthersSetLevel(final CommandSource staff, final EPlayer player, final String level) {
+	private boolean commandOthersSetLevel(final CommandSource staff, final EPlayer player, final String level_string) {
 		try {
-			int lvl = Integer.parseInt(level);
-			player.setLevel(lvl);
+			Integer level = Integer.parseInt(level_string);
+			player.setLevel(level);
 			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.EXP_OTHERS_PLAYER_SET_LEVEL.get()
 					.replaceAll("<staff>", staff.getName())
-					.replaceAll("<level>", String.valueOf(lvl)));
+					.replaceAll("<level>", level.toString()));
 			staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.EXP_OTHERS_STAFF_SET_LEVEL.get()
 						.replaceAll("<player>", player.getName())
-						.replaceAll("<level>", String.valueOf(lvl))));
+						.replaceAll("<level>", level.toString())));
 			return true;
 		} catch (NumberFormatException e) {
 			staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.IS_NOT_NUMBER.get()
-					.replaceAll("<number>", level)));
+					.replaceAll("<number>", level_string)));
 			return false;
 		}
 	}
 	
-	private boolean commandOthersSetExp(final CommandSource staff, final EPlayer player, final String experience) {
+	private boolean commandOthersSetExp(final CommandSource staff, final EPlayer player, final String experience_string) {
 		try {
-			int exp = Integer.parseInt(experience);
-			player.setTotalExperience(exp);
+			Integer experience = Integer.parseInt(experience_string);
+			player.setTotalExperience(experience);
 			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.EXP_OTHERS_PLAYER_SET_EXP.get()
 					.replaceAll("<staff>", staff.getName())
-					.replaceAll("<experience>", String.valueOf(exp)));
+					.replaceAll("<experience>", experience.toString()));
 			staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.EXP_OTHERS_STAFF_SET_EXP.get()
 						.replaceAll("<player>", player.getName())
-						.replaceAll("<experience>", String.valueOf(exp))));
+						.replaceAll("<experience>", experience.toString())));
 			return true;
 		} catch (NumberFormatException e) {
 			staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.IS_NOT_NUMBER.get()
-					.replaceAll("<number>", experience)));
+					.replaceAll("<number>", experience_string)));
 			return false;
 		}
 	}

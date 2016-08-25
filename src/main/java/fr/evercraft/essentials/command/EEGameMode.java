@@ -22,7 +22,11 @@ import java.util.Optional;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
+import org.spongepowered.api.data.key.Keys;
+import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.entity.living.player.User;
 import org.spongepowered.api.entity.living.player.gamemode.GameMode;
+import org.spongepowered.api.entity.living.player.gamemode.GameModes;
 import org.spongepowered.api.text.LiteralText.Builder;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
@@ -43,14 +47,17 @@ public class EEGameMode extends ECommand<EverEssentials> {
         super(plugin, "gamemode", "gm");
     }
 
+	@Override
 	public boolean testPermission(final CommandSource source) {
 		return source.hasPermission(EEPermissions.GAMEMODE.get());
 	}
 
+	@Override
 	public Text description(final CommandSource source) {
 		return EEMessages.GAMEMODE_DESCRIPTION.getText();
 	}
 	
+	@Override
 	public Text help(final CommandSource source) {
 		Builder build = Text.builder("/" + this.getName() + " <")
 				.append(Text.builder("survival").onClick(TextActions.suggestCommand("/" + this.getName() + " survival ")).build())
@@ -72,6 +79,7 @@ public class EEGameMode extends ECommand<EverEssentials> {
 					.build();
 	}
 	
+	@Override
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		List<String> suggests = new ArrayList<String>();
 		if (args.size() == 1){
@@ -86,27 +94,30 @@ public class EEGameMode extends ECommand<EverEssentials> {
 		return suggests;
 	}
 	
+	@Override
 	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Résultat de la commande :
 		boolean resultat = false;
+		
 		// Si on connait que le gamemode
 		if (args.size() == 1) {
 			// Si la source est bien un joueur
 			if (source instanceof EPlayer) {
-				resultat = commandGameMode((EPlayer) source, args.get(0));
+				resultat = this.commandGameMode((EPlayer) source, args.get(0));
 				// Si la source est une console ou un commande block
 			} else {
-				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
+				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText()));
 			}
 			
 			// Si on connait le gamemode et le joueur
 		} else if (args.size() == 2) {
 			// Si il a la permission
-			if (source.hasPermission(EEPermissions.GAMEMODE_OTHERS.get())){
-				Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(args.get(1));
+			if (source.hasPermission(EEPermissions.GAMEMODE_OTHERS.get())) {
+				//Optional<User> user = this.plugin.getEServer().getUser(args.get(1));
+				Optional<EPlayer> user = this.plugin.getEServer().getEPlayer(args.get(1));
 				// Le joueur existe
-				if (optPlayer.isPresent()){
-					resultat = commandGameModeOthers(source, optPlayer.get(), args.get(0));
+				if (user.isPresent()){
+					resultat = this.commandGameModeOthers(source, user.get(), args.get(0));
 				// Le joueur est introuvable
 				} else {
 					source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
@@ -117,12 +128,13 @@ public class EEGameMode extends ECommand<EverEssentials> {
 			}
 		// Nombre d'argument incorrect
 		} else {
-			source.sendMessage(help(source));
+			source.sendMessage(this.help(source));
 		}
+		
 		return resultat;
 	}
 	
-	public boolean commandGameMode(final EPlayer player, final String gamemode_name) {
+	private boolean commandGameMode(final EPlayer player, final String gamemode_name) {
 		Optional<GameMode> optGamemode = UtilsGameMode.getGameMode(gamemode_name); 
 		// Si gamemode est correct
 		if (optGamemode.isPresent()) {
@@ -145,38 +157,42 @@ public class EEGameMode extends ECommand<EverEssentials> {
 		return false;
 	}
 	
-	public boolean commandGameModeOthers(final CommandSource staff, final EPlayer player, final String gamemode_name) throws CommandException {
+	private boolean commandGameModeOthers(final CommandSource staff, final User user, final String gamemode_name) throws CommandException {
 		Optional<GameMode> optGamemode = UtilsGameMode.getGameMode(gamemode_name); 
+		
+		// La source et le joueur sont identique
+		if (staff instanceof EPlayer && user.getIdentifier().equals(staff.getIdentifier())) {
+			return this.commandGameMode((EPlayer) staff, gamemode_name);
 		// La source et le joueur sont différent
-		if (!player.equals(staff)){
+		} else {
 			// Si gamemode est correct
 			if (optGamemode.isPresent()) {
-				GameMode gamemode = optGamemode.get();
+				GameMode gamemode_after = optGamemode.get();
+				GameMode gamemode_before = user.get(Keys.GAME_MODE).orElse(GameModes.SURVIVAL);
 				// Si le nouveau gamemode est différent à celui du joueur
-				if (!gamemode.equals(player.getGameMode())) {
-					player.setGameMode(gamemode);
+				if (!gamemode_after.equals(gamemode_before)) {
+					user.offer(Keys.GAME_MODE, gamemode_after);
 					staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.GAMEMODE_OTHERS_STAFF_CHANGE.get()
-							.replaceAll("<player>", player.getName())
-							.replaceAll("<gamemode>", this.plugin.getEverAPI().getManagerUtils().getGameMode().getName(gamemode))));
-					player.sendMessage(EEMessages.PREFIX.get() + EEMessages.GAMEMODE_OTHERS_PLAYER_CHANGE.get()
-							.replaceAll("<staff>", staff.getName())
-							.replaceAll("<gamemode>", this.plugin.getEverAPI().getManagerUtils().getGameMode().getName(gamemode)));
+							.replaceAll("<player>", user.getName())
+							.replaceAll("<gamemode>", this.plugin.getEverAPI().getManagerUtils().getGameMode().getName(gamemode_after))));
+					
+					Optional<Player> player = user.getPlayer();
+					if (player.isPresent()) {
+						player.get().sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.GAMEMODE_OTHERS_PLAYER_CHANGE.get()
+								.replaceAll("<staff>", staff.getName())
+								.replaceAll("<gamemode>", this.plugin.getEverAPI().getManagerUtils().getGameMode().getName(gamemode_after))));
+					}
 					return true;
-					// Gamemode identique à celui du joueur
+				// Gamemode identique à celui du joueur
 				} else {
 					staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.GAMEMODE_OTHERS_EQUAL.get()
-							.replaceAll("<gamemode>", this.plugin.getEverAPI().getManagerUtils().getGameMode().getName(gamemode))
-							.replaceAll("<player>", player.getName())));
+							.replaceAll("<gamemode>", this.plugin.getEverAPI().getManagerUtils().getGameMode().getName(gamemode_after))
+							.replaceAll("<player>", user.getName())));
 				}
 			// Nom du gamemode inconnue
 			} else {
 				staff.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.GAMEMODE_ERROR_NAME.getText()));
 			}
-		// La source et le joueur sont identique
-		} else {
-			List<String> args = new ArrayList<String>();
-			args.add(gamemode_name);
-			return execute(staff, args);
 		}
 		return false;
 	}

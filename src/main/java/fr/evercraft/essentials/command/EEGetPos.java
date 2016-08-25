@@ -43,14 +43,17 @@ public class EEGetPos extends ECommand<EverEssentials> {
         super(plugin, "getpos");
     }
 
+	@Override
 	public boolean testPermission(final CommandSource source) {
 		return source.hasPermission(EEPermissions.GETPOS.get());
 	}
 
+	@Override
 	public Text description(final CommandSource source) {
 		return EEMessages.GETPOS_DESCRIPTION.getText();
 	}
 
+	@Override
 	public Text help(final CommandSource source) {
 		if (source.hasPermission(EEPermissions.GETPOS_OTHERS.get())){
 			return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_PLAYER.get() + "]")
@@ -64,6 +67,7 @@ public class EEGetPos extends ECommand<EverEssentials> {
 					.build();
 	}
 	
+	@Override
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		if (args.size() == 1 && source.hasPermission(EEPermissions.GETPOS_OTHERS.get())){
 			return null;
@@ -71,17 +75,19 @@ public class EEGetPos extends ECommand<EverEssentials> {
 		return new ArrayList<String>();
 	}
 	
+	@Override
 	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Résultat de la commande :
 		boolean resultat = false;
+		
 		// Si on ne connait pas le joueur
 		if (args.size() == 0) {
 			// Si la source est un joueur
 			if (source instanceof EPlayer) {
-				resultat = commandGetPos((EPlayer) source);
+				resultat = this.commandGetPos((EPlayer) source);
 			// La source n'est pas un joueur
 			} else {
-				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
+				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText()));
 			}
 		// On connais le joueur
 		} else if (args.size() == 1) {
@@ -90,7 +96,7 @@ public class EEGetPos extends ECommand<EverEssentials> {
 				Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(args.get(0));
 				// Le joueur existe
 				if (optPlayer.isPresent()){
-					resultat = commandGetPosOthers(source, optPlayer.get());
+					resultat = this.commandGetPosOthers(source, optPlayer.get());
 				// Le joueur est introuvable
 				} else {
 					source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
@@ -101,20 +107,25 @@ public class EEGetPos extends ECommand<EverEssentials> {
 			}
 		// Nombre d'argument incorrect
 		} else {
-			source.sendMessage(help(source));
+			source.sendMessage(this.help(source));
 		}
+		
 		return resultat;
 	}
 	
-	public boolean commandGetPos(final EPlayer player) {
+	private boolean commandGetPos(final EPlayer player) {
 		player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.getText())
-				.append(EEMessages.GETPOS_MESSAGE.get())
-				.replace("<position>", getButtonPos(player.getLocation()))
+				.append(EEMessages.GETPOS_MESSAGE.get()
+						.replaceAll("<world>", player.getWorld().getName())
+						.replaceAll("<x>", String.valueOf(player.getLocation().getBlockX()))
+						.replaceAll("<y>", String.valueOf(player.getLocation().getBlockY()))
+						.replaceAll("<z>", String.valueOf(player.getLocation().getBlockZ())))
+				.replace("<position>", this.getButtonPos(player.getLocation()))
 				.build());
 		return true;
 	}
 	
-	public boolean commandGetPosOthers(final CommandSource staff, final EPlayer player) throws CommandException {
+	private boolean commandGetPosOthers(final CommandSource staff, final EPlayer player) throws CommandException {
 		staff.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.getText())
 				.append(EEMessages.GETPOS_MESSAGE_OTHERS.get()
 						.replaceAll("<player>", player.getName())
@@ -122,12 +133,12 @@ public class EEGetPos extends ECommand<EverEssentials> {
 						.replaceAll("<x>", String.valueOf(player.getLocation().getBlockX()))
 						.replaceAll("<y>", String.valueOf(player.getLocation().getBlockY()))
 						.replaceAll("<z>", String.valueOf(player.getLocation().getBlockZ())))
-				.replace("<position>", getButtonPos(player.getLocation()))
+				.replace("<position>", this.getButtonPos(player.getLocation()))
 				.build());
 		return true;
 	}
 	
-	public Text getButtonPos(final Location<World> location){
+	private Text getButtonPos(final Location<World> location){
 		return EEMessages.GETPOS_POTISITON_NAME.getText().toBuilder()
 					.onHover(TextActions.showText(EChat.of(EEMessages.GETPOS_POSITION_HOVER.get()
 							.replaceAll("<world>", location.getExtent().getName())

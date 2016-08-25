@@ -42,14 +42,17 @@ public class EEHelp extends ECommand<EverEssentials> {
         super(plugin, "help", "?");
     }
 
+	@Override
 	public boolean testPermission(final CommandSource source) {
 		return source.hasPermission("minecraft.command.help");
 	}
 
+	@Override
 	public Text description(final CommandSource source) {
 		return EEMessages.HELP_DESCRIPTION.getText();
 	}
 
+	@Override
 	public Text help(final CommandSource source) {
 		return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_COMMAND.get() + "]")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
@@ -57,6 +60,7 @@ public class EEHelp extends ECommand<EverEssentials> {
 					.build();
 	}
 	
+	@Override
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		List<String> suggests = new ArrayList<String>();
 		if (args.size() == 1) {
@@ -69,24 +73,26 @@ public class EEHelp extends ECommand<EverEssentials> {
 		return suggests;
 	}
 	
+	@Override
 	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Résultat de la commande :
 		boolean resultat = false;
 		
 		// Si on ne connait pas le joueur
 		if (args.size() == 0) {
-			resultat = commandHelp(source);
+			resultat = this.commandHelp(source);
 		// On connais le joueur
 		} else if (args.size() == 1) {
-			resultat = commandHelp(source, args.get(0));
+			resultat = this.commandHelp(source, args.get(0));
 		// Nombre d'argument incorrect
 		} else {
-			source.sendMessage(help(source));
+			source.sendMessage(this.help(source));
 		}
+		
 		return resultat;
 	}
 	
-	public boolean commandHelp(final CommandSource source) {
+	private boolean commandHelp(final CommandSource source) {
 		Text title = EEMessages.HELP_TITLE.getText().toBuilder()
 						.onClick(TextActions.runCommand("/help"))
 						.color(TextColors.RED)
@@ -99,7 +105,7 @@ public class EEHelp extends ECommand<EverEssentials> {
 		return true;
 	}
 	
-	public boolean commandHelp(final CommandSource source, final String alias) {
+	private boolean commandHelp(final CommandSource source, final String alias) {
 		Optional<? extends CommandMapping> command = this.plugin.getGame().getCommandManager().get(alias);
 		if (command.isPresent()) {
 			if (command.get().getCallable().testPermission(source)) {

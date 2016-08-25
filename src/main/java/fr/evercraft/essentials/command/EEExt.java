@@ -40,14 +40,17 @@ public class EEExt extends ECommand<EverEssentials> {
         super(plugin, "ext", "extinguish");
     }
 
+	@Override
 	public boolean testPermission(final CommandSource source) {
 		return source.hasPermission(EEPermissions.EXT.get());
 	}
 
+	@Override
 	public Text description(final CommandSource source) {
 		return EEMessages.EXT_DESCRIPTION.getText();
 	}
 
+	@Override
 	public Text help(final CommandSource source) {
 		if (source.hasPermission(EEPermissions.EXT_OTHERS.get())){
 			return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_PLAYER.get() + "|*]")
@@ -61,6 +64,7 @@ public class EEExt extends ECommand<EverEssentials> {
 					.build();
 	}
 	
+	@Override
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		if (args.size() == 1 && source.hasPermission(EEPermissions.EXT_OTHERS.get())){
 			return null;
@@ -68,29 +72,31 @@ public class EEExt extends ECommand<EverEssentials> {
 		return new ArrayList<String>();
 	}
 	
+	@Override
 	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Résultat de la commande :
 		boolean resultat = false;
+		
 		// Si on ne connait pas le joueur
 		if (args.size() == 0) {
 			// Si la source est un joueur
 			if (source instanceof EPlayer) {
-				resultat = commandExt((EPlayer) source);
+				resultat = this.commandExt((EPlayer) source);
 			// La source n'est pas un joueur
 			} else {
-				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
+				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText()));
 			}
 		// On connais le joueur
 		} else if (args.size() == 1) {
 			// Si il a la permission
 			if (source.hasPermission(EEPermissions.EXT_OTHERS.get())){
 				if (args.get(0).equals("*")) {
-					resultat = commandExtAll(source);
+					resultat = this.commandExtAll(source);
 				} else {
 					Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(args.get(0));
 					// Le joueur existe
 					if (optPlayer.isPresent()){
-						resultat = commandExtOthers(source, optPlayer.get());
+						resultat = this.commandExtOthers(source, optPlayer.get());
 					// Le joueur est introuvable
 					} else {
 						source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
@@ -102,12 +108,13 @@ public class EEExt extends ECommand<EverEssentials> {
 			}
 		// Nombre d'argument incorrect
 		} else {
-			source.sendMessage(help(source));
+			source.sendMessage(this.help(source));
 		}
+		
 		return resultat;
 	}
 	
-	public boolean commandExt(final EPlayer player) {
+	private boolean commandExt(final EPlayer player) {
 		if (player.getFireTicks() > 0) {
 			player.setFireTicks(0);
 			player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.EXT_PLAYER.getText()));
@@ -118,7 +125,7 @@ public class EEExt extends ECommand<EverEssentials> {
 		return false;
 	}
 	
-	public boolean commandExtOthers(final CommandSource staff, final EPlayer player) throws CommandException {
+	private boolean commandExtOthers(final CommandSource staff, final EPlayer player) throws CommandException {
 		// La source et le joueur sont différent
 		if (!player.equals(staff)){
 			if (player.getFireTicks() > 0) {
@@ -134,12 +141,12 @@ public class EEExt extends ECommand<EverEssentials> {
 			}
 		// La source et le joueur sont identique
 		} else {
-			return execute(staff, new ArrayList<String>());
+			return this.commandExt(player);
 		}
 		return false;
 	}
 	
-	public boolean commandExtAll(final CommandSource staff) {
+	private boolean commandExtAll(final CommandSource staff) {
 		// Pour tous les joueurs connecté
 		for (EPlayer player : this.plugin.getEServer().getOnlineEPlayers()){
 			if (player.getFireTicks() > 0) {

@@ -210,11 +210,11 @@ public class EEConfig extends EConfig {
 		return this.get("generate.tick-percent-limit").getLong((long) 0.15);
 	}
 	
-	public float getGenerateTickInterval() {
+	public int getGenerateTickInterval() {
 		return this.get("generate.tick-interval").getInt(10);
 	}
 	
-	public float getGenerateChuncksPerTick() {
+	public int getGenerateChuncksPerTick() {
 		return this.get("generate.chunks-per-tick").getInt(10);
 	}
 	
