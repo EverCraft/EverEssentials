@@ -89,7 +89,7 @@ public class EEGameMode extends ECommand<EverEssentials> {
 			suggests.add("spectator");
 			suggests.add("empty");
 		} else if (args.size() == 2 && source.hasPermission(EEPermissions.GAMEMODE_OTHERS.get())){
-			suggests = null;
+			suggests.addAll(this.getAllUsers());
 		}
 		return suggests;
 	}

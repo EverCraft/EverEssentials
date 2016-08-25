@@ -170,7 +170,7 @@ public class EETeleportationAll extends ECommand<EverEssentials> {
 	
 	private Optional<Transform<World>> teleport(EPlayer destination){
 		if (destination.isFlying()) {
-			return this.plugin.getEverAPI().getManagerUtils().getLocation().getBlockSafe(destination.getTransform());
+			return this.plugin.getEverAPI().getManagerUtils().getLocation().getBlock(destination.getTransform());
 		} else {
 			return Optional.of(destination.getTransform());
 		}

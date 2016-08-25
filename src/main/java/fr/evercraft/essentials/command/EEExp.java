@@ -82,7 +82,7 @@ public class EEExp extends ECommand<EverEssentials> {
 		} else if (args.size() == 3) {
 			suggests.add("1");
 		} else if (args.size() == 4 && source.hasPermission(EEPermissions.EXP_OTHERS.get())) {
-			suggests = null;
+			suggests.addAll(this.getAllUsers());
 		}
 		return suggests;
 	}
@@ -97,17 +97,17 @@ public class EEExp extends ECommand<EverEssentials> {
 			if (source instanceof EPlayer) {
 				if (args.get(0).equals("give")){
 					if (args.get(1).equals("lvl")){
-						resultat = commandGiveLevel((EPlayer) source, args.get(2));
+						resultat = this.commandGiveLevel((EPlayer) source, args.get(2));
 					} else if (args.get(1).equals("exp")){
-						resultat = commandGiveExp((EPlayer) source, args.get(2));
+						resultat = this.commandGiveExp((EPlayer) source, args.get(2));
 					} else {
 						source.sendMessage(this.help(source));
 					}
 				} else if (args.get(0).equals("set")){
 					if (args.get(1).equals("lvl")){
-						resultat = commandSetLevel((EPlayer) source, args.get(2));
+						resultat = this.commandSetLevel((EPlayer) source, args.get(2));
 					} else if (args.get(1).equals("exp")){
-						resultat = commandSetExp((EPlayer) source, args.get(2));
+						resultat = this.commandSetExp((EPlayer) source, args.get(2));
 					} else {
 						source.sendMessage(this.help(source));
 					}

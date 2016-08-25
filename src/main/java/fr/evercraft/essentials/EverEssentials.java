@@ -82,6 +82,8 @@ public class EverEssentials extends EPlugin {
 		this.scheduler.stop();
 		
 		this.reloadConfigurations();
+		
+		
 		this.databases.reload();
 		
 		this.managerServices.reload();

@@ -127,7 +127,7 @@ public class EETeleportationPosition extends ECommand<EverEssentials> {
 		Optional<Vector3i> optLocation = this.plugin.getEverAPI().getManagerUtils().getLocation().getLocation(player, x, y, z);
 		// Si les coordonnées sont valides
 		if (optLocation.isPresent()) {
-			if (player.teleportSafe(player.getWorld().getLocation(optLocation.get()))) {
+			if (player.teleportSafeZone(player.getWorld().getLocation(optLocation.get()))) {
 				player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
 						.append(EEMessages.TPPOS_PLAYER.get())
 						.replace("<position>", getButtonPosition(player.getLocation()))
@@ -151,7 +151,7 @@ public class EETeleportationPosition extends ECommand<EverEssentials> {
 			// Si le monde existe
 			if (optWorld.isPresent()) {
 				if (player.getWorld().equals(optWorld.get()) || this.plugin.getManagerServices().getEssentials().hasPermissionWorld(player, optWorld.get())) {
-					if (player.teleportSafe(optWorld.get().getLocation(optLocation.get()))) {
+					if (player.teleportSafeZone(optWorld.get().getLocation(optLocation.get()))) {
 						player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
 								.append(EEMessages.TPPOS_PLAYER.get())
 								.replace("<position>", getButtonPosition(player.getLocation()))
@@ -182,7 +182,7 @@ public class EETeleportationPosition extends ECommand<EverEssentials> {
 			// Si le monde existe
 			if (optWorld.isPresent()) {
 				if (player.getWorld().equals(optWorld.get()) || this.plugin.getManagerServices().getEssentials().hasPermissionWorld(player, optWorld.get())) {
-					if (player.teleportSafe(optWorld.get().getLocation(optLocation.get()))) {
+					if (player.teleportSafeZone(optWorld.get().getLocation(optLocation.get()))) {
 						player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
 								.append(EEMessages.TPPOS_OTHERS_PLAYER.get()
 										.replaceAll("<staff>", staff.getName()))
