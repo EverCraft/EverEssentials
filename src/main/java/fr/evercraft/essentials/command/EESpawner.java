@@ -94,7 +94,7 @@ public class EESpawner extends ECommand<EverEssentials> {
 			if (source instanceof EPlayer) {
 				Optional<UtilsEntity> optEntity = UtilsEntity.get(args.get(0));
 				if (optEntity.isPresent()){
-					resultat = commandSpawner((EPlayer) source, optEntity.get());
+					resultat = this.commandSpawner((EPlayer) source, optEntity.get());
 				} else {
 					source.sendMessage(EChat.of(EEMessages.PREFIX.get() + " inconnu"));
 				}
@@ -104,7 +104,7 @@ public class EESpawner extends ECommand<EverEssentials> {
 			}
 		// Nombre d'argument incorrect
 		} else {
-			source.sendMessage(help(source));
+			source.sendMessage(this.help(source));
 		}
 		return resultat;
 	}

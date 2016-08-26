@@ -33,6 +33,7 @@ import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ESubCommand;
 import fr.evercraft.everapi.server.player.EPlayer;
+import fr.evercraft.everapi.server.user.EUser;
 
 public class EEGodStatus extends ESubCommand<EverEssentials> {
 	public EEGodStatus(final EverEssentials plugin, final EEGod command) {
@@ -74,17 +75,17 @@ public class EEGodStatus extends ESubCommand<EverEssentials> {
 		boolean resultat = false;
 		if (args.size() == 0) {
 			if (source instanceof EPlayer) {
-				resultat = commandGodStatus((EPlayer) source);
+				resultat = this.commandGodStatus((EPlayer) source);
 			} else {
-				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
+				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText()));
 			}
 		} else if (args.size() == 1) {
 			// Si il a la permission
 			if (source.hasPermission(EEPermissions.GOD_OTHERS.get())){
-				Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(args.get(0));
+				Optional<EUser> user = this.plugin.getEServer().getEUser(args.get(0));
 				// Le joueur existe
-				if (optPlayer.isPresent()){
-					resultat = commandGodStatusOthers(source, optPlayer.get());
+				if (user.isPresent()){
+					resultat = this.commandGodStatusOthers(source, user.get());
 				// Le joueur est introuvable
 				} else {
 					source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
@@ -103,29 +104,29 @@ public class EEGodStatus extends ESubCommand<EverEssentials> {
 		// Si le god mode est déjà activé
 		if (player.isGod()){
 			player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.GOD_STATUS_PLAYER_ON.get()
-					.replaceAll("<player>", player.getDisplayName())));
+					.replaceAll("<player>", player.getName())));
 		// God mode est déjà désactivé
 		} else {
 			player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.GOD_STATUS_PLAYER_OFF.get()
-					.replaceAll("<player>", player.getDisplayName())));
+					.replaceAll("<player>", player.getName())));
 		}
 		return true;
 	}
 	
-	public boolean commandGodStatusOthers(final CommandSource staff, final EPlayer player) {
-		if (!player.equals(staff)) {
+	public boolean commandGodStatusOthers(final CommandSource staff, final EUser user) {
+		if (staff instanceof EPlayer && user.getIdentifier().equals(staff.getIdentifier())) {
+			return this.commandGodStatus((EPlayer) staff);
+		} else {
 			// Si le god mode est déjà activé
-			if (player.isGod()){
+			if (user.isGod()){
 				staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.GOD_STATUS_OTHERS_ON.get()
-						.replaceAll("<player>", player.getDisplayName())));
+						.replaceAll("<player>", user.getName())));
 			// God mode est déjà désactivé
 			} else {
 				staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.GOD_STATUS_OTHERS_OFF.get()
-						.replaceAll("<player>", player.getDisplayName())));
+						.replaceAll("<player>", user.getName())));
 			}
-			return true;
-		} else {
-			return this.commandGodStatus(player);
 		}
+		return true;
 	}
 }

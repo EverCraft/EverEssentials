@@ -67,10 +67,11 @@ public class EESkull extends ECommand<EverEssentials> {
 
 	@Override
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
+		List<String> suggests = new ArrayList<String>();
 		if (args.size() == 1 && source.hasPermission(EEPermissions.SKULL_OTHERS.get())) {
-			return null;
+			suggests.addAll(this.getAllUsers());
 		}
-		return new ArrayList<String>();
+		return suggests;
 	}
 
 	@Override

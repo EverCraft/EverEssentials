@@ -22,7 +22,6 @@ import java.util.Optional;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
-import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
@@ -149,9 +148,8 @@ public class EEGodOff extends ESubCommand<EverEssentials> {
 					staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.GOD_OFF_OTHERS_STAFF.get()
 							.replaceAll("<player>", user.getName())));
 					
-					Optional<Player> player = user.getPlayer();
-					if(player.isPresent()) {
-						player.get().sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.GOD_OFF_OTHERS_PLAYER.get()
+					if(user instanceof EPlayer) {
+						((EPlayer) user).sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.GOD_OFF_OTHERS_PLAYER.get()
 								.replaceAll("<staff>", staff.getName())));
 					}
 					return true;
@@ -164,7 +162,7 @@ public class EEGodOff extends ESubCommand<EverEssentials> {
 				staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.GOD_OFF_OTHERS_ERROR.get()
 						.replaceAll("<player>", user.getName())));
 			}
-			return false;
 		}
+		return false;
 	}
 }

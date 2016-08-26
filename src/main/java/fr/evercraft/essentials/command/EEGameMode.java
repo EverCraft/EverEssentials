@@ -22,11 +22,7 @@ import java.util.Optional;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
-import org.spongepowered.api.data.key.Keys;
-import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.entity.living.player.User;
 import org.spongepowered.api.entity.living.player.gamemode.GameMode;
-import org.spongepowered.api.entity.living.player.gamemode.GameModes;
 import org.spongepowered.api.text.LiteralText.Builder;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
@@ -39,6 +35,7 @@ import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ECommand;
 import fr.evercraft.everapi.server.player.EPlayer;
+import fr.evercraft.everapi.server.user.EUser;
 import fr.evercraft.everapi.sponge.UtilsGameMode;
 
 public class EEGameMode extends ECommand<EverEssentials> {
@@ -113,8 +110,7 @@ public class EEGameMode extends ECommand<EverEssentials> {
 		} else if (args.size() == 2) {
 			// Si il a la permission
 			if (source.hasPermission(EEPermissions.GAMEMODE_OTHERS.get())) {
-				//Optional<User> user = this.plugin.getEServer().getUser(args.get(1));
-				Optional<EPlayer> user = this.plugin.getEServer().getEPlayer(args.get(1));
+				Optional<EUser> user = this.plugin.getEServer().getEUser(args.get(1));
 				// Le joueur existe
 				if (user.isPresent()){
 					resultat = this.commandGameModeOthers(source, user.get(), args.get(0));
@@ -157,7 +153,7 @@ public class EEGameMode extends ECommand<EverEssentials> {
 		return false;
 	}
 	
-	private boolean commandGameModeOthers(final CommandSource staff, final User user, final String gamemode_name) throws CommandException {
+	private boolean commandGameModeOthers(final CommandSource staff, final EUser user, final String gamemode_name) throws CommandException {
 		Optional<GameMode> optGamemode = UtilsGameMode.getGameMode(gamemode_name); 
 		
 		// La source et le joueur sont identique
@@ -168,17 +164,16 @@ public class EEGameMode extends ECommand<EverEssentials> {
 			// Si gamemode est correct
 			if (optGamemode.isPresent()) {
 				GameMode gamemode_after = optGamemode.get();
-				GameMode gamemode_before = user.get(Keys.GAME_MODE).orElse(GameModes.SURVIVAL);
+				GameMode gamemode_before = user.getGameMode();
 				// Si le nouveau gamemode est différent à celui du joueur
 				if (!gamemode_after.equals(gamemode_before)) {
-					user.offer(Keys.GAME_MODE, gamemode_after);
+					user.setGameMode(gamemode_after);
 					staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.GAMEMODE_OTHERS_STAFF_CHANGE.get()
 							.replaceAll("<player>", user.getName())
 							.replaceAll("<gamemode>", this.plugin.getEverAPI().getManagerUtils().getGameMode().getName(gamemode_after))));
 					
-					Optional<Player> player = user.getPlayer();
-					if (player.isPresent()) {
-						player.get().sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.GAMEMODE_OTHERS_PLAYER_CHANGE.get()
+					if (user instanceof EPlayer) {
+						((EPlayer) user).sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.GAMEMODE_OTHERS_PLAYER_CHANGE.get()
 								.replaceAll("<staff>", staff.getName())
 								.replaceAll("<gamemode>", this.plugin.getEverAPI().getManagerUtils().getGameMode().getName(gamemode_after))));
 					}
