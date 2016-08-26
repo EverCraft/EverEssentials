@@ -97,10 +97,10 @@ public class EEBook extends ECommand<EverEssentials> {
 			if (optPlayer.isPresent()){
 				if (args.get(0).equalsIgnoreCase("title")){
 					args.remove(0);
-					resultat = commandBookTitle((EPlayer) source, getMessage(args));
+					resultat = commandBookTitle((EPlayer) source, "");
 				} else if (args.get(0).equalsIgnoreCase("author")){
 					args.remove(0);
-					resultat = commandBookAuthor((EPlayer) source, getMessage(args));
+					resultat = commandBookAuthor((EPlayer) source, "");
 				} else {
 					source.sendMessage(help(source));
 				}

@@ -19,6 +19,7 @@ package fr.evercraft.essentials.command;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
@@ -41,14 +42,17 @@ public class EESudo extends ECommand<EverEssentials> {
         super(plugin ,"sudo");
     }
 	
+	@Override
 	public boolean testPermission(final CommandSource source) {
 		return source.hasPermission(EEPermissions.SUDO.get());
 	}
 
+	@Override
 	public Text description(final CommandSource source) {
 		return EEMessages.SUDO_DESCRIPTION.getText();
 	}
 
+	@Override
 	public Text help(final CommandSource source) {
 		if (source.hasPermission(EEPermissions.SUDO_CONSOLE.get())){
 			return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_PLAYER.get() + "|console> <" + EAMessages.ARGS_COMMAND.get() + ">")
@@ -62,6 +66,7 @@ public class EESudo extends ECommand<EverEssentials> {
 					.build();
 	}
 	
+	@Override
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		List<String> suggests = new ArrayList<String>();
 		if (args.size() == 1) {
@@ -73,16 +78,31 @@ public class EESudo extends ECommand<EverEssentials> {
 		return suggests;
 	}
 	
+	@Override
+	protected List<String> getArg(final String arg) {
+		List<String> args = super.getArg(arg);
+		// Le message est transformer en un seul argument
+		if (args.size() > 2) {
+			List<String> args_send = new ArrayList<String>();
+			args_send.add(args.get(0));
+			args_send.add(Pattern.compile("^[ \"]*" + args.get(0) + "[ \"][ ]*").matcher(arg).replaceAll(""));
+			return args_send;
+		}
+		return args;
+	}
+	
+	@Override
 	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Résultat de la commande :
 		boolean resultat = false;
+		
 		// Si on ne connait pas le joueur
-		if (args.size() > 1) {
+		if (args.size() == 2) {
 			if (!args.get(0).equalsIgnoreCase("console")) {
-				Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(args.get(0));
+				Optional<EPlayer> player = this.plugin.getEServer().getEPlayer(args.get(0));
 				// Le joueur existe
-				if (optPlayer.isPresent()){
-					resultat = commandSudo(source, optPlayer.get(), getCommand(args));
+				if (player.isPresent()){
+					resultat = commandSudo(source, player.get(), args.get(1));
 				// Le joueur est introuvable
 				} else {
 					source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
@@ -90,7 +110,7 @@ public class EESudo extends ECommand<EverEssentials> {
 			} else {
 				// Si il a la permission
 				if (source.hasPermission(EEPermissions.SUDO_CONSOLE.get())){
-					resultat = commandSudoConsole(source, getCommand(args));
+					resultat = commandSudoConsole(source, args.get(1));
 				// Il n'a pas la permission
 				} else {
 					source.sendMessage(EAMessages.NO_PERMISSION.getText());
@@ -100,10 +120,11 @@ public class EESudo extends ECommand<EverEssentials> {
 		} else {
 			source.sendMessage(help(source));
 		}
+		
 		return resultat;
 	}
 	
-	public boolean commandSudo(final CommandSource staff, final EPlayer player, final String command) {
+	private boolean commandSudo(final CommandSource staff, final EPlayer player, final String command) {
 		// Si le joueur n'a pas la permission bypass
 		if (!player.hasPermission(EEPermissions.SUDO_BYPASS.get())) {
 			if (player.getCommandSource().isPresent()) {
@@ -111,7 +132,7 @@ public class EESudo extends ECommand<EverEssentials> {
 				staff.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
 						.append(EEMessages.SUDO_PLAYER.get()
 								.replaceAll("<player>", player.getName()))
-						.replace("<command>", getButtonCommand(command))
+						.replace("<command>", this.getButtonCommand(command))
 						.build());
 				return true;
 			} else {
@@ -125,7 +146,7 @@ public class EESudo extends ECommand<EverEssentials> {
 		return true;
 	}
 	
-	public boolean commandSudoConsole(final CommandSource staff, final String command) {
+	private boolean commandSudoConsole(final CommandSource staff, final String command) {
 		if (this.plugin.getGame().getServer().getConsole().getCommandSource().isPresent()) {
 			this.plugin.getGame().getCommandManager().process(this.plugin.getGame().getServer().getConsole().getCommandSource().get(), command);
 			staff.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
@@ -138,17 +159,7 @@ public class EESudo extends ECommand<EverEssentials> {
 		return true;
 	}
 	
-	public String getCommand(final List<String> args){
-		args.remove(0);
-		String command = args.get(0).replace("/", "");
-		args.remove(0);
-		for (String arg : args) {
-			command += " " + arg;
-		}
-		return command;
-	}
-	
-	public Text getButtonCommand(final String command){
+	private Text getButtonCommand(final String command){
 		return EChat.of(EEMessages.SUDO_COMMAND.get()).toBuilder()
 					.onHover(TextActions.showText(EChat.of(EEMessages.SUDO_COMMAND_HOVER.get()
 							.replaceAll("<command>", "/" + command))))

@@ -619,6 +619,8 @@ public class EEMessage extends EMessage {
 		
 		SUICIDE_DESCRIPTION("suicide.description", "Permet de vous suicider"),
 		SUICIDE_PLAYER("suicide.player", "&7Vous vous êtes suicidé."),
+		SUICIDE_DEATH_MESSAGE("kill.equalsDeathMessage", "&f< " + EChat.DISPLAYNAME_FORMAT + "> c'est suicidé."),
+		SUICIDE_CANCEL("kill.equalsCancel", "&cImpossible de vous suicidé."),
 		
 		TP_DESCRIPTION("tp.description", "Téléporte le joueur vers un autre joueur"),
 		TP_DESTINATION("tp.destination", "&6&l<player>"),
@@ -774,9 +776,12 @@ public class EEMessage extends EMessage {
 		TREE_NO_CAN("tree.noCan", "&cErreur : Impossible de placer un arbre à cette endroit. Regarder plutôt un bloc d'herbe ou de terre."),
 		
 		UUID_DESCRIPTION("uuid.description", "Affiche l'identifiant unique du joueur."),
-		UUID_NAME("uuid.name", "&6&l<uuid>"),
-		UUID_PLAYER("uuid.player", "&7Votre UUID est <uuid>"),
-		UUID_PLAYER_OTHERS("uuid.otherPlayer", "L'UUID de <player> est <uuid>"),
+		UUID_SUGGEST_UUID("uuid.suggestUUID", "&6&l<uuid>"),
+		UUID_SUGGEST_NAME("uuid.suggestName", "&6&l<name>"),
+		UUID_PLAYER_UUID("uuid.playerUUID", "&7Votre UUID est <uuid>"),
+		UUID_PLAYER_NAME("uuid.playerName", "&7Votre nom est <name>"),
+		UUID_OTHERS_PLAYER_UUID("uuid.otherPlayerUUID", "L'UUID de <player> est <uuid>"),
+		UUID_OTHERS_PLAYER_NAME("uuid.otherPlayerName", "Le name de <player> est <name>"),
 		
 		VANISH_DESCRIPTION("vanish.description", "Permet de vous rendre invisible."),
 		VANISH_PLAYER_ENABLE("vanish.playerEnable", "&7Vous êtes désormais invisible."),

@@ -40,14 +40,17 @@ public class EEStop extends ECommand<EverEssentials> {
         super(plugin ,"stop");
     }
 	
+	@Override
 	public boolean testPermission(final CommandSource source) {
 		return source.hasPermission(EEPermissions.STOP.get());
 	}
 
+	@Override
 	public Text description(final CommandSource source) {
 		return EEMessages.STOP_DESCRIPTION.getText();
 	}
 
+	@Override
 	public Text help(final CommandSource source) {
 		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_REASON.get() + ">")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
@@ -55,6 +58,7 @@ public class EEStop extends ECommand<EverEssentials> {
 					.build();
 	}
 	
+	@Override
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		return new ArrayList<String>();
 	}
@@ -63,6 +67,7 @@ public class EEStop extends ECommand<EverEssentials> {
 		return execute(source, Arrays.asList(arg));
 	}
 	
+	@Override
 	protected List<String> getArg(final String arg){
 		if (arg.isEmpty()) {
 			return Arrays.asList();
@@ -70,18 +75,21 @@ public class EEStop extends ECommand<EverEssentials> {
 		return Arrays.asList(arg);
 	}
 	
+	@Override
 	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Résultat de la commande :
 		boolean resultat = false;
+		
 		if (args.size() == 0) {
-			resultat = commandStop(source);
+			resultat = this.commandStop(source);
 		} else {
-			resultat = commandStop(source, args.get(0));
+			resultat = this.commandStop(source, args.get(0));
 		}
+		
 		return resultat;
 	}
 
-	public boolean commandStop(final CommandSource player) {
+	private boolean commandStop(final CommandSource player) {
 		this.plugin.getLogger().info("Server shutdown by '" + player.getName() + "'");
 		if (player instanceof ConsoleSource) {
 			this.plugin.getGame().getServer().shutdown(
@@ -97,7 +105,7 @@ public class EEStop extends ECommand<EverEssentials> {
 		return true;
 	}
 	
-	public boolean commandStop(final CommandSource player, String message) {
+	private boolean commandStop(final CommandSource player, String message) {
 		this.plugin.getLogger().info("Server shutdown by '" + player.getName() + "' (reason='" + message + "')");
 		if (player instanceof ConsoleSource) {
 			this.plugin.getGame().getServer().shutdown(

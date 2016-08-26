@@ -20,14 +20,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.spongepowered.api.CatalogType;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
+import org.spongepowered.api.text.LiteralText.Builder;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.world.gen.PopulatorObject;
 import org.spongepowered.api.world.gen.PopulatorObjects;
-import org.spongepowered.api.world.gen.type.MushroomTypes;
 
 import com.flowpowered.math.vector.Vector3i;
 
@@ -45,107 +46,78 @@ public class EETree extends ECommand<EverEssentials> {
         super(plugin, "tree");
     }
 
+	@Override
 	public boolean testPermission(final CommandSource source) {
 		return source.hasPermission(EEPermissions.TREE.get());
 	}
 
+	@Override
 	public Text description(final CommandSource source) {
 		return EEMessages.TREE_DESCRIPTION.getText();
 	}
 
+	@Override
 	public Text help(final CommandSource source) {
-		return Text.builder("/" + this.getName() + " ").onClick(TextActions.suggestCommand("/" + this.getName() + " "))
-					.append(Text.of("<"))
-					.append(Text.builder("birch").onClick(TextActions.suggestCommand("/" + this.getName() + " birch")).build())
-					.append(Text.of("|"))
-					.append(Text.builder("canopy").onClick(TextActions.suggestCommand("/" + this.getName() + " canopy")).build())
-					.append(Text.of("|"))
-					.append(Text.builder("jungle").onClick(TextActions.suggestCommand("/" + this.getName() + " jungle")).build())
-					.append(Text.of("|"))
-					.append(Text.builder("jungle_bush").onClick(TextActions.suggestCommand("/" + this.getName() + " jungle_bush")).build())
-					.append(Text.of("|"))
-					.append(Text.builder("mega_birch").onClick(TextActions.suggestCommand("/" + this.getName() + " mega_birch")).build())
-					.append(Text.of("|"))
-					.append(Text.builder("mega_jungle").onClick(TextActions.suggestCommand("/" + this.getName() + " mega_jungle")).build())
-					.append(Text.of("|"))
-					.append(Text.builder("mega_oak").onClick(TextActions.suggestCommand("/" + this.getName() + " mega_oak")).build())
-					.append(Text.of("|"))
-					.append(Text.builder("mega_pointy_taiga").onClick(TextActions.suggestCommand("/" + this.getName() + " mega_pointy_taiga")).build())
-					.append(Text.of("|"))
-					.append(Text.builder("mega_tall_taiga").onClick(TextActions.suggestCommand("/" + this.getName() + " mega_tall_taiga")).build())
-					.append(Text.of("|"))
-					.append(Text.builder("mushroom_brown").onClick(TextActions.suggestCommand("/" + this.getName() + " mushroom_brown")).build())
-					.append(Text.of("|"))
-					.append(Text.builder("mushroom_red").onClick(TextActions.suggestCommand("/" + this.getName() + " mushroom_red")).build())
-					.append(Text.of("|"))
-					.append(Text.builder("oak").onClick(TextActions.suggestCommand("/" + this.getName() + " oak")).build())
-					.append(Text.of("|"))
-					.append(Text.builder("pointy_taiga").onClick(TextActions.suggestCommand("/" + this.getName() + " pointy_taiga")).build())
-					.append(Text.of("|"))
-					.append(Text.builder("savanna").onClick(TextActions.suggestCommand("/" + this.getName() + " savanna")).build())
-					.append(Text.of("|"))
-					.append(Text.builder("swamp").onClick(TextActions.suggestCommand("/" + this.getName() + " swamp")).build())
-					.append(Text.of("|"))
-					.append(Text.builder("tall_taiga").onClick(TextActions.suggestCommand("/" + this.getName() + " tall_taiga")).build())
-					.append(Text.of(">"))
+		Builder build = Text.builder("/" + this.getName() + " <");
+		
+		List<Text> populator = new ArrayList<Text>();
+		for (CatalogType type : this.plugin.getGame().getRegistry().getAllOf(PopulatorObject.class)){
+			populator.add(Text.builder(type.getName())
+								.onClick(TextActions.suggestCommand("/" + this.getName() + " " + type.getName()))
+								.build());
+		}
+		
+		return build.append(Text.of(">"))
+					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
 					.build();
 	}
 	
+	@Override
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		List<String> suggests = new ArrayList<String>();
-		if (args.size() == 1){
-			suggests.add("birch");
-			suggests.add("mushroom_brown");
-			suggests.add("canopy");
-			suggests.add("jungle");
-			suggests.add("jungle_bush");
-			suggests.add("mega_birch");
-			suggests.add("mega_jungle");
-			suggests.add("mega_oak");
-			suggests.add("mega_pointy_taiga");
-			suggests.add("mega_tall_taiga");
-			suggests.add("oak");
-			suggests.add("pointy_taiga");
-			suggests.add("mushroom_red");
-			suggests.add("savanna");
-			suggests.add("swamp");
-			suggests.add("tall_taiga");
+		if (args.size() == 1) {
+			for (CatalogType type : this.plugin.getGame().getRegistry().getAllOf(PopulatorObject.class)){
+				suggests.add(type.getName());
+			}
 		}
 		return suggests;
 	}
 	
+	@Override
 	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Résultat de la commande :
 		boolean resultat = false;
+		
 		// Si on ne connait pas le joueur
 		if (args.size() == 0) {
 			// Si la source est un joueur
 			if (source instanceof EPlayer) {
-				resultat = commandTree((EPlayer) source, PopulatorObjects.OAK);
+				resultat = this.commandTree((EPlayer) source, PopulatorObjects.OAK);
 			// La source n'est pas un joueur
 			} else {
-				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
+				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText()));
 			}
 		// On connais le joueur
 		} else if (args.size() == 1) {
 			// Si la source est un joueur
 			if (source instanceof EPlayer) {
-				Optional<PopulatorObject> optGenerator = getGenerator(args.get(0));
+				Optional<PopulatorObject> optGenerator = this.plugin.getGame().getRegistry().getType(PopulatorObject.class, args.get(0));
 				if (optGenerator.isPresent()){
-					resultat = commandTree((EPlayer) source, optGenerator.get());
+					resultat = this.commandTree((EPlayer) source, optGenerator.get());
 				} else {
 					source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.TREE_INCONNU.get()
 							.replaceAll("<type>", args.get(0))));
 				}
 			// La source n'est pas un joueur
 			} else {
-				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
+				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText()));
 			}
 		// Nombre d'argument incorrect
 		} else {
-			source.sendMessage(help(source));
+			source.sendMessage(this.help(source));
 		}
+		
 		return resultat;
 	}
 	
@@ -163,43 +135,5 @@ public class EETree extends ECommand<EverEssentials> {
 			player.sendMessage(EEMessages.PREFIX.get() + EAMessages.PLAYER_NO_LOOK_BLOCK.get());
 		}
 		return false;
-	}
-	
-	private Optional<PopulatorObject> getGenerator(String tree_name) {
-		PopulatorObject generator = null;
-		if (tree_name.equalsIgnoreCase("birch")) {
-			generator = PopulatorObjects.BIRCH;
-		} else if (tree_name.equalsIgnoreCase("mushroom_brown")) {
-			generator = MushroomTypes.BROWN.getPopulatorObject();
-		} else if (tree_name.equalsIgnoreCase("canopy")) {
-			generator = PopulatorObjects.CANOPY;
-		} else if (tree_name.equalsIgnoreCase("jungle")) {
-			generator = PopulatorObjects.JUNGLE;
-		} else if (tree_name.equalsIgnoreCase("jungle_bush")) {
-			generator = PopulatorObjects.JUNGLE_BUSH;
-		} else if (tree_name.equalsIgnoreCase("mega_birch")) {
-			generator = PopulatorObjects.MEGA_BIRCH;
-		} else if (tree_name.equalsIgnoreCase("mega_jungle")) {
-			generator = PopulatorObjects.MEGA_JUNGLE;
-		} else if (tree_name.equalsIgnoreCase("mega_oak")) {
-			generator = PopulatorObjects.MEGA_OAK;
-		} else if (tree_name.equalsIgnoreCase("mega_pointy_taiga")) {
-			generator = PopulatorObjects.MEGA_POINTY_TAIGA;
-		} else if (tree_name.equalsIgnoreCase("mega_tall_taiga")) {
-			generator = PopulatorObjects.MEGA_TALL_TAIGA;
-		} else if (tree_name.equalsIgnoreCase("oak")) {
-			generator = PopulatorObjects.OAK;
-		} else if (tree_name.equalsIgnoreCase("pointy_taiga")) {
-			generator = PopulatorObjects.POINTY_TAIGA;
-		} else if (tree_name.equalsIgnoreCase("mushroom_red")) {
-			generator = MushroomTypes.RED.getPopulatorObject();
-		} else if (tree_name.equalsIgnoreCase("savanna")) {
-			generator = PopulatorObjects.SAVANNA;
-		} else if (tree_name.equalsIgnoreCase("swamp")) {
-			generator = PopulatorObjects.SWAMP;
-		} else if (tree_name.equalsIgnoreCase("tall_taiga")) {
-			generator = PopulatorObjects.TALL_TAIGA;
-		}
-		return Optional.ofNullable(generator);
 	}
 }

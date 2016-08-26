@@ -45,14 +45,17 @@ public class EETop extends ECommand<EverEssentials> {
         super(plugin, "top");
     }
 	
+	@Override
 	public boolean testPermission(final CommandSource source) {
 		return source.hasPermission(EEPermissions.TOP.get());
 	}
 
+	@Override
 	public Text description(final CommandSource source) {
 		return EEMessages.TOP_DESCRIPTION.getText();
 	}
 
+	@Override
 	public Text help(final CommandSource source) {
 		return Text.builder("/" + this.getName())
 					.onClick(TextActions.suggestCommand("/" + this.getName()))
@@ -60,29 +63,33 @@ public class EETop extends ECommand<EverEssentials> {
 					.build();
 	}
 	
+	@Override
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		return new ArrayList<String>();
 	}
 	
+	@Override
 	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Résultat de la commande :
 		boolean resultat = false;
+		
 		// Si connait que la location ou aussi peut être le monde
 		if (args.size() == 0) {
 			// Si la source est bien un joueur
 			if (source instanceof EPlayer) {
-				resultat = commandTop((EPlayer) source);
+				resultat = this.commandTop((EPlayer) source);
 			// Si la source est une console ou un commande block
 			} else {
-				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
+				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
 			}
 		} else {
-			source.sendMessage(help(source));
+			source.sendMessage(this.help(source));
 		}
+		
 		return resultat;
 	}
 	
-	public boolean commandTop(final EPlayer player) {
+	private boolean commandTop(final EPlayer player) {
 		final Optional<Transform<World>> transform = this.plugin.getEverAPI().getManagerUtils().getLocation().getMaxBlock(
 															player.getTransform(), 
 															!(player.isGod() || player.getGameMode().equals(GameModes.CREATIVE)));
@@ -103,12 +110,12 @@ public class EETop extends ECommand<EverEssentials> {
 		return false;
 	}
 	
-	public void teleport(final EPlayer player, final Transform<World> location) {
+	private void teleport(final EPlayer player, final Transform<World> location) {
 		if (player.isOnline()) {
 			if (player.teleport(location)) {
 				player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
 						.append(EEMessages.TOP_TELEPORT.get())
-						.replace("<position>", getButtonPosition(player.getLocation()))
+						.replace("<position>", this.getButtonPosition(player.getLocation()))
 						.build());
 			} else {
 				player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.TOP_TELEPORT_ERROR.get()));
@@ -116,7 +123,7 @@ public class EETop extends ECommand<EverEssentials> {
 		}
 	}
 	
-	public Text getButtonPosition(final Location<World> location){
+	private Text getButtonPosition(final Location<World> location){
 		return EEMessages.TOP_POSITION.getText().toBuilder()
 					.onHover(TextActions.showText(EChat.of(EEMessages.TOP_POSITION_HOVER.get()
 							.replaceAll("<world>", location.getExtent().getName())
