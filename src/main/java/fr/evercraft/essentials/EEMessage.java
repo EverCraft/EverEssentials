@@ -671,7 +671,7 @@ public class EEMessage extends EMessage {
 		TPA_STAFF_DENY("tpa.staffDeny", "&7Votre demande de téléportation a été refusée par &6<player>&7."),
 		TPA_STAFF_EXPIRE("tpa.staffExpire", "&7Votre demande de téléportation à &6<player> &7vient d'expirée."),
 		TPA_STAFF_TELEPORT("tpa.staffTeleport", "&7Vous avez été téléporté vers &6<destination>&7."),
-		TPA_PLAYER_QUESTION("tpa.playerQuestion", "&6<player> &7souhaite se téléporter vers vous : <accept> <deny>[RT]"
+		TPA_PLAYER_QUESTION("tpa.playerQuestion", "&6<player> &7souhaite se téléporter vers vous : [RT]  <accept> <deny>[RT]"
 												+ "&7Cette demande de téléportation expira dans &6<delay>&7."),
 		TPA_PLAYER_QUESTION_ACCEPT("tpa.playerQuestionAccept", "&2&l&nAccepter"),
 		TPA_PLAYER_QUESTION_ACCEPT_HOVER("tpa.playerQuestionAcceptHover", "&cCliquez ici pour accepter la téléportation de &6<player>&c."),

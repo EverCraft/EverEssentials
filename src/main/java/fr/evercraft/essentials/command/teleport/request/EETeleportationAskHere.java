@@ -138,15 +138,17 @@ public class EETeleportationAskHere extends ECommand<EverEssentials> {
 	}
 	
 	public static Text getButtonAccept(final String player){
-		return EChat.of(EEMessages.TPAHERE_PLAYER_QUESTION_ACCEPT.get().replaceAll("<player>", player)).toBuilder()
-					.onHover(TextActions.showText(EChat.of(EEMessages.TPAHERE_PLAYER_QUESTION_ACCEPT_HOVER.get())))
+		return EChat.of(EEMessages.TPAHERE_PLAYER_QUESTION_ACCEPT.get()).toBuilder()
+					.onHover(TextActions.showText(EChat.of(EEMessages.TPAHERE_PLAYER_QUESTION_ACCEPT_HOVER.get()
+							.replaceAll("<player>", player))))
 					.onClick(TextActions.runCommand("/tpaccept " + player))
 					.build();
 	}
 	
 	public static Text getButtonDeny(final String player){
-		return EChat.of(EEMessages.TPAHERE_PLAYER_QUESTION_DENY.get().replaceAll("<player>", player)).toBuilder()
-					.onHover(TextActions.showText(EChat.of(EEMessages.TPAHERE_PLAYER_QUESTION_DENY_HOVER.get())))
+		return EChat.of(EEMessages.TPAHERE_PLAYER_QUESTION_DENY.get()).toBuilder()
+					.onHover(TextActions.showText(EChat.of(EEMessages.TPAHERE_PLAYER_QUESTION_DENY_HOVER.get()
+							.replaceAll("<player>", player))))
 					.onClick(TextActions.runCommand("/tpdeny " + player))
 					.build();
 	}
