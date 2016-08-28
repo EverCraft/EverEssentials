@@ -62,11 +62,11 @@ public class EETree extends ECommand<EverEssentials> {
 		
 		List<Text> populator = new ArrayList<Text>();
 		for (CatalogType type : this.plugin.getGame().getRegistry().getAllOf(PopulatorObject.class)){
-			populator.add(Text.builder(type.getName())
-								.onClick(TextActions.suggestCommand("/" + this.getName() + " " + type.getName()))
+			populator.add(Text.builder(type.getId().replaceAll("minecraft:", ""))
+								.onClick(TextActions.suggestCommand("/" + this.getName() + " " + type.getId().replaceAll("minecraft:", "").toUpperCase()))
 								.build());
 		}
-		build.append(populator);
+		build.append(Text.joinWith(Text.of("|"), populator));
 		return build.append(Text.of(">"))
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
@@ -77,8 +77,14 @@ public class EETree extends ECommand<EverEssentials> {
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		List<String> suggests = new ArrayList<String>();
 		if (args.size() == 1) {
-			for (CatalogType type : this.plugin.getGame().getRegistry().getAllOf(PopulatorObject.class)){
-				suggests.add(type.getName());
+			if(args.get(0).startsWith("minecraft")) {
+				for (CatalogType type : this.plugin.getGame().getRegistry().getAllOf(PopulatorObject.class)) {
+					suggests.add(type.getId().toUpperCase());
+				}
+			} else {
+				for (CatalogType type : this.plugin.getGame().getRegistry().getAllOf(PopulatorObject.class)) {
+					suggests.add(type.getId().replaceAll("minecraft:", "").toUpperCase());
+				}
 			}
 		}
 		return suggests;
@@ -102,9 +108,9 @@ public class EETree extends ECommand<EverEssentials> {
 		} else if (args.size() == 1) {
 			// Si la source est un joueur
 			if (source instanceof EPlayer) {
-				Optional<PopulatorObject> optGenerator = this.plugin.getGame().getRegistry().getType(PopulatorObject.class, args.get(0));
-				if (optGenerator.isPresent()){
-					resultat = this.commandTree((EPlayer) source, optGenerator.get());
+				Optional<PopulatorObject> generator = this.plugin.getGame().getRegistry().getType(PopulatorObject.class, args.get(0));
+				if (generator.isPresent()){
+					resultat = this.commandTree((EPlayer) source, generator.get());
 				} else {
 					source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.TREE_INCONNU.get()
 							.replaceAll("<type>", args.get(0))));

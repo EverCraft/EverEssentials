@@ -21,9 +21,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.spongepowered.api.block.tileentity.CommandBlock;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
+import org.spongepowered.api.command.source.CommandBlockSource;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
@@ -116,9 +116,9 @@ public class EETime extends ECommand<EverEssentials> {
 		} else if (args.size() == 1) {
 			// Si la source est un joueur
 			if (source instanceof EPlayer) {
-				resultat = commandTimeSet(source, parseTime(args.get(0)), ((EPlayer) source).getWorld());
-			} else if (source instanceof CommandBlock) {
-				resultat = commandTimeSet(source, parseTime(args.get(0)), ((CommandBlock) source).getWorld());
+				resultat = commandTimeSet(source, parseTime(args.get(0)), ((EPlayer) source).get().getWorld());
+			} else if (source instanceof CommandBlockSource) {
+				resultat = commandTimeSet(source, parseTime(args.get(0)), ((CommandBlockSource) source).getWorld());
 			// La source n'est pas un joueur
 			} else {
 				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());

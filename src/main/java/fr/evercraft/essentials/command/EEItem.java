@@ -83,11 +83,11 @@ public class EEItem extends EReloadCommand<EverEssentials> {
 		if (args.size() == 1) {
 			if(args.get(0).startsWith("minecraft")) {
 				for (ItemType type : this.items) {
-					suggests.add(type.getName());
+					suggests.add(type.getName().toUpperCase());
 				}
 			} else {
 				for (ItemType type : this.items) {
-					suggests.add(type.getName().replaceAll("minecraft:", ""));
+					suggests.add(type.getName().replaceAll("minecraft:", "").toUpperCase());
 				}
 			}
 		} else if (args.size() == 2) { 
