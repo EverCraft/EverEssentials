@@ -90,8 +90,16 @@ public class EEKick extends ECommand<EverEssentials> {
 	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Résultat de la commande :
 		boolean resultat = false;
-		
-		if (args.size() == 2) {
+		if (args.size() == 1) {
+			Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(args.get(0));
+			// Le joueur existe
+			if (optPlayer.isPresent()) {
+				resultat = this.commandKick(source, optPlayer.get(), EEMessages.KICK_DEFAULT_REASON.getText());
+			// Le joueur est introuvable
+			} else {
+				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
+			}
+		} else if (args.size() == 2) {
 			Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(args.get(0));
 			// Le joueur existe
 			if (optPlayer.isPresent()) {
