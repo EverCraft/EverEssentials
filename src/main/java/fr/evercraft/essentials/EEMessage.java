@@ -364,6 +364,7 @@ public class EEMessage extends EMessage {
 		JUMP_TELEPORT_ERROR("jump.teleportError", "&7Impossible de trouver une position pour vous téléporter."),
 		
 		KICK_DESCRIPTION("kick.description", "Expulse un joueur du serveur"),
+		KICK_DEFAULT_REASON("kick.defaultReason", "&7Avertissement : Veuillez respecter les règles du serveur."),
 		KICK_MESSAGE("kick.message", "&c&lExpulsion du serveur[RT][RT]&cRaison : &7<message>[RT]"),
 		KICK_BYPASS("kick.bypass", "&cErreur : <player> ne peut pas être expulsé."),
 		
