@@ -66,7 +66,7 @@ public class EETree extends ECommand<EverEssentials> {
 								.onClick(TextActions.suggestCommand("/" + this.getName() + " " + type.getName()))
 								.build());
 		}
-		
+		build.append(populator);
 		return build.append(Text.of(">"))
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
