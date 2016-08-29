@@ -774,7 +774,8 @@ public class EEMessage extends EMessage {
 		
 		TREE_DESCRIPTION("tree.description", "Place un arbre"),
 		TREE_INCONNU("tree.inconnu", "&cType d'arbre inconnu : &6<type>"),
-		TREE_NO_CAN("tree.noCan", "&cErreur : Impossible de placer un arbre à cette endroit. Regarder plutôt un bloc d'herbe ou de terre."),
+		TREE_NO_CAN_DIRT("tree.noCanDirt", "&cErreur : Impossible de placer un arbre à cette endroit. Regarder plutôt un bloc d'herbe ou de terre."),
+		TREE_NO_CAN_SAND("tree.noCanSand", "&cErreur : Impossible de placer un arbre à cette endroit. Regarder plutôt un bloc de sable."),
 		
 		UUID_DESCRIPTION("uuid.description", "Affiche l'identifiant unique du joueur."),
 		UUID_SUGGEST_UUID("uuid.suggestUUID", "&6&l<uuid>"),

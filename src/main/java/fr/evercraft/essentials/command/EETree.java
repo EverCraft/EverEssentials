@@ -19,6 +19,8 @@ package fr.evercraft.essentials.command;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.spongepowered.api.CatalogType;
 import org.spongepowered.api.command.CommandException;
@@ -75,7 +77,7 @@ public class EETree extends ECommand<EverEssentials> {
 	
 	@Override
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
-		List<String> suggests = new ArrayList<String>();
+		Set<String> suggests = new TreeSet<String>();
 		if (args.size() == 1) {
 			if(args.get(0).startsWith("minecraft")) {
 				for (CatalogType type : this.plugin.getGame().getRegistry().getAllOf(PopulatorObject.class)) {
@@ -87,7 +89,7 @@ public class EETree extends ECommand<EverEssentials> {
 				}
 			}
 		}
-		return suggests;
+		return new ArrayList<String>(suggests);
 	}
 	
 	@Override
@@ -135,7 +137,11 @@ public class EETree extends ECommand<EverEssentials> {
 				generator.placeObject(player.getWorld(), player.getRandom(), block.getX(), block.getY(), block.getZ());
 				return true;
 			} else {
-				player.sendMessage(EEMessages.PREFIX.get() + EEMessages.TREE_NO_CAN.get());
+				if (! generator.equals(PopulatorObjects.DESERT_WELL)) {
+					player.sendMessage(EEMessages.PREFIX.get() + EEMessages.TREE_NO_CAN_DIRT.get());
+				} else {
+					player.sendMessage(EEMessages.PREFIX.get() + EEMessages.TREE_NO_CAN_SAND.get());
+				}
 			}
 		} else {
 			player.sendMessage(EEMessages.PREFIX.get() + EAMessages.PLAYER_NO_LOOK_BLOCK.get());
