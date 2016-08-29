@@ -119,7 +119,7 @@ public class EEUuid extends ECommand<EverEssentials> {
 		return resultat;
 	}
 	
-	public boolean commandUUIDPlayerName(final EPlayer player) {
+	private boolean commandUUIDPlayerName(final EPlayer player) {
 		player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
 				.append(EEMessages.UUID_PLAYER_NAME.get())
 				.replace("<uuid>", this.getButtonUUID(player.getUniqueId()))
@@ -128,7 +128,7 @@ public class EEUuid extends ECommand<EverEssentials> {
 		return true;
 	}
 	
-	public boolean commandUUIDPlayerUUID(final EPlayer player) {
+	private boolean commandUUIDPlayerUUID(final EPlayer player) {
 		player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
 				.append(EEMessages.UUID_PLAYER_UUID.get())
 				.replace("<uuid>", this.getButtonUUID(player.getUniqueId()))
@@ -137,7 +137,7 @@ public class EEUuid extends ECommand<EverEssentials> {
 		return true;
 	}
 	
-	public boolean commandUUIDOthersName(final CommandSource staff, final GameProfile profile) throws CommandException {
+	private boolean commandUUIDOthersName(final CommandSource staff, final GameProfile profile) throws CommandException {
 		// La source et le joueur sont identique
 		if (staff instanceof EPlayer && profile.getUniqueId().equals(((EPlayer) staff).getUniqueId())) {
 			return this.commandUUIDPlayerName((EPlayer) staff);
@@ -158,7 +158,7 @@ public class EEUuid extends ECommand<EverEssentials> {
 		return false;
 	}
 	
-	public boolean commandUUIDOthersUUID(final CommandSource staff, final GameProfile profile) throws CommandException {
+	private boolean commandUUIDOthersUUID(final CommandSource staff, final GameProfile profile) throws CommandException {
 		// La source et le joueur sont identique
 		if (staff instanceof EPlayer && profile.getUniqueId().equals(((EPlayer) staff).getUniqueId())) {
 			return this.commandUUIDPlayerUUID((EPlayer) staff);
@@ -174,7 +174,7 @@ public class EEUuid extends ECommand<EverEssentials> {
 		}
 	}
 	
-	public Text getButtonUUID(final UUID uuid){
+	private Text getButtonUUID(final UUID uuid){
 		return EChat.of(EEMessages.UUID_PLAYER_UUID.get().replace("<uuid>", uuid.toString())).toBuilder()
 				.onHover(TextActions.showText(EAMessages.HOVER_COPY.getText()))
 					.onClick(TextActions.suggestCommand(uuid.toString()))
@@ -182,7 +182,7 @@ public class EEUuid extends ECommand<EverEssentials> {
 					.build();
 	}
 	
-	public Text getButtonName(final String name){
+	private Text getButtonName(final String name){
 		return EChat.of(EEMessages.UUID_PLAYER_NAME.get().replace("<name>", name)).toBuilder()
 				.onHover(TextActions.showText(EAMessages.HOVER_COPY.getText()))
 					.onClick(TextActions.suggestCommand(name))

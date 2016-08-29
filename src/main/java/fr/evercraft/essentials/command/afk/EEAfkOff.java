@@ -35,26 +35,31 @@ import fr.evercraft.everapi.plugin.command.ESubCommand;
 import fr.evercraft.everapi.server.player.EPlayer;
 
 public class EEAfkOff extends ESubCommand<EverEssentials> {
+	
 	public EEAfkOff(final EverEssentials plugin, final EEAfk command) {
         super(plugin, command, "off");
     }
 	
+	@Override
 	public boolean testPermission(final CommandSource source) {
 		return true;
 	}
 
+	@Override
 	public Text description(final CommandSource source) {
 		return EChat.of(EEMessages.AFK_OFF_DESCRIPTION.get());
 	}
 	
+	@Override
 	public List<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		List<String> suggests = new ArrayList<String>();
 		if (args.size() == 1 && source.hasPermission(EEPermissions.AFK_OTHERS.get())){
-			suggests = null;
+			suggests.addAll(this.getAllPlayers());
 		}
 		return suggests;
 	}
 
+	@Override
 	public Text help(final CommandSource source) {
 		if (source.hasPermission(EEPermissions.AFK_OTHERS.get())){
 			return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_PLAYER.get() + "]")
@@ -69,12 +74,14 @@ public class EEAfkOff extends ESubCommand<EverEssentials> {
 		}
 	}
 	
+	@Override
 	public boolean subExecute(final CommandSource source, final List<String> args) throws CommandException {
 		// Résultat de la commande :
 		boolean resultat = false;
+		
 		if (args.size() == 0) {
 			if (source instanceof EPlayer) {
-				resultat = commandAfkOff((EPlayer) source);
+				resultat = this.commandAfkOff((EPlayer) source);
 			} else {
 				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
 			}
@@ -96,10 +103,11 @@ public class EEAfkOff extends ESubCommand<EverEssentials> {
 		} else {
 			source.sendMessage(this.help(source));
 		}
+		
 		return resultat;
 	}
 
-	public boolean commandAfkOff(final EPlayer player) {
+	private boolean commandAfkOff(final EPlayer player) {
 		boolean afk = player.isAfk();
 		// Si le mode afk est déjà activé
 		if (afk){
@@ -119,7 +127,7 @@ public class EEAfkOff extends ESubCommand<EverEssentials> {
 		return false;
 	}
 	
-	public boolean commandAfkOffOthers(final CommandSource staff, final EPlayer player) throws CommandException {
+	private boolean commandAfkOffOthers(final CommandSource staff, final EPlayer player) throws CommandException {
 		// La source et le joueur sont différent
 		if (!player.equals(staff)){
 			boolean afk = player.isAfk();

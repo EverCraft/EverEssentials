@@ -35,18 +35,22 @@ import fr.evercraft.everapi.plugin.command.ESubCommand;
 import fr.evercraft.everapi.server.player.EPlayer;
 
 public class EEAfkStatus extends ESubCommand<EverEssentials> {
+	
 	public EEAfkStatus(final EverEssentials plugin, final EEAfk command) {
         super(plugin, command, "status");
     }
 	
+	@Override
 	public boolean testPermission(final CommandSource source) {
 		return true;
 	}
 
+	@Override
 	public Text description(final CommandSource source) {
 		return EChat.of(EEMessages.AFK_STATUS_DESCRIPTION.get());
 	}
 	
+	@Override
 	public List<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		List<String> suggests = new ArrayList<String>();
 		if (!(args.size() == 1 && source.hasPermission(EEPermissions.AFK_OTHERS.get()))){
@@ -55,6 +59,7 @@ public class EEAfkStatus extends ESubCommand<EverEssentials> {
 		return suggests;
 	}
 
+	@Override
 	public Text help(final CommandSource source) {
 		if (source.hasPermission(EEPermissions.AFK_OTHERS.get())){
 			return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_PLAYER.get() + "]")
@@ -69,9 +74,11 @@ public class EEAfkStatus extends ESubCommand<EverEssentials> {
 		}
 	}
 	
+	@Override
 	public boolean subExecute(final CommandSource source, final List<String> args) throws CommandException {
 		// Résultat de la commande :
 		boolean resultat = false;
+		
 		if (args.size() == 0) {
 			if (source instanceof EPlayer) {
 				resultat = commandAfkStatus((EPlayer) source);
@@ -96,6 +103,7 @@ public class EEAfkStatus extends ESubCommand<EverEssentials> {
 		} else {
 			source.sendMessage(this.help(source));
 		}
+		
 		return resultat;
 	}
 

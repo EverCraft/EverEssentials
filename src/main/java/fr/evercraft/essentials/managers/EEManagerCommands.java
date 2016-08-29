@@ -25,15 +25,10 @@ import fr.evercraft.essentials.EECommand;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.essentials.command.*;
 import fr.evercraft.essentials.command.afk.*;
-import fr.evercraft.essentials.command.butcher.EEButcher;
-import fr.evercraft.essentials.command.butcher.EEButcherAll;
-import fr.evercraft.essentials.command.butcher.EEButcherAnimal;
-import fr.evercraft.essentials.command.butcher.EEButcherMonster;
-import fr.evercraft.essentials.command.butcher.EEButcherType;
+import fr.evercraft.essentials.command.butcher.*;
 import fr.evercraft.essentials.command.fly.*;
 import fr.evercraft.essentials.command.freeze.*;
-import fr.evercraft.essentials.command.gamerule.EEGamerule;
-import fr.evercraft.essentials.command.gamerule.EEGameruleList;
+import fr.evercraft.essentials.command.gamerule.*;
 import fr.evercraft.essentials.command.god.*;
 import fr.evercraft.essentials.command.home.*;
 import fr.evercraft.essentials.command.mail.*;
@@ -45,12 +40,14 @@ import fr.evercraft.essentials.command.teleport.*;
 import fr.evercraft.essentials.command.teleport.request.*;
 import fr.evercraft.essentials.command.time.*;
 import fr.evercraft.essentials.command.toggle.*;
+import fr.evercraft.essentials.command.vanish.*;
 import fr.evercraft.essentials.command.warp.*;
 import fr.evercraft.essentials.command.weather.*;
 import fr.evercraft.essentials.command.whitelist.*;
 import fr.evercraft.essentials.command.world.*;
 import fr.evercraft.essentials.command.worldborder.*;
-import fr.evercraft.everapi.plugin.command.*;
+import fr.evercraft.everapi.plugin.command.ECommand;
+import fr.evercraft.everapi.plugin.command.EReloadCommand;
 
 public class EEManagerCommands extends HashSet<ECommand<EverEssentials>> {
 	
@@ -146,7 +143,6 @@ public class EEManagerCommands extends HashSet<ECommand<EverEssentials>> {
 		register(new EETop(this.plugin));
 		register(new EETree(this.plugin));
 		register(new EEUuid(this.plugin));
-		register(new EEVanish(this.plugin));
 		register(new EEWarp(this.plugin));
 		register(new EEWarpDel(this.plugin));
 		register(new EEWarpSet(this.plugin));
@@ -206,6 +202,12 @@ public class EEManagerCommands extends HashSet<ECommand<EverEssentials>> {
 		toggle.add(new EEToggleOff(this.plugin, toggle));
 		toggle.add(new EEToggleStatus(this.plugin, toggle));
 		register(toggle);
+		
+		EEVanish vanish = new EEVanish(this.plugin);
+		vanish.add(new EEVanishOn(this.plugin, vanish));
+		vanish.add(new EEVanishOff(this.plugin, vanish));
+		vanish.add(new EEVanishStatus(this.plugin, vanish));
+		register(vanish);
 		
 		EEWhitelist whitelist = new EEWhitelist(this.plugin);
 		whitelist.add(new EEWhitelistOn(this.plugin, whitelist));

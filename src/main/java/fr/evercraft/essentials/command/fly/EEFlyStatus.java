@@ -33,28 +33,34 @@ import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ESubCommand;
 import fr.evercraft.everapi.server.player.EPlayer;
+import fr.evercraft.everapi.server.user.EUser;
 
 public class EEFlyStatus extends ESubCommand<EverEssentials> {
+	
 	public EEFlyStatus(final EverEssentials plugin, final EEFly command) {
         super(plugin, command, "status");
     }
 	
+	@Override
 	public boolean testPermission(final CommandSource source) {
 		return true;
 	}
 
+	@Override
 	public Text description(final CommandSource source) {
 		return EChat.of(EEMessages.FLY_STATUS_DESCRIPTION.get());
 	}
 	
+	@Override
 	public List<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		List<String> suggests = new ArrayList<String>();
 		if (!(args.size() == 1 && source.hasPermission(EEPermissions.FLY_OTHERS.get()))){
-			suggests = null;
+			suggests.addAll(this.getAllUsers());
 		}
 		return suggests;
 	}
 
+	@Override
 	public Text help(final CommandSource source) {
 		if (source.hasPermission(EEPermissions.FLY_OTHERS.get())){
 			return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_PLAYER.get() + "]")
@@ -69,22 +75,23 @@ public class EEFlyStatus extends ESubCommand<EverEssentials> {
 		}
 	}
 	
+	@Override
 	public boolean subExecute(final CommandSource source, final List<String> args) throws CommandException {
 		// Résultat de la commande :
 		boolean resultat = false;
 		if (args.size() == 0) {
 			if (source instanceof EPlayer) {
-				resultat = commandFlyStatus((EPlayer) source);
+				resultat = this.commandFlyStatus((EPlayer) source);
 			} else {
 				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
 			}
 		} else if (args.size() == 1) {
 			// Si il a la permission
 			if (source.hasPermission(EEPermissions.FLY_OTHERS.get())){
-				Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(args.get(0));
+				Optional<EUser> user = this.plugin.getEServer().getEUser(args.get(0));
 				// Le joueur existe
-				if (optPlayer.isPresent()){
-					resultat = commandFlyStatusOthers(source, optPlayer.get());
+				if (user.isPresent()){
+					resultat = this.commandFlyStatusOthers(source, user.get());
 				// Le joueur est introuvable
 				} else {
 					source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
@@ -99,7 +106,7 @@ public class EEFlyStatus extends ESubCommand<EverEssentials> {
 		return resultat;
 	}
 
-	public boolean commandFlyStatus(final EPlayer player) {
+	private boolean commandFlyStatus(final EPlayer player) {
 		// Fly activé
 		if (player.getAllowFlight()){
 			player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.FLY_STATUS_PLAYER_ON.get()
@@ -112,20 +119,23 @@ public class EEFlyStatus extends ESubCommand<EverEssentials> {
 		return true;
 	}
 	
-	public boolean commandFlyStatusOthers(final CommandSource staff, final EPlayer player) {
-		if (!player.equals(staff)) {
+	private boolean commandFlyStatusOthers(final CommandSource staff, final EUser user) {
+		// La source et le joueur sont identique
+		if (staff instanceof EPlayer && user.getIdentifier().equals(staff.getIdentifier())) {
+			return this.commandFlyStatus((EPlayer) staff);
+			
+		// La source et le joueur sont différent
+		} else {
 			// Fly activé
-			if (player.getAllowFlight()){
+			if (user.getAllowFlight()){
 				staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.FLY_STATUS_OTHERS_ON.get()
-						.replaceAll("<player>", player.getDisplayName())));
+						.replaceAll("<player>", user.getDisplayName())));
 			// Fly désactivé
 			} else {
 				staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.FLY_STATUS_OTHERS_OFF.get()
-						.replaceAll("<player>", player.getDisplayName())));
+						.replaceAll("<player>", user.getDisplayName())));
 			}
 			return true;
-		} else {
-			return this.commandFlyStatus(player);
 		}
 	}
 }

@@ -129,7 +129,7 @@ public class EETree extends ECommand<EverEssentials> {
 		return resultat;
 	}
 	
-	public boolean commandTree(final EPlayer player, PopulatorObject generator) throws CommandException {
+	private boolean commandTree(final EPlayer player, PopulatorObject generator) throws CommandException {
 		Optional<Vector3i> optBlock = player.getViewBlock();
 		if (optBlock.isPresent()) {
 			Vector3i block = optBlock.get().add(0, 1, 0);
