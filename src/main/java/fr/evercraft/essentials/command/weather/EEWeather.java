@@ -20,13 +20,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.spongepowered.api.block.tileentity.CommandBlock;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.world.DimensionTypes;
+import org.spongepowered.api.world.Locatable;
 import org.spongepowered.api.world.World;
 import org.spongepowered.api.world.weather.Weather;
 import org.spongepowered.api.world.weather.Weathers;
@@ -37,7 +37,6 @@ import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ECommand;
-import fr.evercraft.everapi.server.player.EPlayer;
 import fr.evercraft.everapi.sponge.UtilsTick;
 
 public class EEWeather extends ECommand<EverEssentials> {
@@ -62,7 +61,7 @@ public class EEWeather extends ECommand<EverEssentials> {
 				.append(Text.builder("rain").onClick(TextActions.suggestCommand("/" + this.getName() + " rain")).build())
 				.append(Text.of("|"))
 				.append(Text.builder("storm").onClick(TextActions.suggestCommand("/" + this.getName() + " storm")).build())
-				.append(Text.of("> [" + EAMessages.ARGS_WORLD.get() + " [" + EAMessages.ARGS_MINUTES.get() + "]]"))
+				.append(Text.of("> [" + EAMessages.ARGS_WORLD.get() + "] [" + EAMessages.ARGS_MINUTES.get() + "]"))
 				.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 				.color(TextColors.RED)
 				.build();
@@ -91,31 +90,44 @@ public class EEWeather extends ECommand<EverEssentials> {
 		boolean resultat = false;
 		// Si on ne connait pas le joueur
 		if (args.size() == 1) {
-			// Si la source est un joueur
-			if (source instanceof EPlayer) {
-				resultat = commandWeather(source, getWeather(args.get(0)), ((EPlayer) source).getWorld());
-			} else if (source instanceof CommandBlock) {
-				resultat = commandWeather(source, getWeather(args.get(0)), ((CommandBlock) source).getWorld());
+			// Si la source a un monde
+			if (source instanceof Locatable) {
+				resultat = commandWeather(source, getWeather(args.get(0)), ((Locatable) source).getWorld());
 			// La source n'est pas un joueur
 			} else {
 				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
 			}
 		// On connais le joueur
 		} else if (args.size() == 2) {
-			Optional<World> optWorld = this.plugin.getEServer().getWorld(args.get(1));
+			Optional<World> world = this.plugin.getEServer().getWorld(args.get(1));
 			// Si le monde existe
-			if (optWorld.isPresent()) {
-				resultat = commandWeather(source, getWeather(args.get(0)), optWorld.get());
+			if (world.isPresent()) {
+				resultat = commandWeather(source, getWeather(args.get(0)), world.get());
 			} else {
-				source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.WORLD_NOT_FOUND.get()
-						.replaceAll("<world>", args.get(1))));
+				try {
+					// Si la source a un monde
+					if (source instanceof Locatable) {
+						resultat = this.commandWeather(source, getWeather(args.get(0)), ((Locatable) source).getWorld(), Integer.parseInt(args.get(1)));
+					// La source n'est pas un joueur
+					} else {
+						source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
+					}
+				} catch (NumberFormatException e) {
+					source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.IS_NOT_NUMBER.get()
+							.replaceAll("<number>", args.get(1))));
+				}
 			}
 		// On connais le joueur
 		} else if (args.size() == 3) {
-			Optional<World> optWorld = this.plugin.getEServer().getWorld(args.get(1));
+			Optional<World> world = this.plugin.getEServer().getWorld(args.get(1));
 			// Si le monde existe
-			if (optWorld.isPresent()) {
-				resultat = commandWeatherDuration(source, getWeather(args.get(0)), optWorld.get(), args.get(2));
+			if (world.isPresent()) {
+				try {
+					resultat = this.commandWeather(source, getWeather(args.get(0)), world.get(), Integer.parseInt(args.get(2)));
+				} catch (NumberFormatException e) {
+					source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.WORLD_NOT_FOUND.get()
+							.replaceAll("<number>", args.get(1))));
+				}
 			} else {
 				source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.WORLD_NOT_FOUND.get()
 						.replaceAll("<world>", args.get(1))));
@@ -127,15 +139,16 @@ public class EEWeather extends ECommand<EverEssentials> {
 		return resultat;
 	}
 
-	public boolean commandWeather(final CommandSource player, final Optional<Weather> weather, final World world) {
+	private boolean commandWeather(final CommandSource player, final Optional<Weather> weather, final World world) {
 		if (world.getProperties().getDimensionType().equals(DimensionTypes.OVERWORLD)) {			
 			if (weather.isPresent()) {
 				world.setWeather(weather.get());
 				player.sendMessage(EChat.of(EEMessages.PREFIX.get() + getMessage(weather.get())
 							.replaceAll("<world>", world.getName())
 							.replaceAll("<weather>", weather.get().getName())));
+				return true;
 			} else {
-				player.sendMessage(help(player));
+				player.sendMessage(this.help(player));
 			}
 		} else {
 			player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.WEATHER_ERROR.get()));
@@ -143,30 +156,24 @@ public class EEWeather extends ECommand<EverEssentials> {
 		return false;
 	}
 	
-	public boolean commandWeatherDuration(final CommandSource player, final Optional<Weather> weather, final World world, final String name_duration) {
-		try {
-			int duration = Integer.parseInt(name_duration);
-			if (world.getProperties().getDimensionType().equals(DimensionTypes.OVERWORLD)) {			
-				if (weather.isPresent()) {
-					world.setWeather(weather.get(), UtilsTick.parseMinutes(duration));
-					player.sendMessage(EChat.of(EEMessages.PREFIX.get() + getMessageDuration(weather.get())
-								.replaceAll("<world>", world.getName())
-								.replaceAll("<duration>", String.valueOf(duration))
-								.replaceAll("<weather>", weather.get().getName())));
-				} else {
-					player.sendMessage(help(player));
-				}
+	private boolean commandWeather(final CommandSource player, final Optional<Weather> weather, final World world, final int duration) {
+		if (world.getProperties().getDimensionType().equals(DimensionTypes.OVERWORLD)) {			
+			if (weather.isPresent()) {
+				world.setWeather(weather.get(), UtilsTick.parseMinutes(duration));
+				player.sendMessage(EChat.of(EEMessages.PREFIX.get() + getMessageDuration(weather.get())
+							.replaceAll("<world>", world.getName())
+							.replaceAll("<duration>", String.valueOf(duration))
+							.replaceAll("<weather>", weather.get().getName())));
 			} else {
-				player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.WEATHER_ERROR.get()));
+				player.sendMessage(this.help(player));
 			}
-		} catch (NumberFormatException e) {
-			player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.IS_NOT_NUMBER.get()
-					.replaceAll("<number>", name_duration)));
+		} else {
+			player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.WEATHER_ERROR.get()));
 		}
-		return false;
+		return true;
 	}
 	
-	public Optional<Weather> getWeather(final String weather_name) {
+	private Optional<Weather> getWeather(final String weather_name) {
 		Weather weather = null;
 		if (weather_name.equalsIgnoreCase("sun")) {
 			weather = Weathers.CLEAR;
@@ -178,7 +185,7 @@ public class EEWeather extends ECommand<EverEssentials> {
 		return Optional.ofNullable(weather);
 	}
 	
-	public String getMessage(final Weather weather) {
+	private String getMessage(final Weather weather) {
 		String message = null;
 		if (weather.equals(Weathers.RAIN)) {
 			message = EEMessages.WEATHER_RAIN.get();
@@ -190,7 +197,7 @@ public class EEWeather extends ECommand<EverEssentials> {
 		return message;
 	}
 	
-	public String getMessageDuration(final Weather weather) {
+	private String getMessageDuration(final Weather weather) {
 		String message = null;
 		if (weather.equals(Weathers.RAIN)) {
 			message = EEMessages.WEATHER_RAIN_DURATION.get();

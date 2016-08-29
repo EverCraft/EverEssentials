@@ -18,7 +18,6 @@ package fr.evercraft.essentials.command.time;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.text.Text;
@@ -32,6 +31,7 @@ import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.command.ECommand;
+import fr.evercraft.everapi.server.player.EPlayer;
 
 public class EETimeDay extends ECommand<EverEssentials> {
 
@@ -67,28 +67,30 @@ public class EETimeDay extends ECommand<EverEssentials> {
 		return suggests;
 	}
 
-	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
+	public boolean execute(CommandSource source, final List<String> args) throws CommandException {
+		// Erreur : Context 
+		if(source instanceof EPlayer) {
+			source = ((EPlayer) source).get();
+		}
+		
 		// Résultat de la commande :
 		boolean resultat = false;
+		
 		// Si on ne connait pas le joueur
 		if (args.size() == 0) {
-			resultat = commandTimeDay(source);
-		} else if (args.size() == 1){
-			resultat = commandTimeDay(source, args.get(0));
+			resultat = this.commandTimeDay(source, "");
+		} else if (args.size() == 1) {
+			resultat = this.commandTimeDay(source, "\"" + args.get(0) + "\"");
 		// Nombre d'argument incorrect
 		} else {
-			source.sendMessage(help(source));
+			source.sendMessage(this.help(source));
 		}
+		
 		return resultat;
 	}
-
-	public boolean commandTimeDay(final CommandSource player) {
-		this.plugin.getGame().getCommandManager().process(player, "time day");
-		return false;
-	}
 	
-	public boolean commandTimeDay(final CommandSource player, final String arg) {
-		this.plugin.getGame().getCommandManager().process(player, "time day " + arg);
+	public boolean commandTimeDay(final CommandSource player, final String world) throws CommandException {
+		this.plugin.getGame().getCommandManager().process(player, "time day " + world);
 		return false;
 	}
 }

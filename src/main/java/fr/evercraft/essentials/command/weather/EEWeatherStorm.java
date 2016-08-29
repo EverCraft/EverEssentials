@@ -32,6 +32,7 @@ import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.command.ECommand;
+import fr.evercraft.everapi.server.player.EPlayer;
 
 public class EEWeatherStorm extends ECommand<EverEssentials> {
 
@@ -66,24 +67,27 @@ public class EEWeatherStorm extends ECommand<EverEssentials> {
 		return suggests;
 	}
 
-	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
+	public boolean execute(CommandSource source, final List<String> args) throws CommandException {
+		// Erreur : Context 
+		if(source instanceof EPlayer) {
+			source = ((EPlayer) source).get();
+		}
+		
 		// Résultat de la commande :
 		boolean resultat = false;
-		// Si on ne connait pas le joueur
+		
 		if (args.size() == 0) {
-			resultat = commandWeatherStorm(source);
+			resultat = this.commandWeatherStorm(source, "");
 		} else if (args.size() == 1){
-			resultat = commandWeatherStorm(source, args.get(0));
+			resultat = this.commandWeatherStorm(source, "\"" + args.get(0) + "\"");
+		} else if (args.size() == 2){
+			resultat = this.commandWeatherStorm(source, "\"" + args.get(0) + "\" \"" + args.get(1) + "\"");
 		// Nombre d'argument incorrect
 		} else {
-			source.sendMessage(help(source));
+			source.sendMessage(this.help(source));
 		}
+		
 		return resultat;
-	}
-
-	public boolean commandWeatherStorm(final CommandSource player) {
-		this.plugin.getGame().getCommandManager().process(player, "weather storm");
-		return false;
 	}
 	
 	public boolean commandWeatherStorm(final CommandSource player, final String arg) {

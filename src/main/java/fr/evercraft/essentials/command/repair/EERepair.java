@@ -29,6 +29,7 @@ import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.plugin.command.ECommand;
+import fr.evercraft.everapi.server.player.EPlayer;
 
 public class EERepair extends ECommand<EverEssentials> {
 
@@ -67,21 +68,27 @@ public class EERepair extends ECommand<EverEssentials> {
 		return suggests;
 	}
 
-	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
+	public boolean execute(CommandSource source, final List<String> args) throws CommandException {
+		// Erreur : Context 
+		if(source instanceof EPlayer) {
+			source = ((EPlayer) source).get();
+		}
+		
 		// Résultat de la commande :
 		boolean resultat = false;
+		
 		if (args.size() == 1) {
 			if (args.get(0).equalsIgnoreCase("all")) {
-				resultat = commandRepairAll(source);
+				resultat = this.commandRepairAll(source);
 			} else if (args.get(0).equalsIgnoreCase("hand")) {
-				resultat = commandRepairHand(source);
+				resultat = this.commandRepairHand(source);
 			} else if (args.get(0).equalsIgnoreCase("hotbar")) {
-				resultat = commandRepairHotbar(source);
+				resultat = this.commandRepairHotbar(source);
 			} else {
-				source.sendMessage(help(source));
+				source.sendMessage(this.help(source));
 			}
 		} else {
-			source.sendMessage(help(source));
+			source.sendMessage(this.help(source));
 		}
 		return resultat;
 	}
