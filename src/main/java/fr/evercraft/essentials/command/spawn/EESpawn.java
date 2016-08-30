@@ -50,10 +50,12 @@ public class EESpawn extends EReloadCommand<EverEssentials> {
         reload();
     }
 	
+	@Override
 	public void reload() {
 		this.newbies = this.plugin.getConfigs().getSpawnNewbies();
 	}
 
+	@Override
 	public boolean testPermission(final CommandSource source) {
 		return source.hasPermission(EEPermissions.SPAWN.get());
 	}
@@ -62,6 +64,7 @@ public class EESpawn extends EReloadCommand<EverEssentials> {
 		return EEMessages.SPAWN_DESCRIPTION.getText();
 	}
 
+	@Override
 	public Text help(final CommandSource source) {
 		if (source.hasPermission(EEPermissions.SPAWNS.get())) {
 			return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_GROUP + "]")
@@ -75,6 +78,7 @@ public class EESpawn extends EReloadCommand<EverEssentials> {
 					.build();
 	}
 	
+	@Override
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		List<String> suggests = new ArrayList<String>();
 		if (args.size() == 1 && source instanceof Player && source.hasPermission(EEPermissions.SPAWNS.get())){
@@ -91,6 +95,7 @@ public class EESpawn extends EReloadCommand<EverEssentials> {
 		return suggests;
 	}
 	
+	@Override
 	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Résultat de la commande :
 		boolean resultat = false;

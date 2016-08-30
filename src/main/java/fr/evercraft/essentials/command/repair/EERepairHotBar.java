@@ -40,14 +40,17 @@ public class EERepairHotBar extends ECommand<EverEssentials> {
 		super(plugin, "repairhotbar");
 	}
 
+	@Override
 	public boolean testPermission(final CommandSource source) {
 		return source.hasPermission(EEPermissions.REPAIR_HOTBAR.get());
 	}
 
+	@Override
 	public Text description(final CommandSource source) {
 		return EEMessages.REPAIR_HOTBAR_DESCRIPTION.getText();
 	}
 
+	@Override
 	public Text help(final CommandSource source) {
 		return Text.builder("/" + this.getName())
 				.onClick(TextActions.suggestCommand("/" + this.getName()))
@@ -55,32 +58,35 @@ public class EERepairHotBar extends ECommand<EverEssentials> {
 				.build();
 	}
 
+	@Override
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		return new ArrayList<String>();
 	}
 
+	@Override
 	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Résultat de la commande :
 		boolean resultat = false;
-		// Si on ne connait pas le joueur
+		
 		if (args.size() == 0) {
 			// Si la source est un joueur
 			if (source instanceof EPlayer) {
 				resultat = commandRepairHotBar((EPlayer) source);
-				// La source n'est pas un joueur
+			// La source n'est pas un joueur
 			} else {
-				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
+				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText()));
 			}
-			// On connais le joueur
 		} else {
 			source.sendMessage(help(source));
 		}
+		
 		return resultat;
 	}
 
-	public boolean commandRepairHotBar(final EPlayer player) {
+	private boolean commandRepairHotBar(final EPlayer player) {
 		UtilsInventory.repair(player.getInventory().query(Hotbar.class));
+		
 		player.sendMessage(EEMessages.PREFIX.get() + EEMessages.REPAIR_HOTBAR_PLAYER.get());
-		return false;
+		return true;
 	}
 }

@@ -61,6 +61,7 @@ public class EEMailSend extends ESubCommand<EverEssentials> {
 		return suggests;
 	}
 
+	@Override
 	public Text help(final CommandSource source) {
 		return Text.builder("/" + this.getName()+ " <" + EAMessages.ARGS_PLAYER.get() + "> <" + EAMessages.ARGS_MESSAGE.get() + ">")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
@@ -68,6 +69,7 @@ public class EEMailSend extends ESubCommand<EverEssentials> {
 					.build();
 	}
 	
+	@Override
 	public boolean subExecute(final CommandSource source, final List<String> args) {
 		// Résultat de la commande :
 		boolean resultat = false;

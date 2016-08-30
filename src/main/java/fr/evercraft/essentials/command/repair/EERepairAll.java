@@ -22,6 +22,7 @@ import java.util.List;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.item.inventory.entity.Hotbar;
+import org.spongepowered.api.item.inventory.equipment.EquipmentInventory;
 import org.spongepowered.api.item.inventory.type.GridInventory;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
@@ -34,7 +35,6 @@ import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.command.ECommand;
 import fr.evercraft.everapi.server.player.EPlayer;
 import fr.evercraft.everapi.sponge.UtilsInventory;
-import fr.evercraft.everapi.sponge.UtilsItemStack;
 
 public class EERepairAll extends ECommand<EverEssentials> {
 
@@ -42,14 +42,17 @@ public class EERepairAll extends ECommand<EverEssentials> {
 		super(plugin, "repairall");
 	}
 
+	@Override
 	public boolean testPermission(final CommandSource source) {
 		return source.hasPermission(EEPermissions.REPAIR_ALL.get());
 	}
 
+	@Override
 	public Text description(final CommandSource source) {
 		return EEMessages.REPAIR_ALL_DESCRIPTION.getText();
 	}
 
+	@Override
 	public Text help(final CommandSource source) {
 		return Text.builder("/" + this.getName())
 					.onClick(TextActions.suggestCommand("/" + this.getName()))
@@ -57,50 +60,37 @@ public class EERepairAll extends ECommand<EverEssentials> {
 					.build();
 	}
 
+	@Override
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		return new ArrayList<String>();
 	}
 
+	@Override
 	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Résultat de la commande :
 		boolean resultat = false;
-		// Si on ne connait pas le joueur
+		
 		if (args.size() == 0) {
 			// Si la source est un joueur
 			if (source instanceof EPlayer) {
-				resultat = commandRepairAll((EPlayer) source);
-				// La source n'est pas un joueur
+				resultat = this.commandRepairAll((EPlayer) source);
+			// La source n'est pas un joueur
 			} else {
-				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
+				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText()));
 			}
-			// On connais le joueur
 		} else {
-			source.sendMessage(help(source));
+			source.sendMessage(this.help(source));
 		}
+		
 		return resultat;
 	}
 
-	public boolean commandRepairAll(final EPlayer player) {
+	private boolean commandRepairAll(final EPlayer player) {
 		UtilsInventory.repair(player.getInventory().query(Hotbar.class));
 		UtilsInventory.repair(player.getInventory().query(GridInventory.class));
-		
-		if (player.getHelmet().isPresent()){
-			player.setHelmet(UtilsItemStack.repairInventory(player.getHelmet().get()));
-		}
-		
-		if (player.getChestplate().isPresent()){
-			player.setChestplate(UtilsItemStack.repairInventory(player.getChestplate().get()));
-		}
-		
-		if (player.getLeggings().isPresent()){
-			player.setLeggings(UtilsItemStack.repairInventory(player.getLeggings().get()));
-		}
-		
-		if (player.getBoots().isPresent()){
-			player.setBoots(UtilsItemStack.repairInventory(player.getBoots().get()));
-		}
+		UtilsInventory.repair(player.getInventory().query(EquipmentInventory.class));
 		
 		player.sendMessage(EEMessages.PREFIX.get() + EEMessages.REPAIR_ALL_PLAYER.get());
-		return false;
+		return true;
 	}
 }

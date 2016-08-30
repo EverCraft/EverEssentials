@@ -23,6 +23,8 @@ import java.util.regex.Pattern;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
+import org.spongepowered.api.command.source.CommandBlockSource;
+import org.spongepowered.api.command.source.ConsoleSource;
 import org.spongepowered.api.service.permission.Subject;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
@@ -44,14 +46,17 @@ public class EEMsg extends ECommand<EverEssentials> {
         super(plugin ,"tell", "msg", "m", "t", "whisper");
     }
 	
+	@Override
 	public boolean testPermission(final CommandSource source) {
 		return source.hasPermission(EEPermissions.MSG.get());
 	}
 
+	@Override
 	public Text description(final CommandSource source) {
 		return EEMessages.MSG_DESCRIPTION.getText();
 	}
 
+	@Override
 	public Text help(final CommandSource source) {
 		Text help = Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_PLAYER.get() + "> <" + EAMessages.ARGS_MESSAGE.get() + ">")
 						.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
@@ -60,6 +65,7 @@ public class EEMsg extends ECommand<EverEssentials> {
 		return help;
 	}
 	
+	@Override
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		List<String> suggests = new ArrayList<String>();
 		if (args.size() == 1) {
@@ -85,41 +91,46 @@ public class EEMsg extends ECommand<EverEssentials> {
 		return args;
 	}
 	
+	@Override
 	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Résultat de la commande :
 		boolean resultat = false;
+		
 		if (args.size() == 2) {
 			String message = EEMsg.replaceMessage(this.plugin.getChat(), source, args.get(1));
 			
 			// Le destinataire est la console
 			if (args.get(0).equalsIgnoreCase(EEMsg.CONSOLE)) {
+				
 				// La source est un joueur
 				if (source instanceof EPlayer) {
 					resultat = this.commandMsgConsole((EPlayer) source, this.plugin.getEServer().getConsole(), message);
 				// La source est la console
-				} else if (this.plugin.getEServer().getConsole().equals(source)) {
+				} else if (source instanceof ConsoleSource) {
 					source.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.MSG_CONSOLE_ERROR.getText()));
 				// La source est un commande block
-				} else if (source.getIdentifier().equals("@")) {
-					resultat = this.commandMsgCommandBloc(source, this.plugin.getEServer().getConsole(), message);
+				} else if (source instanceof CommandBlockSource) {
+					resultat = this.commandMsgCommandBlock(source, this.plugin.getEServer().getConsole(), message);
 				// La source est inconnue
 				} else {
 					source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
 				}
+				
 			// Le destinataire est un joueur
 			} else {
+				
 				Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(args.get(0));
 				// Le joueur existe
 				if (optPlayer.isPresent()) {
 					// La source est un joueur
 					if (source instanceof EPlayer) {
-						resultat = commandMsgPlayer((EPlayer) source, optPlayer.get(), message);
+						resultat = this.commandMsgPlayer((EPlayer) source, optPlayer.get(), message);
 					// La source est la console
-					} else if (this.plugin.getGame().getServer().getConsole().equals(source)) {
-						resultat = commandMsgConsole(source, optPlayer.get(), args.get(1));
+					} else if (source instanceof ConsoleSource) {
+						resultat = this.commandMsgConsole(source, optPlayer.get(), args.get(1));
 					// La source est un commande block
-					} else if (source.getIdentifier().equals("@")) {
-						resultat = this.commandMsgCommandBloc(source, optPlayer.get(), message);
+					} else if (source instanceof CommandBlockSource) {
+						resultat = this.commandMsgCommandBlock(source, optPlayer.get(), message);
 					// La source est inconnue
 					} else {
 						source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR.getText()));
@@ -128,23 +139,25 @@ public class EEMsg extends ECommand<EverEssentials> {
 				} else {
 					source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
 				}
+				
 			}
 		} else {
-			source.sendMessage(help(source));
+			source.sendMessage(this.help(source));
 		}
+		
 		return resultat;
 	}
 	
 	/*
 	 * Un joueur parle à un autre joueur
 	 */
-	public boolean commandMsgPlayer(final EPlayer player, final EPlayer receive, final String message) {
+	private boolean commandMsgPlayer(final EPlayer player, final EPlayer receive, final String message) {
 		receive.sendMessage(player.replaceVariable(EEMessages.MSG_PLAYER_RECEIVE.get()
-				.replaceAll("<message>", message))
-			.toBuilder()
-			.onHover(TextActions.showText(player.replaceVariable(EEMessages.MSG_PLAYER_RECEIVE_HOVER.get())))
-			.onClick(TextActions.suggestCommand("/msg " + player.getName() + " "))
-			.build());
+						.replaceAll("<message>", message))
+					.toBuilder()
+					.onHover(TextActions.showText(player.replaceVariable(EEMessages.MSG_PLAYER_RECEIVE_HOVER.get())))
+					.onClick(TextActions.suggestCommand("/msg " + player.getName() + " "))
+					.build());
 
 		player.sendMessage(receive.replaceVariable(EEMessages.MSG_PLAYER_SEND.get()
 						.replaceAll("<message>", message))
@@ -161,13 +174,13 @@ public class EEMsg extends ECommand<EverEssentials> {
 	/*
 	 * La console envoye un message à joueur
 	 */
-	public boolean commandMsgConsole(final CommandSource player, final EPlayer receive, final String message) {
+	private boolean commandMsgConsole(final CommandSource player, final EPlayer receive, final String message) {
 		player.sendMessage(receive.replaceVariable(EEMessages.REPLY_PLAYER_RECEIVE.get()
-				.replaceAll("<message>", message))
-			.toBuilder()
-			.onHover(TextActions.showText(receive.replaceVariable(EEMessages.REPLY_PLAYER_RECEIVE_HOVER.get())))
-			.onClick(TextActions.suggestCommand("/msg " + receive.getName() + " "))
-			.build());
+						.replaceAll("<message>", message))
+					.toBuilder()
+					.onHover(TextActions.showText(receive.replaceVariable(EEMessages.REPLY_PLAYER_RECEIVE_HOVER.get())))
+					.onClick(TextActions.suggestCommand("/msg " + receive.getName() + " "))
+					.build());
 
 		receive.sendMessage(EChat.of(EEMessages.REPLY_CONSOLE_RECEIVE.get()
 						.replaceAll("<message>", message))
@@ -184,20 +197,20 @@ public class EEMsg extends ECommand<EverEssentials> {
 	/*
 	 * Un joueur envoye un message à la console
 	 */
-	public boolean commandMsgConsole(final EPlayer player, final CommandSource receive, final String message) {
+	private boolean commandMsgConsole(final EPlayer player, final CommandSource receive, final String message) {
 		player.sendMessage(EChat.of(EEMessages.REPLY_CONSOLE_SEND.get()
-				.replaceAll("<message>", message))
-			.toBuilder()
-			.onHover(TextActions.showText(EChat.of(EEMessages.REPLY_CONSOLE_SEND_HOVER.get())))
-			.onClick(TextActions.suggestCommand("/msg " + receive.getName() + " "))
-			.build());
+						.replaceAll("<message>", message))
+					.toBuilder()
+					.onHover(TextActions.showText(EChat.of(EEMessages.REPLY_CONSOLE_SEND_HOVER.get())))
+					.onClick(TextActions.suggestCommand("/msg " + EEMsg.CONSOLE + " "))
+					.build());
 		
 		receive.sendMessage(player.replaceVariable(EEMessages.REPLY_PLAYER_RECEIVE.get()
-				.replaceAll("<message>", message))
-			.toBuilder()
-			.onHover(TextActions.showText(player.replaceVariable(EEMessages.REPLY_PLAYER_RECEIVE_HOVER.get())))
-			.onClick(TextActions.suggestCommand("/msg " + EEMsg.CONSOLE + " "))
-			.build());
+						.replaceAll("<message>", message))
+					.toBuilder()
+					.onHover(TextActions.showText(player.replaceVariable(EEMessages.REPLY_PLAYER_RECEIVE_HOVER.get())))
+					.onClick(TextActions.suggestCommand("/msg " + player.getName() + " "))
+					.build());
 		
 		player.setReplyTo(EEMsg.CONSOLE);
 		this.plugin.getManagerServices().getEssentials().getConsole().setReplyTo(player.getIdentifier());
@@ -205,9 +218,9 @@ public class EEMsg extends ECommand<EverEssentials> {
 	}
 	
 	/*
-	 * Un commande block envoye un message la console
+	 * Un commande block envoye un message à un joueur
 	 */
-	public boolean commandMsgCommandBloc(final CommandSource player, final EPlayer receive, final String message) {
+	private boolean commandMsgCommandBlock(final CommandSource player, final EPlayer receive, final String message) {
 		receive.sendMessage(EChat.of(EEMessages.MSG_COMMANDBLOCK_RECEIVE.get().replaceAll("<message>", message)));
 		return true;
 	}
@@ -215,7 +228,7 @@ public class EEMsg extends ECommand<EverEssentials> {
 	/*
 	 * Un commande block envoye un message la console
 	 */
-	public boolean commandMsgCommandBloc(final CommandSource player, final CommandSource receive, final String message) {
+	private boolean commandMsgCommandBlock(final CommandSource player, final CommandSource receive, final String message) {
 		receive.sendMessage(EChat.of(EEMessages.MSG_COMMANDBLOCK_RECEIVE.get().replaceAll("<message>", message)));
 		return true;
 	}

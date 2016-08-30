@@ -43,14 +43,17 @@ public class EERepairHand extends ECommand<EverEssentials> {
 		super(plugin, "repairhand");
 	}
 
+	@Override
 	public boolean testPermission(final CommandSource source) {
 		return source.hasPermission(EEPermissions.REPAIR_HAND.get());
 	}
 
+	@Override
 	public Text description(final CommandSource source) {
 		return EEMessages.REPAIR_HAND_DESCRIPTION.getText();
 	}
-
+	
+	@Override
 	public Text help(final CommandSource source) {
 		return Text.builder("/" + this.getName())
 					.onClick(TextActions.suggestCommand("/" + this.getName()))
@@ -58,37 +61,39 @@ public class EERepairHand extends ECommand<EverEssentials> {
 					.build();
 	}
 
+	@Override
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		return new ArrayList<String>();
 	}
 
+	@Override
 	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Résultat de la commande :
 		boolean resultat = false;
-		// Si on ne connait pas le joueur
+		
 		if (args.size() == 0) {
 			// Si la source est un joueur
 			if (source instanceof EPlayer) {
-				resultat = commandRepair((EPlayer) source);
-				// La source n'est pas un joueur
+				resultat = this.commandRepair((EPlayer) source);
+			// La source n'est pas un joueur
 			} else {
-				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
+				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText()));
 			}
-			// On connais le joueur
 		} else {
-			source.sendMessage(help(source));
+			source.sendMessage(this.help(source));
 		}
+		
 		return resultat;
 	}
 
-	public boolean commandRepair(final EPlayer player) {
-		if (player.getItemInMainHand().isPresent()){
-			ItemStack item = player.getItemInMainHand().get();
-			Optional<Integer> data = item.get(Keys.ITEM_DURABILITY);
-			if (data.isPresent()){
-				int value = data.get();
+	private boolean commandRepair(final EPlayer player) {
+		Optional<ItemStack> optItem = player.getItemInMainHand();
+		if (optItem.isPresent()) {
+			ItemStack item = optItem.get();
+			Optional<Integer> durability = item.get(Keys.ITEM_DURABILITY);
+			if (durability.isPresent()) {
 				item.offer(Keys.ITEM_DURABILITY, Integer.MAX_VALUE);
-				if (item.get(Keys.ITEM_DURABILITY).get() != value){
+				if (item.get(Keys.ITEM_DURABILITY).get() != durability.get()){
 		            player.setItemInMainHand(item);
 		            player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
 		            		.append(EEMessages.REPAIR_HAND_PLAYER.get())

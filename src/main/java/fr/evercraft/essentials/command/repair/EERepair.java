@@ -37,14 +37,17 @@ public class EERepair extends ECommand<EverEssentials> {
 		super(plugin, "repair", "fix");
 	}
 
+	@Override
 	public boolean testPermission(final CommandSource source) {
 		return source.hasPermission(EEPermissions.REPAIR.get());
 	}
 
+	@Override
 	public Text description(final CommandSource source) {
 		return EEMessages.REPAIR_DESCRIPTION.getText();
 	}
 
+	@Override
 	public Text help(final CommandSource source) {
 		return Text.builder("/" + this.getName() + " ").onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.append(Text.of("<"))
@@ -58,6 +61,7 @@ public class EERepair extends ECommand<EverEssentials> {
 					.build();
 	}
 
+	@Override
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		List<String> suggests = new ArrayList<String>();
 		if (args.size() == 1){
@@ -68,6 +72,7 @@ public class EERepair extends ECommand<EverEssentials> {
 		return suggests;
 	}
 
+	@Override
 	public boolean execute(CommandSource source, final List<String> args) throws CommandException {
 		// Erreur : Context 
 		if(source instanceof EPlayer) {
@@ -93,17 +98,17 @@ public class EERepair extends ECommand<EverEssentials> {
 		return resultat;
 	}
 
-	public boolean commandRepairAll(final CommandSource player) {
+	private boolean commandRepairAll(final CommandSource player) {
 		this.plugin.getGame().getCommandManager().process(player, "repairall");
 		return false;
 	}
 	
-	public boolean commandRepairHand(final CommandSource player) {
+	private boolean commandRepairHand(final CommandSource player) {
 		this.plugin.getGame().getCommandManager().process(player, "repairhand");
 		return false;
 	}
 	
-	public boolean commandRepairHotbar(final CommandSource player) {
+	private boolean commandRepairHotbar(final CommandSource player) {
 		this.plugin.getGame().getCommandManager().process(player, "repairhotbar");
 		return false;
 	}
