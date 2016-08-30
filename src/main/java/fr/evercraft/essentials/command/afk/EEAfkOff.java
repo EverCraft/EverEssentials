@@ -49,15 +49,6 @@ public class EEAfkOff extends ESubCommand<EverEssentials> {
 	public Text description(final CommandSource source) {
 		return EChat.of(EEMessages.AFK_OFF_DESCRIPTION.get());
 	}
-	
-	@Override
-	public List<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
-		List<String> suggests = new ArrayList<String>();
-		if (args.size() == 1 && source.hasPermission(EEPermissions.AFK_OTHERS.get())){
-			suggests.addAll(this.getAllPlayers());
-		}
-		return suggests;
-	}
 
 	@Override
 	public Text help(final CommandSource source) {
@@ -75,6 +66,15 @@ public class EEAfkOff extends ESubCommand<EverEssentials> {
 	}
 	
 	@Override
+	public List<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
+		List<String> suggests = new ArrayList<String>();
+		if (args.size() == 1 && source.hasPermission(EEPermissions.AFK_OTHERS.get())){
+			suggests.addAll(this.getAllPlayers());
+		}
+		return suggests;
+	}
+	
+	@Override
 	public boolean subExecute(final CommandSource source, final List<String> args) throws CommandException {
 		// Résultat de la commande :
 		boolean resultat = false;
@@ -83,15 +83,15 @@ public class EEAfkOff extends ESubCommand<EverEssentials> {
 			if (source instanceof EPlayer) {
 				resultat = this.commandAfkOff((EPlayer) source);
 			} else {
-				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
+				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText()));
 			}
 		} else if (args.size() == 1) {
 			// Si il a la permission
 			if (source.hasPermission(EEPermissions.AFK_OTHERS.get())){
-				Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(args.get(0));
+				Optional<EPlayer> player = this.plugin.getEServer().getEPlayer(args.get(0));
 				// Le joueur existe
-				if (optPlayer.isPresent()){
-					resultat = commandAfkOffOthers(source, optPlayer.get());
+				if (player.isPresent()) {
+					resultat = this.commandAfkOffOthers(source, player.get());
 				// Le joueur est introuvable
 				} else {
 					source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
@@ -158,7 +158,7 @@ public class EEAfkOff extends ESubCommand<EverEssentials> {
 			}
 		// La source et le joueur sont identique
 		} else {
-			return commandAfkOff(player);
+			return this.commandAfkOff(player);
 		}
 		return false;
 	}

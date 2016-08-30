@@ -24,6 +24,7 @@ import java.util.TreeMap;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
+import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.BookView;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
@@ -40,22 +41,22 @@ import fr.evercraft.everapi.services.essentials.Mail;
 import fr.evercraft.everapi.text.ETextBuilder;
 
 public class EEMailRead extends ESubCommand<EverEssentials> {
+	
 	public EEMailRead(final EverEssentials plugin, final EEMail mail) {
         super(plugin, mail, "read");
     }
 	
+	@Override
 	public boolean testPermission(final CommandSource source) {
 		return source.hasPermission(EEPermissions.MAIL.get());
 	}
 
+	@Override
 	public Text description(final CommandSource source) {
 		return EChat.of(EEMessages.MAIL_READ_DESCRIPTION.get());
 	}
-	
-	public List<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
-		return new ArrayList<String>();
-	}
 
+	@Override
 	public Text help(final CommandSource source) {
 		return Text.builder("/" + this.getName())
 					.onClick(TextActions.suggestCommand("/" + this.getName()))
@@ -63,37 +64,56 @@ public class EEMailRead extends ESubCommand<EverEssentials> {
 					.build();
 	}
 	
+	@Override
+	public List<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
+		List<String> suggests = new ArrayList<String>();
+		if (args.size() == 1) {
+			Optional<EPlayer> player = this.plugin.getEServer().getEPlayer((Player) source);
+			// Le joueur existe
+			if (player.isPresent()) {
+				for (Mail mail : player.get().getMails()){
+					suggests.add(String.valueOf(mail.getID()));
+				}
+			}
+		}
+		return suggests;
+	}
+	
+	@Override
 	public boolean subExecute(final CommandSource source, final List<String> args) {
 		// Résultat de la commande :
 		boolean resultat = false;
-		if (args.size() == 0){
+		
+		if (args.size() == 0) {
+			
 			// Si la source est un joueur
 			if (source instanceof EPlayer) {
-				resultat = commandRead((EPlayer) source);
+				resultat = this.commandRead((EPlayer) source);
 			// La source n'est pas un joueur
 			} else {
-				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
+				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText()));
 			}
-		} else if (args.size() == 1){
+			
+		} else if (args.size() == 1) {
+			
 			// Si la source est un joueur
 			if (source instanceof EPlayer) {
-				resultat = commandRead((EPlayer) source, args.get(0));
+				resultat = this.commandRead((EPlayer) source, args.get(0));
 			// La source n'est pas un joueur
 			} else {
-				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
+				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText()));
 			}
+			
 		} else {
 			source.sendMessage(this.help(source));
 		}
+		
 		return resultat;
 	}
-	
-	/*
-	 * Read
-	 */
 
 	private boolean commandRead(EPlayer player) {
 		Set<Mail> mails = player.getMails();
+		
 		if (mails.size() == 0) {
 			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.MAIL_READ_EMPTY.get());
 		} else {
@@ -109,25 +129,27 @@ public class EEMailRead extends ESubCommand<EverEssentials> {
 				}
 			}
 			
+			// Mail non lu
 			for (Mail mail : noread.descendingMap().values()) {
 				lists.add(ETextBuilder.toBuilder(EEMessages.MAIL_READ_LINE_NO_READ.get()
 							.replaceAll("<player>", mail.getToName())
 							.replaceAll("<time>", this.plugin.getEverAPI().getManagerUtils().getDate().parseTime(mail.getDateTime()))
 							.replaceAll("<date>", this.plugin.getEverAPI().getManagerUtils().getDate().parseDate(mail.getDateTime()))
 							.replaceAll("<datetime>", this.plugin.getEverAPI().getManagerUtils().getDate().parseDateTime(mail.getDateTime())))
-						.replace("<read>", getButtonRead(mail))
-						.replace("<delete>", getButtonDelete(mail))
+						.replace("<read>", this.getButtonRead(mail))
+						.replace("<delete>", this.getButtonDelete(mail))
 						.build());
 			}
 			
+			// Mail lu
 			for (Mail mail : read.descendingMap().values()) {
 				lists.add(ETextBuilder.toBuilder(EEMessages.MAIL_READ_LINE_READ.get()
 							.replaceAll("<player>", mail.getToName())
 							.replaceAll("<time>", this.plugin.getEverAPI().getManagerUtils().getDate().parseTime(mail.getDateTime()))
 							.replaceAll("<date>", this.plugin.getEverAPI().getManagerUtils().getDate().parseDate(mail.getDateTime()))
 							.replaceAll("<datetime>", this.plugin.getEverAPI().getManagerUtils().getDate().parseDateTime(mail.getDateTime())))
-						.replace("<read>", getButtonRead(mail))
-						.replace("<delete>", getButtonDelete(mail))
+						.replace("<read>", this.getButtonRead(mail))
+						.replace("<delete>", this.getButtonDelete(mail))
 						.build());
 			}
 			
@@ -141,10 +163,13 @@ public class EEMailRead extends ESubCommand<EverEssentials> {
 		try {
 			Optional<Mail> mail = player.getMail(Integer.parseInt(id_string));
 			if (mail.isPresent()) {
+				
 				if (player.readMail(mail.get())) {
-					BookView.Builder book = BookView.builder();
-					book = book.addPage(mail.get().getText());
-					player.sendBookView(book.build());
+					
+					player.sendBookView(BookView.builder()
+												.addPage(mail.get().getText())
+												.build());
+					
 					return true;
 				} else {
 					player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
@@ -157,6 +182,7 @@ public class EEMailRead extends ESubCommand<EverEssentials> {
 							.replace("<mail>", getButtomReadMail(mail.get()))
 							.build());
 				}
+				
 			} else {
 				player.sendMessage(EEMessages.PREFIX.get() + EEMessages.MAIL_READ_ERROR.get()
 						.replaceAll("<id>", id_string));
@@ -168,14 +194,14 @@ public class EEMailRead extends ESubCommand<EverEssentials> {
 		return false;
 	}
 	
-	public Text getButtonRead(final Mail mail){
+	private Text getButtonRead(final Mail mail){
 		return EEMessages.MAIL_BUTTON_READ.getText().toBuilder()
 					.onHover(TextActions.showText(EEMessages.MAIL_BUTTON_READ_HOVER.getText()))
 					.onClick(TextActions.runCommand("/mail read " + mail.getID()))
 					.build();
 	}
 	
-	public Text getButtonDelete(final Mail mail){
+	private Text getButtonDelete(final Mail mail){
 		return EEMessages.MAIL_BUTTON_DELETE.getText().toBuilder()
 					.onHover(TextActions.showText(EEMessages.MAIL_BUTTON_DELETE_HOVER.getText()))
 					.onClick(TextActions.runCommand("/mail delete " + mail.getID()))

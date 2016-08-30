@@ -41,18 +41,17 @@ public class EEGameruleList extends ESubCommand<EverEssentials> {
         super(plugin, command, "list");
     }
 	
+	@Override
 	public boolean testPermission(final CommandSource source) {
 		return true;
 	}
 
+	@Override
 	public Text description(final CommandSource source) {
 		return EChat.of(EEMessages.GAMERULE_LIST_DESCRIPTION.get());
 	}
-	
-	public List<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
-		return new ArrayList<String>();
-	}
 
+	@Override
 	public Text help(final CommandSource source) {
 		return Text.builder("/" + this.getName())
 				.onClick(TextActions.suggestCommand("/" + this.getName()))
@@ -60,36 +59,44 @@ public class EEGameruleList extends ESubCommand<EverEssentials> {
 				.build();
 	}
 	
+	@Override
+	public List<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
+		return new ArrayList<String>();
+	}
+	
+	@Override
 	public boolean subExecute(final CommandSource source, final List<String> args) throws CommandException {
 		// Résultat de la commande :
 		boolean resultat = false;
+		
 		if(args.size() == 0) {
 			if(source instanceof EPlayer) {
 				EPlayer player = (EPlayer) source;
-				resultat = commandGameruleList(player, player.getWorld());
+				resultat = this.commandGameruleList(player, player.getWorld());
 			} else {
-				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
+				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText()));
 			}
 		} else if(args.size() == 1) {
 			if(source instanceof EPlayer) {
 				EPlayer player = (EPlayer) source;
 				Optional<World> optWorld = this.plugin.getEServer().getEWorld(args.get(0));
 				if(optWorld.isPresent()){
-					resultat = commandGameruleList(player, player.getWorld());
+					resultat = this.commandGameruleList(player, player.getWorld());
 				} else {
 					player.sendMessage(EEMessages.PREFIX.get() + EAMessages.WORLD_NOT_FOUND.get()
 							.replace("<world>", args.get(0)));
 				}
 			} else {
-				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
+				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText()));
 			}
 		} else {
 			source.sendMessage(this.help(source));
 		}
+		
 		return resultat;
 	}
 
-	public boolean commandGameruleList(final EPlayer player, final World world) {
+	private boolean commandGameruleList(final EPlayer player, final World world) {
 		Map<String, String> gamerules = world.getProperties().getGameRules();
 		player.getLocation().getExtent().getProperties().setGameRule("rez", null);
 		List<Text> lists = new ArrayList<Text>();

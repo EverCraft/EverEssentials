@@ -52,6 +52,7 @@ public class EEMail extends EParentCommand<EverEssentials> {
 	@Override
 	protected List<String> getArg(final String arg) {
 		List<String> args = super.getArg(arg);
+		
 		// Le message est transformer en un seul argument
 		if (args.size() > 3 && args.get(0).equalsIgnoreCase("send")) {
 			List<String> args_send = new ArrayList<String>();

@@ -94,6 +94,7 @@ public enum EEPermissions implements EnumPermission {
 	DELHOME("delhome.command"),
 	
 	HOME_OTHERS("homeothers.command"),
+	HOME_OTHERS_DELETE("homeothers.delete"),
 	
 	SETHOME("sethome.command"),
 	SETHOME_MULTIPLE("sethome.multiple.command"),

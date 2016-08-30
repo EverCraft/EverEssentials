@@ -22,6 +22,7 @@ import java.util.Optional;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
+import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
@@ -37,26 +38,22 @@ import fr.evercraft.everapi.services.essentials.Mail;
 import fr.evercraft.everapi.text.ETextBuilder;
 
 public class EEMailDelete extends ESubCommand<EverEssentials> {
+	
 	public EEMailDelete(final EverEssentials plugin, final EEMail command) {
         super(plugin, command, "delete");
     }
 	
+	@Override
 	public boolean testPermission(final CommandSource source) {
 		return source.hasPermission(EEPermissions.MAIL.get());
 	}
 
+	@Override
 	public Text description(final CommandSource source) {
 		return EChat.of(EEMessages.MAIL_DELETE_DESCRIPTION.get());
 	}
 	
-	public List<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
-		List<String> suggests = new ArrayList<String>();
-		if (args.size() == 1){
-			suggests.add("1");
-		}
-		return suggests;
-	}
-
+	@Override
 	public Text help(final CommandSource source) {
 		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_ID.get() + ">")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
@@ -64,25 +61,46 @@ public class EEMailDelete extends ESubCommand<EverEssentials> {
 					.build();
 	}
 	
+	@Override
+	public List<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
+		List<String> suggests = new ArrayList<String>();
+		if (args.size() == 1){
+			Optional<EPlayer> player = this.plugin.getEServer().getEPlayer((Player) source);
+			// Le joueur existe
+			if (player.isPresent()) {
+				for (Mail mail : player.get().getMails()){
+					suggests.add(String.valueOf(mail.getID()));
+				}
+			}
+		}
+		return suggests;
+	}
+	
+	@Override
 	public boolean subExecute(final CommandSource source, final List<String> args) {
 		// Résultat de la commande :
 		boolean resultat = false;
+		
 		if (args.size() == 1){
+			
 			// Si la source est un joueur
 			if (source instanceof EPlayer) {
-				resultat = commandDelete((EPlayer) source, args.get(0));
+				resultat = this.commandDelete((EPlayer) source, args.get(0));
 			// La source n'est pas un joueur
 			} else {
-				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
+				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText()));
 			}
+			
 		} else if (args.size() == 2 && args.get(1).equalsIgnoreCase("confirmation")) {
+			
 			// Si la source est un joueur
 			if (source instanceof EPlayer) {
-				resultat = commandDeleteConfirmation((EPlayer) source, args.get(0));
+				resultat = this.commandDeleteConfirmation((EPlayer) source, args.get(0));
 			// La source n'est pas un joueur
 			} else {
-				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
+				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText()));
 			}
+			
 		} else {
 			source.sendMessage(this.help(source));
 		}
@@ -104,8 +122,8 @@ public class EEMailDelete extends ESubCommand<EverEssentials> {
 							.replaceAll("<time>", this.plugin.getEverAPI().getManagerUtils().getDate().parseTime(mail.get().getDateTime()))
 							.replaceAll("<date>", this.plugin.getEverAPI().getManagerUtils().getDate().parseDate(mail.get().getDateTime()))
 							.replaceAll("<datetime>", this.plugin.getEverAPI().getManagerUtils().getDate().parseDateTime(mail.get().getDateTime())))
-						.replace("<mail>", getButtomDeleteMail(mail.get()))
-						.replace("<confirmation>", getButtonDeleteConfirmation(mail.get()))
+						.replace("<mail>", this.getButtomDeleteMail(mail.get()))
+						.replace("<confirmation>", this.getButtonDeleteConfirmation(mail.get()))
 						.build());
 			} else {
 				player.sendMessage(EEMessages.PREFIX.get() + EEMessages.MAIL_DELETE_ERROR.get()
@@ -130,7 +148,7 @@ public class EEMailDelete extends ESubCommand<EverEssentials> {
 								.replaceAll("<time>", this.plugin.getEverAPI().getManagerUtils().getDate().parseTime(mail.get().getDateTime()))
 								.replaceAll("<date>", this.plugin.getEverAPI().getManagerUtils().getDate().parseDate(mail.get().getDateTime()))
 								.replaceAll("<datetime>", this.plugin.getEverAPI().getManagerUtils().getDate().parseDateTime(mail.get().getDateTime())))
-							.replace("<mail>", getButtomDeleteMail(mail.get()))
+							.replace("<mail>", this.getButtomDeleteMail(mail.get()))
 							.build());
 					return true;
 				} else {
@@ -141,7 +159,7 @@ public class EEMailDelete extends ESubCommand<EverEssentials> {
 								.replaceAll("<time>", this.plugin.getEverAPI().getManagerUtils().getDate().parseTime(mail.get().getDateTime()))
 								.replaceAll("<date>", this.plugin.getEverAPI().getManagerUtils().getDate().parseDate(mail.get().getDateTime()))
 								.replaceAll("<datetime>", this.plugin.getEverAPI().getManagerUtils().getDate().parseDateTime(mail.get().getDateTime())))
-							.replace("<mail>", getButtomDeleteMail(mail.get()))
+							.replace("<mail>", this.getButtomDeleteMail(mail.get()))
 							.build());
 				}
 			} else {

@@ -23,9 +23,9 @@ import java.util.function.Predicate;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
-import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.LiteralText.Builder;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
 
@@ -39,18 +39,34 @@ import fr.evercraft.everapi.server.player.EPlayer;
 import fr.evercraft.everapi.sponge.UtilsEntityType;
 
 public class EEButcherMonster extends ESubCommand<EverEssentials> {
+	
 	public EEButcherMonster(final EverEssentials plugin, final EEButcher command) {
         super(plugin, command, "monster");
     }
 	
+	@Override
 	public boolean testPermission(final CommandSource source) {
 		return source.hasPermission(EEPermissions.BUTCHER_MONSTER.get());
 	}
 
+	@Override
 	public Text description(final CommandSource source) {
 		return EChat.of(EEMessages.BUTCHER_MONSTER_DESCRIPTION.get());
 	}
 	
+	@Override
+	public Text help(final CommandSource source) {
+		Builder build = Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_ENTITY.get() + "> <" + EAMessages.ARGS_RADIUS.get());
+		if (source.hasPermission(EEPermissions.BUTCHER_WORLD.get())) {
+			build.append(Text.of("|" + EAMessages.ARGS_ALL.get()));
+		}
+		return build.append(Text.of(">"))
+					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
+					.color(TextColors.RED)
+					.build();
+	}
+	
+	@Override
 	public List<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		List<String> suggests = new ArrayList<String>();
 		if (args.size() == 1) {
@@ -62,24 +78,19 @@ public class EEButcherMonster extends ESubCommand<EverEssentials> {
 		}
 		return suggests;
 	}
-
-	public Text help(final CommandSource source) {
-		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_RADIUS.get() + "|" + EAMessages.ARGS_ALL.get() + ">")
-					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
-					.color(TextColors.RED)
-					.build();
-	}
 	
+	@Override
 	public boolean subExecute(final CommandSource source, final List<String> args) {
 		// Résultat de la commande :
 		boolean resultat = false;
+		
 		if (source instanceof EPlayer){
 			EPlayer player = (EPlayer) source;
 			if (args.size() == 1) {
 				if (args.get(0).equals("all")){
 					// Si il a la permission
 					if (player.hasPermission(EEPermissions.BUTCHER_WORLD.get())){
-						resultat = commandButcherMonster(player);
+						resultat = this.commandButcherMonster(player);
 					// Il n'a pas la permission
 					} else {
 						player.sendMessage(EAMessages.NO_PERMISSION.getText());
@@ -88,7 +99,7 @@ public class EEButcherMonster extends ESubCommand<EverEssentials> {
 					try {
 						int radius = Integer.parseInt(args.get(0));
 						if (radius > 0  && radius <= this.plugin.getConfigs().getButcherMaxRadius()) {
-							resultat = commandButcherMonster(player, radius);
+							resultat = this.commandButcherMonster(player, radius);
 						} else {
 							player.sendMessage(EEMessages.PREFIX.get() + EAMessages.NUMBER_INVALID.getText());
 						}
@@ -101,6 +112,7 @@ public class EEButcherMonster extends ESubCommand<EverEssentials> {
 				source.sendMessage(this.help(source));
 			}
 		}
+		
 		return resultat;
 	}
 
@@ -108,10 +120,7 @@ public class EEButcherMonster extends ESubCommand<EverEssentials> {
 		Predicate<Entity> predicate = new Predicate<Entity>() {
 		    @Override
 		    public boolean test(Entity entity) {
-		    	if (UtilsEntityType.MONSTERS.contains(entity.getType()) && entity.get(Keys.ANGRY).orElse(true)) {
-		    		return true;
-		    	}
-		    	return false;
+		    	return UtilsEntityType.isMonster(entity);
 		    }
 		};
 		Collection<Entity> list = player.getWorld().getEntities(predicate);
@@ -130,7 +139,7 @@ public class EEButcherMonster extends ESubCommand<EverEssentials> {
 		Predicate<Entity> predicate = new Predicate<Entity>() {
 		    @Override
 		    public boolean test(Entity entity) {
-		    	if (UtilsEntityType.MONSTERS.contains(entity.getType()) && entity.get(Keys.ANGRY).orElse(true)) {
+		    	if (UtilsEntityType.isMonster(entity)) {
 		    		if (entity.getLocation().getPosition().distance(player.getLocation().getPosition()) <= radius) {
 			    		return true;
 			    	}
