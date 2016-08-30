@@ -163,7 +163,7 @@ public class EEWarp extends EReloadCommand<EverEssentials> {
 	}
 	
 	public boolean commandWarpTeleport(final EPlayer player, final String warp_name) {
-		String name = EChat.fixLength(warp_name, this.plugin.getEverAPI().getConfigs().get("maxCaractere").getInt(16));
+		String name = EChat.fixLength(warp_name, this.plugin.getEverAPI().getConfigs().getMaxCaractere());
 		Optional<Transform<World>> warp = this.plugin.getManagerServices().getWarp().get(name);
 		// Le serveur a un warp qui porte ce nom
 		if (warp.isPresent()) {

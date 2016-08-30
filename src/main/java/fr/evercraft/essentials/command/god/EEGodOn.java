@@ -36,6 +36,7 @@ import fr.evercraft.everapi.server.player.EPlayer;
 import fr.evercraft.everapi.server.user.EUser;
 
 public class EEGodOn extends ESubCommand<EverEssentials> {
+	
 	public EEGodOn(final EverEssentials plugin, final EEGod command) {
         super(plugin, command, "on");
     }
@@ -48,15 +49,6 @@ public class EEGodOn extends ESubCommand<EverEssentials> {
 	@Override
 	public Text description(final CommandSource source) {
 		return EChat.of(EEMessages.GOD_ON_DESCRIPTION.get());
-	}
-	
-	@Override
-	public List<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
-		List<String> suggests = new ArrayList<String>();
-		if (args.size() == 1 && source.hasPermission(EEPermissions.GOD_OTHERS.get())){
-			suggests.addAll(this.getAllUsers());
-		}
-		return suggests;
 	}
 
 	@Override
@@ -72,6 +64,15 @@ public class EEGodOn extends ESubCommand<EverEssentials> {
 					.color(TextColors.RED)
 					.build();
 		}
+	}
+	
+	@Override
+	public List<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
+		List<String> suggests = new ArrayList<String>();
+		if (args.size() == 1 && source.hasPermission(EEPermissions.GOD_OTHERS.get())){
+			suggests.addAll(this.getAllUsers());
+		}
+		return suggests;
 	}
 	
 	@Override
@@ -106,7 +107,7 @@ public class EEGodOn extends ESubCommand<EverEssentials> {
 		return resultat;
 	}
 
-	public boolean commandGodOn(final EPlayer player) {
+	private boolean commandGodOn(final EPlayer player) {
 		boolean godMode = player.isGod();
 		// Si le god mode est déjà activé
 		if (!godMode){
@@ -124,7 +125,7 @@ public class EEGodOn extends ESubCommand<EverEssentials> {
 		return false;
 	}
 	
-	public boolean commandGodOnOthers(final CommandSource staff, final EUser user) throws CommandException {
+	private boolean commandGodOnOthers(final CommandSource staff, final EUser user) throws CommandException {
 		// La source et le joueur sont identique
 		if (staff instanceof EPlayer && user.getIdentifier().equals(staff.getIdentifier())) {
 			return this.commandGodOn((EPlayer) staff);

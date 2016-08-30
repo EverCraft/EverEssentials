@@ -51,15 +51,6 @@ public class EEAfkStatus extends ESubCommand<EverEssentials> {
 	}
 	
 	@Override
-	public List<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
-		List<String> suggests = new ArrayList<String>();
-		if (!(args.size() == 1 && source.hasPermission(EEPermissions.AFK_OTHERS.get()))){
-			suggests = null;
-		}
-		return suggests;
-	}
-
-	@Override
 	public Text help(final CommandSource source) {
 		if (source.hasPermission(EEPermissions.AFK_OTHERS.get())){
 			return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_PLAYER.get() + "]")
@@ -75,15 +66,24 @@ public class EEAfkStatus extends ESubCommand<EverEssentials> {
 	}
 	
 	@Override
+	public List<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
+		List<String> suggests = new ArrayList<String>();
+		if (!(args.size() == 1 && source.hasPermission(EEPermissions.AFK_OTHERS.get()))){
+			suggests = null;
+		}
+		return suggests;
+	}
+	
+	@Override
 	public boolean subExecute(final CommandSource source, final List<String> args) throws CommandException {
 		// Résultat de la commande :
 		boolean resultat = false;
 		
 		if (args.size() == 0) {
 			if (source instanceof EPlayer) {
-				resultat = commandAfkStatus((EPlayer) source);
+				resultat = this.commandAfkStatus((EPlayer) source);
 			} else {
-				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
+				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText()));
 			}
 		} else if (args.size() == 1) {
 			// Si il a la permission
@@ -91,7 +91,7 @@ public class EEAfkStatus extends ESubCommand<EverEssentials> {
 				Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(args.get(0));
 				// Le joueur existe
 				if (optPlayer.isPresent()){
-					resultat = commandAfkStatusOthers(source, optPlayer.get());
+					resultat = this.commandAfkStatusOthers(source, optPlayer.get());
 				// Le joueur est introuvable
 				} else {
 					source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
@@ -107,7 +107,7 @@ public class EEAfkStatus extends ESubCommand<EverEssentials> {
 		return resultat;
 	}
 
-	public boolean commandAfkStatus(final EPlayer player) {
+	private boolean commandAfkStatus(final EPlayer player) {
 		// Si le mode afk est déjà activé
 		if (player.isAfk()){
 			player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.AFK_STATUS_PLAYER_ON.get()
@@ -120,7 +120,7 @@ public class EEAfkStatus extends ESubCommand<EverEssentials> {
 		return true;
 	}
 	
-	public boolean commandAfkStatusOthers(final CommandSource staff, final EPlayer player) {
+	private boolean commandAfkStatusOthers(final CommandSource staff, final EPlayer player) {
 		if (!player.equals(staff)) {
 			// Si le mode afk est déjà activé
 			if (player.isAfk()){

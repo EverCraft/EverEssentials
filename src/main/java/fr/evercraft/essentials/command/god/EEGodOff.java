@@ -51,15 +51,6 @@ public class EEGodOff extends ESubCommand<EverEssentials> {
 	public Text description(final CommandSource source) {
 		return EChat.of(EEMessages.GOD_OFF_DESCRIPTION.get());
 	}
-	
-	@Override
-	public List<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
-		List<String> suggests = new ArrayList<String>();
-		if (args.size() == 1 && source.hasPermission(EEPermissions.GOD_OTHERS.get())){
-			suggests.addAll(this.getAllUsers());
-		}
-		return suggests;
-	}
 
 	@Override
 	public Text help(final CommandSource source) {
@@ -74,6 +65,15 @@ public class EEGodOff extends ESubCommand<EverEssentials> {
 					.color(TextColors.RED)
 					.build();
 		}
+	}
+	
+	@Override
+	public List<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
+		List<String> suggests = new ArrayList<String>();
+		if (args.size() == 1 && source.hasPermission(EEPermissions.GOD_OTHERS.get())){
+			suggests.addAll(this.getAllUsers());
+		}
+		return suggests;
 	}
 	
 	@Override
@@ -116,7 +116,7 @@ public class EEGodOff extends ESubCommand<EverEssentials> {
 		return resultat;
 	}
 
-	public boolean commandGodOff(final EPlayer player) {
+	private boolean commandGodOff(final EPlayer player) {
 		boolean godMode = player.isGod();
 		// Si le god mode est déjà activé
 		if (godMode){
@@ -133,7 +133,7 @@ public class EEGodOff extends ESubCommand<EverEssentials> {
 		return true;
 	}
 	
-	public boolean commandGodOffOthers(final CommandSource staff, final EUser user) throws CommandException {
+	private boolean commandGodOffOthers(final CommandSource staff, final EUser user) throws CommandException {
 		// La source et le joueur sont identique
 		if (staff instanceof EPlayer && user.getIdentifier().equals(staff.getIdentifier())) {
 			return this.commandGodOff((EPlayer) staff);

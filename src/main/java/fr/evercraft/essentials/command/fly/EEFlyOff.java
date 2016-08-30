@@ -52,15 +52,6 @@ public class EEFlyOff extends ESubCommand<EverEssentials> {
 	}
 	
 	@Override
-	public List<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
-		List<String> suggests = new ArrayList<String>();
-		if (args.size() == 1 && source.hasPermission(EEPermissions.FLY_OTHERS.get())){
-			suggests.addAll(this.getAllUsers());
-		}
-		return suggests;
-	}
-
-	@Override
 	public Text help(final CommandSource source) {
 		if (source.hasPermission(EEPermissions.FLY_OTHERS.get())){
 			return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_PLAYER.get() + "]")
@@ -76,6 +67,16 @@ public class EEFlyOff extends ESubCommand<EverEssentials> {
 	}
 	
 	@Override
+	public List<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
+		List<String> suggests = new ArrayList<String>();
+		if (args.size() == 1 && source.hasPermission(EEPermissions.FLY_OTHERS.get())){
+			suggests.addAll(this.getAllUsers());
+		}
+		return suggests;
+	}
+
+	
+	@Override
 	public boolean subExecute(final CommandSource source, final List<String> args) throws CommandException {
 		// Résultat de la commande :
 		boolean resultat = false;
@@ -84,7 +85,7 @@ public class EEFlyOff extends ESubCommand<EverEssentials> {
 			if (source instanceof EPlayer) {
 				resultat = this.commandFlyOff((EPlayer) source);
 			} else {
-				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
+				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText()));
 			}
 		} else if (args.size() == 1) {
 			// Si il a la permission

@@ -36,26 +36,22 @@ import fr.evercraft.everapi.server.player.EPlayer;
 import fr.evercraft.everapi.server.user.EUser;
 
 public class EEGodStatus extends ESubCommand<EverEssentials> {
+	
 	public EEGodStatus(final EverEssentials plugin, final EEGod command) {
         super(plugin, command, "status");
     }
 	
+	@Override
 	public boolean testPermission(final CommandSource source) {
 		return true;
 	}
 
+	@Override
 	public Text description(final CommandSource source) {
 		return EChat.of(EEMessages.GOD_STATUS_DESCRIPTION.get());
 	}
-	
-	public List<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
-		List<String> suggests = new ArrayList<String>();
-		if (!(args.size() == 1 && source.hasPermission(EEPermissions.GOD_OTHERS.get()))){
-			suggests = null;
-		}
-		return suggests;
-	}
 
+	@Override
 	public Text help(final CommandSource source) {
 		if (source.hasPermission(EEPermissions.GOD_OTHERS.get())){
 			return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_PLAYER.get() + "]")
@@ -70,9 +66,20 @@ public class EEGodStatus extends ESubCommand<EverEssentials> {
 		}
 	}
 	
+	@Override
+	public List<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
+		List<String> suggests = new ArrayList<String>();
+		if (!(args.size() == 1 && source.hasPermission(EEPermissions.GOD_OTHERS.get()))){
+			suggests = null;
+		}
+		return suggests;
+	}
+	
+	@Override
 	public boolean subExecute(final CommandSource source, final List<String> args) throws CommandException {
 		// Résultat de la commande :
 		boolean resultat = false;
+		
 		if (args.size() == 0) {
 			if (source instanceof EPlayer) {
 				resultat = this.commandGodStatus((EPlayer) source);
@@ -81,7 +88,7 @@ public class EEGodStatus extends ESubCommand<EverEssentials> {
 			}
 		} else if (args.size() == 1) {
 			// Si il a la permission
-			if (source.hasPermission(EEPermissions.GOD_OTHERS.get())){
+			if (source.hasPermission(EEPermissions.GOD_OTHERS.get())) {
 				Optional<EUser> user = this.plugin.getEServer().getEUser(args.get(0));
 				// Le joueur existe
 				if (user.isPresent()){
@@ -97,10 +104,11 @@ public class EEGodStatus extends ESubCommand<EverEssentials> {
 		} else {
 			source.sendMessage(this.help(source));
 		}
+		
 		return resultat;
 	}
 
-	public boolean commandGodStatus(final EPlayer player) {
+	private boolean commandGodStatus(final EPlayer player) {
 		// Si le god mode est déjà activé
 		if (player.isGod()){
 			player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.GOD_STATUS_PLAYER_ON.get()
@@ -113,7 +121,7 @@ public class EEGodStatus extends ESubCommand<EverEssentials> {
 		return true;
 	}
 	
-	public boolean commandGodStatusOthers(final CommandSource staff, final EUser user) {
+	private boolean commandGodStatusOthers(final CommandSource staff, final EUser user) {
 		if (staff instanceof EPlayer && user.getIdentifier().equals(staff.getIdentifier())) {
 			return this.commandGodStatus((EPlayer) staff);
 		} else {

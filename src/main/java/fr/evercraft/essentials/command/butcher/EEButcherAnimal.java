@@ -23,9 +23,9 @@ import java.util.function.Predicate;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
-import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.LiteralText.Builder;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
 
@@ -43,14 +43,29 @@ public class EEButcherAnimal extends ESubCommand<EverEssentials> {
         super(plugin, command, "animal");
     }
 	
+	@Override
 	public boolean testPermission(final CommandSource source) {
 		return source.hasPermission(EEPermissions.BUTCHER_ANIMAL.get());
 	}
 
+	@Override
 	public Text description(final CommandSource source) {
 		return EChat.of(EEMessages.BUTCHER_ANIMAL_DESCRIPTION.get());
 	}
 	
+	@Override
+	public Text help(final CommandSource source) {
+		Builder build = Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_ENTITY.get() + "> <" + EAMessages.ARGS_RADIUS.get());
+		if (source.hasPermission(EEPermissions.BUTCHER_WORLD.get())) {
+			build.append(Text.of("|" + EAMessages.ARGS_ALL.get()));
+		}
+		return build.append(Text.of(">"))
+					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
+					.color(TextColors.RED)
+					.build();
+	}
+	
+	@Override
 	public List<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		List<String> suggests = new ArrayList<String>();
 		if (args.size() == 1) {
@@ -62,17 +77,12 @@ public class EEButcherAnimal extends ESubCommand<EverEssentials> {
 		}
 		return suggests;
 	}
-
-	public Text help(final CommandSource source) {
-		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_RADIUS.get() + "|" + EAMessages.ARGS_ALL.get() + ">")
-					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
-					.color(TextColors.RED)
-					.build();
-	}
 	
+	@Override
 	public boolean subExecute(final CommandSource source, final List<String> args) {
 		// Résultat de la commande :
 		boolean resultat = false;
+		
 		if (source instanceof EPlayer){
 			EPlayer player = (EPlayer) source;
 			if (args.size() == 1) {
@@ -100,6 +110,7 @@ public class EEButcherAnimal extends ESubCommand<EverEssentials> {
 				source.sendMessage(this.help(source));
 			}
 		}
+		
 		return resultat;
 	}
 
@@ -107,7 +118,7 @@ public class EEButcherAnimal extends ESubCommand<EverEssentials> {
 		Predicate<Entity> predicate = new Predicate<Entity>() {
 		    @Override
 		    public boolean test(Entity entity) {
-		    	if (UtilsEntityType.ANIMALS.contains(entity.getType()) && !entity.get(Keys.ANGRY).orElse(false)) {
+		    	if (UtilsEntityType.isAnimal(entity)) {
 		    		return true;
 		    	}
 		    	return false;
@@ -129,7 +140,7 @@ public class EEButcherAnimal extends ESubCommand<EverEssentials> {
 		Predicate<Entity> predicate = new Predicate<Entity>() {
 		    @Override
 		    public boolean test(Entity entity) {
-		    	if (UtilsEntityType.ANIMALS.contains(entity.getType()) && !entity.get(Keys.ANGRY).orElse(false)) {
+		    	if (UtilsEntityType.isAnimal(entity)) {
 			    	if (entity.getLocation().getPosition().distance(player.getLocation().getPosition()) <= radius) {
 			    		return true;
 			    	}

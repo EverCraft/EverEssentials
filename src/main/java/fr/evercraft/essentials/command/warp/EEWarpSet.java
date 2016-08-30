@@ -84,7 +84,7 @@ public class EEWarpSet extends ECommand<EverEssentials> {
 	}
 	
 	public boolean commandSetWarp(final EPlayer player, final String warp_name) throws ServerDisableException {
-		String name = EChat.fixLength(warp_name, this.plugin.getEverAPI().getConfigs().get("maxCaractere").getInt(16));
+		String name = EChat.fixLength(warp_name, this.plugin.getEverAPI().getConfigs().getMaxCaractere());
 		Optional<Transform<World>> warp = this.plugin.getManagerServices().getWarp().get(name);
 		if (warp.isPresent()) {
 			if (this.plugin.getManagerServices().getWarp().remove(name) && this.plugin.getManagerServices().getWarp().add(name, player.getTransform())) {
