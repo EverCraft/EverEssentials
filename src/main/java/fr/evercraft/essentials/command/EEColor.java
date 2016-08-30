@@ -114,7 +114,6 @@ public class EEColor extends ECommand<EverEssentials> {
 		page.add(this.getButtomColor("e", TextColors.YELLOW));
 		page.add(this.getButtomColor("f", TextColors.WHITE));
 		book.addPage(Text.joinWith(Text.of("\n"), page));
-		
 		player.sendBookView(book.build());
 		return true;
 	}

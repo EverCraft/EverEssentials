@@ -119,8 +119,8 @@ public class EEMessage extends EMessage {
 		CLEARINVENTORY_OTHERS_STAFF("clearinventory.othersStaff", 	"&7Vous venez de supprimer &6<amount> objet(s) &7de l'inventaire de &6<player>&7."),
 		
 		COLOR_DESCRIPTION("color.description", 				"Affiche les différentes couleurs dans Minecraft."),
-		COLOR_LIST_MESSAGE("color.listTitle", 				"&l&7Liste des couleurs :"), 
-		COLOR_LIST_TITLE("color.listMessage", 				"<color>█ &0: <id>-<name>"), 
+		COLOR_LIST_TITLE("color.listTitle", 				"&l&7Liste des couleurs :"), 
+		COLOR_LIST_MESSAGE("color.listMessage", 			"<color>█ &0: <id>-<name>"), 
 		
 		EFFECT_DESCRIPTION("effect.description", 			"Ajoute un effet de potion sur un joueur."),
 		EFFECT_ERROR_NAME("effect.errorName", 				"&cErreur : Nom de l'effet invalide."),
