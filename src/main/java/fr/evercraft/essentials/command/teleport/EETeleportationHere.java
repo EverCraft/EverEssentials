@@ -43,14 +43,17 @@ public class EETeleportationHere extends ECommand<EverEssentials> {
         super(plugin, "tphere");
     }
 	
+	@Override
 	public boolean testPermission(final CommandSource source) {
 		return source.hasPermission(EEPermissions.TPHERE.get());
 	}
 
+	@Override
 	public Text description(final CommandSource source) {
 		return EEMessages.TPHERE_DESCRIPTION.getText();
 	}
 
+	@Override
 	public Text help(final CommandSource source) {
 		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_PLAYER.get() + ">")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
@@ -58,60 +61,66 @@ public class EETeleportationHere extends ECommand<EverEssentials> {
 					.build();
 	}
 	
+	@Override
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		List<String> suggests = new ArrayList<String>();
 		if (args.size() == 1){
-			suggests = null;
+			suggests.addAll(this.getAllPlayers());
 		}
 		return suggests;
 	}
 	
+	@Override
 	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Résultat de la commande :
 		boolean resultat = false;
-		// Si connait que la location ou aussi peut être le monde
+		
 		if (args.size() == 1) {
 			// Si la source est bien un joueur
 			if (source instanceof EPlayer) {
-				Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(args.get(0));
+				Optional<EPlayer> player = this.plugin.getEServer().getEPlayer(args.get(0));
 				// Le joueur existe
-				if (optPlayer.isPresent()){
-					resultat = commandTeleportationHere((EPlayer) source, optPlayer.get());
+				if (player.isPresent()){
+					resultat = this.commandTeleportationHere((EPlayer) source, player.get());
 				// Joueur introuvable
 				} else {
 					source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
 				}
 			// Si la source est une console ou un commande block
 			} else {
-				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
+				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText()));
 			}
 		// Nombre d'argument incorrect
 		} else {
-			source.sendMessage(help(source));
+			source.sendMessage(this.help(source));
 		}
+		
 		return resultat;
 	}
 	
 	private boolean commandTeleportationHere(EPlayer staff, EPlayer player) {
 		if (!player.equals(staff)) {
 			if (player.getWorld().equals(staff.getWorld()) || this.plugin.getManagerServices().getEssentials().hasPermissionWorld(player, staff.getWorld())) {
-				if (teleport(player, staff)) {
+				
+				if (this.teleport(player, staff)) {
 					player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
 							.append(EEMessages.TPHERE_PLAYER.get()
 									.replaceAll("<staff>", staff.getName()))
-							.replace("<destination>", getButtonPosition(staff.getName(), player.getLocation()))
+							.replace("<destination>", this.getButtonPosition(staff.getName(), player.getLocation()))
 							.build());
 					staff.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
 							.append(EEMessages.TPHERE_STAFF.get()
 									.replaceAll("<player>", player.getName()))
-							.replace("<destination>", getButtonPosition(staff.getName(), player.getLocation()))
+							.replace("<destination>", this.getButtonPosition(staff.getName(), player.getLocation()))
 							.build());
 					return true;
 				} else {
 					staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.TPHERE_ERROR.get()));
 				}
+				
 			} else {
-				staff.sendMessage(EEMessages.PREFIX.get() + EAMessages.NO_PERMISSION_WORLD_OTHERS.get());
+				staff.sendMessage(EEMessages.PREFIX.get() + EAMessages.NO_PERMISSION_WORLD_OTHERS.get()
+						.replaceAll("<world>", staff.getWorld().getName()));
 			}
 		} else {
 			player.reposition();
@@ -129,7 +138,7 @@ public class EETeleportationHere extends ECommand<EverEssentials> {
 		return true;
 	}
 	
-	public Text getButtonPosition(final String player, final Location<World> location){
+	private Text getButtonPosition(final String player, final Location<World> location){
 		return EChat.of(EEMessages.TPHERE_DESTINATION.get().replaceAll("<player>", player)).toBuilder()
 					.onHover(TextActions.showText(EChat.of(EEMessages.TPHERE_DESTINATION_HOVER.get()
 							.replaceAll("<world>", location.getExtent().getName())

@@ -25,6 +25,7 @@ import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
+import org.spongepowered.api.world.Locatable;
 import org.spongepowered.api.world.World;
 
 import fr.evercraft.essentials.EEPermissions;
@@ -34,22 +35,25 @@ import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.java.UtilsDouble;
 import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ESubCommand;
-import fr.evercraft.everapi.server.player.EPlayer;
 import fr.evercraft.everapi.text.ETextBuilder;
 
 public class EEWorldborderInfo extends ESubCommand<EverEssentials> {
+	
 	public EEWorldborderInfo(final EverEssentials plugin, final EEWorldborder command) {
         super(plugin, command, "info");
     }
 	
+	@Override
 	public boolean testPermission(final CommandSource source) {
 		return source.hasPermission(EEPermissions.WORLDBORDER.get());
 	}
 
+	@Override
 	public Text description(final CommandSource source) {
 		return EChat.of(EEMessages.WORLDBORDER_INFO_DESCRIPTION.get());
 	}
 	
+	@Override
 	public List<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		List<String> suggests = new ArrayList<String>();
 		if (args.size() == 1) {
@@ -62,6 +66,7 @@ public class EEWorldborderInfo extends ESubCommand<EverEssentials> {
 		return suggests;
 	}
 
+	@Override
 	public Text help(final CommandSource source) {
 		return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_WORLD.get() + "]")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
@@ -69,43 +74,42 @@ public class EEWorldborderInfo extends ESubCommand<EverEssentials> {
 					.build();
 	}
 	
+	@Override
 	public boolean subExecute(final CommandSource source, final List<String> args) {
 		// Résultat de la commande :
 		boolean resultat = false;
+		
 		if (args.size() == 0) {
-			if (source instanceof EPlayer) {
-				resultat = commandWorldborder(source, ((EPlayer) source).getWorld());
+			if (source instanceof Locatable) {
+				resultat = this.commandWorldborder(source, ((Locatable) source).getWorld());
 			} else {
-				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
+				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText()));
 			}
 		} else if (args.size() == 1){
-			resultat = commandWorldborder(source, args.get(0));
+			Optional<World> world = this.plugin.getEServer().getWorld(args.get(0));
+			if (world.isPresent()) {
+				resultat = this.commandWorldborder(source, world.get());
+			} else {
+				source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.WORLD_NOT_FOUND.get()
+					.replaceAll("<world>", args.get(0))));
+			}
 		} else {
 			source.sendMessage(this.help(source));
 		}
+		
 		return resultat;
-	}
-	
-	private boolean commandWorldborder(final CommandSource source, final String world_name) {
-		Optional<World> optWorld = this.plugin.getEServer().getWorld(world_name);
-		if (optWorld.isPresent()) {
-			this.commandWorldborder(source, optWorld.get());
-		} else {
-			source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.WORLD_NOT_FOUND.get()
-				.replaceAll("<world>", world_name)));
-			return false;
-		}
-		return true;
 	}
 	
 	private boolean commandWorldborder(final CommandSource source, final World world) {
 		List<Text> lists = new ArrayList<Text>();
-		lists.add(getLocation(world));
-		lists.add(getBorder(world));
-		lists.add(getDamageThreshold(world));
-		lists.add(getDamageAmount(world));
-		lists.add(getWarningDistance(world));
-		lists.add(getWarningTime(world));
+		
+		lists.add(this.getLocation(world));
+		lists.add(this.getBorder(world));
+		lists.add(this.getDamageThreshold(world));
+		lists.add(this.getDamageAmount(world));
+		lists.add(this.getWarningDistance(world));
+		lists.add(this.getWarningTime(world));
+		
 		this.plugin.getEverAPI().getManagerService().getEPagination().sendTo(EChat.of(EEMessages.WORLDBORDER_INFO_TITLE.get()
 				.replaceAll("<world>", world.getName()))
 					.toBuilder()
@@ -116,7 +120,7 @@ public class EEWorldborderInfo extends ESubCommand<EverEssentials> {
 	
 	public Text getLocation(final World world){
 		return ETextBuilder.toBuilder(EEMessages.WORLDBORDER_INFO_LOCATION.get())
-				.replace("<position>", getButtonLocation(world))
+				.replace("<position>", this.getButtonLocation(world))
 				.build();
 	}
 	

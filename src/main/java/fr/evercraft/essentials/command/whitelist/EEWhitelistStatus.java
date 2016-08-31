@@ -32,22 +32,27 @@ import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ESubCommand;
 
 public class EEWhitelistStatus extends ESubCommand<EverEssentials> {
+	
 	public EEWhitelistStatus(final EverEssentials plugin, final EEWhitelist command) {
         super(plugin, command, "status");
     }
 	
+	@Override
 	public boolean testPermission(final CommandSource source) {
 		return source.hasPermission(EEPermissions.WHITELIST_MANAGE.get());
 	}
 
+	@Override
 	public Text description(final CommandSource source) {
 		return EChat.of(EEMessages.WHITELIST_STATUS_DESCRIPTION.get());
 	}
 	
+	@Override
 	public List<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		return new ArrayList<String>();
 	}
 
+	@Override
 	public Text help(final CommandSource source) {
 		return Text.builder("/" + this.getName())
 					.onClick(TextActions.suggestCommand("/" + this.getName()))
@@ -55,26 +60,26 @@ public class EEWhitelistStatus extends ESubCommand<EverEssentials> {
 					.build();
 	}
 	
+	@Override
 	public boolean subExecute(final CommandSource source, final List<String> args) {
 		// Résultat de la commande :
 		boolean resultat = false;
+		
 		if (args.size() == 0) {
-			resultat = commandWhitelistStatus(source);
+			resultat = this.commandWhitelistStatus(source);
 		} else {
 			source.sendMessage(this.help(source));
 		}
+		
 		return resultat;
 	}
 
 	private boolean commandWhitelistStatus(final CommandSource player) {
-		String message;
-		if (this.plugin.getEServer().hasWhitelist()){
-			message = EEMessages.WHITELIST_STATUS_ACTIVATED.get();
+		if (this.plugin.getEServer().hasWhitelist()) {
+			player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.WHITELIST_STATUS_ACTIVATED.get()));
 		} else {
-			message = EEMessages.WHITELIST_STATUS_DISABLED.get();
+			player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.WHITELIST_STATUS_DISABLED.get()));
 		}
-		player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.WHITELIST_STATUS_MESSAGE.get()
-				.replaceAll("<status>", message)));
 		return true;
 	}
 }

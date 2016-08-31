@@ -18,6 +18,7 @@ package fr.evercraft.essentials.command.whitelist;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.text.Text;
@@ -31,22 +32,27 @@ import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ESubCommand;
 
 public class EEWhitelistOff extends ESubCommand<EverEssentials> {
+	
 	public EEWhitelistOff(final EverEssentials plugin, final EEWhitelist command) {
         super(plugin, command, "off");
     }
 	
+	@Override
 	public boolean testPermission(final CommandSource source) {
 		return source.hasPermission(EEPermissions.WHITELIST_MANAGE.get());
 	}
 
+	@Override
 	public Text description(final CommandSource source) {
 		return EChat.of(EEMessages.WHITELIST_OFF_DESCRIPTION.get());
 	}
 	
+	@Override
 	public List<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		return new ArrayList<String>();
 	}
 
+	@Override
 	public Text help(final CommandSource source) {
 		return Text.builder("/" + this.getName())
 					.onClick(TextActions.suggestCommand("/" + this.getName()))
@@ -54,14 +60,17 @@ public class EEWhitelistOff extends ESubCommand<EverEssentials> {
 					.build();
 	}
 	
+	@Override
 	public boolean subExecute(final CommandSource source, final List<String> args) {
 		// Résultat de la commande :
 		boolean resultat = false;
+		
 		if (args.size() == 0) {
-			resultat = commandWhitelistOff(source);
+			resultat = this.commandWhitelistOff(source);
 		} else {
 			source.sendMessage(this.help(source));
 		}
+		
 		return resultat;
 	}
 

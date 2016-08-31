@@ -45,14 +45,17 @@ public class EEWarpSet extends ECommand<EverEssentials> {
         super(plugin, "setwarp", "setwarps");
     }
 	
+	@Override
 	public boolean testPermission(final CommandSource source) {
 		return source.hasPermission(EEPermissions.SETWARP.get());
 	}
 
+	@Override
 	public Text description(final CommandSource source) {
 		return EEMessages.SETWARP_DESCRIPTION.getText();
 	}
 
+	@Override
 	public Text help(final CommandSource source) {
 		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_WARP.get() + ">")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
@@ -60,10 +63,16 @@ public class EEWarpSet extends ECommand<EverEssentials> {
 					.build();
 	}
 	
+	@Override
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
-		return new ArrayList<String>();
+		List<String> suggests = new ArrayList<String>();
+		if (args.size() == 1) {
+			suggests.add("...");
+		}
+		return suggests;
 	}
 	
+	@Override
 	public boolean execute(final CommandSource source, final List<String> args) throws CommandException, ServerDisableException {
 		// Résultat de la commande :
 		boolean resultat = false;
@@ -71,46 +80,47 @@ public class EEWarpSet extends ECommand<EverEssentials> {
 		if (args.size() == 1) {
 			// Si la source est un joueur
 			if (source instanceof EPlayer) {
-				resultat = commandSetWarp((EPlayer) source, args.get(0)); 
+				resultat = this.commandSetWarp((EPlayer) source, args.get(0)); 
 			// La source n'est pas un joueur
 			} else {
-				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
+				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText()));
 			}
 		// Nombre d'argument incorrect
 		} else {
-			source.sendMessage(getHelp(source).get());
+			source.sendMessage(this.help(source));
 		}
 		return resultat;
 	}
 	
-	public boolean commandSetWarp(final EPlayer player, final String warp_name) throws ServerDisableException {
+	private boolean commandSetWarp(final EPlayer player, final String warp_name) throws ServerDisableException {
 		String name = EChat.fixLength(warp_name, this.plugin.getEverAPI().getConfigs().getMaxCaractere());
+		
 		Optional<Transform<World>> warp = this.plugin.getManagerServices().getWarp().get(name);
 		if (warp.isPresent()) {
-			if (this.plugin.getManagerServices().getWarp().remove(name) && this.plugin.getManagerServices().getWarp().add(name, player.getTransform())) {
+			if (this.plugin.getManagerServices().getWarp().update(name, player.getTransform())) {
 				player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
 						.append(EEMessages.SETWARP_REPLACE.get())
-						.replace("<warp>", getButtonWarp(name, player.getLocation()))
+						.replace("<warp>", this.getButtonWarp(name, player.getLocation()))
 						.build());
 				return true;
 			} else {
-				player.sendMessage(EEMessages.PREFIX.get() + EAMessages.COMMAND_ERROR.get());
+				player.sendMessage(EEMessages.PREFIX.get() + EEMessages.SETWARP_REPLACE_CANCEL.get().replaceAll("<warp>", name));
 			}
 		} else {
 			if (this.plugin.getManagerServices().getWarp().add(name, player.getTransform())) {
 				player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
 						.append(EEMessages.SETWARP_NEW.get())
-						.replace("<warp>", getButtonWarp(name, player.getLocation()))
+						.replace("<warp>", this.getButtonWarp(name, player.getLocation()))
 						.build());
 				return true;
 			} else {
-				player.sendMessage(EEMessages.PREFIX.get() + EAMessages.COMMAND_ERROR.get());
+				player.sendMessage(EEMessages.PREFIX.get() + EEMessages.SETWARP_NEW_CANCEL.get().replaceAll("<warp>", name));
 			}
 		}
 		return false;
 	}
 
-	public Text getButtonWarp(final String name, final Location<World> location){
+	private Text getButtonWarp(final String name, final Location<World> location){
 		return EChat.of(EEMessages.SETWARP_NAME.get().replaceAll("<name>", name)).toBuilder()
 					.onHover(TextActions.showText(EChat.of(EEMessages.SETWARP_NAME_HOVER.get()
 							.replaceAll("<warp>", name)

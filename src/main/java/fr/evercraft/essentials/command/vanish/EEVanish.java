@@ -60,7 +60,7 @@ public class EEVanish extends EParentCommand<EverEssentials> {
 			resultat = this.commandVanish((EPlayer) source);
 		// La source n'est pas un joueur
 		} else {
-			source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
+			source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText()));
 		}
 		
 		return resultat;
@@ -68,6 +68,7 @@ public class EEVanish extends EParentCommand<EverEssentials> {
 	
 	private boolean commandVanish(final EPlayer player) {
 		boolean vanish = !player.isVanish();
+		
 		if (player.setVanish(vanish)) {
 			if (vanish) {
 				player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.VANISH_ON_PLAYER.getText()));

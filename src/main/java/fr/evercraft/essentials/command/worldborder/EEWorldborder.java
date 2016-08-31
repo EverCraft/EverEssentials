@@ -26,6 +26,7 @@ import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.EParentCommand;
 
 public class EEWorldborder extends EParentCommand<EverEssentials> {
+	
 	public EEWorldborder(final EverEssentials plugin) {
         super(plugin, "worldborder");
     }
@@ -42,6 +43,6 @@ public class EEWorldborder extends EParentCommand<EverEssentials> {
 
 	@Override
 	public boolean testPermissionHelp(final CommandSource source) {
-		return source.hasPermission(EEPermissions.WORLDBORDER.get());
+		return true;
 	}
 }

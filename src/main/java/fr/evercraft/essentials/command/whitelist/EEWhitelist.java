@@ -42,6 +42,6 @@ public class EEWhitelist extends EParentCommand<EverEssentials> {
 
 	@Override
 	public boolean testPermissionHelp(final CommandSource source) {
-		return source.hasPermission(EEPermissions.WHITELIST.get());
+		return true;
 	}
 }

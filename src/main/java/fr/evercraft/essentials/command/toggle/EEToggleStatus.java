@@ -33,28 +33,34 @@ import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ESubCommand;
 import fr.evercraft.everapi.server.player.EPlayer;
+import fr.evercraft.everapi.server.user.EUser;
 
 public class EEToggleStatus extends ESubCommand<EverEssentials> {
+	
 	public EEToggleStatus(final EverEssentials plugin, final EEToggle command) {
         super(plugin, command, "status");
     }
 	
+	@Override
 	public boolean testPermission(final CommandSource source) {
 		return true;
 	}
 
+	@Override
 	public Text description(final CommandSource source) {
 		return EChat.of(EEMessages.TOGGLE_STATUS_DESCRIPTION.get());
 	}
 	
+	@Override
 	public List<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		List<String> suggests = new ArrayList<String>();
 		if (!(args.size() == 1 && source.hasPermission(EEPermissions.TOGGLE_OTHERS.get()))){
-			suggests = null;
+			suggests.addAll(this.getAllUsers());
 		}
 		return suggests;
 	}
 
+	@Override
 	public Text help(final CommandSource source) {
 		if (source.hasPermission(EEPermissions.TOGGLE_OTHERS.get())){
 			return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_PLAYER.get() + "]")
@@ -69,22 +75,24 @@ public class EEToggleStatus extends ESubCommand<EverEssentials> {
 		}
 	}
 	
+	@Override
 	public boolean subExecute(final CommandSource source, final List<String> args) throws CommandException {
 		// Résultat de la commande :
 		boolean resultat = false;
+		
 		if (args.size() == 0) {
 			if (source instanceof EPlayer) {
-				resultat = commandToggleStatus((EPlayer) source);
+				resultat = this.commandToggleStatus((EPlayer) source);
 			} else {
-				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
+				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText()));
 			}
 		} else if (args.size() == 1) {
 			// Si il a la permission
 			if (source.hasPermission(EEPermissions.TOGGLE_OTHERS.get())){
-				Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(args.get(0));
+				Optional<EUser> user = this.plugin.getEServer().getEUser(args.get(0));
 				// Le joueur existe
-				if (optPlayer.isPresent()){
-					resultat = commandToggleStatusOthers(source, optPlayer.get());
+				if (user.isPresent()){
+					resultat = this.commandToggleStatusOthers(source, user.get());
 				// Le joueur est introuvable
 				} else {
 					source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
@@ -96,36 +104,40 @@ public class EEToggleStatus extends ESubCommand<EverEssentials> {
 		} else {
 			source.sendMessage(this.help(source));
 		}
+		
 		return resultat;
 	}
 
-	public boolean commandToggleStatus(final EPlayer player) {
+	private boolean commandToggleStatus(final EPlayer player) {
 		// Toggle activé
 		if (player.isToggle()){
 			player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.TOGGLE_STATUS_PLAYER_ON.get()
-					.replaceAll("<player>", player.getDisplayName())));
+					.replaceAll("<player>", player.getName())));
 		// Toggle désactivé
 		} else {
 			player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.TOGGLE_STATUS_PLAYER_OFF.get()
-					.replaceAll("<player>", player.getDisplayName())));
+					.replaceAll("<player>", player.getName())));
 		}
 		return true;
 	}
 	
-	public boolean commandToggleStatusOthers(final CommandSource staff, final EPlayer player) {
-		if (!player.equals(staff)) {
+	private boolean commandToggleStatusOthers(final CommandSource staff, final EUser user) {
+		// La source et le joueur sont identique
+		if (staff instanceof EPlayer && user.getIdentifier().equals(staff.getIdentifier())) {
+			return this.commandToggleStatus((EPlayer) staff);
+			
+		// La source et le joueur sont différent
+		} else {
 			// Toggle activé
-			if (player.isToggle()){
+			if (user.isToggle()){
 				staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.TOGGLE_STATUS_OTHERS_ON.get()
-						.replaceAll("<player>", player.getDisplayName())));
+						.replaceAll("<player>", user.getName())));
 			// Toggle désactivé
 			} else {
 				staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.TOGGLE_STATUS_OTHERS_OFF.get()
-						.replaceAll("<player>", player.getDisplayName())));
+						.replaceAll("<player>", user.getName())));
 			}
 			return true;
-		} else {
-			return this.commandToggleStatus(player);
 		}
 	}
 }

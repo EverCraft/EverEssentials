@@ -22,6 +22,7 @@ import java.util.Optional;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
+import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
@@ -43,14 +44,17 @@ public class EETeleportationAsk extends ECommand<EverEssentials> {
         super(plugin, "tpa", "call", "tpask");
     }
 	
+	@Override
 	public boolean testPermission(final CommandSource source) {
 		return source.hasPermission(EEPermissions.TPA.get());
 	}
 
+	@Override
 	public Text description(final CommandSource source) {
 		return EEMessages.TPA_DESCRIPTION.getText();
 	}
 
+	@Override
 	public Text help(final CommandSource source) {
 		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_PLAYER.get() + ">")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
@@ -58,41 +62,48 @@ public class EETeleportationAsk extends ECommand<EverEssentials> {
 					.build();
 	}
 	
+	@Override
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
-		if (args.size() == 1){
-			return null;
+		List<String> suggests = new ArrayList<String>();
+		if (args.size() == 1 && source instanceof Player) {
+			suggests.addAll(this.getAllPlayers(source));
 		}
-		return new ArrayList<String>();
+		return suggests;
 	}
 	
+	@Override
 	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Résultat de la commande :
 		boolean resultat = false;
-		// Si connait que la location ou aussi peut être le monde
+		
 		if (args.size() == 1) {
 			// Si la source est bien un joueur
 			if (source instanceof EPlayer) {
-				Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(args.get(0));
+				
+				Optional<EPlayer> player = this.plugin.getEServer().getEPlayer(args.get(0));
 				// Le joueur existe
-				if (optPlayer.isPresent()){
-					resultat = commandTeleportation((EPlayer) source, optPlayer.get());
+				if (player.isPresent()){
+					resultat = this.commandTeleportation((EPlayer) source, player.get());
 				// Joueur introuvable
 				} else {
 					source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
 				}
+				
 			// Si la source est une console ou un commande block
 			} else {
-				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
+				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText()));
 			}
 		// Nombre d'argument incorrect
 		} else {
 			source.sendMessage(help(source));
 		}
+		
 		return resultat;
 	}
 	
 	private boolean commandTeleportation(EPlayer player, EPlayer destination) {
 		if (!player.equals(destination)) {
+			
 			if (destination.isToggle()) {
 				long delay = this.plugin.getConfigs().getTpaAcceptCancellation();
 				String delay_format = this.plugin.getEverAPI().getManagerUtils().getDate().formatDateDiff(System.currentTimeMillis() + delay);
@@ -117,6 +128,7 @@ public class EETeleportationAsk extends ECommand<EverEssentials> {
 				player.sendMessage(EEMessages.PREFIX.get() + EEMessages.TOGGLE_DISABLED.get()
 						.replaceAll("<player>", destination.getName()));
 			}
+			
 		} else {
 			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.TPA_ERROR_EQUALS.get());
 		}

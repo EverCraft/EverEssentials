@@ -24,12 +24,14 @@ import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
+import org.spongepowered.api.world.World;
 
 import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.command.ECommand;
+import fr.evercraft.everapi.server.player.EPlayer;
 
 public class EEWorldsNether extends ECommand<EverEssentials> {
 	
@@ -37,14 +39,17 @@ public class EEWorldsNether extends ECommand<EverEssentials> {
 		super(plugin, "nether");
 	}
 
+	@Override
 	public boolean testPermission(final CommandSource source) {
 		return source.hasPermission(EEPermissions.WORLDS.get());
 	}
 
+	@Override
 	public Text description(final CommandSource source) {
 		return EEMessages.WORLDS_NETHER_DESCRIPTION.getText();
 	}
 
+	@Override
 	public Text help(final CommandSource source) {
 		return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_WORLD.get() + "]")
 					.onClick(TextActions.suggestCommand("/" + this.getName()))
@@ -52,35 +57,48 @@ public class EEWorldsNether extends ECommand<EverEssentials> {
 					.build();
 	}
 
+	@Override
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
-		List<String> suggests = null;
-		if (!(args.size() == 1 && source.hasPermission(EEPermissions.WORLDS_OTHERS.get()))){
-			suggests = new ArrayList<String>();
+		List<String> suggests = new ArrayList<String>();
+		if (args.size() == 1 && source.hasPermission(EEPermissions.WORLDS_OTHERS.get())){
+			for (World world : this.plugin.getEServer().getWorlds()) {
+				if (this.plugin.getManagerServices().getEssentials().hasPermissionWorld(source, world)) {
+					suggests.add(world.getProperties().getWorldName());
+				}
+			}
 		}
 		return suggests;
 	}
 
-	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
+	@Override
+	public boolean execute(CommandSource source, final List<String> args) throws CommandException {
+		// Erreur : Context 
+		if(source instanceof EPlayer) {
+			source = ((EPlayer) source).get();
+		}
+		
 		// Résultat de la commande :
 		boolean resultat = false;
+		
 		// Si on ne connait pas le joueur
 		if (args.size() == 0) {
-			resultat = commandNether(source);
+			resultat = this.commandNether(source);
 		} else if (args.size() == 1){
-			resultat = commandNether(source, args.get(0));
+			resultat = this.commandNether(source, args.get(0));
 		// Nombre d'argument incorrect
 		} else {
 			source.sendMessage(help(source));
 		}
+		
 		return resultat;
 	}
 
-	public boolean commandNether(final CommandSource player) {
+	private boolean commandNether(final CommandSource player) {
 		this.plugin.getGame().getCommandManager().process(player, "worlds DIM-1");
 		return false;
 	}
 	
-	public boolean commandNether(final CommandSource player, final String arg) {
+	private boolean commandNether(final CommandSource player, final String arg) {
 		this.plugin.getGame().getCommandManager().process(player, "worlds DIM-1 "+ arg);
 		return false;
 	}

@@ -44,14 +44,17 @@ public class EEWarpDel extends ECommand<EverEssentials> {
         super(plugin, "delwarp", "delwarps");
     }
 	
+	@Override
 	public boolean testPermission(final CommandSource source) {
 		return source.hasPermission(EEPermissions.DELWARP.get());
 	}
 
+	@Override
 	public Text description(final CommandSource source) {
 		return EEMessages.DELWARP_DESCRIPTION.getText();
 	}
 
+	@Override
 	public Text help(final CommandSource source) {
 		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_WARP.get() + ">")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
@@ -59,42 +62,45 @@ public class EEWarpDel extends ECommand<EverEssentials> {
 					.build();
 	}
 	
+	@Override
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		List<String> suggests = new ArrayList<String>();
 		if (args.size() == 1){
-			for (String warp : this.plugin.getManagerServices().getWarp().getAll().keySet()){
-				suggests.add(warp);
-			}
+			suggests.addAll(this.plugin.getManagerServices().getWarp().getAll().keySet());
 		} else if (args.size() == 2){
 			suggests.add("confirmation");
 		}
 		return suggests;
 	}
 	
+	@Override
 	public boolean execute(final CommandSource source, final List<String> args) throws CommandException, ServerDisableException {
 		// Résultat de la commande :
 		boolean resultat = false;
+		
 		// Si on ne connait pas le joueur
 		if (args.size() == 1) {
-			commandDeleteWarp((EPlayer) source, args.get(0));
+			resultat = this.commandDeleteWarp((EPlayer) source, args.get(0));
 		} else if (args.size() == 2 && args.get(1).equalsIgnoreCase("confirmation")) {
-			commandDeleteWarpConfirmation((EPlayer) source, args.get(0));
+			resultat = this.commandDeleteWarpConfirmation((EPlayer) source, args.get(0));
 		// Nombre d'argument incorrect
 		} else {
-			source.sendMessage(getHelp(source).get());
+			source.sendMessage(this.help(source));
 		}
+		
 		return resultat;
 	}
 	
-	public boolean commandDeleteWarp(final EPlayer player, final String warp_name) {
+	private boolean commandDeleteWarp(final EPlayer player, final String warp_name) {
 		String name = EChat.fixLength(warp_name, this.plugin.getEverAPI().getConfigs().getMaxCaractere());
+		
 		Optional<Transform<World>> warp = this.plugin.getManagerServices().getWarp().get(name);
 		// Le serveur a un warp qui porte ce nom
 		if (warp.isPresent()) {
 			player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
 					.append(EEMessages.DELWARP_CONFIRMATION.get())
-					.replace("<warp>", getButtonWarp(name, warp.get()))
-					.replace("<confirmation>", getButtonConfirmation(name))
+					.replace("<warp>", this.getButtonWarp(name, warp.get()))
+					.replace("<confirmation>", this.getButtonConfirmation(name))
 					.build());
 		// Le serveur n'a pas de warp qui porte ce nom
 		} else {
@@ -103,8 +109,9 @@ public class EEWarpDel extends ECommand<EverEssentials> {
 		return false;
 	}
 	
-	public boolean commandDeleteWarpConfirmation(final EPlayer player, final String warp_name) throws ServerDisableException {
-		String name = EChat.fixLength(warp_name, this.plugin.getEverAPI().getConfigs().get("maxCaractere").getInt(16));
+	private boolean commandDeleteWarpConfirmation(final EPlayer player, final String warp_name) throws ServerDisableException {
+		String name = EChat.fixLength(warp_name, this.plugin.getEverAPI().getConfigs().getMaxCaractere());
+		
 		Optional<Transform<World>> warp = this.plugin.getManagerServices().getWarp().get(name);
 		// Le serveur a un warp qui porte ce nom
 		if (warp.isPresent()) {
@@ -112,12 +119,12 @@ public class EEWarpDel extends ECommand<EverEssentials> {
 			if (this.plugin.getManagerServices().getWarp().remove(name)) {
 				player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
 						.append(EEMessages.DELWARP_DELETE.get())
-						.replace("<warp>", getButtonWarp(name, warp.get()))
+						.replace("<warp>", this.getButtonWarp(name, warp.get()))
 						.build());
 				return true;
 			// Le warp n'a pas été supprimer
 			} else {
-				player.sendMessage(EEMessages.PREFIX.get() + EAMessages.COMMAND_ERROR.get());
+				player.sendMessage(EEMessages.PREFIX.get() + EEMessages.DELWARP_CANCEL.get().replaceAll("<warp>", name));
 			}
 			// Le serveur n'a pas de warp qui porte ce nom
 		} else {
@@ -126,7 +133,7 @@ public class EEWarpDel extends ECommand<EverEssentials> {
 		return false;
 	}
 	
-	public Text getButtonWarp(final String name, final Transform<World> location){
+	private Text getButtonWarp(final String name, final Transform<World> location){
 		return EChat.of(EEMessages.DELWARP_NAME.get().replaceAll("<name>", name)).toBuilder()
 					.onHover(TextActions.showText(EChat.of(EEMessages.DELWARP_NAME_HOVER.get()
 							.replaceAll("<warp>", name)
@@ -137,7 +144,7 @@ public class EEWarpDel extends ECommand<EverEssentials> {
 					.build();
 	}
 	
-	public Text getButtonConfirmation(final String name){
+	private Text getButtonConfirmation(final String name){
 		return EEMessages.DELWARP_CONFIRMATION_VALID.getText().toBuilder()
 					.onHover(TextActions.showText(EChat.of(EEMessages.DELWARP_CONFIRMATION_VALID_HOVER.get()
 							.replaceAll("<warp>", name))))

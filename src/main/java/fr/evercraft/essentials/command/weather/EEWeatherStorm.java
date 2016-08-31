@@ -40,14 +40,17 @@ public class EEWeatherStorm extends ECommand<EverEssentials> {
 		super(plugin, "storm");
 	}
 
+	@Override
 	public boolean testPermission(final CommandSource source) {
 		return source.hasPermission(EEPermissions.WEATHER.get());
 	}
 
+	@Override
 	public Text description(final CommandSource source) {
 		return EEMessages.WEATHER_STORM_DESCRIPTION.getText();
 	}
 
+	@Override
 	public Text help(final CommandSource source) {
 		return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_WORLD.get() + "]")
 					.onClick(TextActions.suggestCommand("/" + this.getName()))
@@ -55,6 +58,7 @@ public class EEWeatherStorm extends ECommand<EverEssentials> {
 					.build();
 	}
 
+	@Override
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		List<String> suggests = new ArrayList<String>();
 		if (args.size() == 1) {
@@ -63,10 +67,13 @@ public class EEWeatherStorm extends ECommand<EverEssentials> {
 					suggests.add(world.getName());
 				}
 			}
+		} else if (args.size() == 3) {
+			suggests.add("60");
 		}
 		return suggests;
 	}
 
+	@Override
 	public boolean execute(CommandSource source, final List<String> args) throws CommandException {
 		// Erreur : Context 
 		if(source instanceof EPlayer) {
@@ -78,9 +85,9 @@ public class EEWeatherStorm extends ECommand<EverEssentials> {
 		
 		if (args.size() == 0) {
 			resultat = this.commandWeatherStorm(source, "");
-		} else if (args.size() == 1){
+		} else if (args.size() == 1) {
 			resultat = this.commandWeatherStorm(source, "\"" + args.get(0) + "\"");
-		} else if (args.size() == 2){
+		} else if (args.size() == 2) {
 			resultat = this.commandWeatherStorm(source, "\"" + args.get(0) + "\" \"" + args.get(1) + "\"");
 		// Nombre d'argument incorrect
 		} else {

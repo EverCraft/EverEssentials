@@ -34,22 +34,27 @@ import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ESubCommand;
 
 public class EEReload extends ESubCommand<EverEssentials> {
+	
 	public EEReload(final EverEssentials plugin, final EECommand command) {
         super(plugin, command, "reload");
     }
 	
+	@Override
 	public boolean testPermission(final CommandSource source) {
 		return source.hasPermission(EEPermissions.RELOAD.get());
 	}
 
+	@Override
 	public Text description(final CommandSource source) {
 		return EAMessages.RELOAD_DESCRIPTION.getText();
 	}
 	
+	@Override
 	public List<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		return new ArrayList<String>();
 	}
 
+	@Override
 	public Text help(final CommandSource source) {
 		return Text.builder("/" + this.getName())
 					.onClick(TextActions.suggestCommand("/" + this.getName()))
@@ -57,9 +62,10 @@ public class EEReload extends ESubCommand<EverEssentials> {
 					.build();
 	}
 	
+	@Override
 	public boolean subExecute(final CommandSource source, final List<String> args) {
 		if (args.size() == 0) {
-			return commandReload(source);
+			return this.commandReload(source);
 		}
 		source.sendMessage(this.help(source));
 		return false;

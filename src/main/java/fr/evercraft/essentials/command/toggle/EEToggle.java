@@ -68,6 +68,7 @@ public class EEToggle extends EParentCommand<EverEssentials> {
 	
 	private boolean commandToggle(final EPlayer player) {
 		boolean toggle = !player.isToggle();
+		
 		if (player.setToggle(toggle)) {
 			if (toggle) {
 				player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.TOGGLE_ON_PLAYER.getText()));

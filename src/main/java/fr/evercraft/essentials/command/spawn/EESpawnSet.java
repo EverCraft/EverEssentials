@@ -47,14 +47,17 @@ public class EESpawnSet extends ECommand<EverEssentials> {
         super(plugin, "setspawn");
     }
 	
+	@Override
 	public boolean testPermission(final CommandSource source) {
 		return source.hasPermission(EEPermissions.SETSPAWN.get());
 	}
 
+	@Override
 	public Text description(final CommandSource source) {
 		return EEMessages.SETSPAWN_DESCRIPTION.getText();
 	}
 
+	@Override
 	public Text help(final CommandSource source) {
 		return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_GROUP.get() + "]")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
@@ -62,6 +65,7 @@ public class EESpawnSet extends ECommand<EverEssentials> {
 					.build();
 	}
 	
+	@Override
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		ArrayList<String> suggest = new ArrayList<String>();
 		if (args.size() == 1 && this.plugin.getEverAPI().getManagerService().getPermission().isPresent()) {
@@ -72,22 +76,27 @@ public class EESpawnSet extends ECommand<EverEssentials> {
 		return suggest;
 	}
 	
+	@Override
 	public boolean execute(final CommandSource source, final List<String> args) throws CommandException, ServerDisableException {
 		// Résultat de la commande :
 		boolean resultat = false;
 		
 		if (args.size() == 0) {
+			
 			// Si la source est un joueur
 			if (source instanceof EPlayer) {
 				resultat = this.commandSetSpawn((EPlayer) source, SpawnService.DEFAULT);
 			// La source n'est pas un joueur
 			} else {
-				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
+				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText()));
 			}
+			
 		// Si on ne connait pas le joueur
 		} else if (args.size() == 1) {
+			
 			// Si la source est un joueur
 			if (source instanceof EPlayer) {
+				
 				if (this.plugin.getEverAPI().getManagerService().getPermission().isPresent()) {
 					Subject group = this.plugin.getEverAPI().getManagerService().getPermission().get().getGroupSubjects().get(args.get(0));
 					if (group != null) {
@@ -102,42 +111,48 @@ public class EESpawnSet extends ECommand<EverEssentials> {
 				
 			// La source n'est pas un joueur
 			} else {
-				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
+				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText()));
 			}
+			
 		// Nombre d'argument incorrect
 		} else {
-			source.sendMessage(getHelp(source).get());
+			source.sendMessage(this.help(source));
 		}
 		return resultat;
 	}
 	
 	private boolean commandSetSpawn(final EPlayer player, final String group_name) throws ServerDisableException {
 		Optional<Transform<World>> group = this.plugin.getManagerServices().getSpawn().get(group_name);
+		
 		if (group.isPresent()) {
+			
 			if (this.plugin.getManagerServices().getSpawn().update(group_name, player.getTransform())) {
 				player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
 						.append(EEMessages.SETSPAWN_REPLACE.get())
-						.replace("<name>", getButtonSpawn(group_name, player.getLocation()))
+						.replace("<name>", this.getButtonSpawn(group_name, player.getLocation()))
 						.build());
 				return true;
 			} else {
 				player.sendMessage(EEMessages.PREFIX.get() + EAMessages.COMMAND_ERROR.get());
 			}
+			
 		} else {
+			
 			if (this.plugin.getManagerServices().getSpawn().add(group_name, player.getTransform())) {
 				player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
 						.append(EEMessages.SETSPAWN_NEW.get())
-						.replace("<name>", getButtonSpawn(group_name, player.getLocation()))
+						.replace("<name>", this.getButtonSpawn(group_name, player.getLocation()))
 						.build());
 				return true;
 			} else {
 				player.sendMessage(EEMessages.PREFIX.get() + EAMessages.COMMAND_ERROR.get());
 			}
+			
 		}
 		return false;
 	}
 
-	public Text getButtonSpawn(final String name, final Location<World> location){
+	private Text getButtonSpawn(final String name, final Location<World> location){
 		return EChat.of(EEMessages.SETSPAWN_NAME.get().replaceAll("<name>", name)).toBuilder()
 					.onHover(TextActions.showText(EChat.of(EEMessages.SETSPAWN_NAME_HOVER.get()
 							.replaceAll("<name>", name)

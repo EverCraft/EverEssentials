@@ -33,28 +33,34 @@ import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ESubCommand;
 import fr.evercraft.everapi.server.player.EPlayer;
+import fr.evercraft.everapi.server.user.EUser;
 
 public class EEToggleOn extends ESubCommand<EverEssentials> {
+	
 	public EEToggleOn(final EverEssentials plugin, final EEToggle command) {
         super(plugin, command, "on");
     }
 	
+	@Override
 	public boolean testPermission(final CommandSource source) {
 		return true;
 	}
 
+	@Override
 	public Text description(final CommandSource source) {
 		return EChat.of(EEMessages.TOGGLE_ON_DESCRIPTION.get());
 	}
 	
+	@Override
 	public List<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		List<String> suggests = new ArrayList<String>();
 		if (args.size() == 1 && source.hasPermission(EEPermissions.TOGGLE_OTHERS.get())){
-			suggests = null;
+			suggests.addAll(this.getAllUsers());
 		}
 		return suggests;
 	}
 
+	@Override
 	public Text help(final CommandSource source) {
 		if (source.hasPermission(EEPermissions.TOGGLE_OTHERS.get())){
 			return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_PLAYER.get() + "]")
@@ -69,22 +75,23 @@ public class EEToggleOn extends ESubCommand<EverEssentials> {
 		}
 	}
 	
+	@Override
 	public boolean subExecute(final CommandSource source, final List<String> args) throws CommandException {
 		// Résultat de la commande :
 		boolean resultat = false;
 		if (args.size() == 0) {
 			if (source instanceof EPlayer) {
-				resultat = commandToggleOn((EPlayer) source);
+				resultat = this.commandToggleOn((EPlayer) source);
 			} else {
-				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
+				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText()));
 			}
 		} else if (args.size() == 1) {
 			// Si il a la permission
 			if (source.hasPermission(EEPermissions.TOGGLE_OTHERS.get())){
-				Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(args.get(0));
+				Optional<EUser> user = this.plugin.getEServer().getEUser(args.get(0));
 				// Le joueur existe
-				if (optPlayer.isPresent()){
-					resultat = commandToggleOnOthers(source, optPlayer.get());
+				if (user.isPresent()){
+					resultat = this.commandToggleOnOthers(source, user.get());
 				// Le joueur est introuvable
 				} else {
 					source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
@@ -99,7 +106,7 @@ public class EEToggleOn extends ESubCommand<EverEssentials> {
 		return resultat;
 	}
 
-	public boolean commandToggleOn(final EPlayer player) {
+	private boolean commandToggleOn(final EPlayer player) {
 		boolean toggle = player.isToggle();
 		// Toggle désactivé
 		if (!toggle){
@@ -116,31 +123,36 @@ public class EEToggleOn extends ESubCommand<EverEssentials> {
 		return false;
 	}
 	
-	public boolean commandToggleOnOthers(final CommandSource staff, final EPlayer player) throws CommandException {
+	private boolean commandToggleOnOthers(final CommandSource staff, final EUser user) throws CommandException {
+		// La source et le joueur sont identique
+		if (staff instanceof EPlayer && user.getIdentifier().equals(staff.getIdentifier())) {
+			return this.commandToggleOn((EPlayer) staff);
+			
 		// La source et le joueur sont différent
-		if (!player.equals(staff)){
-			boolean toggle = player.isToggle();
+		} else {
+			boolean toggle = user.isToggle();
+			
 			// Toggle désactivé
 			if (!toggle) {
-				if (player.setAllowFlight(true)) {
-					player.sendMessage(EEMessages.PREFIX.get() + EEMessages.TOGGLE_ON_OTHERS_PLAYER.get()
-							.replaceAll("<staff>", staff.getName()));
+				if (user.setAllowFlight(true)) {
 					staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.TOGGLE_ON_OTHERS_STAFF.get()
-							.replaceAll("<player>", player.getName())));
+							.replaceAll("<player>", user.getName())));
+					
+					if (user instanceof EPlayer) {
+						((EPlayer) user).sendMessage(EEMessages.PREFIX.get() + EEMessages.TOGGLE_ON_OTHERS_PLAYER.get()
+								.replaceAll("<staff>", staff.getName()));
+					}
 					return true;
 				} else {
 					staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.TOGGLE_ON_OTHERS_CANCEL.get()
-							.replaceAll("<player>", player.getName())));
+							.replaceAll("<player>", user.getName())));
 				}
 			// Toggle désactivé
 			} else {
 				staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.TOGGLE_ON_OTHERS_ERROR.get()
-						.replaceAll("<player>", player.getName())));
+						.replaceAll("<player>", user.getName())));
 			}
 			return false;
-		// La source et le joueur sont identique
-		} else {
-			return commandToggleOn(player);
 		}
 	}
 }

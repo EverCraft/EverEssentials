@@ -36,18 +36,22 @@ import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ESubCommand;
 
 public class EEWhitelistAdd extends ESubCommand<EverEssentials> {
+	
 	public EEWhitelistAdd(final EverEssentials plugin, final EEWhitelist command) {
         super(plugin, command, "add");
     }
 	
+	@Override
 	public boolean testPermission(final CommandSource source) {
 		return source.hasPermission(EEPermissions.WHITELIST_MANAGE.get());
 	}
 
+	@Override
 	public Text description(final CommandSource source) {
 		return EChat.of(EEMessages.WHITELIST_ADD_DESCRIPTION.get());
 	}
 	
+	@Override
 	public List<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		List<String> suggests = new ArrayList<String>();
 		if (args.size() == 1) {
@@ -60,6 +64,7 @@ public class EEWhitelistAdd extends ESubCommand<EverEssentials> {
 		return suggests;
 	}
 
+	@Override
 	public Text help(final CommandSource source) {
 		return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_PLAYER.get() + "]")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
@@ -67,12 +72,14 @@ public class EEWhitelistAdd extends ESubCommand<EverEssentials> {
 					.build();
 	}
 	
+	@Override
 	public boolean subExecute(final CommandSource source, final List<String> args) {
 		if (args.size() == 1) {
 			this.plugin.getGame().getScheduler().createTaskBuilder()
 												.async()
 												.execute(() -> this.commandWhitelistAdd(source, args.get(0)))
 												.submit(this.plugin);
+			return true;
 		} else {
 			source.sendMessage(this.help(source));
 		}
@@ -84,7 +91,8 @@ public class EEWhitelistAdd extends ESubCommand<EverEssentials> {
 		// Le joueur existe
 		if (gameprofile.isPresent()) {
 			Optional<WhitelistService> whitelist = this.plugin.getEverAPI().getManagerService().getWhitelist();
-			if (whitelist.isPresent()){				
+			if (whitelist.isPresent()){	
+				
 				if (!whitelist.get().addProfile(gameprofile.get())) {
 					player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.WHITELIST_ADD_PLAYER.get()
 							.replaceAll("<player>", gameprofile.get().getName().orElse(identifier))));
@@ -92,9 +100,11 @@ public class EEWhitelistAdd extends ESubCommand<EverEssentials> {
 					player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.WHITELIST_ADD_ERROR.get()
 							.replaceAll("<player>", gameprofile.get().getName().orElse(identifier))));
 				}
+				
 			} else {
 				player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.COMMAND_ERROR.get()));
 			}
+			return true;
 		// Le joueur est introuvable
 		} else {
 			player.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));

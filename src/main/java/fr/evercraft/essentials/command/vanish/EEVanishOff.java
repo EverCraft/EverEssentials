@@ -84,7 +84,7 @@ public class EEVanishOff extends ESubCommand<EverEssentials> {
 			if (source instanceof EPlayer) {
 				resultat = this.commandVanishOff((EPlayer) source);
 			} else {
-				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
+				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText()));
 			}
 		} else if (args.size() == 1) {
 			// Si il a la permission

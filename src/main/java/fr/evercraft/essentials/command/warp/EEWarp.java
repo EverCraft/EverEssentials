@@ -25,7 +25,6 @@ import java.util.TreeMap;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.entity.Transform;
-import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
@@ -48,21 +47,25 @@ public class EEWarp extends EReloadCommand<EverEssentials> {
 	public EEWarp(final EverEssentials plugin) {
         super(plugin, "warp", "warps");
         
-        reload();
+       this.reload();
     }
 	
+	@Override
 	public void reload() {
 		this.permission = this.plugin.getConfigs().get("warp-permission").getBoolean(true);
 	}
 
+	@Override
 	public boolean testPermission(final CommandSource source) {
 		return source.hasPermission(EEPermissions.WARP.get());
 	}
 
+	@Override
 	public Text description(final CommandSource source) {
 		return EEMessages.WARP_DESCRIPTION.getText();
 	}
 
+	@Override
 	public Text help(final CommandSource source) {
 		return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_WARP.get() + "] [" + EAMessages.ARGS_PLAYER.get() + "]")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
@@ -70,38 +73,41 @@ public class EEWarp extends EReloadCommand<EverEssentials> {
 					.build();
 	}
 	
+	@Override
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		List<String> suggests = new ArrayList<String>();
-		if (args.size() == 1 && source instanceof Player){
+		if (args.size() == 1){
 			suggests.addAll(this.plugin.getManagerServices().getWarp().getAll().keySet());
 		} else if (args.size() == 2 && source.hasPermission(EEPermissions.WARP_OTHERS.get())) {
-			suggests = null;
+			suggests.addAll(this.getAllPlayers());
 		}
 		return suggests;
 	}
 	
+	@Override
 	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Résultat de la commande :
 		boolean resultat = false;
+		
 		// Nom du warp inconnu
 		if (args.size() == 0) {
-			resultat = commandWarpList(source);
+			resultat = this.commandWarpList(source);
 		// Nom du warp connu
 		} else if (args.size() == 1) {
 			// Si la source est un joueur
 			if (source instanceof EPlayer) {
-				resultat = commandWarpTeleport((EPlayer) source, args.get(0));
+				resultat = this.commandWarpTeleport((EPlayer) source, args.get(0));
 			// La source n'est pas un joueur
 			} else {
-				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
+				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText()));
 			}
 		} else if (args.size() == 2) {
 			// Si il a la permission
 			if (source.hasPermission(EEPermissions.WARP_OTHERS.get())){
-				Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(args.get(1));
+				Optional<EPlayer> player = this.plugin.getEServer().getEPlayer(args.get(1));
 				// Le joueur existe
-				if (optPlayer.isPresent()){
-					resultat = commandWarpTeleportOthers(source, optPlayer.get(), args.get(0));
+				if (player.isPresent()){
+					resultat = this.commandWarpTeleportOthers(source, player.get(), args.get(0));
 				// Le joueur est introuvable
 				} else {
 					source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
@@ -112,8 +118,9 @@ public class EEWarp extends EReloadCommand<EverEssentials> {
 			}
 		// Nombre d'argument incorrect
 		} else {
-			source.sendMessage(help(source));
+			source.sendMessage(this.help(source));
 		}
+		
 		return resultat;
 	}
 	
@@ -122,66 +129,73 @@ public class EEWarp extends EReloadCommand<EverEssentials> {
 		
 		List<Text> lists = new ArrayList<Text>();
 		if (player.hasPermission(EEPermissions.DELWARP.get())) {
+			
 			for (Entry<String, LocationSQL> warp : warps.entrySet()) {
-				if (hasPermission(player, warp.getKey())) {
+				if (this.hasPermission(player, warp.getKey())) {
 					Optional<World> world = warp.getValue().getWorld();
 					if (world.isPresent()){
 						lists.add(ETextBuilder.toBuilder(EEMessages.WARP_LIST_LINE_DELETE.get())
-							.replace("<warp>", getButtonWarp(warp.getKey(), warp.getValue()))
-							.replace("<teleport>", getButtonTeleport(warp.getKey(), warp.getValue()))
-							.replace("<delete>", getButtonDelete(warp.getKey(), warp.getValue()))
+							.replace("<warp>", this.getButtonWarp(warp.getKey(), warp.getValue()))
+							.replace("<teleport>", this.getButtonTeleport(warp.getKey(), warp.getValue()))
+							.replace("<delete>", this.getButtonDelete(warp.getKey(), warp.getValue()))
 							.build());
 					} else {
 						lists.add(ETextBuilder.toBuilder(EEMessages.WARP_LIST_LINE_DELETE_ERROR_WORLD.get())
-								.replace("<warp>", getButtonWarp(warp.getKey(), warp.getValue()))
-								.replace("<delete>", getButtonDelete(warp.getKey(), warp.getValue()))
+								.replace("<warp>", this.getButtonWarp(warp.getKey(), warp.getValue()))
+								.replace("<delete>", this.getButtonDelete(warp.getKey(), warp.getValue()))
 								.build());
 					}
 				}
 			}
+			
 		} else {
+			
 			for (Entry<String, LocationSQL> warp : warps.entrySet()) {
-				if (hasPermission(player, warp.getKey())) {
+				if (this.hasPermission(player, warp.getKey())) {
 					Optional<World> world = warp.getValue().getWorld();
 					if (world.isPresent()){
 						lists.add(ETextBuilder.toBuilder(EEMessages.WARP_LIST_LINE.get())
-							.replace("<warp>", getButtonWarp(warp.getKey(), warp.getValue()))
-							.replace("<teleport>", getButtonTeleport(warp.getKey(), warp.getValue()))
+							.replace("<warp>", this.getButtonWarp(warp.getKey(), warp.getValue()))
+							.replace("<teleport>", this.getButtonTeleport(warp.getKey(), warp.getValue()))
 							.build());
 					}
 				}
 			}
+			
 		}
 		
 		if (lists.size() == 0) {
-			player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.WARP_EMPTY.get()));
-		} else {
-			this.plugin.getEverAPI().getManagerService().getEPagination().sendTo(EEMessages.WARP_LIST_TITLE.getText().toBuilder()
-					.onClick(TextActions.runCommand("/warp")).build(), lists, player);
-		}			
+			lists.add(EEMessages.WARP_EMPTY.getText());
+		}
+		
+		this.plugin.getEverAPI().getManagerService().getEPagination().sendTo(EEMessages.WARP_LIST_TITLE.getText().toBuilder()
+				.onClick(TextActions.runCommand("/warp")).build(), lists, player);			
 		return false;
 	}
 	
-	public boolean commandWarpTeleport(final EPlayer player, final String warp_name) {
+	private boolean commandWarpTeleport(final EPlayer player, final String warp_name) {
 		String name = EChat.fixLength(warp_name, this.plugin.getEverAPI().getConfigs().getMaxCaractere());
+		
 		Optional<Transform<World>> warp = this.plugin.getManagerServices().getWarp().get(name);
 		// Le serveur a un warp qui porte ce nom
 		if (warp.isPresent()) {
-			if (hasPermission(player, name)) {
+			if (this.hasPermission(player, name)) {
+				
 				// Le joueur a bien été téléporter au warp
 				if (player.teleportSafe(warp.get())){
 					player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
 							.append(EEMessages.WARP_TELEPORT_PLAYER.get())
-							.replace("<warp>", getButtonWarp(name, warp.get()))
+							.replace("<warp>", this.getButtonWarp(name, warp.get()))
 							.build());
 					return true;
 				// Erreur lors de la téléportation du joueur
 				} else {
 					player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
 							.append(EEMessages.WARP_TELEPORT_PLAYER_ERROR.get())
-							.replace("<warp>", getButtonWarp(name, warp.get()))
+							.replace("<warp>", this.getButtonWarp(name, warp.get()))
 							.build());
 				}
+				
 			} else {
 				player.sendMessage(EEMessages.PREFIX.get() + EEMessages.WARP_NO_PERMISSION.get()
 						.replaceAll("<warp>", name));
@@ -194,29 +208,32 @@ public class EEWarp extends EReloadCommand<EverEssentials> {
 		return false;
 	}
 	
-	public boolean commandWarpTeleportOthers(final CommandSource staff, final EPlayer player, final String warp_name) {
+	private boolean commandWarpTeleportOthers(final CommandSource staff, final EPlayer player, final String warp_name) {
 		String name = EChat.fixLength(warp_name, this.plugin.getEverAPI().getConfigs().get("maxCaractere").getInt(16));
+		
 		Optional<Transform<World>> warp = this.plugin.getManagerServices().getWarp().get(name);
 		// Le serveur a un warp qui porte ce nom
 		if (warp.isPresent()) {
 			// Le joueur a bien été téléporter au warp
 			if (player.teleportSafe(warp.get())){
+				
 				player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
 						.append(EEMessages.WARP_TELEPORT_OTHERS_PLAYER.get()
 								.replaceAll("<staff>", staff.getName()))
-						.replace("<warp>", getButtonWarp(name, warp.get()))
+						.replace("<warp>", this.getButtonWarp(name, warp.get()))
 						.build());
 				staff.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
 						.append(EEMessages.WARP_TELEPORT_OTHERS_STAFF.get()
 								.replaceAll("<player>", player.getName()))
-						.replace("<warp>", getButtonWarp(name, warp.get()))
+						.replace("<warp>", this.getButtonWarp(name, warp.get()))
 						.build());
 				return true;
+				
 			// Erreur lors de la téléportation du joueur
 			} else {
 				staff.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
 						.append(EEMessages.WARP_TELEPORT_OTHERS_ERROR.get())
-						.replace("<warp>", getButtonWarp(name, warp.get()))
+						.replace("<warp>", this.getButtonWarp(name, warp.get()))
 						.build());
 			}
 		// Le serveur n'a pas de warp qui porte ce nom

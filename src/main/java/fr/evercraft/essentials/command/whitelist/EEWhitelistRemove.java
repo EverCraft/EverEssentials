@@ -36,18 +36,22 @@ import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ESubCommand;
 
 public class EEWhitelistRemove extends ESubCommand<EverEssentials> {
+	
 	public EEWhitelistRemove(final EverEssentials plugin, final EEWhitelist command) {
         super(plugin, command, "remove");
     }
 	
+	@Override
 	public boolean testPermission(final CommandSource source) {
 		return source.hasPermission(EEPermissions.WHITELIST_MANAGE.get());
 	}
 
+	@Override
 	public Text description(final CommandSource source) {
 		return EChat.of(EEMessages.WHITELIST_REMOVE_DESCRIPTION.get());
 	}
 	
+	@Override
 	public List<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		List<String> suggests = new ArrayList<String>();
 		if (args.size() == 1) {
@@ -69,6 +73,7 @@ public class EEWhitelistRemove extends ESubCommand<EverEssentials> {
 		return suggests;
 	}
 
+	@Override
 	public Text help(final CommandSource source) {
 		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_PLAYER .get()+ ">")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
@@ -76,9 +81,11 @@ public class EEWhitelistRemove extends ESubCommand<EverEssentials> {
 					.build();
 	}
 	
+	@Override
 	public boolean subExecute(final CommandSource source, final List<String> args) {
 		// Résultat de la commande :
 		boolean resultat = false;
+		
 		if (args.size() == 1) {
 			this.plugin.getGame().getScheduler().createTaskBuilder()
 												.async()
@@ -87,6 +94,7 @@ public class EEWhitelistRemove extends ESubCommand<EverEssentials> {
 		} else {
 			source.sendMessage(this.help(source));
 		}
+		
 		return resultat;
 	}
 
@@ -96,6 +104,7 @@ public class EEWhitelistRemove extends ESubCommand<EverEssentials> {
 		if (gameprofile.isPresent()) {
 			Optional<WhitelistService> whitelist = this.plugin.getEverAPI().getManagerService().getWhitelist();
 			if (whitelist.isPresent()) {
+				
 				if (whitelist.get().removeProfile(gameprofile.get())){
 					player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.WHITELIST_REMOVE_PLAYER.get()
 							.replaceAll("<player>", gameprofile.get().getName().orElse(identifier))));
@@ -103,6 +112,7 @@ public class EEWhitelistRemove extends ESubCommand<EverEssentials> {
 					player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.WHITELIST_REMOVE_ERROR.get()
 							.replaceAll("<player>", gameprofile.get().getName().orElse(identifier))));
 				}
+				
 			} else {
 				player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.COMMAND_ERROR.get()));
 			}

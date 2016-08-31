@@ -45,14 +45,17 @@ public class EESpawnDel extends ECommand<EverEssentials> {
         super(plugin, "delspawn");
     }
 	
+	@Override
 	public boolean testPermission(final CommandSource source) {
 		return source.hasPermission(EEPermissions.DELSPAWN.get());
 	}
 
+	@Override
 	public Text description(final CommandSource source) {
 		return EEMessages.DELSPAWN_DESCRIPTION.getText();
 	}
 
+	@Override
 	public Text help(final CommandSource source) {
 		return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_GROUP.get() + "]")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
@@ -60,6 +63,7 @@ public class EESpawnDel extends ECommand<EverEssentials> {
 					.build();
 	}
 	
+	@Override
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		List<String> suggests = new ArrayList<String>();
 		if (args.size() == 1 && source instanceof Player){
@@ -70,29 +74,33 @@ public class EESpawnDel extends ECommand<EverEssentials> {
 		return suggests;
 	}
 	
+	@Override
 	public boolean execute(final CommandSource source, final List<String> args) throws CommandException, ServerDisableException {
 		// Résultat de la commande :
 		boolean resultat = false;
+		
 		// Si on ne connait pas le joueur
 		if (args.size() == 1) {
-			commandDeleteSpawn((EPlayer) source, args.get(0));
+			resultat = this.commandDeleteSpawn((EPlayer) source, args.get(0));
 		} else if (args.size() == 2 && args.get(1).equalsIgnoreCase("confirmation")) {
-			commandDeleteSpawnConfirmation((EPlayer) source, args.get(0));
+			resultat = this.commandDeleteSpawnConfirmation((EPlayer) source, args.get(0));
 		// Nombre d'argument incorrect
 		} else {
-			source.sendMessage(getHelp(source).get());
+			source.sendMessage(this.help(source));
 		}
+		
 		return resultat;
 	}
 	
-	public boolean commandDeleteSpawn(final EPlayer player, final String spawn_name) {
+	private boolean commandDeleteSpawn(final EPlayer player, final String spawn_name) {
 		Optional<Transform<World>> spawn = this.plugin.getManagerServices().getSpawn().get(spawn_name);
+		
 		// Le serveur a un spawn qui porte ce nom
 		if (spawn.isPresent()) {
 			player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
 					.append(EEMessages.DELSPAWN_CONFIRMATION.get())
-					.replace("<spawn>", getButtonSpawn(spawn_name, spawn.get()))
-					.replace("<confirmation>", getButtonConfirmation(spawn_name))
+					.replace("<spawn>", this.getButtonSpawn(spawn_name, spawn.get()))
+					.replace("<confirmation>", this.getButtonConfirmation(spawn_name))
 					.build());
 		// Le serveur n'a pas de spawn qui porte ce nom
 		} else {
@@ -101,15 +109,16 @@ public class EESpawnDel extends ECommand<EverEssentials> {
 		return false;
 	}
 	
-	public boolean commandDeleteSpawnConfirmation(final EPlayer player, final String spawn_name) throws ServerDisableException {
+	private boolean commandDeleteSpawnConfirmation(final EPlayer player, final String spawn_name) throws ServerDisableException {
 		Optional<Transform<World>> spawn = this.plugin.getManagerServices().getSpawn().get(spawn_name);
+		
 		// Le serveur a un spawn qui porte ce nom
 		if (spawn.isPresent()) {
 			// Si le spawn a bien été supprimer
 			if (this.plugin.getManagerServices().getSpawn().remove(spawn_name)) {
 				player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
 						.append(EEMessages.DELSPAWN_DELETE.get())
-						.replace("<spawn>", getButtonSpawn(spawn_name, spawn.get()))
+						.replace("<spawn>", this.getButtonSpawn(spawn_name, spawn.get()))
 						.build());
 				return true;
 			// Le spawn n'a pas été supprimer
@@ -123,7 +132,7 @@ public class EESpawnDel extends ECommand<EverEssentials> {
 		return false;
 	}
 	
-	public Text getButtonSpawn(final String name, final Transform<World> location){
+	private Text getButtonSpawn(final String name, final Transform<World> location){
 		return EChat.of(EEMessages.DELSPAWN_NAME.get().replaceAll("<name>", name)).toBuilder()
 					.onHover(TextActions.showText(EChat.of(EEMessages.DELSPAWN_NAME_HOVER.get()
 							.replaceAll("<name>", name)
@@ -134,7 +143,7 @@ public class EESpawnDel extends ECommand<EverEssentials> {
 					.build();
 	}
 	
-	public Text getButtonConfirmation(final String name){
+	private Text getButtonConfirmation(final String name){
 		return EEMessages.DELSPAWN_CONFIRMATION_VALID.getText().toBuilder()
 					.onHover(TextActions.showText(EChat.of(EEMessages.DELSPAWN_CONFIRMATION_VALID_HOVER.get()
 							.replaceAll("<name>", name))))

@@ -19,6 +19,8 @@ package fr.evercraft.essentials.command.spawn;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
@@ -60,6 +62,7 @@ public class EESpawn extends EReloadCommand<EverEssentials> {
 		return source.hasPermission(EEPermissions.SPAWN.get());
 	}
 
+	@Override
 	public Text description(final CommandSource source) {
 		return EEMessages.SPAWN_DESCRIPTION.getText();
 	}
@@ -81,16 +84,14 @@ public class EESpawn extends EReloadCommand<EverEssentials> {
 	@Override
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		List<String> suggests = new ArrayList<String>();
-		if (args.size() == 1 && source instanceof Player && source.hasPermission(EEPermissions.SPAWNS.get())){
-			suggests.addAll(this.plugin.getManagerServices().getSpawn().getAll().keySet());
+		if (args.size() == 1 && source instanceof Player && source.hasPermission(EEPermissions.SPAWNS.get())) {
+			Set<String> homes = new TreeSet<String>();
 			
-			if (!suggests.contains(this.newbies)) {
-				suggests.add(this.newbies);
-			}
-			
-			if (!suggests.contains(SpawnService.DEFAULT)) {
-				suggests.add(SpawnService.DEFAULT);
-			}
+			homes.addAll(this.plugin.getManagerServices().getSpawn().getAll().keySet());
+			homes.add(this.newbies);
+			homes.add(SpawnService.DEFAULT);
+
+			suggests.addAll(homes);
 		}
 		return suggests;
 	}
@@ -99,21 +100,26 @@ public class EESpawn extends EReloadCommand<EverEssentials> {
 	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Résultat de la commande :
 		boolean resultat = false;
+		
 		// Groupe inconnu
 		if (args.size() == 0) {
+			
 			// Si la source est un joueur
 			if (source instanceof EPlayer) {
-				resultat = commandSpawn((EPlayer) source);
+				resultat = this.commandSpawn((EPlayer) source);
 			// La source n'est pas un joueur
 			} else {
 				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
 			}
+			
 		// Groupe connu
 		} else if (args.size() == 1) {
+			
 			// Si la source est un joueur
 			if (source instanceof EPlayer) {
 				// Si il a la permission
 				if (source.hasPermission(EEPermissions.SPAWNS.get())) {
+					
 					// Spawn par défaut
 					if (args.get(0).equalsIgnoreCase(SpawnService.DEFAULT)) {
 						resultat = this.commandSpawn((EPlayer) source, this.plugin.getManagerServices().getSpawn().getDefault(), SpawnService.DEFAULT);
@@ -136,25 +142,28 @@ public class EESpawn extends EReloadCommand<EverEssentials> {
 							source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.SPAWN_ERROR_GROUP.get()));
 						}
 					}
+					
 				// Il n'a pas la permission
 				} else {
 					source.sendMessage(EAMessages.NO_PERMISSION.getText());
 				}
 			// La source n'est pas un joueur
 			} else {
-				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
+				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText()));
 			}
+			
 		// Nombre d'argument incorrect
 		} else {
-			source.sendMessage(help(source));
+			source.sendMessage(this.help(source));
 		}
+		
 		return resultat;
 	}
 	
 	private boolean commandSpawn(final EPlayer player) throws CommandException {
 		final Transform<World> spawn = player.getSpawn();
-		
 		long delay = this.plugin.getConfigs().getTeleportDelay(player);
+		
 		if (delay > 0) {
 			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.SPAWN_DELAY.get()
 					.replaceAll("<delay>", this.plugin.getEverAPI().getManagerUtils().getDate().formatDateDiff(System.currentTimeMillis() + delay)));
@@ -166,17 +175,20 @@ public class EESpawn extends EReloadCommand<EverEssentials> {
 	
 	private boolean commandSpawn(final EPlayer player, final String group) throws CommandException {
 		Optional<Transform<World>> spawn = this.plugin.getManagerServices().getSpawn().get(group);
+		
 		if (spawn.isPresent()) {
 			return this.commandSpawn(player, spawn.get(), group);
 		} else {
 			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.SPAWN_ERROR_SET.get()
 					.replaceAll("<name>", group));
 		}
+		
 		return false;
 	}
 	
 	private boolean commandSpawn(final EPlayer player, final Transform<World> spawn, final String name) throws CommandException {
 		long delay = this.plugin.getConfigs().getTeleportDelay(player);
+		
 		if (delay > 0) {
 			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.SPAWNS_DELAY.get()
 					.replaceAll("<delay>", this.plugin.getEverAPI().getManagerUtils().getDate().formatDateDiff(System.currentTimeMillis() + delay)));
@@ -191,13 +203,13 @@ public class EESpawn extends EReloadCommand<EverEssentials> {
 			if (player.teleport(location)) {
 				player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
 						.append(EEMessages.SPAWN_PLAYER.get())
-						.replace("<spawn>", getButtonSpawn(location))
+						.replace("<spawn>", this.getButtonSpawn(location))
 						.build());
 
 			} else {
 				player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
 						.append(EEMessages.SPAWN_ERROR_TELEPORT.get())
-						.replace("<spawn>", getButtonSpawn(location))
+						.replace("<spawn>", this.getButtonSpawn(location))
 						.build());
 			}
 		}
@@ -209,13 +221,13 @@ public class EESpawn extends EReloadCommand<EverEssentials> {
 				player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
 						.append(EEMessages.SPAWNS_PLAYER.get()
 								.replaceAll("<name>", name))
-						.replace("<spawn>", getButtonSpawn(location))
+						.replace("<spawn>", this.getButtonSpawn(location))
 						.build());
 			} else {
 				player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
 						.append(EEMessages.SPAWNS_ERROR_TELEPORT.get()
 							.replaceAll("<name>",  name))
-						.replace("<spawn>", getButtonSpawn(location))
+						.replace("<spawn>", this.getButtonSpawn(location))
 						.build());
 			}
 		}

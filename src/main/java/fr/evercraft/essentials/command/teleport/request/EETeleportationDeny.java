@@ -25,11 +25,10 @@ import java.util.UUID;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
-import org.spongepowered.api.entity.Transform;
+import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
-import org.spongepowered.api.world.World;
 
 import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
@@ -47,14 +46,17 @@ public class EETeleportationDeny extends ECommand<EverEssentials> {
         super(plugin, "tpdeny", "tpno");
     }
 	
+	@Override
 	public boolean testPermission(final CommandSource source) {
 		return source.hasPermission(EEPermissions.TPDENY.get());
 	}
 
+	@Override
 	public Text description(final CommandSource source) {
 		return EEMessages.TPDENY_DESCRIPTION.getText();
 	}
 
+	@Override
 	public Text help(final CommandSource source) {
 		return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_PLAYER.get() + "]")
 					.onClick(TextActions.suggestCommand("/" + this.getName()))
@@ -62,10 +64,16 @@ public class EETeleportationDeny extends ECommand<EverEssentials> {
 					.build();
 	}
 	
+	@Override
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
-		return new ArrayList<String>();
+		List<String> suggests = new ArrayList<String>();
+		if (args.size() == 1 && source instanceof Player) {
+			suggests.addAll(this.getAllPlayers(source));
+		}
+		return suggests;
 	}
 	
+	@Override
 	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Résultat de la commande :
 		boolean resultat = false;
@@ -73,37 +81,37 @@ public class EETeleportationDeny extends ECommand<EverEssentials> {
 		if (args.size() == 0) {
 			// Si la source est bien un joueur
 			if (source instanceof EPlayer) {
-				resultat = commandTeleportationDeny((EPlayer) source);
+				resultat = this.commandTeleportationDeny((EPlayer) source);
 			// Si la source est une console ou un commande block
 			} else {
-				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
+				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText()));
 			}
 		} else if (args.size() == 1) {
 			// Si la source est bien un joueur
 			if (source instanceof EPlayer) {
-				Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(args.get(0));
+				Optional<EPlayer> player = this.plugin.getEServer().getEPlayer(args.get(0));
 				// Le joueur existe
-				if (optPlayer.isPresent()){
-					resultat = commandTeleportationDeny((EPlayer) source, optPlayer.get());
+				if (player.isPresent()){
+					resultat = this.commandTeleportationDeny((EPlayer) source, player.get());
 				// Joueur introuvable
 				} else {
 					source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
 				}
 			// Si la source est une console ou un commande block
 			} else {
-				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
+				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText()));
 			}
 		// Nombre d'argument incorrect
 		} else {
-			source.sendMessage(help(source));
+			source.sendMessage(this.help(source));
 		}
+		
 		return resultat;
 	}
 
-	private boolean commandTeleportationDeny(EPlayer player) {
+	private boolean commandTeleportationDeny(final EPlayer player) {
 		Map<UUID, TeleportRequest> teleports = player.getAllTeleportsAsk();
 		List<Text> lists = new ArrayList<Text>();
-		
 		Optional<EPlayer> one_player = Optional.empty();
 		
 		for (Entry<UUID, TeleportRequest> teleport : teleports.entrySet()) {
@@ -172,9 +180,5 @@ public class EETeleportationDeny extends ECommand<EverEssentials> {
 					.replaceAll("<player>", player_request.getName()));
 		}
 		return false;
-	}
-	
-	public void teleport(final EPlayer player_request, final EPlayer player, final Transform<World> teleport) {
-		
 	}
 }

@@ -18,6 +18,7 @@ package fr.evercraft.essentials.command.time;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.text.Text;
@@ -39,14 +40,17 @@ public class EETimeDay extends ECommand<EverEssentials> {
 		super(plugin, "day");
 	}
 
+	@Override
 	public boolean testPermission(final CommandSource source) {
 		return source.hasPermission(EEPermissions.TIME.get());
 	}
 
+	@Override
 	public Text description(final CommandSource source) {
 		return EEMessages.TIME_DAY_DESCRIPTION.getText();
 	}
 
+	@Override
 	public Text help(final CommandSource source) {
 		return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_WORLD.get() + "|*]")
 					.onClick(TextActions.suggestCommand("/" + this.getName()))
@@ -54,6 +58,7 @@ public class EETimeDay extends ECommand<EverEssentials> {
 					.build();
 	}
 
+	@Override
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		List<String> suggests = new ArrayList<String>();
 		if (args.size() == 1) {
@@ -67,6 +72,7 @@ public class EETimeDay extends ECommand<EverEssentials> {
 		return suggests;
 	}
 
+	@Override
 	public boolean execute(CommandSource source, final List<String> args) throws CommandException {
 		// Erreur : Context 
 		if(source instanceof EPlayer) {
