@@ -363,6 +363,8 @@ public class EEMessage extends EMessage {
 		ITEM_NAME_SET_DESCRIPTION("itemname.set.description", "Défini le nom d'un objet"),
 		ITEM_NAME_SET_NAME("itemname.set.name", "&7Vous avez renommé &b[<item-before>&b] &7en &b[<item-after>&b]&7."),
 		ITEM_NAME_SET_COLOR("itemname.set.color", "&b"),
+		ITEM_NAME_CLEAR_DESCRIPTION("itemname.clear.description", "Réinitialise le nom d'un objet"),
+		ITEM_NAME_CLEAR_NAME("itemname.clear.name", "&7Vous avez réinitialisé le nom de votre objet &b[<item>&b]&7."),
 		
 		JUMP_DESCRIPTION("jump.description", "Vous téléporte à l'endroit de votre choix"),
 		JUMP_TELEPORT("jump.teleport", "&7Vous avez été téléporté à l'endroit de votre choix."),
