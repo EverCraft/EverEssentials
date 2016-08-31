@@ -31,6 +31,8 @@ import fr.evercraft.essentials.command.freeze.*;
 import fr.evercraft.essentials.command.gamerule.*;
 import fr.evercraft.essentials.command.god.*;
 import fr.evercraft.essentials.command.home.*;
+import fr.evercraft.essentials.command.itemname.EEItemName;
+import fr.evercraft.essentials.command.itemname.EEItemNameSet;
 import fr.evercraft.essentials.command.mail.*;
 import fr.evercraft.essentials.command.message.*;
 import fr.evercraft.essentials.command.repair.*;
@@ -190,6 +192,9 @@ public class EEManagerCommands extends HashSet<ECommand<EverEssentials>> {
 		god.add(new EEGodOff(this.plugin, god));
 		god.add(new EEGodStatus(this.plugin, god));
 		register(god);
+		
+		EEItemName item = new EEItemName(this.plugin);
+		item.add(new EEItemNameSet(this.plugin, item));
 		
 		EEMail mail = new EEMail(this.plugin);
 		mail.add(new EEMailClear(this.plugin, mail));

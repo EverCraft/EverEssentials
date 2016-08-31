@@ -359,6 +359,11 @@ public class EEMessage extends EMessage {
 		ITEM_GIVE("item.give", "&7Vous avez reçu <item>"),
 		ITEM_GIVE_COLOR("item.giveColor", "&6"),
 		
+		ITEM_NAME_DESCRIPTION("itemname.description", "Modifie le nom d'un objet"),
+		ITEM_NAME_SET_DESCRIPTION("itemname.set.description", "Défini le nom d'un objet"),
+		ITEM_NAME_SET_NAME("itemname.set.name", "&7Vous avez renommé &b[<item-before>&b] &7en &b[<item-after>&b]&7."),
+		ITEM_NAME_SET_COLOR("itemname.set.color", "&b"),
+		
 		JUMP_DESCRIPTION("jump.description", "Vous téléporte à l'endroit de votre choix"),
 		JUMP_TELEPORT("jump.teleport", "&7Vous avez été téléporté à l'endroit de votre choix."),
 		JUMP_TELEPORT_ERROR("jump.teleportError", "&7Impossible de trouver une position pour vous téléporter."),
