@@ -31,8 +31,8 @@ import fr.evercraft.essentials.command.freeze.*;
 import fr.evercraft.essentials.command.gamerule.*;
 import fr.evercraft.essentials.command.god.*;
 import fr.evercraft.essentials.command.home.*;
-import fr.evercraft.essentials.command.itemname.EEItemName;
-import fr.evercraft.essentials.command.itemname.EEItemNameSet;
+import fr.evercraft.essentials.command.ignore.*;
+import fr.evercraft.essentials.command.itemname.*;
 import fr.evercraft.essentials.command.mail.*;
 import fr.evercraft.essentials.command.message.*;
 import fr.evercraft.essentials.command.repair.*;
@@ -193,6 +193,12 @@ public class EEManagerCommands extends HashSet<ECommand<EverEssentials>> {
 		god.add(new EEGodStatus(this.plugin, god));
 		register(god);
 		
+		EEIgnore ignore = new EEIgnore(this.plugin);
+		ignore.add(new EEIgnoreAdd(this.plugin, ignore));
+		ignore.add(new EEIgnoreRemove(this.plugin, ignore));
+		ignore.add(new EEIgnoreList(this.plugin, ignore));
+		register(ignore);
+		
 		EEItemName item = new EEItemName(this.plugin);
 		item.add(new EEItemNameSet(this.plugin, item));
 		
@@ -201,6 +207,7 @@ public class EEManagerCommands extends HashSet<ECommand<EverEssentials>> {
 		mail.add(new EEMailDelete(this.plugin, mail));
 		mail.add(new EEMailRead(this.plugin, mail));
 		mail.add(new EEMailSend(this.plugin, mail));
+		register(mail);
 		
 		EEToggle toggle = new EEToggle(this.plugin);
 		toggle.add(new EEToggleOn(this.plugin, toggle));

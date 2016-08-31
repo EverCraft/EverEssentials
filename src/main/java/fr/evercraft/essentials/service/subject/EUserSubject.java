@@ -38,12 +38,14 @@ import javax.annotation.Nullable;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.Transform;
+import org.spongepowered.api.entity.living.player.User;
 import org.spongepowered.api.world.World;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
+import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.everapi.event.AfkEvent;
@@ -695,6 +697,11 @@ public class EUserSubject implements SubjectUserEssentials {
 	/*
 	 * Ignores
 	 */
+	
+	@Override
+	public boolean ignore(User user) {
+		return this.ignore(user.getUniqueId()) && !user.hasPermission(EEPermissions.IGNORE_BYPASS.get());
+	}
 	
 	@Override
 	public boolean ignore(UUID uuid) {

@@ -101,6 +101,10 @@ public enum EEPermissions implements EnumPermission {
 	SETHOME_MULTIPLE_GROUP("sethome.multiples"),
 	SETHOME_MULTIPLE_UNLIMITED("sethome.multiple.unlimited"),
 	
+	IGNORE("ignore.command"),
+	IGNORE_OTHERS("ignore.others"),
+	IGNORE_BYPASS("ignore.bypass"),
+	
 	INVSEE("invsee.command"),
 	INVSEE_MODIFY("invsee.modify"),
 	

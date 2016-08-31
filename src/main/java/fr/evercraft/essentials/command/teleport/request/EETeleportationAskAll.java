@@ -123,7 +123,7 @@ public class EETeleportationAskAll extends ECommand<EverEssentials> {
 				
 				for (EPlayer player : this.plugin.getEServer().getOnlineEPlayers()) {
 					if (!staff.equals(player)) {
-						if (player.isToggle()) {
+						if (!player.ignore(staff) && !staff.ignore(player) && player.isToggle()) {
 							if (player.addTeleportAskHere(staff.getUniqueId(), delay, location)) {							
 								player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.getText())
 											.append(EEMessages.TPAHERE_PLAYER_QUESTION.get()
@@ -164,15 +164,17 @@ public class EETeleportationAskAll extends ECommand<EverEssentials> {
 					
 					for (EPlayer player : this.plugin.getEServer().getOnlineEPlayers()) {
 						if (!destination.equals(player)) {
-							if (player.isToggle()) {
-								if (player.addTeleportAskHere(destination.getUniqueId(), delay, location)) {							
-									player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.getText())
-												.append(EEMessages.TPAHERE_PLAYER_QUESTION.get()
-													.replaceAll("<player>", destination.getName())
-													.replaceAll("<delay>", delay_format))
-												.replace("<accept>", EETeleportationAsk.getButtonAccept(destination.getName()))
-												.replace("<deny>", EETeleportationAsk.getButtonDeny(destination.getName()))
-												.build());
+							if (!(staff instanceof EPlayer) || (!player.ignore((EPlayer) staff) && !((EPlayer) staff).ignore(player))) {
+								if (player.isToggle()) {
+									if (player.addTeleportAskHere(destination.getUniqueId(), delay, location)) {							
+										player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.getText())
+													.append(EEMessages.TPAHERE_PLAYER_QUESTION.get()
+														.replaceAll("<player>", destination.getName())
+														.replaceAll("<delay>", delay_format))
+													.replace("<accept>", EETeleportationAsk.getButtonAccept(destination.getName()))
+													.replace("<deny>", EETeleportationAsk.getButtonDeny(destination.getName()))
+													.build());
+									}
 								}
 							}
 						}

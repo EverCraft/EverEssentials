@@ -152,23 +152,36 @@ public class EEMsg extends ECommand<EverEssentials> {
 	 * Un joueur parle à un autre joueur
 	 */
 	private boolean commandMsgPlayer(final EPlayer player, final EPlayer receive, final String message) {
-		receive.sendMessage(player.replaceVariable(EEMessages.MSG_PLAYER_RECEIVE.get()
-						.replaceAll("<message>", message))
-					.toBuilder()
-					.onHover(TextActions.showText(player.replaceVariable(EEMessages.MSG_PLAYER_RECEIVE_HOVER.get())))
-					.onClick(TextActions.suggestCommand("/msg " + player.getName() + " "))
-					.build());
-
-		player.sendMessage(receive.replaceVariable(EEMessages.MSG_PLAYER_SEND.get()
-						.replaceAll("<message>", message))
-					.toBuilder()
-					.onHover(TextActions.showText(receive.replaceVariable(EEMessages.MSG_PLAYER_SEND_HOVER.get())))
-					.onClick(TextActions.suggestCommand("/msg " + receive.getName() + " "))
-					.build());
+		if (!receive.ignore(player)) {
+			if (!player.ignore(receive)) {
+				receive.sendMessage(player.replaceVariable(EEMessages.MSG_PLAYER_RECEIVE.get()
+								.replaceAll("<message>", message))
+							.toBuilder()
+							.onHover(TextActions.showText(player.replaceVariable(EEMessages.MSG_PLAYER_RECEIVE_HOVER.get())))
+							.onClick(TextActions.suggestCommand("/msg " + player.getName() + " "))
+							.build());
 		
-		receive.setReplyTo(player.getIdentifier());
-		player.setReplyTo(receive.getIdentifier());
-		return true;
+				player.sendMessage(receive.replaceVariable(EEMessages.MSG_PLAYER_SEND.get()
+								.replaceAll("<message>", message))
+							.toBuilder()
+							.onHover(TextActions.showText(receive.replaceVariable(EEMessages.MSG_PLAYER_SEND_HOVER.get())))
+							.onClick(TextActions.suggestCommand("/msg " + receive.getName() + " "))
+							.build());
+				
+				receive.setReplyTo(player.getIdentifier());
+				player.setReplyTo(receive.getIdentifier());
+				return true;
+			} else {
+				player.sendMessage(EEMessages.PREFIX.get() + EEMessages.MSG_IGNORE_PLAYER.get()
+						.replaceAll("<message>", message)
+						.replaceAll("<player>", receive.getName()));
+			}
+		} else {
+			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.MSG_IGNORE_RECEIVE.get()
+					.replaceAll("<message>", message)
+					.replaceAll("<player>", receive.getName()));
+		}
+		return false;
 	}
 	
 	/*

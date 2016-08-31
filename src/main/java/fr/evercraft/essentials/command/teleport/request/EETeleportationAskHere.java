@@ -102,35 +102,45 @@ public class EETeleportationAskHere extends ECommand<EverEssentials> {
 
 	private boolean commandTeleportation(EPlayer staff, EPlayer player) {
 		if (!staff.equals(player)) {
-			if (player.isToggle()) {
-				
-				if (player.getWorld().equals(staff.getWorld()) || this.plugin.getManagerServices().getEssentials().hasPermissionWorld(player, staff.getWorld())) {
-					long delay = this.plugin.getConfigs().getTpaAcceptCancellation();
-					String delay_format = this.plugin.getEverAPI().getManagerUtils().getDate().formatDateDiff(System.currentTimeMillis() + delay);
-					
-					if (player.addTeleportAskHere(staff.getUniqueId(), delay, staff.getTransform())) {
-						staff.sendMessage(EEMessages.PREFIX.get() + EEMessages.TPAHERE_STAFF_QUESTION.get()
-								.replaceAll("<player>", player.getName())
-								.replaceAll("<delay>", delay_format));
+			if(player.ignore(staff)) {
+				if(staff.ignore(player)) {
+					if (player.isToggle()) {
 						
-						player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.getText())
-										.append(EEMessages.TPAHERE_PLAYER_QUESTION.get()
-											.replaceAll("<player>", staff.getName())
-											.replaceAll("<delay>", delay_format))
-										.replace("<accept>", EETeleportationAskHere.getButtonAccept(staff.getName()))
-										.replace("<deny>", EETeleportationAskHere.getButtonDeny(staff.getName()))
-										.build());
+						if (player.getWorld().equals(staff.getWorld()) || this.plugin.getManagerServices().getEssentials().hasPermissionWorld(player, staff.getWorld())) {
+							long delay = this.plugin.getConfigs().getTpaAcceptCancellation();
+							String delay_format = this.plugin.getEverAPI().getManagerUtils().getDate().formatDateDiff(System.currentTimeMillis() + delay);
+							
+							if (player.addTeleportAskHere(staff.getUniqueId(), delay, staff.getTransform())) {
+								staff.sendMessage(EEMessages.PREFIX.get() + EEMessages.TPAHERE_STAFF_QUESTION.get()
+										.replaceAll("<player>", player.getName())
+										.replaceAll("<delay>", delay_format));
+								
+								player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.getText())
+												.append(EEMessages.TPAHERE_PLAYER_QUESTION.get()
+													.replaceAll("<player>", staff.getName())
+													.replaceAll("<delay>", delay_format))
+												.replace("<accept>", EETeleportationAskHere.getButtonAccept(staff.getName()))
+												.replace("<deny>", EETeleportationAskHere.getButtonDeny(staff.getName()))
+												.build());
+							} else {
+								staff.sendMessage(EEMessages.PREFIX.get() + EEMessages.TPAHERE_ERROR_DELAY.get()
+										.replaceAll("<player>", player.getName()));
+							}
+						} else {
+							staff.sendMessage(EEMessages.PREFIX.get() + EAMessages.NO_PERMISSION_WORLD.get()
+									.replaceAll("<world>", staff.getWorld().getName()));
+						}
+						
 					} else {
-						staff.sendMessage(EEMessages.PREFIX.get() + EEMessages.TPAHERE_ERROR_DELAY.get()
+						staff.sendMessage(EEMessages.PREFIX.get() + EEMessages.TOGGLE_DISABLED.get()
 								.replaceAll("<player>", player.getName()));
 					}
 				} else {
-					staff.sendMessage(EEMessages.PREFIX.get() + EAMessages.NO_PERMISSION_WORLD.get()
-							.replaceAll("<world>", staff.getWorld().getName()));
+					player.sendMessage(EEMessages.PREFIX.get() + EEMessages.TPAHERE_IGNORE_STAFF.get()
+							.replaceAll("<player>", player.getName()));
 				}
-				
 			} else {
-				staff.sendMessage(EEMessages.PREFIX.get() + EEMessages.TOGGLE_DISABLED.get()
+				player.sendMessage(EEMessages.PREFIX.get() + EEMessages.TPAHERE_IGNORE_PLAYER.get()
 						.replaceAll("<player>", player.getName()));
 			}
 		} else {
