@@ -39,6 +39,7 @@ import fr.evercraft.everapi.server.location.LocationSQL;
 import fr.evercraft.everapi.services.essentials.SpawnService;
 
 public class ESpawnService implements SpawnService {
+	
 	private final EverEssentials plugin;
 	
 	private final ConcurrentMap<String, LocationSQL> spawns;

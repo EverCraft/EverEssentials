@@ -381,10 +381,6 @@ public class EUserSubject implements SubjectUserEssentials {
 		return this.setAfk(afk, AfkEvent.Action.AUTO);
 	}
 	
-	public boolean setAfkCommand(final boolean afk) {
-		return this.setAfk(afk, AfkEvent.Action.COMMAND);
-	}
-	
 	public boolean setAfk(final boolean afk, final AfkEvent.Action action) {
 		if (this.afk != afk) {
 			this.afk = afk;
@@ -744,10 +740,6 @@ public class EUserSubject implements SubjectUserEssentials {
 		return false;
 	}
 	
-	private Optional<EPlayer> getEPlayer() {
-		return this.plugin.getEServer().getEPlayer(this.getUniqueId());
-	}
-	
 	/*
 	 * Mails
 	 */
@@ -849,6 +841,7 @@ public class EUserSubject implements SubjectUserEssentials {
 
 	public void addMail(Mail mail) {
 		Preconditions.checkNotNull(mail, "mail");
+		
 		this.mails.add(mail);
 	}
 	
@@ -858,6 +851,8 @@ public class EUserSubject implements SubjectUserEssentials {
 	
 	@Override
 	public boolean addTeleportAsk(UUID uuid, long delay) {
+		Preconditions.checkNotNull(uuid, "uuid");
+		
 		TeleportRequest teleport = this.teleports.get(uuid);
 		if (teleport == null || teleport.isExpire()) {
 			this.teleports.put(uuid, new TeleportRequest(Type.TPA, delay));
@@ -870,6 +865,8 @@ public class EUserSubject implements SubjectUserEssentials {
 	
 	@Override
 	public boolean addTeleportAskHere(UUID uuid, long delay, @Nullable Transform<World> location) {
+		Preconditions.checkNotNull(uuid, "uuid");
+		
 		TeleportRequest teleport = this.teleports.get(uuid);
 		if (teleport == null || teleport.isExpire()) {
 			this.teleports.put(uuid, new TeleportRequest(Type.TPAHERE, delay, location));
@@ -883,6 +880,8 @@ public class EUserSubject implements SubjectUserEssentials {
 	
 	@Override
 	public boolean removeTeleportAsk(UUID uuid) {
+		Preconditions.checkNotNull(uuid, "uuid");
+		
 		if (this.teleports.containsKey(uuid)) {
 			this.teleports.remove(uuid);
 			return true;
@@ -895,6 +894,8 @@ public class EUserSubject implements SubjectUserEssentials {
 	}
 	
 	public Optional<TeleportRequest> getTeleportAsk(UUID uuid) {
+		Preconditions.checkNotNull(uuid, "uuid");
+		
 		return Optional.ofNullable(this.teleports.get(uuid));
 	}
 	
@@ -914,6 +915,8 @@ public class EUserSubject implements SubjectUserEssentials {
 	
 	@Override
 	public boolean setTeleport(Runnable runnable, boolean canMove) {
+		Preconditions.checkNotNull(runnable, "runnable");
+		
 		return this.setTeleport(System.currentTimeMillis() + this.plugin.getConfigs().getTeleportDelay(), runnable, canMove);
 	}
 	
@@ -954,6 +957,8 @@ public class EUserSubject implements SubjectUserEssentials {
 	
 	@Override
 	public boolean setReplyTo(String identifier) {
+		Preconditions.checkNotNull(identifier, "identifier");
+		
 		this.replyTo = Optional.ofNullable(identifier);
 		return true;
 	}
@@ -967,12 +972,15 @@ public class EUserSubject implements SubjectUserEssentials {
 	 * Accesseurs
 	 */
 	
-	
 	public String getIdentifier() {
 		return this.identifier.toString();
 	}
 	
 	public UUID getUniqueId() {
 		return this.identifier;
+	}
+	
+	private Optional<EPlayer> getEPlayer() {
+		return this.plugin.getEServer().getEPlayer(this.getUniqueId());
 	}
 }
