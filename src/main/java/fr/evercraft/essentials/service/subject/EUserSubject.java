@@ -125,8 +125,8 @@ public class EUserSubject implements SubjectUserEssentials {
 	}
 	
 	public void reload() {
-		reloadData();
-		connect();
+		this.reloadData();
+		this.connect();
 		
 		this.teleports.clear();
 	}

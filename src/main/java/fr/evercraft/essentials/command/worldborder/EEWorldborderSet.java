@@ -130,7 +130,7 @@ public class EEWorldborderSet extends ESubCommand<EverEssentials> {
 			world.getWorldBorder().setDiameter(diameter);
 			source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.WORLDBORDER_SET_BORDER.get()
 					.replaceAll("<world>", world.getName())
-					.replaceAll("<nb>", String.valueOf(diameter))));
+					.replaceAll("<amount>", String.valueOf(diameter))));
 			
 			return true;
 		} catch (NumberFormatException e) {

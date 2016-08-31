@@ -46,6 +46,7 @@ import org.spongepowered.api.event.network.ClientConnectionEvent;
 import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.event.AfkEvent;
+import fr.evercraft.everapi.event.MailEvent;
 import fr.evercraft.everapi.server.player.EPlayer;
 import fr.evercraft.everapi.services.essentials.TeleportDelay;
 import fr.evercraft.everapi.sponge.UtilsPainting;
@@ -172,6 +173,11 @@ public class EEPlayerListeners {
 			
 			// AFK
 			player.updateLastActivated();
+			
+			// Freeze
+			if(player.isFreeze()) {
+				event.setCancelled(true);
+			}
 		}
 	}
 	
@@ -197,25 +203,34 @@ public class EEPlayerListeners {
 					player.cancelTeleportDelay();
 					player.sendMessage(EEMessages.PREFIX.get() + EEMessages.TELEPORT_ERROR_DELAY.get());
 				}
+				
+				// Freeze
+				if(player.isFreeze()) {
+					event.setCancelled(true);
+				}
 			}
 		}
 	}
 	
 	@Listener
 	public void onPlayerInteractInventory(InteractInventoryEvent event, @First Player player_sponge) {
-		// AFK
-		Optional<EPlayer> player = this.plugin.getEServer().getEPlayer(player_sponge);
-		if (player.isPresent()) {
-			player.get().updateLastActivated();
+		Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(player_sponge);
+		if (optPlayer.isPresent()) {
+			EPlayer player = optPlayer.get();
+			
+			// AFK
+			player.updateLastActivated();
 		}
 	}
 	
 	@Listener
 	public void onPlayerChangeInventory(ChangeInventoryEvent event, @First Player player_sponge) {
-		// AFK
-		Optional<EPlayer> player = this.plugin.getEServer().getEPlayer(player_sponge);
-		if (player.isPresent()) {
-			player.get().updateLastActivated();
+		Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(player_sponge);
+		if (optPlayer.isPresent()) {
+			EPlayer player = optPlayer.get();
+			
+			// AFK
+			player.updateLastActivated();
 		}
 	}
 	
@@ -237,11 +252,26 @@ public class EEPlayerListeners {
 				player.get().updateLastActivated();
 			}
 		}
+		
+		Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(player_sponge);
+		if (optPlayer.isPresent()) {
+			EPlayer player = optPlayer.get();
+			
+			// AFK
+			if (!event.getCommand().equalsIgnoreCase("afk")) {
+				player.updateLastActivated();
+			}
+			
+			// Freeze
+			if (!event.getCommand().equalsIgnoreCase("freeze")) {
+				event.setCancelled(true);
+			}
+		}
     }
 
 	@Listener
 	public void onPlayerHeal(HealEntityEvent event) {
-		if (event.getTargetEntity() instanceof Player && event.getBaseHealAmount() > event.getFinalHealAmount()) {
+		if (!event.isCancelled() && event.getTargetEntity() instanceof Player && event.getBaseHealAmount() > event.getFinalHealAmount()) {
 			Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer((Player) event.getTargetEntity());
 			
 			if (optPlayer.isPresent()) {
@@ -267,6 +297,11 @@ public class EEPlayerListeners {
 		} else {
 			event.getPlayer().startTotalTimePlayed();
 		}
+	}
+	
+	@Listener
+	public void onPlayerMail(MailEvent.Add event) {
+		// TODO : Message
 	}
 	
 	@Listener
