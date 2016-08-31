@@ -245,14 +245,6 @@ public class EEPlayerListeners {
 	
 	@Listener
     public void onPlayerSendCommand(SendCommandEvent event, @First Player player_sponge) {
-		// AFK
-		if (!event.getCommand().equalsIgnoreCase("afk")) {
-			Optional<EPlayer> player = this.plugin.getEServer().getEPlayer(player_sponge);
-			if (player.isPresent()) {
-				player.get().updateLastActivated();
-			}
-		}
-		
 		Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(player_sponge);
 		if (optPlayer.isPresent()) {
 			EPlayer player = optPlayer.get();
@@ -263,7 +255,7 @@ public class EEPlayerListeners {
 			}
 			
 			// Freeze
-			if (!event.getCommand().equalsIgnoreCase("freeze")) {
+			if (!event.getCommand().equalsIgnoreCase("freeze") && player.isFreeze()) {
 				event.setCancelled(true);
 			}
 		}
