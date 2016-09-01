@@ -69,7 +69,7 @@ public class EEFlyStatus extends ESubCommand<EverEssentials> {
 	@Override
 	public List<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		List<String> suggests = new ArrayList<String>();
-		if (!(args.size() == 1 && source.hasPermission(EEPermissions.FLY_OTHERS.get()))){
+		if (args.size() == 1 && source.hasPermission(EEPermissions.FLY_OTHERS.get())){
 			suggests.addAll(this.getAllUsers());
 		}
 		return suggests;

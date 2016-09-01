@@ -102,47 +102,54 @@ public class EETeleportationAsk extends ECommand<EverEssentials> {
 	}
 	
 	private boolean commandTeleportation(EPlayer player, EPlayer destination) {
-		if (!player.equals(destination)) {
-			if(destination.ignore(player)) {
-				if(player.ignore(destination)) {
-					
-					if (destination.isToggle()) {
-						long delay = this.plugin.getConfigs().getTpaAcceptCancellation();
-						String delay_format = this.plugin.getEverAPI().getManagerUtils().getDate().formatDateDiff(System.currentTimeMillis() + delay);
-						
-						if (destination.addTeleportAsk(player.getUniqueId(), delay)) {
-							player.sendMessage(EEMessages.PREFIX.get() + EEMessages.TPA_STAFF_QUESTION.get()
-									.replaceAll("<player>", destination.getName())
-									.replaceAll("<delay>", delay_format));
-							
-							destination.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.getText())
-											.append(EEMessages.TPA_PLAYER_QUESTION.get()
-												.replaceAll("<player>", player.getName())
-												.replaceAll("<delay>", delay_format))
-											.replace("<accept>", EETeleportationAsk.getButtonAccept(player.getName()))
-											.replace("<deny>", EETeleportationAsk.getButtonDeny(player.getName()))
-											.build());
-						} else {
-							player.sendMessage(EEMessages.PREFIX.get() + EEMessages.TPA_ERROR_DELAY.get()
-									.replaceAll("<player>", destination.getName()));
-						}
-					} else {
-						player.sendMessage(EEMessages.PREFIX.get() + EEMessages.TOGGLE_DISABLED.get()
-								.replaceAll("<player>", destination.getName()));
-					}
-					
-				} else {
-					player.sendMessage(EEMessages.PREFIX.get() + EEMessages.TPA_IGNORE_PLAYER.get()
-							.replaceAll("<player>", destination.getName()));
-				}
-			} else {
-				player.sendMessage(EEMessages.PREFIX.get() + EEMessages.TPA_IGNORE_DESTINATION.get()
-						.replaceAll("<player>", destination.getName()));
-			}
-		} else {
+		// La source et le joueur sont identique
+		if (player.equals(destination)) {
 			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.TPA_ERROR_EQUALS.get());
+			return false;
 		}
-		return false;
+		
+		// Le joueur ignore la destination
+		if (player.ignore(destination)) {
+			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.TPA_IGNORE_PLAYER.get()
+					.replaceAll("<player>", destination.getName()));
+			return false;
+		}
+		
+		// La destination ignore le joueur
+		if (destination.ignore(player)) {
+			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.TPA_IGNORE_DESTINATION.get()
+					.replaceAll("<player>", destination.getName()));
+			return false;
+		}
+					
+		// La destination n'accepte pas les demandes de téléportation
+		if (!destination.isToggle()) {
+			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.TOGGLE_DISABLED.get()
+					.replaceAll("<player>", destination.getName()));
+			return false;
+		}
+		
+		long delay = this.plugin.getConfigs().getTpaAcceptCancellation();
+		String delay_format = this.plugin.getEverAPI().getManagerUtils().getDate().formatDateDiff(System.currentTimeMillis() + delay);
+						
+		// Il y a déjà une demande de téléportation en cours
+		if (!destination.addTeleportAsk(player.getUniqueId(), delay)) {
+			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.TPA_ERROR_DELAY.get()
+					.replaceAll("<player>", destination.getName()));
+			return false;
+		}
+		
+		player.sendMessage(EEMessages.PREFIX.get() + EEMessages.TPA_STAFF_QUESTION.get()
+				.replaceAll("<player>", destination.getName())
+				.replaceAll("<delay>", delay_format));
+		destination.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.getText())
+						.append(EEMessages.TPA_PLAYER_QUESTION.get()
+							.replaceAll("<player>", player.getName())
+							.replaceAll("<delay>", delay_format))
+						.replace("<accept>", EETeleportationAsk.getButtonAccept(player.getName()))
+						.replace("<deny>", EETeleportationAsk.getButtonDeny(player.getName()))
+						.build());
+		return true;
 	}
 	
 	public static Text getButtonPosition(final String player, final Location<World> location){

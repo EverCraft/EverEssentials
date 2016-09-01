@@ -78,7 +78,7 @@ public class EEWorlds extends ECommand<EverEssentials> {
 				}
 			}
 		} else if (args.size() == 2 && source.hasPermission(EEPermissions.WORLDS_OTHERS.get())) {
-			suggests = null;
+			suggests.addAll(this.getAllPlayers());
 		}
 		return suggests;
 	}

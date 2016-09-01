@@ -68,8 +68,8 @@ public class EEAfkStatus extends ESubCommand<EverEssentials> {
 	@Override
 	public List<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		List<String> suggests = new ArrayList<String>();
-		if (!(args.size() == 1 && source.hasPermission(EEPermissions.AFK_OTHERS.get()))){
-			suggests = null;
+		if (args.size() == 1 && source.hasPermission(EEPermissions.AFK_OTHERS.get())){
+			suggests.addAll(this.getAllPlayers());
 		}
 		return suggests;
 	}

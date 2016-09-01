@@ -66,6 +66,8 @@ public class EEWorldsEnd extends ECommand<EverEssentials> {
 					suggests.add(world.getProperties().getWorldName());
 				}
 			}
+		} else if (args.size() == 2 && source.hasPermission(EEPermissions.WORLDS_OTHERS.get())) {
+			suggests.addAll(this.getAllPlayers());
 		}
 		return suggests;
 	}
