@@ -1,3 +1,19 @@
+/*
+ * This file is part of EverEssentials.
+ *
+ * EverEssentials is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * EverEssentials is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with EverEssentials.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package fr.evercraft.essentials.command.itemname;
 
 import java.util.ArrayList;
@@ -68,13 +84,18 @@ public class EEItemNameClear extends ESubCommand<EverEssentials> {
 	private boolean commandItemNameClear(final EPlayer player) {
 		if(player.getItemInHand(HandTypes.MAIN_HAND).isPresent()){
 			ItemStack item = player.getItemInHand(HandTypes.MAIN_HAND).get();
-			player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get()).append(EEMessages.ITEM_NAME_CLEAR_NAME.get())
-					.replace("<item>", EChat.getButtomItem(player.getItemInHand(HandTypes.MAIN_HAND).get(), 
-							EChat.getTextColor(EEMessages.ITEM_NAME_SET_COLOR.get())))
-				.build());
-			item.offer(Keys.DISPLAY_NAME, null);
-			player.setItemInHand(HandTypes.MAIN_HAND, item);
-			return true;
+			if(item.get(Keys.DISPLAY_NAME).isPresent()){
+				item.offer(Keys.DISPLAY_NAME, Text.of(""));
+				player.setItemInHand(HandTypes.MAIN_HAND, item);
+				player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get()).append(EEMessages.ITEM_NAME_CLEAR_NAME.get())
+						.replace("<item>", EChat.getButtomItem(player.getItemInHand(HandTypes.MAIN_HAND).get(), 
+								EChat.getTextColor(EEMessages.ITEM_NAME_SET_COLOR.get())))
+					.build());
+				return true;
+			} else {
+				this.plugin.getEServer().broadcast("test");
+				return false;
+			}
 		} else {
 			player.sendMessage(EEMessages.PREFIX.get() + EAMessages.EMPTY_ITEM_IN_HAND.get());
 			return false;
