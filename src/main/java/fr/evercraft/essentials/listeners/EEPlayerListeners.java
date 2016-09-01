@@ -16,6 +16,8 @@
  */
 package fr.evercraft.essentials.listeners;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 import org.spongepowered.api.data.key.Keys;
@@ -42,6 +44,10 @@ import org.spongepowered.api.event.item.inventory.ChangeInventoryEvent;
 import org.spongepowered.api.event.item.inventory.InteractInventoryEvent;
 import org.spongepowered.api.event.message.MessageChannelEvent;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
+import org.spongepowered.api.text.channel.MessageChannel;
+import org.spongepowered.api.text.channel.MessageReceiver;
+
+import com.google.common.collect.Lists;
 
 import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EverEssentials;
@@ -236,10 +242,30 @@ public class EEPlayerListeners {
 	
 	@Listener
     public void onPlayerWriteChat(MessageChannelEvent.Chat event, @First Player player_sponge) {
-		// AFK
-		Optional<EPlayer> player = this.plugin.getEServer().getEPlayer(player_sponge);
-		if (player.isPresent()) {
-			player.get().updateLastActivated();
+		Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(player_sponge);
+		if (optPlayer.isPresent()) {
+			EPlayer player = optPlayer.get();
+			
+			// AFK
+			player.updateLastActivated();
+			
+			// Ignore
+			Collection<MessageReceiver> members = event.getChannel().orElse(event.getOriginalChannel()).getMembers();
+			
+			List<MessageReceiver> list = Lists.newArrayList(members);
+	        list.removeIf(others_sponge -> {
+	        	if(others_sponge instanceof Player) {
+	        		Optional<EPlayer> others = this.plugin.getEServer().getEPlayer((Player) others_sponge);
+	        		if(others.isPresent()) {
+	        			return others.get().ignore(player);
+	        		}
+	        	}
+	        	return false;
+	        });
+	        
+	        if (list.size() != members.size()) {
+	            event.setChannel(MessageChannel.fixed(list));
+	        }
 		}
     }
 	

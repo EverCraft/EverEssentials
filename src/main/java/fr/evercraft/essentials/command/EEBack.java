@@ -90,49 +90,53 @@ public class EEBack extends ECommand<EverEssentials> {
 	
 	private boolean commandBack(final EPlayer player){
 		final Optional<Transform<World>> back = player.getBack();
+		
 		// Le joueur a une position de retour
-		if (back.isPresent()){
-			// Si il y a la permission d'aller dans le monde
-			if (this.plugin.getManagerServices().getEssentials().hasPermissionWorld(player, back.get().getExtent())) {
-				// Si la position est safe
-				if (this.plugin.getEverAPI().getManagerUtils().getLocation().isPositionSafe(back.get()) || player.isGod() || player.isCreative()) {
-					long delay = this.plugin.getConfigs().getTeleportDelay(player);
-					
-					// Si il y a un delay de téléportation
-					if (delay > 0) {
-						player.sendMessage(EEMessages.PREFIX.get() + EEMessages.BACK_DELAY.get()
-								.replaceAll("<delay>", this.plugin.getEverAPI().getManagerUtils().getDate().formatDateDiff(System.currentTimeMillis() + delay)));
-					}
-					
-					player.setTeleport(delay, () -> this.teleport(player, back.get()), player.hasPermission(EEPermissions.TELEPORT_BYPASS_MOVE.get()));
-					return true;
-				// La position n'est pas safe
-				} else {
-					player.sendMessage(EEMessages.PREFIX.get() + EEMessages.BACK_ERROR_LOCATION.get());
-				}
-			// Il n'a pas la permission d'aller dans le monde
-			} else {
-				player.sendMessage(EEMessages.PREFIX.get() + EAMessages.NO_PERMISSION_WORLD_OTHERS.get());
-			}
-		// Le joueur n'a pas de position de retour
-		} else {
+		if (!back.isPresent()) {
 			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.BACK_INCONNU.get());
+			return false;
 		}
-		return false;
+		
+		// Le joueur n'a pas la permission d'aller dans le monde
+		if (!this.plugin.getManagerServices().getEssentials().hasPermissionWorld(player, back.get().getExtent())) {
+			player.sendMessage(EEMessages.PREFIX.get() + EAMessages.NO_PERMISSION_WORLD_OTHERS.get());
+			return false;
+		}
+			
+		// La position n'est pas Safe
+		if (!this.plugin.getEverAPI().getManagerUtils().getLocation().isPositionSafe(back.get()) || player.isGod() || player.isCreative()) {
+			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.BACK_ERROR_LOCATION.get());
+			return false;
+		}
+		
+		// Delais de téléportation
+		long delay = this.plugin.getConfigs().getTeleportDelay(player);
+		if (delay > 0) {
+			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.BACK_DELAY.get()
+					.replaceAll("<delay>", this.plugin.getEverAPI().getManagerUtils().getDate().formatDateDiff(System.currentTimeMillis() + delay)));
+		}
+		
+		// Téléportation
+		player.setTeleport(delay, () -> this.teleport(player, back.get()), player.hasPermission(EEPermissions.TELEPORT_BYPASS_MOVE.get()));
+		return true;
 	}
 	
 	private void teleport(final EPlayer player, final Transform<World> teleport) {
-		if (player.isOnline()) {
-			// Le joueur a bien été téléporter
-			if (player.teleportSafe(teleport)) {
-				player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.getText())
-						.append(EEMessages.BACK_TELEPORT.get())
-						.replace("<back>", getButtonLocation(teleport.getLocation()))
-						.build());
-			} else {
-				player.sendMessage(EEMessages.PREFIX.get() + EEMessages.BACK_ERROR_LOCATION.get());
-			}
+		// Le joueur n'est pas en ligne
+		if (!player.isOnline()) {
+			return;
 		}
+			
+		// La position n'est pas Safe
+		if (!player.teleportSafe(teleport)) {
+			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.BACK_ERROR_LOCATION.get());
+			return;
+		}
+		
+		player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.getText())
+				.append(EEMessages.BACK_TELEPORT.get())
+				.replace("<back>", getButtonLocation(teleport.getLocation()))
+				.build());
 	}
 	
 	private Text getButtonLocation(final Location<World> location){
