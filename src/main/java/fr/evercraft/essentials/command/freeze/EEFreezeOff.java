@@ -69,7 +69,7 @@ public class EEFreezeOff extends ESubCommand<EverEssentials> {
 	@Override
 	public List<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		List<String> suggests = new ArrayList<String>();
-		if (args.size() == 1 && source.hasPermission(EEPermissions.FREEZE_OTHERS.get())){
+		if (!(args.size() == 0 && source.hasPermission(EEPermissions.FREEZE_OTHERS.get()))){
 			suggests.addAll(this.getAllUsers());
 		}
 		return suggests;
