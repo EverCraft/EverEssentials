@@ -147,6 +147,7 @@ public class EEWhois extends ECommand<EverEssentials> {
 		lists.add(this.getFly(player));
 		lists.add(this.getGod(player));
 		lists.add(this.getVanish(player));
+		lists.add(this.getFreeze(player));
 		lists.add(this.getAFK(player));
 		lists.add(this.getFirstDatePlayed(player));
 		lists.add(this.getLastDatePlayed(player));
@@ -355,6 +356,14 @@ public class EEWhois extends ECommand<EverEssentials> {
 			return EChat.of(EEMessages.WHOIS_VANISH_ENABLE.get());
 		} else {
 			return EChat.of(EEMessages.WHOIS_VANISH_DISABLE.get());
+		}
+	}
+	
+	private Text getFreeze(final EPlayer player){
+		if (player.isFreeze()) {
+			return EChat.of(EEMessages.WHOIS_FREEZE_ENABLE.get());
+		} else {
+			return EChat.of(EEMessages.WHOIS_FREEZE_DISABLE.get());
 		}
 	}
 	

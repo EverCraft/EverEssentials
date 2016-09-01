@@ -199,20 +199,24 @@ public class EEPlayerListeners {
 					player.updateLastActivated();
 				}
 				
-				// Teleport
-				Optional<TeleportDelay> teleport = player.getTeleportDelay();
-				if (teleport.isPresent() && !teleport.get().canMove() && (!event.getFromTransform().getExtent().equals(event.getToTransform().getExtent()) ||
+				
+				// Mouvement des pieds
+				if (!event.getFromTransform().getExtent().equals(event.getToTransform().getExtent()) ||
 						Math.round(event.getFromTransform().getPosition().getX()) != Math.round(event.getToTransform().getPosition().getX()) ||
 						Math.round(event.getFromTransform().getPosition().getY()) != Math.round(event.getToTransform().getPosition().getY()) ||
-						Math.round(event.getFromTransform().getPosition().getZ()) != Math.round(event.getToTransform().getPosition().getZ()))) {
-
-					player.cancelTeleportDelay();
-					player.sendMessage(EEMessages.PREFIX.get() + EEMessages.TELEPORT_ERROR_DELAY.get());
-				}
-				
-				// Freeze
-				if(player.isFreeze()) {
-					event.setCancelled(true);
+						Math.round(event.getFromTransform().getPosition().getZ()) != Math.round(event.getToTransform().getPosition().getZ())) {
+					
+					// Teleport
+					Optional<TeleportDelay> teleport = player.getTeleportDelay();
+					if (teleport.isPresent() && !teleport.get().canMove()) {
+						player.cancelTeleportDelay();
+						player.sendMessage(EEMessages.PREFIX.get() + EEMessages.TELEPORT_ERROR_DELAY.get());
+					}
+					
+					// Freeze
+					if(player.isFreeze()) {
+						event.setCancelled(true);
+					}
 				}
 			}
 		}

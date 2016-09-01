@@ -120,7 +120,7 @@ public class EEMessage extends EMessage {
 		CLEARINVENTORY_OTHERS_NOITEM("clearinventory.othersNoItem", "&cErreur : &6<player> &cn'a aucun objet dans l'inventaire."),
 		
 		COLOR_DESCRIPTION("color.description", 				"Affiche les différentes couleurs dans Minecraft."),
-		COLOR_LIST_TITLE("color.listTitle", 				"&l&7Liste des couleurs :"), 
+		COLOR_LIST_TITLE("color.listTitle", 				"&l&4Liste des couleurs"), 
 		COLOR_LIST_MESSAGE("color.listMessage", 			"<color>█ &0: <id>-<name>"), 
 		
 		EFFECT_DESCRIPTION("effect.description", 			"Ajoute un effet de potion sur un joueur."),
@@ -168,7 +168,7 @@ public class EEMessage extends EMessage {
 		FREEZE_DESCRIPTION("freeze.description", 										"Gère la paralysie sur un joueur"),
 		
 		FREEZE_ON_DESCRIPTION("freeze.on.description",									"Paralyse un joueur"),
-		FREEZE_ON_PLAYER("freeze.on.player",  											"&7Vous êtes paralysé."),
+		FREEZE_ON_PLAYER("freeze.on.player",  											"&7Vous êtes désormais paralysé."),
 		FREEZE_ON_PLAYER_ERROR("freeze.on.playerError",									"&cErreur : Vous êtes déjà paralysé."),
 		FREEZE_ON_PLAYER_CANCEL("freeze.on.playerCancel",								"&7Vous venez d'être paralysé par &6<staff>&7."),
 		FREEZE_ON_OTHERS_PLAYER("freeze.on.othersStaffEnable", 							"&7Vous venez de paralyser &6<player>&7."),
@@ -1003,6 +1003,8 @@ public class EEMessage extends EMessage {
 		WHOIS_MUTE_DISABLE("whois.muteDisable", "    &6&l➤  &6Muet : &cDésactivé"),
 		WHOIS_VANISH_ENABLE("whois.vanishEnable", "    &6&l➤  &6Vanish : &aActivé"),
 		WHOIS_VANISH_DISABLE("whois.vanishDisable", "    &6&l➤  &6Vanish : &cDésactivé"),
+		WHOIS_FREEZE_ENABLE("whois.freezeEnable", "    &6&l➤  &6Freeze : &aActivé"),
+		WHOIS_FREEZE_DISABLE("whois.freezeDisable", "    &6&l➤  &6Freeze : &cDésactivé"),
 		WHOIS_AFK_ENABLE("whois.afkEnable", "    &6&l➤  &6AFK : &aActivé"),
 		WHOIS_AFK_DISABLE("whois.afkDisable", "    &6&l➤  &6AFK : &cDésactivé"),
 		WHOIS_FIRST_DATE_PLAYED("whois.firstDatePlayed", "    &6&l➤  &6Première connexion : &a<time>"),

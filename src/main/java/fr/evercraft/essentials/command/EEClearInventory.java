@@ -68,7 +68,7 @@ public class EEClearInventory extends ECommand<EverEssentials> {
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		List<String> suggests = new ArrayList<String>();
 		if (args.size() == 1 && source.hasPermission(EEPermissions.CLEARINVENTORY_OTHERS.get())){
-			suggests.addAll(this.getAllPlayers());
+			suggests.addAll(this.getAllPlayers(source));
 		}
 		return suggests;
 	}
