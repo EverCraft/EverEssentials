@@ -142,120 +142,140 @@ public class EEItem extends EReloadCommand<EverEssentials> {
 		return resultat;
 	}
 	
-	private boolean commandItem(final EPlayer player, String item_name) {
-		Optional<ItemType> type = UtilsItemType.getItemType(item_name);
-		if (type.isPresent()){
-			if (!this.blacklist.contains(type.get())){
-				this.commandGive(player, ItemStack.of(type.get(), 1), type.get().getMaxStackQuantity());
-				return true;
-			} else {
-				player.sendMessage(EEMessages.PREFIX.get() + EEMessages.ITEM_ERROR_ITEM_BLACKLIST.get());
-			}
-		} else {
+	private boolean commandItem(final EPlayer player, String type_string) {
+		Optional<ItemType> type = UtilsItemType.getItemType(type_string);
+		
+		// Le type n'existe pas
+		if (!type.isPresent()) {
 			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.ITEM_ERROR_ITEM_NOT_FOUND.get()
-					.replaceAll("<item>", item_name));
+					.replaceAll("<item>", type_string));
+			return false;
 		}
-		return false;
+		
+		// L'item est dans la BlackList
+		if (this.blacklist.contains(type.get())) {
+			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.ITEM_ERROR_ITEM_BLACKLIST.get());
+			return false;
+		}
+		
+		this.commandGive(player, ItemStack.of(type.get(), 1), type.get().getMaxStackQuantity());
+		return true;
 	}
 
 	private boolean commandItem(final EPlayer player, String type_string, String value) {
 		Optional<ItemType> type = UtilsItemType.getItemType(type_string);
-		// Le type existe
-		if (type.isPresent()) {
-			// L'item n'est pas dans la blacklist
-			if (!this.blacklist.contains(type.get())) {
-				ItemStack item = ItemStack.of(type.get(), 1);
-				int quantity = type.get().getMaxStackQuantity();
-				
-				Optional<ItemStack> item_data = UtilsItemType.getCatalogType(item, value);
-				// Si la valeur est une data
-				if (item_data.isPresent()){
-					return this.commandGive(player, item_data.get(), quantity);
-				// La valeur n'est pas une data
-				} else {
-					try {
-						quantity = Integer.parseInt(value);
-						if (quantity <= type.get().getMaxStackQuantity() && quantity > 0){
-							return this.commandGive(player, item_data.get(), quantity);
-						} else {
-							player.sendMessage(EEMessages.PREFIX.get() + EEMessages.ITEM_ERROR_QUANTITY.get()
-									.replaceAll("<amount>", String.valueOf(type.get().getMaxStackQuantity())));
-						}
-					} catch (NumberFormatException e) {
-						player.sendMessage(EEMessages.PREFIX.get() + EAMessages.IS_NOT_NUMBER.get().replaceAll("<number>", value));
-					}
-				}
-			} else {
-				player.sendMessage(EEMessages.PREFIX.get() + EEMessages.ITEM_ERROR_ITEM_BLACKLIST.get());
-			}
-		} else {
+		
+		// Le type n'existe pas
+		if (!type.isPresent()) {
 			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.ITEM_ERROR_ITEM_NOT_FOUND.get()
 					.replaceAll("<item>", type_string));
+			return false;
 		}
-		return false;
+		
+		// L'item est dans la BlackList
+		if (this.blacklist.contains(type.get())) {
+			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.ITEM_ERROR_ITEM_BLACKLIST.get());
+			return false;
+		}
+		
+		ItemStack item = ItemStack.of(type.get(), 1);
+		int quantity = type.get().getMaxStackQuantity();
+		Optional<ItemStack> item_data = UtilsItemType.getCatalogType(item, value);
+		
+		// Si la valeur est une data
+		if (item_data.isPresent()){
+			return this.commandGive(player, item_data.get(), quantity);
+		}
+		
+		// La quantité n'est pas un nombre
+		try {
+			quantity = Integer.parseInt(value);
+		} catch (NumberFormatException e) {
+			player.sendMessage(EEMessages.PREFIX.get() + EAMessages.IS_NOT_NUMBER.get().replaceAll("<number>", value));
+			return false;
+		}
+			
+		// La valeur n'est pas correcte
+		if (quantity < 1 && quantity > type.get().getMaxStackQuantity()){
+			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.ITEM_ERROR_QUANTITY.get()
+					.replaceAll("<amount>", String.valueOf(type.get().getMaxStackQuantity())));
+			return false;
+		}
+		
+		return this.commandGive(player, item, quantity);
 	}
 
 	private boolean commandItem(final EPlayer player, String type_string, String data_string, String quantity_string) {
 		Optional<ItemType> type = UtilsItemType.getItemType(type_string);
-		// Le type existe
-		if (type.isPresent()) {
-			// L'item n'est pas dans la blacklist
-			if (!this.blacklist.contains(type.get())) {
-				ItemStack item = ItemStack.of(type.get(), 1);
-				
-				Optional<ItemStack> item_data = UtilsItemType.getCatalogType(item, data_string);
-				// Si la valeur est une data
-				if (item_data.isPresent()){
-					try {
-						int quantity = Integer.parseInt(quantity_string);
-						if (quantity <= type.get().getMaxStackQuantity() && quantity > 0){
-							return this.commandGive(player, item_data.get(), quantity);
-						} else {
-							player.sendMessage(EEMessages.PREFIX.get() + EEMessages.ITEM_ERROR_QUANTITY.get()
-									.replaceAll("<amount>", String.valueOf(type.get().getMaxStackQuantity())));
-						}
-					} catch (NumberFormatException e) {
-						player.sendMessage(EEMessages.PREFIX.get() + EAMessages.IS_NOT_NUMBER.get()
-								.replaceAll("<number>", quantity_string));
-					}
-				} else {
-					player.sendMessage(EEMessages.PREFIX.get() + EEMessages.ITEM_ERROR_DATA.get()
-							.replaceAll("<item>", data_string));
-				}
-			} else {
-				player.sendMessage(EEMessages.PREFIX.get() + EEMessages.ITEM_ERROR_ITEM_BLACKLIST.get());
-			}
-		} else {
+		
+		// Le type n'existe pas
+		if (!type.isPresent()) {
 			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.ITEM_ERROR_ITEM_NOT_FOUND.get()
 					.replaceAll("<item>", type_string));
+			return false;
 		}
-		return false;
+		
+		// L'item est dans la BlackList
+		if (this.blacklist.contains(type.get())) {
+			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.ITEM_ERROR_ITEM_BLACKLIST.get());
+			return false;
+		}
+		
+		ItemStack item = ItemStack.of(type.get(), 1);
+		int quantity = type.get().getMaxStackQuantity();
+		Optional<ItemStack> item_data = UtilsItemType.getCatalogType(item, data_string);
+		
+		// Si la valeur est une data
+		if (!item_data.isPresent()){
+			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.ITEM_ERROR_DATA.get()
+					.replaceAll("<item>", data_string));
+			return false;
+		}
+		
+		// La quantité n'est pas un nombre
+		try {
+			quantity = Integer.parseInt(quantity_string);
+		} catch (NumberFormatException e) {
+			player.sendMessage(EEMessages.PREFIX.get() + EAMessages.IS_NOT_NUMBER.get().replaceAll("<number>", quantity_string));
+			return false;
+		}
+			
+		// La valeur n'est pas correcte
+		if (quantity < 1 && quantity > type.get().getMaxStackQuantity()){
+			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.ITEM_ERROR_QUANTITY.get()
+					.replaceAll("<amount>", String.valueOf(type.get().getMaxStackQuantity())));
+			return false;
+		}
+		
+		return this.commandGive(player, item_data.get(), quantity);
 	}
 	
 	private boolean commandGive(final EPlayer player, ItemStack item, Integer quantity) {
 		item.setQuantity(quantity);
 		
-		if(!player.giveItem(item).isPresent()) {
-			player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
-				.append(EEMessages.ITEM_GIVE.get().replaceAll("<quantity>", quantity.toString()))
-					.replace("<item>", EChat.getButtomItem(item, EEMessages.ITEM_GIVE_COLOR.getColor()))
-				.build());
-		} else {
+		if(player.giveItem(item).isPresent()) {
 			player.sendMessage(EEMessages.PREFIX.get() + EAMessages.PLAYER_INVENTORY_FULL.get());
+			return false;
 		}
+			
+		player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
+			.append(EEMessages.ITEM_GIVE.get().replaceAll("<quantity>", quantity.toString()))
+				.replace("<item>", EChat.getButtomItem(item, EEMessages.ITEM_GIVE_COLOR.getColor()))
+			.build());
 		return true;
 	}
 	
 	private Collection<ItemType> getBlacklist(){
 		Collection<ItemType> blacklist = new ArrayList<ItemType>();
-		for (String item : this.plugin.getConfigs().getListString("blacklist")){
+		
+		this.plugin.getConfigs().getListString("blacklist").forEach(item -> {
 			Optional<ItemType> type = UtilsItemType.getItemType(item);
 			if (type.isPresent()){
 				blacklist.add(type.get());
 			} else {
 				this.plugin.getLogger().warn("BlackList error : '" + item + "' is not a name of an object minecraft.");
 			}
-		}
+		});
 		return blacklist;
 	}
 }

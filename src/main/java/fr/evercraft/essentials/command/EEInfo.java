@@ -73,6 +73,7 @@ public class EEInfo extends ECommand<EverEssentials> {
 		
 		// Si on ne connait pas le joueur
 		if (args.size() == 0) {
+			
 			// Si la source est un joueur
 			if (source instanceof EPlayer) {
 				resultat = this.commandInfo((EPlayer) source);
@@ -80,6 +81,7 @@ public class EEInfo extends ECommand<EverEssentials> {
 			} else {
 				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText()));
 			}
+			
 		// Nombre d'argument incorrect
 		} else {
 			source.sendMessage(this.help(source));
@@ -90,18 +92,17 @@ public class EEInfo extends ECommand<EverEssentials> {
 	private boolean commandInfo(final EPlayer player) {
 		Optional<ItemStack> item = player.getItemInMainHand();
 		
-		// Si le joueur a bien un item dans la main
-		if (item.isPresent()) {
-			player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
-					.append(EEMessages.INFO_PLAYER.get()
-							.replaceAll("<type>", item.get().getItem().getName().replaceAll("minecraft:", "").toUpperCase()))
-					.replace("<item>", EChat.getButtomItem(item.get(), EChat.getTextColor(EEMessages.INFO_ITEM_COLOR.get())))
-					.build());
-			return true;
 		// Le joueur a aucun item dans la main
-		} else {
+		if (!item.isPresent()) {
 			player.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.EMPTY_ITEM_IN_HAND.getText()));
+			return false;
 		}
-		return false;
+		
+		player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
+				.append(EEMessages.INFO_PLAYER.get()
+						.replaceAll("<type>", item.get().getItem().getName().replaceAll("minecraft:", "").toUpperCase()))
+				.replace("<item>", EChat.getButtomItem(item.get(), EChat.getTextColor(EEMessages.INFO_ITEM_COLOR.get())))
+				.build());
+		return true;
 	}
 }

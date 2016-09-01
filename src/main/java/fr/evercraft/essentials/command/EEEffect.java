@@ -79,6 +79,7 @@ public class EEEffect extends EReloadCommand<EverEssentials> {
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		List<String> suggests = new ArrayList<String>();
 		if (source instanceof Player) {
+			
 			// Effet
 			if (args.size() == 1) {
 				suggests = UtilsEffect.getEffects();
@@ -96,6 +97,7 @@ public class EEEffect extends EReloadCommand<EverEssentials> {
 				suggests.add("60");
 				suggests.add("600");
 			}
+			
 		}
 		return suggests;
 	}
@@ -109,12 +111,17 @@ public class EEEffect extends EReloadCommand<EverEssentials> {
 			EPlayer player = (EPlayer) source;
 			// Affichage de l'aide
 			if (args.size() == 0) {
+				
 				player.sendMessage(this.help(source));
+				
 			// Ajout de l'effect avec amplifier et durée par défaut
 			} else if (args.size() == 1) {
+				
 				resultat = this.commandEffect(player, args.get(0));
+				
 			// Ajout de l'effect avec durée par défaut et amplifier personnalisé
 			} else if (args.size() == 2) {
+				
 				try {
 					resultat = this.commandEffect(player, args.get(0), Integer.valueOf(args.get(1)));
 					// Nombre invalide
@@ -122,8 +129,10 @@ public class EEEffect extends EReloadCommand<EverEssentials> {
 					player.sendMessage(EEMessages.PREFIX.get() + EAMessages.IS_NOT_NUMBER.get()
 							.replaceAll("<number>", args.get(1)));
 				}
+				
 			// Ajout de l'effect avec durée et amplifier personnalisé
 			} else if (args.size() == 3) {
+				
 				try {
 					int amplification = Integer.valueOf(args.get(1));
 					try {
@@ -137,6 +146,7 @@ public class EEEffect extends EReloadCommand<EverEssentials> {
 					player.sendMessage(EEMessages.PREFIX.get() + EAMessages.IS_NOT_NUMBER.get()
 							.replaceAll("<number>", args.get(1)));
 				}
+				
 			} else {
 				source.sendMessage(this.help(source));
 			}
@@ -149,70 +159,68 @@ public class EEEffect extends EReloadCommand<EverEssentials> {
 
 	private boolean commandEffect(final EPlayer player, final String name_effect) {
 		Optional<UtilsEffect> effect = UtilsEffect.getEffect(name_effect);
-		// Si l'effet existe
-		if (effect.isPresent()) {
-			player.addPotion(this.createPotionEffect(effect.get().getType(), this.default_amplifier, this.default_duration));
-			return true;
+		
 		// L'effet n'existe pas
-		} else {
+		if (!effect.isPresent()) {
 			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.EFFECT_ERROR_NAME.get()
 					.replaceAll("<effect>", name_effect));
 			return false;
 		}
+		
+		player.addPotion(this.createPotionEffect(effect.get().getType(), this.default_amplifier, this.default_duration));
+		return true;
 	}
 
 	private boolean commandEffect(final EPlayer player, final String name_effect, final int amplifier) {
 		Optional<UtilsEffect> effect = UtilsEffect.getEffect(name_effect);
-		// Si l'effet existe
-		if (effect.isPresent()) {
-			// Si la valeur de l'amplifieur est correcte
-			if (1 <= amplifier && (this.unsafe || amplifier <= effect.get().getMaxAmplifier())) {
-				player.addPotion(this.createPotionEffect(effect.get().getType(), amplifier - 1, this.default_duration));
-			// La valeur de l'amplifieur n'est pas correcte
-			} else {
-				player.sendMessage(EEMessages.PREFIX.get() + EEMessages.EFFECT_ERROR_AMPLIFIER.get()
-						.replaceAll("<min>", "1")
-						.replaceAll("<max>", String.valueOf(effect.get().getMaxAmplifier())));
-			}
-			return true;
+		
 		// L'effet n'existe pas
-		} else {
+		if (!effect.isPresent()) {
 			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.EFFECT_ERROR_NAME.get()
 					.replaceAll("<effect>", name_effect));
 			return false;
 		}
+		
+		// La valeur de l'amplifieur n'est pas correcte
+		if (amplifier < 1 || (amplifier > effect.get().getMaxAmplifier() && !this.unsafe)) {
+			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.EFFECT_ERROR_AMPLIFIER.get()
+					.replaceAll("<min>", "1")
+					.replaceAll("<max>", String.valueOf(effect.get().getMaxAmplifier())));
+			return false;
+		}
+		
+		player.addPotion(this.createPotionEffect(effect.get().getType(), amplifier - 1, this.default_duration));
+		return true;
 	}
 
 	private boolean commandEffect(final EPlayer player, final String name_effect, final int amplifier, final int duration) {
 		Optional<UtilsEffect> effect = UtilsEffect.getEffect(name_effect);
-		// Si l'effet existe
-		if (effect.isPresent()) {
-			// Si la valeur de l'amplifieur est correcte
-			if (1 <= amplifier && (this.unsafe || amplifier <= effect.get().getMaxAmplifier())) {
-				// Si la durée est correcte
-				if (duration > 0 && duration <= this.max_duration) {
-					player.addPotion(createPotionEffect(effect.get().getType(), amplifier - 1, duration));
-				// La durée n'est pas correcte
-				} else {
-					player.sendMessage(EEMessages.PREFIX.get() 
-						+ EEMessages.EFFECT_ERROR_DURATION.get()
-							.replaceAll("<min>", "1")
-							.replaceAll("<max>", String.valueOf(this.max_duration)));
-				}
-			// La valeur de l'amplifieur n'est pas correcte
-			} else {
-				player.sendMessage(EEMessages.PREFIX.get()
-						+ EEMessages.EFFECT_ERROR_AMPLIFIER.get()
-							.replaceAll("<min>", "1")
-							.replaceAll("<max>", String.valueOf(effect.get().getMaxAmplifier() / 20)));
-			}
-			return true;
+		
 		// L'effet n'existe pas
-		} else {
+		if (!effect.isPresent()) {
 			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.EFFECT_ERROR_NAME.get()
 					.replaceAll("<effect>", name_effect));
 			return false;
 		}
+		
+		// La valeur de l'amplifieur n'est pas correcte
+		if (amplifier < 1 || (amplifier > effect.get().getMaxAmplifier() && !this.unsafe)) {
+			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.EFFECT_ERROR_AMPLIFIER.get()
+					.replaceAll("<min>", "1")
+					.replaceAll("<max>", String.valueOf(effect.get().getMaxAmplifier())));
+			return false;
+		}
+		
+		// La durée n'est pas correcte
+		if (duration < 0 || duration > this.max_duration) {
+			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.EFFECT_ERROR_DURATION.get()
+					.replaceAll("<min>", "1")
+					.replaceAll("<max>", String.valueOf(this.max_duration)));
+			return false;
+		}
+		
+		player.addPotion(createPotionEffect(effect.get().getType(), amplifier - 1, duration));
+		return true;
 	}
 
 	private PotionEffect createPotionEffect(PotionEffectType type, int amplifier, int duration) {

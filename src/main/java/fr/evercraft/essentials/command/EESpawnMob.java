@@ -93,6 +93,7 @@ public class EESpawnMob extends EReloadCommand<EverEssentials> {
 		
 		// Si on ne connait pas le joueur
 		if (args.size() == 1) {
+			
 			// Si la source est un joueur
 			if (source instanceof EPlayer) {
 				Optional<UtilsEntity> optEntity = UtilsEntity.get(args.get(0));
@@ -106,7 +107,9 @@ public class EESpawnMob extends EReloadCommand<EverEssentials> {
 			} else {
 				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText()));
 			}
+			
 		} else if (args.size() == 2) {
+			
 			if (source instanceof EPlayer) {
 				Optional<UtilsEntity> optEntity = UtilsEntity.get(args.get(0));
 				if (optEntity.isPresent()) {
@@ -125,24 +128,28 @@ public class EESpawnMob extends EReloadCommand<EverEssentials> {
 			} else {
 				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText()));
 			}
+			
 		} else {
 			source.sendMessage(this.help(source));
 		}
 		return resultat;
 	}
 	
-	private boolean commandSpawnMob(final EPlayer player, UtilsEntity utilsEntity, int amount) {
-		Optional<Vector3i> optBlock = player.getViewBlock();
-		if (optBlock.isPresent()) {
-			Location<World> spawnLocation = player.getWorld().getLocation(optBlock.get().add(0, 1, 0));
-			utilsEntity.spawnEntity(spawnLocation, amount);
-			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.SPAWNMOB_MOB.get()
-					.replaceAll("<amount>", String.valueOf(amount))
-					.replaceAll("<entity>", StringUtils.capitalize(utilsEntity.getName())));
-			return true;
-		} else {
+	private boolean commandSpawnMob(final EPlayer player, UtilsEntity entity, int amount) {
+		Optional<Vector3i> block = player.getViewBlock();
+		
+		// Aucun block
+		if (!block.isPresent()) {
 			player.sendMessage(EEMessages.PREFIX.get() + EAMessages.PLAYER_NO_LOOK_BLOCK.get());
+			return false;
 		}
-		return false;
+		
+		Location<World> spawnLocation = player.getWorld().getLocation(block.get().add(0, 1, 0));
+		entity.spawnEntity(spawnLocation, amount);
+		
+		player.sendMessage(EEMessages.PREFIX.get() + EEMessages.SPAWNMOB_MOB.get()
+				.replaceAll("<amount>", String.valueOf(amount))
+				.replaceAll("<entity>", StringUtils.capitalize(entity.getName())));
+		return true;
 	}
 }

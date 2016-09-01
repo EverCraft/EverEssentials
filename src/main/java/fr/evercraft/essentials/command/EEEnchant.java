@@ -155,52 +155,51 @@ public class EEEnchant extends ECommand<EverEssentials> {
 	}
 	
 	private boolean commandEnchant(final EPlayer player, Enchantment enchantment, int level) {
-		// Si le joueur a un item dans la main
-		if (player.getItemInMainHand().isPresent()) {
-			ItemStack item = player.getItemInMainHand().get();
-			
-			// Si le level n'est pas trop faible
-			if (level >= enchantment.getMinimumLevel()){
-				// Si le level n'est pas trop élevé
-				if (level <= enchantment.getMaximumLevel()) {
-					EnchantmentData enchantment_data = item.getOrCreate(EnchantmentData.class).get();
-					
-					// Si l'enchantement est applicable sur cet item
-					if (UtilsEnchantment.canBeAppliedToItemStack(item, enchantment)) {
-						enchantment_data.set(enchantment_data.enchantments().add(new ItemEnchantment(enchantment, level)));
-						item.offer(enchantment_data);
-						player.setItemInMainHand(item);
-						player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
-								.append(EEMessages.ENCHANT_SUCCESSFULL.get()
-										.replaceAll("<enchantment>", enchantment.getId().toLowerCase().replace("minecraft:", ""))
-										.replaceAll("<level>", String.valueOf(level)))
-								.replace("<item>", EChat.getButtomItem(item, EChat.getTextColor(EEMessages.ENCHANT_ITEM_COLOR.get())))
-								.build());
-						return true;
-					// L'enchantement n'est pas applicable sur cet item
-					} else {
-						player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.getText())
-								.append(EEMessages.ENCHANT_INCOMPATIBLE.get()
-										.replaceAll("<enchantment>", enchantment.getId().toLowerCase().replace("minecraft:", ""))
-										.replaceAll("<level>", String.valueOf(level)))
-								.replace("<item>", EChat.getButtomItem(item, EChat.getTextColor(EEMessages.ENCHANT_ITEM_COLOR.get())))
-								.build());
-					}
-				// Le level est trop élevé
-				} else {
-					player.sendMessage(EEMessages.PREFIX.get() + EEMessages.ENCHANT_LEVEL_TOO_HIGHT.get()
-							.replaceAll("<number>", String.valueOf(level)));
-				}
-			// Le level est trop faible
-			} else {
-				player.sendMessage(EEMessages.PREFIX.get() + EEMessages.ENCHANT_LEVEL_TOO_LOW.get()
-						.replaceAll("<number>", String.valueOf(level)));
-			}
 		// Le joueur n'a pas d'item dans la main
-		} else {
+		if (!player.getItemInMainHand().isPresent()) {
 			player.sendMessage(EEMessages.PREFIX.get() + EAMessages.EMPTY_ITEM_IN_HAND.get());
+			return false;
 		}
-		return false;
+		
+		ItemStack item = player.getItemInMainHand().get();
+			
+		// Le level est trop faible
+		if (level < enchantment.getMinimumLevel()) {
+			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.ENCHANT_LEVEL_TOO_LOW.get()
+					.replaceAll("<number>", String.valueOf(level)));
+			return false;
+		}
+		
+		if (level > enchantment.getMaximumLevel()) {
+			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.ENCHANT_LEVEL_TOO_HIGHT.get()
+					.replaceAll("<number>", String.valueOf(level)));
+			return false;
+		}
+
+		EnchantmentData enchantment_data = item.getOrCreate(EnchantmentData.class).get();
+					
+		// L'enchantement n'est pas applicable sur cet item
+		if (!UtilsEnchantment.canBeAppliedToItemStack(item, enchantment)) {
+			player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.getText())
+					.append(EEMessages.ENCHANT_INCOMPATIBLE.get()
+							.replaceAll("<enchantment>", enchantment.getId().toLowerCase().replace("minecraft:", ""))
+							.replaceAll("<level>", String.valueOf(level)))
+					.replace("<item>", EChat.getButtomItem(item, EChat.getTextColor(EEMessages.ENCHANT_ITEM_COLOR.get())))
+					.build());
+			return false;
+		}
+		
+		enchantment_data.set(enchantment_data.enchantments().add(new ItemEnchantment(enchantment, level)));
+		item.offer(enchantment_data);
+		player.setItemInMainHand(item);
+		
+		player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
+				.append(EEMessages.ENCHANT_SUCCESSFULL.get()
+						.replaceAll("<enchantment>", enchantment.getId().toLowerCase().replace("minecraft:", ""))
+						.replaceAll("<level>", String.valueOf(level)))
+				.replace("<item>", EChat.getButtomItem(item, EChat.getTextColor(EEMessages.ENCHANT_ITEM_COLOR.get())))
+				.build());
+		return true;
 	}
 	
 	private Optional<Enchantment> getEnchantment(String enchant) {

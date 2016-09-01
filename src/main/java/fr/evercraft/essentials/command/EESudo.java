@@ -98,6 +98,7 @@ public class EESudo extends ECommand<EverEssentials> {
 		
 		// Si on ne connait pas le joueur
 		if (args.size() == 2) {
+			
 			if (!args.get(0).equalsIgnoreCase("console")) {
 				Optional<EPlayer> player = this.plugin.getEServer().getEPlayer(args.get(0));
 				// Le joueur existe
@@ -116,6 +117,7 @@ public class EESudo extends ECommand<EverEssentials> {
 					source.sendMessage(EAMessages.NO_PERMISSION.getText());
 				}
 			}
+			
 		// Nombre d'argument incorrect
 		} else {
 			source.sendMessage(help(source));
@@ -125,37 +127,28 @@ public class EESudo extends ECommand<EverEssentials> {
 	}
 	
 	private boolean commandSudo(final CommandSource staff, final EPlayer player, final String command) {
-		// Si le joueur n'a pas la permission bypass
-		if (!player.hasPermission(EEPermissions.SUDO_BYPASS.get())) {
-			if (player.getCommandSource().isPresent()) {
-				this.plugin.getGame().getCommandManager().process(player.getCommandSource().get(), command);
-				staff.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
-						.append(EEMessages.SUDO_PLAYER.get()
-								.replaceAll("<player>", player.getName()))
-						.replace("<command>", this.getButtonCommand(command))
-						.build());
-				return true;
-			} else {
-				staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.COMMAND_ERROR.get()));
-			}
 		// Le joueur a la permission bypass
-		} else {
+		if (player.hasPermission(EEPermissions.SUDO_BYPASS.get())) {
 			staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.SUDO_BYPASS.get()
 					.replaceAll("<player>", player.getName())));
+			return false;
 		}
+			
+		this.plugin.getGame().getCommandManager().process(player.get(), command);
+		staff.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
+				.append(EEMessages.SUDO_PLAYER.get()
+						.replaceAll("<player>", player.getName()))
+				.replace("<command>", this.getButtonCommand(command))
+				.build());
 		return true;
 	}
 	
-	private boolean commandSudoConsole(final CommandSource staff, final String command) {
-		if (this.plugin.getGame().getServer().getConsole().getCommandSource().isPresent()) {
-			this.plugin.getGame().getCommandManager().process(this.plugin.getGame().getServer().getConsole().getCommandSource().get(), command);
-			staff.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
-					.append(EEMessages.SUDO_CONSOLE.get())
-					.replace("<command>", getButtonCommand(command))
-					.build());
-		} else {
-			staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.COMMAND_ERROR.get()));
-		}
+	private boolean commandSudoConsole(final CommandSource staff, final String command) {			
+		this.plugin.getGame().getCommandManager().process(this.plugin.getGame().getServer().getConsole(), command);
+		staff.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
+				.append(EEMessages.SUDO_CONSOLE.get())
+				.replace("<command>", this.getButtonCommand(command))
+				.build());
 		return true;
 	}
 	

@@ -81,6 +81,7 @@ public class EEList extends ECommand<EverEssentials> {
 		
 		// Si on ne connait pas le joueur
 		if (args.size() == 0) {
+			
 			// Si la source est un joueur
 			if (source instanceof EPlayer) {
 				resultat = this.commandList(source, this.plugin.getEServer().getOnlineEPlayers((EPlayer) source));
@@ -88,6 +89,7 @@ public class EEList extends ECommand<EverEssentials> {
 			} else {
 				resultat = this.commandList(source, this.plugin.getEServer().getOnlineEPlayers());
 			}
+			
 		// Nombre d'argument incorrect
 		} else {
 			source.sendMessage(this.help(source));

@@ -91,10 +91,10 @@ public class EEClearEffect extends ECommand<EverEssentials> {
 		} else if (args.size() == 1) {
 			// Si il a la permission
 			if (source.hasPermission(EEPermissions.CLEAREFFECT_OTHERS.get())){
-				Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(args.get(0));
+				Optional<EPlayer> player = this.plugin.getEServer().getEPlayer(args.get(0));
 				// Le joueur existe
-				if (optPlayer.isPresent()){
-					resultat = this.commandClearEffectOthers(source, optPlayer.get());
+				if (player.isPresent()){
+					resultat = this.commandClearEffectOthers(source, player.get());
 				// Le joueur est introuvable
 				} else {
 					source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
@@ -112,37 +112,36 @@ public class EEClearEffect extends ECommand<EverEssentials> {
 	}
 	
 	private boolean commandClearEffect(final EPlayer player) {
-		// Si il a des effets de potions
-		if (!player.getPotionEffects().isEmpty()) {
-			player.clearPotions();
-			player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.CLEAREFFECT_PLAYER.getText()));
-			return true;
-		// Il n'a pas d'effet de potion
-		} else {
+		// Il n'y a pas d'effect de potion
+		if (player.getPotionEffects().isEmpty()) {
 			player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.CLEAREFFECT_NOEFFECT.getText()));
 			return false;
 		}
+		
+		player.clearPotions();
+		player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.CLEAREFFECT_PLAYER.getText()));
+		return true;
 	}
 	
-	private boolean commandClearEffectOthers(final CommandSource staff, final EPlayer player) throws CommandException{
-		// La source et le joueur sont différent
-		if (!player.equals(staff)) {
-			// Si il a des effets de potions
-			if (!player.getPotionEffects().isEmpty()) {
-				player.clearPotions();
-				player.sendMessage(EEMessages.PREFIX.get() + EEMessages.CLEAREFFECT_OTHERS_PLAYER.get()
-						.replaceAll("<staff>", staff.getName()));
-				staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.CLEAREFFECT_OTHERS_STAFF.get()
-						.replaceAll("<player>", player.getName())));
-				return true;
-			// Il n'a pas d'effet de potion
-			} else {
-				staff.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.CLEAREFFECT_NOEFFECT.getText()));
-				return false;
-			}
+	private boolean commandClearEffectOthers(final CommandSource staff, final EPlayer player) {
 		// La source et le joueur sont identique
-		} else {
+		if (player.equals(staff)) {
 			return this.commandClearEffect(player);
 		}
+		
+		
+		// Il n'y a pas d'effect de potion
+		if (player.getPotionEffects().isEmpty()) {
+			staff.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.CLEAREFFECT_NOEFFECT.getText()));
+			return false;
+		}
+		
+		player.clearPotions();
+		
+		player.sendMessage(EEMessages.PREFIX.get() + EEMessages.CLEAREFFECT_OTHERS_PLAYER.get()
+				.replaceAll("<staff>", staff.getName()));
+		staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.CLEAREFFECT_OTHERS_STAFF.get()
+				.replaceAll("<player>", player.getName())));
+		return true;
 	}
 }

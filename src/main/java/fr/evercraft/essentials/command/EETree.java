@@ -99,6 +99,7 @@ public class EETree extends ECommand<EverEssentials> {
 		
 		// Si on ne connait pas le joueur
 		if (args.size() == 0) {
+			
 			// Si la source est un joueur
 			if (source instanceof EPlayer) {
 				resultat = this.commandTree((EPlayer) source, PopulatorObjects.OAK);
@@ -106,8 +107,10 @@ public class EETree extends ECommand<EverEssentials> {
 			} else {
 				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText()));
 			}
+			
 		// On connais le joueur
 		} else if (args.size() == 1) {
+			
 			// Si la source est un joueur
 			if (source instanceof EPlayer) {
 				Optional<PopulatorObject> generator = this.plugin.getGame().getRegistry().getType(PopulatorObject.class, args.get(0));
@@ -121,6 +124,7 @@ public class EETree extends ECommand<EverEssentials> {
 			} else {
 				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText()));
 			}
+			
 		// Nombre d'argument incorrect
 		} else {
 			source.sendMessage(this.help(source));
@@ -130,22 +134,26 @@ public class EETree extends ECommand<EverEssentials> {
 	}
 	
 	private boolean commandTree(final EPlayer player, PopulatorObject generator) throws CommandException {
-		Optional<Vector3i> optBlock = player.getViewBlock();
-		if (optBlock.isPresent()) {
-			Vector3i block = optBlock.get().add(0, 1, 0);
-			if (generator.canPlaceAt(player.getWorld(), block.getX(), block.getY(), block.getZ())) {
-				generator.placeObject(player.getWorld(), player.getRandom(), block.getX(), block.getY(), block.getZ());
-				return true;
-			} else {
-				if (! generator.equals(PopulatorObjects.DESERT_WELL)) {
-					player.sendMessage(EEMessages.PREFIX.get() + EEMessages.TREE_NO_CAN_DIRT.get());
-				} else {
-					player.sendMessage(EEMessages.PREFIX.get() + EEMessages.TREE_NO_CAN_SAND.get());
-				}
-			}
-		} else {
+		Optional<Vector3i> block = player.getViewBlock();
+		
+		// Aucun block
+		if (!block.isPresent()) {
 			player.sendMessage(EEMessages.PREFIX.get() + EAMessages.PLAYER_NO_LOOK_BLOCK.get());
+			return false;
 		}
-		return false;
+		
+		Vector3i location = block.get().add(0, 1, 0);
+		
+		// Impossible de le placer
+		if (!generator.canPlaceAt(player.getWorld(), location.getX(), location.getY(), location.getZ())) {
+			if (!generator.equals(PopulatorObjects.DESERT_WELL)) {
+				player.sendMessage(EEMessages.PREFIX.get() + EEMessages.TREE_NO_CAN_DIRT.get());
+			} else {
+				player.sendMessage(EEMessages.PREFIX.get() + EEMessages.TREE_NO_CAN_SAND.get());
+			}
+		}
+			
+		generator.placeObject(player.getWorld(), player.getRandom(), location.getX(), location.getY(), location.getZ());
+		return true;
 	}
 }

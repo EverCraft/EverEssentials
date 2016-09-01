@@ -110,37 +110,43 @@ public class EESpawner extends ECommand<EverEssentials> {
 	}
 	
 	private boolean commandSpawner(final EPlayer player, UtilsEntity entity) {
-		Optional<Vector3i> optBlock = player.getViewBlock();
-		if (optBlock.isPresent()) {
-			Location<World> location = player.getWorld().getLocation(optBlock.get());
-			if (location.getBlock().getType().equals(BlockTypes.MOB_SPAWNER)) {				
-				if (location.getTileEntity().isPresent()) {
-					MobSpawner spawner = (MobSpawner) location.getTileEntity().get();
-					if (spawner.getOrCreate(MobSpawnerData.class).isPresent()) {
-						player.sendMessage("MobSpawner : present");
-					} else {
-						player.sendMessage("MobSpawner : no present");
-					}
-					if (spawner.offer(spawner.getMobSpawnerData().nextEntityToSpawn().set(entity.getType(), null)).isSuccessful()) {
-						player.sendMessage("MobSpawner : add");
-					} else {
-						player.sendMessage("MobSpawner : error");
-					}
-					
-					if (spawner.offer(Keys.SPAWNABLE_ENTITY_TYPE, entity.getType()).isSuccessful()) {
-						player.sendMessage("MobSpawner : add");
-					} else {
-						player.sendMessage("MobSpawner : error");
-					}
-				} else {
-					player.sendMessage("MobSpawner : no");
-				}
+		Optional<Vector3i> block = player.getViewBlock();
+		
+		// Aucun block
+		if (!block.isPresent()) {
+			player.sendMessage(EEMessages.PREFIX.get() + EAMessages.PLAYER_NO_LOOK_BLOCK.get());
+			return false;
+		}
+		
+		Location<World> location = player.getWorld().getLocation(block.get());
+		
+		if (!location.getBlock().getType().equals(BlockTypes.MOB_SPAWNER)) {
+			player.sendMessage("is not mobspawner");
+			return false;
+		}
+
+		if (location.getTileEntity().isPresent()) {
+			MobSpawner spawner = (MobSpawner) location.getTileEntity().get();
+			if (spawner.getOrCreate(MobSpawnerData.class).isPresent()) {
+				player.sendMessage("MobSpawner : present");
 			} else {
-				player.sendMessage("is not mobspawner");
+				player.sendMessage("MobSpawner : no present");
+			}
+			if (spawner.offer(spawner.getMobSpawnerData().nextEntityToSpawn().set(entity.getType(), null)).isSuccessful()) {
+				player.sendMessage("MobSpawner : add");
+			} else {
+				player.sendMessage("MobSpawner : error");
+			}
+			
+			if (spawner.offer(Keys.SPAWNABLE_ENTITY_TYPE, entity.getType()).isSuccessful()) {
+				player.sendMessage("MobSpawner : add");
+			} else {
+				player.sendMessage("MobSpawner : error");
 			}
 		} else {
-			player.sendMessage(EEMessages.PREFIX.get() + EAMessages.PLAYER_NO_LOOK_BLOCK.get());
+			player.sendMessage("MobSpawner : no");
 		}
+
 		return false;
 	}
 }

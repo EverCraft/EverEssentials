@@ -86,6 +86,7 @@ public class EEWhois extends ECommand<EverEssentials> {
 		
 		// Nom du home inconnu
 		if (args.size() == 0) {
+			
 			// Si la source est un joueur
 			if (source instanceof EPlayer) {
 				resultat = commandWhoisPlayer(source, (EPlayer) source);
@@ -93,8 +94,10 @@ public class EEWhois extends ECommand<EverEssentials> {
 			} else {
 				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
 			}
+			
 		// Nom du home connu
 		} else if (args.size() == 1) {
+			
 			// Si il a la permission
 			if (source.hasPermission(EEPermissions.WHOIS_OTHERS.get())) {
 				Optional<EUser> user = this.plugin.getEServer().getEUser(args.get(0));
@@ -113,6 +116,7 @@ public class EEWhois extends ECommand<EverEssentials> {
 			} else {
 				source.sendMessage(EAMessages.NO_PERMISSION.getText());
 			}
+			
 		// Nombre d'argument incorrect
 		} else {
 			source.sendMessage(help(source));

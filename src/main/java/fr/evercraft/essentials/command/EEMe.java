@@ -76,6 +76,7 @@ public class EEMe extends ECommand<EverEssentials> {
 		boolean resultat = false;
 		
 		if (args.size() == 1) {
+			
 			// Si la source est un joueur
 			if (source instanceof EPlayer) {
 				resultat = this.commandMe((EPlayer) source, args.get(0));
@@ -83,6 +84,7 @@ public class EEMe extends ECommand<EverEssentials> {
 			} else {
 				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText()));
 			}
+			
 		} else {
 			source.sendMessage(this.help(source));
 		}

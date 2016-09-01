@@ -74,6 +74,7 @@ public class EEBack extends ECommand<EverEssentials> {
 		
 		// Nombre d'argument correct
 		if (args.size() == 0) {
+			
 			// Si la source est un joueur
 			if (source instanceof EPlayer) {
 				resultat = this.commandBack((EPlayer) source);
@@ -81,6 +82,7 @@ public class EEBack extends ECommand<EverEssentials> {
 			} else {
 				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText()));
 			}
+			
 		// Nombre d'argument incorrect
 		} else {
 			source.sendMessage(this.help(source));

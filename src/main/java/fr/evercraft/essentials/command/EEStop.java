@@ -62,11 +62,7 @@ public class EEStop extends ECommand<EverEssentials> {
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		return new ArrayList<String>();
 	}
-	
-	public boolean execute(final CommandSource source, final List<String> args, String arg) throws CommandException {
-		return execute(source, Arrays.asList(arg));
-	}
-	
+
 	@Override
 	protected List<String> getArg(final String arg){
 		if (arg.isEmpty()) {

@@ -111,7 +111,7 @@ public class EESkull extends ECommand<EverEssentials> {
 		return true;
 	}
 
-	private boolean commandSkullOthers(final EPlayer player, final String name) throws CommandException {
+	private boolean commandSkullOthers(final EPlayer player, final String name) {
 		CompletableFuture<GameProfile> future = this.plugin.getEServer().getGameProfileFuture(name);
 		future.exceptionally(e -> null).thenApplyAsync((profile) -> {
 			if (player.isOnline()) {

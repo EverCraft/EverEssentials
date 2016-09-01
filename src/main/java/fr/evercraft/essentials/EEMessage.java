@@ -114,9 +114,10 @@ public class EEMessage extends EMessage {
 		
 		CLEARINVENTORY_DESCRIPTION("clearinventory.description", 	"Supprime tous les objets de l'inventaire d'un joueur."),
 		CLEARINVENTORY_PLAYER("clearinventory.player", 				"&7Vous venez de supprimer &6<amount> objet(s) &7de votre inventaire."),
-		CLEARINVENTORY_NOITEM("clearinventory.noItem", 				"&cErreur : Aucun objet à supprimer."),
+		CLEARINVENTORY_NOITEM("clearinventory.noItem", 				"&cErreur : Vous n'avez aucun objet dans l'inventaire."),
 		CLEARINVENTORY_OTHERS_PLAYER("clearinventory.othersPlayer", "&6<staff> &7vient de supprimer &6<amount> objet(s) &7de votre inventaire."),
 		CLEARINVENTORY_OTHERS_STAFF("clearinventory.othersStaff", 	"&7Vous venez de supprimer &6<amount> objet(s) &7de l'inventaire de &6<player>&7."),
+		CLEARINVENTORY_OTHERS_NOITEM("clearinventory.othersNoItem", "&cErreur : &6<player> &cn'a aucun objet dans l'inventaire."),
 		
 		COLOR_DESCRIPTION("color.description", 				"Affiche les différentes couleurs dans Minecraft."),
 		COLOR_LIST_TITLE("color.listTitle", 				"&l&7Liste des couleurs :"), 

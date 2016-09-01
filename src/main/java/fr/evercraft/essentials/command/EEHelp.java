@@ -80,10 +80,14 @@ public class EEHelp extends ECommand<EverEssentials> {
 		
 		// Si on ne connait pas le joueur
 		if (args.size() == 0) {
+			
 			resultat = this.commandHelp(source);
+			
 		// On connais le joueur
 		} else if (args.size() == 1) {
+			
 			resultat = this.commandHelp(source, args.get(0));
+			
 		// Nombre d'argument incorrect
 		} else {
 			source.sendMessage(this.help(source));

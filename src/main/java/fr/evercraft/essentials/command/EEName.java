@@ -117,44 +117,50 @@ public class EEName extends ECommand<EverEssentials> {
 		return resultat;
 	}
 
-	private void commandNames(final EPlayer player) {
+	private boolean commandNames(final EPlayer player) {
 		Optional<MojangService> service = this.plugin.getEverAPI().getManagerService().getMojangService();
-		if (service.isPresent()) {
-			try {
-				List<Text> lists = new ArrayList<Text>();
 		
-				for (NameHistory name : service.get().getNameHistory().get(player.getUniqueId())) {
-					if (!name.getDate().isPresent()) {
-						lists.add(EChat.of(EEMessages.NAMES_PLAYER_LINE_ORIGINAL.get()
-								.replaceAll("<name>", name.getName())));
-					} else {
-						lists.add(EChat.of(EEMessages.NAMES_PLAYER_LINE_OTHERS.get()
-								.replaceAll("<name>", name.getName())
-								.replaceAll("<date>", this.plugin.getEverAPI().getManagerUtils().getDate().parseDate(name.getDate().get()))
-								.replaceAll("<time>", this.plugin.getEverAPI().getManagerUtils().getDate().parseTime(name.getDate().get()))
-								.replaceAll("<datetime>", this.plugin.getEverAPI().getManagerUtils().getDate().parseDateTime(name.getDate().get()))));
-					}
-				}
-				if (lists.size() <= 1) {
-					lists.clear();
-					lists.add(EChat.of(EEMessages.NAMES_PLAYER_EMPTY.get()
-							.replaceAll("<player>", player.getName())));
-				}
-				
-				this.plugin.getEverAPI().getManagerService().getEPagination().sendTo(
-						EChat.of(EEMessages.NAMES_PLAYER_TITLE.get()
-								.replaceAll("<player>", player.getName())).toBuilder()
-							.onClick(TextActions.runCommand("/names ")).build(), 
-						lists, player);
-			} catch (ExecutionException e) {
-				player.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR.getText()));
-			}
-		} else {
+		// Le service n'est pas disponible
+		if (!service.isPresent()) {
 			player.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR.getText()));
+			return false;
+		}
+		
+		try {
+			List<Text> lists = new ArrayList<Text>();
+	
+			for (NameHistory name : service.get().getNameHistory().get(player.getUniqueId())) {
+				if (!name.getDate().isPresent()) {
+					lists.add(EChat.of(EEMessages.NAMES_PLAYER_LINE_ORIGINAL.get()
+							.replaceAll("<name>", name.getName())));
+				} else {
+					lists.add(EChat.of(EEMessages.NAMES_PLAYER_LINE_OTHERS.get()
+							.replaceAll("<name>", name.getName())
+							.replaceAll("<date>", this.plugin.getEverAPI().getManagerUtils().getDate().parseDate(name.getDate().get()))
+							.replaceAll("<time>", this.plugin.getEverAPI().getManagerUtils().getDate().parseTime(name.getDate().get()))
+							.replaceAll("<datetime>", this.plugin.getEverAPI().getManagerUtils().getDate().parseDateTime(name.getDate().get()))));
+				}
+			}
+			
+			if (lists.size() <= 1) {
+				lists.clear();
+				lists.add(EChat.of(EEMessages.NAMES_PLAYER_EMPTY.get()
+						.replaceAll("<player>", player.getName())));
+			}
+			
+			this.plugin.getEverAPI().getManagerService().getEPagination().sendTo(
+					EChat.of(EEMessages.NAMES_PLAYER_TITLE.get()
+							.replaceAll("<player>", player.getName())).toBuilder()
+						.onClick(TextActions.runCommand("/names ")).build(), 
+					lists, player);
+			return true;
+		} catch (ExecutionException e) {
+			player.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR.getText()));
+			return false;
 		}
 	}
 	
-	private void commandNames(final CommandSource player, String name) {
+	private boolean commandNames(final CommandSource player, String name) {
 		try {
 			CompletableFuture<GameProfile> future = this.plugin.getEServer().getGameProfileFuture(name);
 			future.exceptionally(e -> null).thenApplyAsync(profile -> {
@@ -169,44 +175,53 @@ public class EEName extends ECommand<EverEssentials> {
 				}
 				return profile;
 			}, this.plugin.getGame().getScheduler().createAsyncExecutor(this.plugin));
+			return true;
 		} catch (IllegalArgumentException e) {
 			player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.PLAYER_NOT_FOUND.get()));
+			return false;
 		}
 	}
 	
-	private void commandNames(CommandSource staff, GameProfile gameprofile) {
+	private boolean commandNames(CommandSource staff, GameProfile gameprofile) {
 		Optional<MojangService> service = this.plugin.getEverAPI().getManagerService().getMojangService();
-		if (service.isPresent()) {
-			try {
-				List<Text> lists = new ArrayList<Text>();
 		
-				for (NameHistory name : service.get().getNameHistory().get(gameprofile.getUniqueId())) {
-					if (!name.getDate().isPresent()) {
-						lists.add(EChat.of(EEMessages.NAMES_OTHERS_LINE_ORIGINAL.get()
-								.replaceAll("<name>", name.getName())));
-					} else {
-						lists.add(EChat.of(EEMessages.NAMES_OTHERS_LINE_OTHERS.get()
-								.replaceAll("<name>", name.getName())
-								.replaceAll("<date>", this.plugin.getEverAPI().getManagerUtils().getDate().parseDate(name.getDate().get()))
-								.replaceAll("<time>", this.plugin.getEverAPI().getManagerUtils().getDate().parseTime(name.getDate().get()))
-								.replaceAll("<datetime>", this.plugin.getEverAPI().getManagerUtils().getDate().parseDateTime(name.getDate().get()))));
-					}
+		// Le service n'est pas disponible
+		if (!service.isPresent()) {
+			staff.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR.getText()));
+			return false;
+		}
+		
+		try {
+			List<Text> lists = new ArrayList<Text>();
+	
+			for (NameHistory name : service.get().getNameHistory().get(gameprofile.getUniqueId())) {
+				if (!name.getDate().isPresent()) {
+					lists.add(EChat.of(EEMessages.NAMES_OTHERS_LINE_ORIGINAL.get()
+							.replaceAll("<name>", name.getName())));
+				} else {
+					lists.add(EChat.of(EEMessages.NAMES_OTHERS_LINE_OTHERS.get()
+							.replaceAll("<name>", name.getName())
+							.replaceAll("<date>", this.plugin.getEverAPI().getManagerUtils().getDate().parseDate(name.getDate().get()))
+							.replaceAll("<time>", this.plugin.getEverAPI().getManagerUtils().getDate().parseTime(name.getDate().get()))
+							.replaceAll("<datetime>", this.plugin.getEverAPI().getManagerUtils().getDate().parseDateTime(name.getDate().get()))));
 				}
-				
-				if (lists.size() <= 1) {
-					lists.clear();
-					lists.add(EChat.of(EEMessages.NAMES_OTHERS_EMPTY.get()
-							.replaceAll("<player>", gameprofile.getName().get())));
-				}
-				
-				this.plugin.getEverAPI().getManagerService().getEPagination().sendTo(
-						EChat.of(EEMessages.NAMES_OTHERS_TITLE.get()
-								.replaceAll("<player>", gameprofile.getName().get())).toBuilder()
-							.onClick(TextActions.runCommand("/names " + gameprofile.getUniqueId().toString())).build(), 
-						lists, staff);
-			} catch (ExecutionException e) {
-				staff.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR.getText()));
 			}
+			
+			if (lists.size() <= 1) {
+				lists.clear();
+				lists.add(EChat.of(EEMessages.NAMES_OTHERS_EMPTY.get()
+						.replaceAll("<player>", gameprofile.getName().get())));
+			}
+			
+			this.plugin.getEverAPI().getManagerService().getEPagination().sendTo(
+					EChat.of(EEMessages.NAMES_OTHERS_TITLE.get()
+							.replaceAll("<player>", gameprofile.getName().get())).toBuilder()
+						.onClick(TextActions.runCommand("/names " + gameprofile.getUniqueId().toString())).build(), 
+					lists, staff);
+			return true;
+		} catch (ExecutionException e) {
+			staff.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR.getText()));
+			return false;
 		}
 	}
 }

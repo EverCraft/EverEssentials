@@ -64,13 +64,11 @@ public class EELag extends EReloadCommand<EverEssentials> {
 			this.scheduler = null;
 		}
 		
-		this.scheduler = this.plugin.getGame().getScheduler().createTaskBuilder().execute(new Runnable() {
-			    public void run() {
-			    	historys.add(getTPS());
-			    	if (historys.size() > HISTORY_LENGTH) {
-			    		historys.remove(0);
-			    	}
-			    }
+		this.scheduler = this.plugin.getGame().getScheduler().createTaskBuilder().execute(() -> {
+		    	this.historys.add(getTPS());
+		    	if (this.historys.size() > HISTORY_LENGTH) {
+		    		this.historys.remove(0);
+		    	}
 			}).interval(1, TimeUnit.MINUTES).submit(this.plugin);
 	}
 
@@ -104,7 +102,7 @@ public class EELag extends EReloadCommand<EverEssentials> {
 		boolean resultat = false;
 		
 		if (args.size() == 0) {
-			resultat = commandLag(source);
+			resultat = this.commandLag(source);
 		} else {
 			source.sendMessage(help(source));
 		}
@@ -127,6 +125,7 @@ public class EELag extends EReloadCommand<EverEssentials> {
 				.replaceAll("<usage>", String.valueOf(Runtime.getRuntime().totalMemory()/1024/1024))
 				.replaceAll("<total>", String.valueOf(Runtime.getRuntime().maxMemory()/1024/1024))));
 		list.add(EChat.of(EEMessages.LAG_WORLDS.get()));
+		
 		for (World world : this.plugin.getEServer().getWorlds()) {
 			list.add(EChat.of(EEMessages.LAG_WORLDS_LINE.get().replaceAll("<world>", world.getName())).toBuilder()
 					.onHover(TextActions.showText(EChat.of(EEMessages.LAG_WORLDS_LINE_HOVER.get()
@@ -135,6 +134,7 @@ public class EELag extends EReloadCommand<EverEssentials> {
 							.replaceAll("<chunks>", String.valueOf(Iterables.size(world.getLoadedChunks()))))))
 					.build());
 		}
+		
 		this.plugin.getEverAPI().getManagerService().getEPagination().sendTo(
 				EChat.of(EEMessages.LAG_TITLE.get()).toBuilder()
 					.onClick(TextActions.runCommand("/lag"))

@@ -81,6 +81,7 @@ public class EEPlayed extends ECommand<EverEssentials> {
 		
 		// Si on ne connait pas le joueur
 		if (args.size() == 0) {
+			
 			// Si la source est un joueur
 			if (source instanceof EPlayer) {
 				resultat = this.commandPlayed((EPlayer) source);
@@ -88,8 +89,10 @@ public class EEPlayed extends ECommand<EverEssentials> {
 			} else {
 				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText()));
 			}
+			
 		// On connais le joueur
 		} else if (args.size() == 1) {
+			
 			// Si il a la permission
 			if (source.hasPermission(EEPermissions.PLAYED_OTHERS.get())){
 				Optional<EUser> user = this.plugin.getEServer().getEUser(args.get(0));
@@ -104,6 +107,7 @@ public class EEPlayed extends ECommand<EverEssentials> {
 			} else {
 				source.sendMessage(EAMessages.NO_PERMISSION.getText());
 			}
+			
 		// Nombre d'argument incorrect
 		} else {
 			source.sendMessage(this.help(source));
@@ -122,12 +126,11 @@ public class EEPlayed extends ECommand<EverEssentials> {
 		// La source et le joueur sont identique		
 		if (staff instanceof EPlayer && user.getIdentifier().equals(staff.getIdentifier())) {
 			return this.commandPlayed((EPlayer) staff);
-		// La source et le joueur sont différent
-		} else {
-			staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.PLAYED_OTHERS.get()
-					.replaceAll("<player>", user.getName())
-					.replaceAll("<time>", this.plugin.getEverAPI().getManagerUtils().getDate().diff(user.getTotalTimePlayed()))));
-			return true;
 		}
+		
+		staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.PLAYED_OTHERS.get()
+				.replaceAll("<player>", user.getName())
+				.replaceAll("<time>", this.plugin.getEverAPI().getManagerUtils().getDate().diff(user.getTotalTimePlayed()))));
+		return true;
 	}
 }

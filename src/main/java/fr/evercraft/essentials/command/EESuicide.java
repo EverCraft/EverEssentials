@@ -76,6 +76,7 @@ public class EESuicide extends ECommand<EverEssentials> {
 		
 		// Si on ne connait pas le joueur
 		if (args.size() == 0) {
+			
 			// Si la source est un joueur
 			if (source instanceof EPlayer) {
 				resultat = this.commandSuicide((EPlayer) source);
@@ -83,6 +84,7 @@ public class EESuicide extends ECommand<EverEssentials> {
 			} else {
 				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
 			}
+			
 		} else {
 			source.sendMessage(this.help(source));
 		}
@@ -90,7 +92,14 @@ public class EESuicide extends ECommand<EverEssentials> {
 		return resultat;
 	}
 	
-	private boolean commandSuicide(final EPlayer player) {		
+	private boolean commandSuicide(final EPlayer player) {
+		// Event cancel
+		if(!player.setHealth(0)) {
+			player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.SUICIDE_CANCEL.get()
+					.replaceAll("<player>", player.getName())));
+			return false;
+		}
+		
 		final MessageEvent.MessageFormatter formatter = new MessageEvent.MessageFormatter();
         MessageChannel originalChannel;
         MessageChannel channel;
@@ -110,21 +119,15 @@ public class EESuicide extends ECommand<EverEssentials> {
         causes.add(NamedCause.owner(player));
         Cause cause = Cause.of(causes);
         
-        if(player.setHealth(0)) {
-	        DestructEntityEvent.Death event = SpongeEventFactory.createDestructEntityEventDeath(cause, originalChannel, Optional.of(channel), formatter, player, messageCancelled);
-	        this.plugin.getGame().getEventManager().post(event);
-	
-	    	if (!event.isMessageCancelled() && !event.getMessage().isEmpty()) {
-	    		event.getChannel().ifPresent(eventChannel -> eventChannel.send(player, event.getMessage()));
-	    	} else {
-	    		player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.SUICIDE_PLAYER.get()
-    					.replaceAll("<player>", player.getName())));
-	    	}
-			return true;
-        } else {
-        	player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.SUICIDE_CANCEL.get()
+        DestructEntityEvent.Death event = SpongeEventFactory.createDestructEntityEventDeath(cause, originalChannel, Optional.of(channel), formatter, player, messageCancelled);
+        this.plugin.getGame().getEventManager().post(event);
+
+    	if (!event.isMessageCancelled() && !event.getMessage().isEmpty()) {
+    		event.getChannel().ifPresent(eventChannel -> eventChannel.send(player, event.getMessage()));
+    	} else {
+    		player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.SUICIDE_PLAYER.get()
 					.replaceAll("<player>", player.getName())));
-        }
-		return false;
+    	}
+		return true;
 	}
 }

@@ -79,21 +79,24 @@ public class EEPing extends ECommand<EverEssentials> {
 		
 		// Si on ne connait pas le joueur
 		if (args.size() == 0) {
+			
 			// Si la source est un joueur
 			if (source instanceof EPlayer) {
-				resultat = commandPing((EPlayer) source);
+				resultat = this.commandPing((EPlayer) source);
 			// La source n'est pas un joueur
 			} else {
 				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText()));
 			}
+			
 		// On connais le joueur
 		} else if (args.size() == 1) {
+			
 			// Si il a la permission
 			if (source.hasPermission(EEPermissions.PING_OTHERS.get())){
 				Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(args.get(0));
 				// Le joueur existe
 				if (optPlayer.isPresent()){
-					resultat = commandPingOthers(source, optPlayer.get());
+					resultat = this.commandPingOthers(source, optPlayer.get());
 				// Le joueur est introuvable
 				} else {
 					source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
@@ -102,6 +105,7 @@ public class EEPing extends ECommand<EverEssentials> {
 			} else {
 				source.sendMessage(EAMessages.NO_PERMISSION.getText());
 			}
+			
 		// Nombre d'argument incorrect
 		} else {
 			source.sendMessage(help(source));
@@ -117,15 +121,14 @@ public class EEPing extends ECommand<EverEssentials> {
 	}
 	
 	private boolean commandPingOthers(final CommandSource staff, final EPlayer player) throws CommandException {
-		// La source et le joueur sont différent
-		if (!player.equals(staff)){
-			staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.PING_OTHERS.get()
-					.replaceAll("<player>", player.getName())
-					.replaceAll("<ping>", String.valueOf(player.getConnection().getLatency()))));
-			return true;
 		// La source et le joueur sont identique
-		} else {
+		if (player.equals(staff)) {
 			return this.commandPing(player);
 		}
+		
+		staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.PING_OTHERS.get()
+				.replaceAll("<player>", player.getName())
+				.replaceAll("<ping>", String.valueOf(player.getConnection().getLatency()))));
+		return true;
 	}
 }

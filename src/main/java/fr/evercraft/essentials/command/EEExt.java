@@ -80,6 +80,7 @@ public class EEExt extends ECommand<EverEssentials> {
 		
 		// Si on ne connait pas le joueur
 		if (args.size() == 0) {
+			
 			// Si la source est un joueur
 			if (source instanceof EPlayer) {
 				resultat = this.commandExt((EPlayer) source);
@@ -87,8 +88,10 @@ public class EEExt extends ECommand<EverEssentials> {
 			} else {
 				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText()));
 			}
+			
 		// On connais le joueur
 		} else if (args.size() == 1) {
+			
 			// Si il a la permission
 			if (source.hasPermission(EEPermissions.EXT_OTHERS.get())){
 				if (args.get(0).equals("*")) {
@@ -107,6 +110,7 @@ public class EEExt extends ECommand<EverEssentials> {
 			} else {
 				source.sendMessage(EAMessages.NO_PERMISSION.getText());
 			}
+			
 		// Nombre d'argument incorrect
 		} else {
 			source.sendMessage(this.help(source));
@@ -116,40 +120,43 @@ public class EEExt extends ECommand<EverEssentials> {
 	}
 	
 	private boolean commandExt(final EPlayer player) {
-		if (player.getFireTicks() > 0) {
-			player.setFireTicks(0);
-			player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.EXT_PLAYER.getText()));
-			return true;
-		} else {
+		// Le joueur n'est pas en feu
+		if (player.getFireTicks() <= 0) {
 			player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.EXT_PLAYER_ERROR.getText()));
+			return false;
 		}
-		return false;
+			
+		player.setFireTicks(0);
+		player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.EXT_PLAYER.getText()));
+		return true;
 	}
 	
-	private boolean commandExtOthers(final CommandSource staff, final EPlayer player) throws CommandException {
-		// La source et le joueur sont différent
-		if (!player.equals(staff)){
-			if (player.getFireTicks() > 0) {
-				player.setFireTicks(0);
-				player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.EXT_OTHERS_PLAYER.get()
-						.replaceAll("<staff>", player.getName())));
-				staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.EXT_OTHERS_STAFF.get()
-						.replaceAll("<player>", player.getName())));
-				return true;
-			} else {
-				staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.EXT_OTHERS_ERROR.get()
-						.replaceAll("<player>", player.getName())));
-			}
+	private boolean commandExtOthers(final CommandSource staff, final EPlayer player) {
 		// La source et le joueur sont identique
-		} else {
+		if (player.equals(staff)) {
 			return this.commandExt(player);
 		}
-		return false;
+		
+		// Le joueur n'est pas en feu
+		if (player.getFireTicks() <= 0) {
+			staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.EXT_OTHERS_ERROR.get()
+					.replaceAll("<player>", player.getName())));
+			return false;
+		}
+		
+		
+		player.setFireTicks(0);
+		
+		player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.EXT_OTHERS_PLAYER.get()
+				.replaceAll("<staff>", player.getName())));
+		staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.EXT_OTHERS_STAFF.get()
+				.replaceAll("<player>", player.getName())));
+		return true;
 	}
 	
 	private boolean commandExtAll(final CommandSource staff) {
 		// Pour tous les joueurs connecté
-		for (EPlayer player : this.plugin.getEServer().getOnlineEPlayers()){
+		this.plugin.getEServer().getOnlineEPlayers().forEach(player -> {
 			if (player.getFireTicks() > 0) {
 				player.setFireTicks(0);
 				// La source et le joueur sont différent
@@ -158,7 +165,8 @@ public class EEExt extends ECommand<EverEssentials> {
 							.replaceAll("<staff>", staff.getName())));
 				}
 			}
-		}
+		});
+
 		staff.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.EXT_ALL_STAFF.getText()));
 		return true;
 	}

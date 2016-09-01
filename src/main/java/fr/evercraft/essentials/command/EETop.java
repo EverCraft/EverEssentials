@@ -75,6 +75,7 @@ public class EETop extends ECommand<EverEssentials> {
 		
 		// Si connait que la location ou aussi peut être le monde
 		if (args.size() == 0) {
+			
 			// Si la source est bien un joueur
 			if (source instanceof EPlayer) {
 				resultat = this.commandTop((EPlayer) source);
@@ -82,6 +83,7 @@ public class EETop extends ECommand<EverEssentials> {
 			} else {
 				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
 			}
+			
 		} else {
 			source.sendMessage(this.help(source));
 		}
@@ -94,20 +96,20 @@ public class EETop extends ECommand<EverEssentials> {
 															player.getTransform(), 
 															!(player.isGod() || player.getGameMode().equals(GameModes.CREATIVE)));
 		
-		if (transform.isPresent()) {
-			long delay = this.plugin.getConfigs().getTeleportDelay(player);
-			
-			if (delay > 0) {
-				player.sendMessage(EEMessages.PREFIX.get() + EEMessages.TOP_DELAY.get()
-						.replaceAll("<delay>", this.plugin.getEverAPI().getManagerUtils().getDate().formatDateDiff(System.currentTimeMillis() + delay)));
-			}
-			
-			player.setTeleport(delay, () -> this.teleport(player, transform.get()), player.hasPermission(EEPermissions.TELEPORT_BYPASS_MOVE.get()));
-			return true;
-		} else {
+		if (!transform.isPresent()) {
 			player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.TOP_TELEPORT_ERROR.get()));
+			return false;
 		}
-		return false;
+		
+		long delay = this.plugin.getConfigs().getTeleportDelay(player);
+		
+		if (delay > 0) {
+			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.TOP_DELAY.get()
+					.replaceAll("<delay>", this.plugin.getEverAPI().getManagerUtils().getDate().formatDateDiff(System.currentTimeMillis() + delay)));
+		}
+		
+		player.setTeleport(delay, () -> this.teleport(player, transform.get()), player.hasPermission(EEPermissions.TELEPORT_BYPASS_MOVE.get()));
+		return true;
 	}
 	
 	private void teleport(final EPlayer player, final Transform<World> location) {

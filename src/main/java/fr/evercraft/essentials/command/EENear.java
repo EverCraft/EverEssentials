@@ -102,6 +102,7 @@ public class EENear extends EReloadCommand<EverEssentials> {
 		boolean resultat = false;
 		
 		if (args.size() == 0) {
+			
 			// Si la source est un joueur
 			if (source instanceof EPlayer) {
 				resultat = this.commandNear((EPlayer) source);
@@ -109,6 +110,7 @@ public class EENear extends EReloadCommand<EverEssentials> {
 			} else {
 				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText()));
 			}
+			
 		// Si on ne connait pas le joueur
 		} else {
 			source.sendMessage(this.help(source));
@@ -119,19 +121,21 @@ public class EENear extends EReloadCommand<EverEssentials> {
 	
 	public boolean commandNear(final EPlayer player) {
 		Map <EPlayer, Integer> list = player.getEPlayers(this.getValue(player));		
+		
+		// Aucun joueur
 		if (list.isEmpty()) {
 			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.NEAR_NOPLAYER.get());
-		} else {
-			List<Text> lists = new ArrayList<Text>();
-			for (Entry<EPlayer, Integer> position : UtilsMap.valueASC(list)){
-				lists.add(EChat.of(EEMessages.NEAR_LIST_LINE.get()
-						.replaceAll("<player>", position.getKey().getName())
-						.replaceAll("<distance>", position.getValue().toString())));
-			}
-			this.plugin.getEverAPI().getManagerService().getEPagination().sendTo(EEMessages.NEAR_LIST_TITLE.getText().toBuilder()
-					.onClick(TextActions.runCommand("/near")).build(), lists, player);
-			return true;
+			return false;
 		}
-		return false;
+		
+		List<Text> lists = new ArrayList<Text>();
+		for (Entry<EPlayer, Integer> position : UtilsMap.valueASC(list)){
+			lists.add(EChat.of(EEMessages.NEAR_LIST_LINE.get()
+					.replaceAll("<player>", position.getKey().getName())
+					.replaceAll("<distance>", position.getValue().toString())));
+		}
+		this.plugin.getEverAPI().getManagerService().getEPagination().sendTo(EEMessages.NEAR_LIST_TITLE.getText().toBuilder()
+				.onClick(TextActions.runCommand("/near")).build(), lists, player);
+		return true;
 	}
 }

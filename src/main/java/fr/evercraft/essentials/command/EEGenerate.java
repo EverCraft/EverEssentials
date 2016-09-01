@@ -93,13 +93,16 @@ public class EEGenerate extends EReloadCommand<EverEssentials> {
 		boolean resultat = false;
 		
 		if (args.size() == 0) {
+			
 			if (source instanceof EPlayer) {
 				EPlayer player = (EPlayer) source;
 				resultat = this.commandGenerate(player, player.getWorld());
 			} else {
 				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText()));
 			}
+			
 		} else if (args.size() == 1) {
+			
 			Optional<World> world = this.plugin.getEServer().getEWorld(args.get(0));
 			if (world.isPresent()) {
 				resultat = this.commandGenerate(source, world.get());
@@ -107,7 +110,9 @@ public class EEGenerate extends EReloadCommand<EverEssentials> {
 				source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.WORLD_NOT_FOUND.get()
 					.replaceAll("<world>", args.get(0))));
 			}
+			
 		} else if (args.size() == 2 && args.get(1).equalsIgnoreCase("confirmation")) {
+			
 			Optional<World> world = this.plugin.getEServer().getEWorld(args.get(0));
 			if (world.isPresent()) {
 				resultat = this.commandGenerateConfirmation(source, world.get());
@@ -115,6 +120,7 @@ public class EEGenerate extends EReloadCommand<EverEssentials> {
 				source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.WORLD_NOT_FOUND.get()
 					.replaceAll("<world>", args.get(0))));
 			}
+			
 		} else {
 			source.sendMessage(this.help(source));
 		}
@@ -124,6 +130,7 @@ public class EEGenerate extends EReloadCommand<EverEssentials> {
 	
 	private boolean commandGenerate(final CommandSource source, final World world) {
 		int chunk = (int) Math.round(Math.pow((world.getWorldBorder().getDiameter() / 16), 2)); 
+		
 		source.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.getText())
 			.append(EEMessages.GENERATE_WARNING.get()
 				.replaceAll("<world>", world.getName())
@@ -142,6 +149,7 @@ public class EEGenerate extends EReloadCommand<EverEssentials> {
 			.tickInterval(this.tickInterval)
 			.chunksPerTick(this.chunksPerTick)
 			.start();
+		
 		source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.GENERATE_LAUNCH.get()
 				.replaceAll("<world>", world.getName())));
 		return true;

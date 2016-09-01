@@ -91,6 +91,7 @@ public class EEKick extends ECommand<EverEssentials> {
 		// Résultat de la commande :
 		boolean resultat = false;
 		if (args.size() == 1) {
+			
 			Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(args.get(0));
 			// Le joueur existe
 			if (optPlayer.isPresent()) {
@@ -99,7 +100,9 @@ public class EEKick extends ECommand<EverEssentials> {
 			} else {
 				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
 			}
+			
 		} else if (args.size() == 2) {
+			
 			Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(args.get(0));
 			// Le joueur existe
 			if (optPlayer.isPresent()) {
@@ -118,16 +121,17 @@ public class EEKick extends ECommand<EverEssentials> {
 	}
 	
 	private boolean commandKick(final CommandSource staff, final EPlayer player, final Text message) throws CommandException {
-		if(!player.hasPermission(EEPermissions.KICK_BYPASS.get())) {
-			player.kick(ETextBuilder.toBuilder(EEMessages.KICK_MESSAGE.get()
-									.replaceAll("<staff>", staff.getName()))
-								.replace("<message>", message)
-								.build());
-			return true;
-		} else {
+		// Le joueur a la permission bypass
+		if(player.hasPermission(EEPermissions.KICK_BYPASS.get())) {
 			staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.KICK_BYPASS.get()
 					.replaceAll("<player>", player.getName())));
+			return false;
 		}
-		return false;
+		
+		player.kick(ETextBuilder.toBuilder(EEMessages.KICK_MESSAGE.get()
+								.replaceAll("<staff>", staff.getName()))
+							.replace("<message>", message)
+							.build());
+		return true;
 	}
 }

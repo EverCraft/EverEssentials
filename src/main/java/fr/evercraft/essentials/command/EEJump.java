@@ -71,6 +71,7 @@ public class EEJump extends ECommand<EverEssentials> {
 		
 		// Si on ne connait pas le joueur
 		if (args.size() == 0) {
+			
 			// Si la source est un joueur
 			if (source instanceof EPlayer) {
 				resultat = this.commandJump((EPlayer) source);
@@ -78,6 +79,7 @@ public class EEJump extends ECommand<EverEssentials> {
 			} else {
 				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText()));
 			}
+			
 		// Nombre d'argument incorrect
 		} else {
 			source.sendMessage(this.help(source));
@@ -87,16 +89,19 @@ public class EEJump extends ECommand<EverEssentials> {
 	}
 	
 	private boolean commandJump(final EPlayer player) {
-		Optional<Vector3i> optBlock = player.getViewBlock();
-		if (optBlock.isPresent()) {
-			if (player.teleportSafe(player.getWorld().getLocation(optBlock.get().add(0, 1, 0)))) {
-				player.sendMessage(EEMessages.PREFIX.get() + EEMessages.JUMP_TELEPORT.get());
-			} else {
-				player.sendMessage(EEMessages.PREFIX.get() + EEMessages.JUMP_TELEPORT_ERROR.get());
-			}
-		} else {
+		Optional<Vector3i> block = player.getViewBlock();
+		
+		if (block.isPresent()) {
 			player.sendMessage(EEMessages.PREFIX.get() + EAMessages.PLAYER_NO_LOOK_BLOCK.get());
+			return false;
+		}	
+		
+		if (!player.teleportSafe(player.getWorld().getLocation(block.get().add(0, 1, 0)))) {
+			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.JUMP_TELEPORT_ERROR.get());
+			return false;
 		}
-		return false;
+		
+		player.sendMessage(EEMessages.PREFIX.get() + EEMessages.JUMP_TELEPORT.get());
+		return true;
 	}
 }

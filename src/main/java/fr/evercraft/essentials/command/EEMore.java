@@ -72,6 +72,7 @@ public class EEMore extends ECommand<EverEssentials> {
 		
 		// Si on ne connait pas le joueur
 		if (args.size() == 0) {
+			
 			// Si la source est un joueur
 			if (source instanceof EPlayer) {
 				resultat = this.commandMore((EPlayer) source);
@@ -79,9 +80,10 @@ public class EEMore extends ECommand<EverEssentials> {
 			} else {
 				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR.getText()));
 			}
+			
 		// Nombre d'argument incorrect
 		} else {
-			source.sendMessage(help(source));
+			source.sendMessage(this.help(source));
 		}
 		return resultat;
 	}
@@ -89,35 +91,38 @@ public class EEMore extends ECommand<EverEssentials> {
 	private boolean commandMore(final EPlayer player) {
 		Optional<ItemStack> item = player.getItemInMainHand();
 		
-		// Si le joueur a bien un item dans la main
-		if (item.isPresent()) {			
-			Integer max = item.get().getMaxStackQuantity();
-			/*if (player.hasPermission(EEPermissions.MORE_UNLIMITED"))) {
-				max = 64;
-			} else {
-				max = item.getMaxStackQuantity();
-			}*/
-			
-			if (item.get().getQuantity() < max) {
-				item.get().setQuantity(max);
-				player.setItemInMainHand(item.get());		
-				player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
-						.append(EEMessages.MORE_PLAYER.get()
-								.replaceAll("<quantity>", max.toString()))
-						.replace("<item>", EChat.getButtomItem(item.get(), EChat.getTextColor(EEMessages.MORE_ITEM_COLOR.get())))
-						.build());
-				return true;
-			} else {
-				player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
-						.append(EEMessages.MORE_MAX_QUANTITY.get()
-								.replaceAll("<quantity>", max.toString()))
-						.replace("<item>", EChat.getButtomItem(item.get(), EChat.getTextColor(EEMessages.MORE_ITEM_COLOR.get())))
-						.build());
-			}
 		// Le joueur a aucun item dans la main
-		} else {
+		if (item.isPresent()) {	
 			player.sendMessage(EEMessages.PREFIX.get() + EAMessages.EMPTY_ITEM_IN_HAND.get());
+			return false;
 		}
-		return false;
+			
+		Integer max = item.get().getMaxStackQuantity();
+		
+		/*if (player.hasPermission(EEPermissions.MORE_UNLIMITED"))) {
+			max = 64;
+		} else {
+			max = item.getMaxStackQuantity();
+		}*/
+		
+		// La quantité est invalide
+		if (item.get().getQuantity() > max) {
+			player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
+					.append(EEMessages.MORE_MAX_QUANTITY.get()
+							.replaceAll("<quantity>", max.toString()))
+					.replace("<item>", EChat.getButtomItem(item.get(), EChat.getTextColor(EEMessages.MORE_ITEM_COLOR.get())))
+					.build());
+			return false;
+		}
+		
+		item.get().setQuantity(max);
+		player.setItemInMainHand(item.get());
+		
+		player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
+				.append(EEMessages.MORE_PLAYER.get()
+						.replaceAll("<quantity>", max.toString()))
+				.replace("<item>", EChat.getButtomItem(item.get(), EChat.getTextColor(EEMessages.MORE_ITEM_COLOR.get())))
+				.build());
+		return true;
 	}
 }

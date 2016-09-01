@@ -86,35 +86,40 @@ public class EEMojang extends ECommand<EverEssentials> {
 		return resultat;
 	}
 	
-	private void commandMojang(final CommandSource player) {
+	private boolean commandMojang(final CommandSource player) {
 		Optional<MojangService> service = this.plugin.getEverAPI().getManagerService().getMojangService();
-		if (service.isPresent()) {
-			try {
-				service.get().getCheck().update();
-
-				List<Text> lists = new ArrayList<Text>();
 		
-				lists.add(this.server(MojangServer.ACCOUNT));
-				lists.add(this.server(MojangServer.API));
-				lists.add(this.server(MojangServer.MOJANG));
-				lists.add(this.server(MojangServer.AUTH));
-				lists.add(this.server(MojangServer.AUTHSERVER));
-				lists.add(this.server(MojangServer.MINECRAFT_NET));
-				lists.add(this.server(MojangServer.SESSION));
-				lists.add(this.server(MojangServer.SESSIONSERVER));
-				lists.add(this.server(MojangServer.SKINS));
-				lists.add(this.server(MojangServer.TEXTURES));
-				
-				this.plugin.getEverAPI().getManagerService().getEPagination().sendTo(
-						EEMessages.MOJANG_TITLE.getText().toBuilder()
-							.onClick(TextActions.runCommand("/mojang ")).build(), 
-						lists, player);
-			} catch (IOException e) {
-				player.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR.getText()));
-			}
-		} else {
+		// Le service n'est pas présent
+		if (!service.isPresent()) {
 			player.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR.getText()));
+			return false;
 		}
+		
+		try {
+			service.get().getCheck().update();
+		} catch (IOException e) {
+			player.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR.getText()));
+			return false;
+		}
+
+		List<Text> lists = new ArrayList<Text>();
+
+		lists.add(this.server(MojangServer.ACCOUNT));
+		lists.add(this.server(MojangServer.API));
+		lists.add(this.server(MojangServer.MOJANG));
+		lists.add(this.server(MojangServer.AUTH));
+		lists.add(this.server(MojangServer.AUTHSERVER));
+		lists.add(this.server(MojangServer.MINECRAFT_NET));
+		lists.add(this.server(MojangServer.SESSION));
+		lists.add(this.server(MojangServer.SESSIONSERVER));
+		lists.add(this.server(MojangServer.SKINS));
+		lists.add(this.server(MojangServer.TEXTURES));
+		
+		this.plugin.getEverAPI().getManagerService().getEPagination().sendTo(
+				EEMessages.MOJANG_TITLE.getText().toBuilder()
+					.onClick(TextActions.runCommand("/mojang ")).build(), 
+				lists, player);
+		return true;
 	}
 	
 	private Text server(final MojangServer server) {

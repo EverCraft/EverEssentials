@@ -79,12 +79,14 @@ public class EEKill  extends ECommand<EverEssentials> {
 		
 		// Si on ne connait pas le joueur
 		if (args.size() == 1) {
+			
 			Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(args.get(0));
 			if (optPlayer.isPresent()){
 				resultat = this.commandKill(source, optPlayer.get());
 			} else {
 				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
 			}
+			
 		} else {
 			source.sendMessage(this.help(source));
 		}
@@ -92,8 +94,21 @@ public class EEKill  extends ECommand<EverEssentials> {
 		return resultat;
 	}
 	
-	private boolean commandKill(final CommandSource staff, final EPlayer player) {
-		final MessageEvent.MessageFormatter formatter = new MessageEvent.MessageFormatter();
+	private boolean commandKill(final CommandSource staff, final EPlayer player) { 
+		// Event cancel
+        if(!player.setHealth(0)) {
+        	if (!player.equals(staff)) {
+    			staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.KILL_PLAYER_CANCEL.get()
+    					.replaceAll("<player>", player.getName())));
+    		} else {
+    			player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.KILL_EQUALS_CANCEL.get()
+    					.replaceAll("<player>", player.getName())));
+    		}
+        	return false;
+        }
+        
+        
+        final MessageEvent.MessageFormatter formatter = new MessageEvent.MessageFormatter();
         MessageChannel originalChannel;
         MessageChannel channel;
         Text originalMessage;
@@ -118,33 +133,22 @@ public class EEKill  extends ECommand<EverEssentials> {
         causes.add(NamedCause.owner(staff));
         Cause cause = Cause.of(causes);
         
-        if(player.setHealth(0)) {
-	        DestructEntityEvent.Death event = SpongeEventFactory.createDestructEntityEventDeath(cause, originalChannel, Optional.of(channel), formatter, player, messageCancelled);
-	        this.plugin.getGame().getEventManager().post(event);
-	
-	    	if (!event.isMessageCancelled() && !event.getMessage().isEmpty()) {
-	    		event.getChannel().ifPresent(eventChannel -> eventChannel.send(player, event.getMessage()));
-	    	} else {
-	    		if (!player.equals(staff)) {
-	    			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.KILL_PLAYER.get()
-	    					.replaceAll("<staff>", staff.getName()));
-	    			staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.KILL_STAFF.get()
-	    					.replaceAll("<player>", player.getName())));
-	    		} else {
-	    			player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.KILL_EQUALS.get()
-	    					.replaceAll("<player>", player.getName())));
-	    		}
-	    	}
-			return true;
-        } else {
-        	if (!player.equals(staff)) {
-    			staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.KILL_PLAYER_CANCEL.get()
+        DestructEntityEvent.Death event = SpongeEventFactory.createDestructEntityEventDeath(cause, originalChannel, Optional.of(channel), formatter, player, messageCancelled);
+        this.plugin.getGame().getEventManager().post(event);
+
+    	if (!event.isMessageCancelled() && !event.getMessage().isEmpty()) {
+    		event.getChannel().ifPresent(eventChannel -> eventChannel.send(player, event.getMessage()));
+    	} else {
+    		if (!player.equals(staff)) {
+    			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.KILL_PLAYER.get()
+    					.replaceAll("<staff>", staff.getName()));
+    			staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.KILL_STAFF.get()
     					.replaceAll("<player>", player.getName())));
     		} else {
-    			player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.KILL_EQUALS_CANCEL.get()
+    			player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.KILL_EQUALS.get()
     					.replaceAll("<player>", player.getName())));
     		}
-        }
-        return false;
+    	}
+		return true;
 	}
 }

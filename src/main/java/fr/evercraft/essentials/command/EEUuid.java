@@ -84,6 +84,7 @@ public class EEUuid extends ECommand<EverEssentials> {
 		
 		// Si on ne connait pas le joueur
 		if (args.size() == 0) {
+			
 			// Si la source est un joueur
 			if (source instanceof EPlayer) {
 				resultat = this.commandUUIDPlayerUUID((EPlayer) source);
@@ -91,8 +92,10 @@ public class EEUuid extends ECommand<EverEssentials> {
 			} else {
 				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText()));
 			}
+			
 		// On connais le joueur
 		} else if (args.size() == 1) {
+			
 			// Si il a la permission
 			if (source.hasPermission(EEPermissions.UUID_OTHERS.get())) {
 				Optional<GameProfile> profile = this.plugin.getEServer().getGameProfile(args.get(0));
@@ -111,6 +114,7 @@ public class EEUuid extends ECommand<EverEssentials> {
 			} else {
 				source.sendMessage(EAMessages.NO_PERMISSION.getText());
 			}
+			
 		// Nombre d'argument incorrect
 		} else {
 			source.sendMessage(this.help(source));
@@ -141,37 +145,36 @@ public class EEUuid extends ECommand<EverEssentials> {
 		// La source et le joueur sont identique
 		if (staff instanceof EPlayer && profile.getUniqueId().equals(((EPlayer) staff).getUniqueId())) {
 			return this.commandUUIDPlayerName((EPlayer) staff);
-		// La source et le joueur sont différent
-		} else {
-			if(profile.getName().isPresent()) {
-				staff.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
-						.append(EEMessages.UUID_OTHERS_PLAYER_NAME.get()
-								.replaceAll("<player>", profile.getName().get()))
-						.replace("<uuid>", this.getButtonUUID(profile.getUniqueId()))
-						.replace("<name>", this.getButtonName(profile.getName().get()))
-						.build());				
-				return true;
-			} else {
-				staff.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
-			}
 		}
-		return false;
+		
+		// Joueur introuvable
+		if(!profile.getName().isPresent()) {
+			staff.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
+			return false;
+		}
+		
+		staff.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
+				.append(EEMessages.UUID_OTHERS_PLAYER_NAME.get()
+						.replaceAll("<player>", profile.getName().get()))
+				.replace("<uuid>", this.getButtonUUID(profile.getUniqueId()))
+				.replace("<name>", this.getButtonName(profile.getName().get()))
+				.build());				
+		return true;
 	}
 	
 	private boolean commandUUIDOthersUUID(final CommandSource staff, final GameProfile profile) throws CommandException {
 		// La source et le joueur sont identique
 		if (staff instanceof EPlayer && profile.getUniqueId().equals(((EPlayer) staff).getUniqueId())) {
 			return this.commandUUIDPlayerUUID((EPlayer) staff);
-		// La source et le joueur sont différent
-		} else {
-			staff.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
-					.append(EEMessages.UUID_OTHERS_PLAYER_UUID.get()
-							.replaceAll("<player>", profile.getName().orElse(profile.getUniqueId().toString())))
-					.replace("<uuid>", this.getButtonUUID(profile.getUniqueId()))
-					.replace("<name>", this.getButtonName(profile.getName().get()))
-					.build());				
-			return true;
 		}
+		
+		staff.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
+				.append(EEMessages.UUID_OTHERS_PLAYER_UUID.get()
+						.replaceAll("<player>", profile.getName().orElse(profile.getUniqueId().toString())))
+				.replace("<uuid>", this.getButtonUUID(profile.getUniqueId()))
+				.replace("<name>", this.getButtonName(profile.getName().get()))
+				.build());				
+		return true;
 	}
 	
 	private Text getButtonUUID(final UUID uuid){

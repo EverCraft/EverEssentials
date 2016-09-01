@@ -73,6 +73,7 @@ public class EEColor extends ECommand<EverEssentials> {
 		
 		// Si on ne connait pas le joueur
 		if (args.size() == 0) {
+			
 			// Si la source est un joueur
 			if (source instanceof EPlayer) {
 				resultat = this.commandColor((EPlayer) source);
@@ -80,6 +81,7 @@ public class EEColor extends ECommand<EverEssentials> {
 			} else {
 				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText()));
 			}
+			
 		// Nombre d'argument incorrect
 		} else {
 			source.sendMessage(this.help(source));
@@ -114,6 +116,7 @@ public class EEColor extends ECommand<EverEssentials> {
 		page.add(this.getButtomColor("e", TextColors.YELLOW));
 		page.add(this.getButtomColor("f", TextColors.WHITE));
 		book.addPage(Text.joinWith(Text.of("\n"), page));
+		
 		player.sendBookView(book.build());
 		return true;
 	}

@@ -80,6 +80,7 @@ public class EEFeed extends ECommand<EverEssentials> {
 		
 		// Si on ne connait pas le joueur
 		if (args.size() == 0) {
+			
 			// Si la source est un joueur
 			if (source instanceof EPlayer) {
 				resultat = this.commandFeed((EPlayer) source);
@@ -87,8 +88,10 @@ public class EEFeed extends ECommand<EverEssentials> {
 			} else {
 				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText()));
 			}
+			
 		// On connais le joueur
 		} else if (args.size() == 1) {
+			
 			// Si il a la permission
 			if (source.hasPermission(EEPermissions.FEED_OTHERS.get())){
 				// Pour tous les joueurs
@@ -108,6 +111,7 @@ public class EEFeed extends ECommand<EverEssentials> {
 			} else {
 				source.sendMessage(EAMessages.NO_PERMISSION.getText());
 			}
+			
 		// Nombre d'argument incorrect
 		} else {
 			source.sendMessage(this.help(source));
@@ -125,25 +129,24 @@ public class EEFeed extends ECommand<EverEssentials> {
 	}
 	
 	private boolean commandFeedOthers(final CommandSource staff, final EPlayer player) throws CommandException {
-		// La source et le joueur sont différent
-		if (!player.equals(staff)){
-			player.setFood(20);
-			player.setSaturation(20);
-			
-			player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.FEED_OTHERS_PLAYER.get()
-					.replaceAll("<staff>", staff.getName())));
-			staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.FEED_OTHERS_STAFF.get()
-					.replaceAll("<player>", player.getName())));
-			return true;
 		// La source et le joueur sont identique
-		} else {
+		if (player.equals(staff)) {
 			return this.commandFeed(player);
 		}
+		
+		player.setFood(20);
+		player.setSaturation(20);
+		
+		player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.FEED_OTHERS_PLAYER.get()
+				.replaceAll("<staff>", staff.getName())));
+		staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.FEED_OTHERS_STAFF.get()
+				.replaceAll("<player>", player.getName())));
+		return true;
 	}
 	
 	private boolean commandFeedAll(final CommandSource staff) {
 		// Pour tous les joueurs connecté
-		for (EPlayer player : this.plugin.getEServer().getOnlineEPlayers()){
+		this.plugin.getEServer().getOnlineEPlayers().forEach(player -> {
 			player.setFood(20);
 			player.setSaturation(20);
 			
@@ -152,7 +155,8 @@ public class EEFeed extends ECommand<EverEssentials> {
 				player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.FEED_OTHERS_PLAYER.get()
 						.replaceAll("<staff>", staff.getName())));
 			}
-		}
+		});
+		
 		staff.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.FEED_ALL_STAFF.getText()));
 		return true;
 	}
