@@ -32,6 +32,7 @@ import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ESubCommand;
+import fr.evercraft.everapi.server.player.EPlayer;
 import fr.evercraft.everapi.server.user.EUser;
 
 public class EEMailSend extends ESubCommand<EverEssentials> {
@@ -111,16 +112,32 @@ public class EEMailSend extends ESubCommand<EverEssentials> {
 	}
 
 	private boolean commandSend(CommandSource staff, EUser user, String message) {
-		if (user.addMail(staff, message)) {
-			if (staff.getIdentifier().equals(user.getIdentifier())) {
-				staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.MAIL_SEND_MESSAGE.get()
-						.replaceAll("<player>", user.getName())));
-			} else {
-				staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.MAIL_SEND_EQUALS.get()
-						.replaceAll("<player>", user.getName())));
-			}
-		} else {
+		// Le staff ignore le joueur
+		if (staff instanceof EPlayer && ((EPlayer) staff).ignore(user)) {
+			staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.MAIL_SEND_IGNORE_PLAYER.get()
+					.replaceAll("<player>", user.getName())));
+			return false;
+		}
+		
+		// Le joueur vous ignore
+		if (staff instanceof EPlayer && user.ignore((EPlayer) staff)) {
+			staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.MAIL_SEND_IGNORE_RECEIVE.get()
+					.replaceAll("<player>", user.getName())));
+			return false;
+		}
+		
+		// Event cancel
+		if (!user.addMail(staff, message)) {
 			staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.MAIL_SEND_CANCEL.get()
+					.replaceAll("<player>", user.getName())));
+			return false;
+		}
+		
+		if (staff.getIdentifier().equals(user.getIdentifier())) {
+			staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.MAIL_SEND_MESSAGE.get()
+					.replaceAll("<player>", user.getName())));
+		} else {
+			staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.MAIL_SEND_EQUALS.get()
 					.replaceAll("<player>", user.getName())));
 		}
 		return true;

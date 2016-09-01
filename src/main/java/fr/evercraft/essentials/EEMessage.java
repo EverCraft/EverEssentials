@@ -472,6 +472,8 @@ public class EEMessage extends EMessage {
 		MAIL_SEND_CANCEL("mail.send.message", "&cImpossible d'envoyé le message à &6<player>&7."),
 		MAIL_SEND_EQUALS("mail.send.equals", "&7Votre message a bien été envoyé."),
 		MAIL_SEND_ALL("mail.send.all", "&7Votre message a bien été envoyé à tous les joueurs."),
+		MAIL_SEND_IGNORE_PLAYER("mail.send.ignorePlayer", 				"&cImpossible d'envoyer un mail à &6<player>&c car vous l'ignorez."),
+		MAIL_SEND_IGNORE_RECEIVE("mail.send.ignoreReceive",			"&6<player>&c ne recevera pas votre mail car il vous ignore."),
 		
 		MAIL_BUTTON_READ("mail.button.read", "&a&nLire"),
 		MAIL_BUTTON_READ_HOVER("mail.button.readHover", "&cCliquez ici pour lire le message."),
