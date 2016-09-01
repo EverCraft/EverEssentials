@@ -283,6 +283,7 @@ public class EEPlayerListeners {
 			// Freeze
 			if (!event.getCommand().equalsIgnoreCase("freeze") && player.isFreeze()) {
 				event.setCancelled(true);
+				player.sendMessage(EEMessages.PREFIX.get() + EEMessages.FREEZE_NO_COMMAND.get());
 			}
 		}
     }
@@ -319,7 +320,8 @@ public class EEPlayerListeners {
 	
 	@Listener
 	public void onPlayerMail(MailEvent.Add event) {
-		// TODO : Message
+		EPlayer player = event.getPlayer();
+		player.sendMessage(EEMessages.PREFIX.get() + EEMessages.MAIL_NEW_MESSAGE.get());
 	}
 	
 	@Listener
