@@ -84,13 +84,18 @@ public class EEItemNameClear extends ESubCommand<EverEssentials> {
 	private boolean commandItemNameClear(final EPlayer player) {
 		if(player.getItemInHand(HandTypes.MAIN_HAND).isPresent()){
 			ItemStack item = player.getItemInHand(HandTypes.MAIN_HAND).get();
-			player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get()).append(EEMessages.ITEM_NAME_CLEAR_NAME.get())
-					.replace("<item>", EChat.getButtomItem(player.getItemInHand(HandTypes.MAIN_HAND).get(), 
-							EChat.getTextColor(EEMessages.ITEM_NAME_SET_COLOR.get())))
-				.build());
-			item.offer(Keys.DISPLAY_NAME, null);
-			player.setItemInHand(HandTypes.MAIN_HAND, item);
-			return true;
+			if(item.get(Keys.DISPLAY_NAME).isPresent()){
+				item.offer(Keys.DISPLAY_NAME, Text.of(""));
+				player.setItemInHand(HandTypes.MAIN_HAND, item);
+				player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get()).append(EEMessages.ITEM_NAME_CLEAR_NAME.get())
+						.replace("<item>", EChat.getButtomItem(player.getItemInHand(HandTypes.MAIN_HAND).get(), 
+								EChat.getTextColor(EEMessages.ITEM_NAME_SET_COLOR.get())))
+					.build());
+				return true;
+			} else {
+				this.plugin.getEServer().broadcast("test");
+				return false;
+			}
 		} else {
 			player.sendMessage(EEMessages.PREFIX.get() + EAMessages.EMPTY_ITEM_IN_HAND.get());
 			return false;
