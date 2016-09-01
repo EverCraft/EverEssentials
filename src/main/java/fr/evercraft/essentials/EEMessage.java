@@ -190,6 +190,8 @@ public class EEMessage extends EMessage {
 		FREEZE_STATUS_PLAYER_OFF("freeze.status.playerOff", 							"&7Vous êtes libre."),
 		FREEZE_STATUS_OTHERS_ON("freeze.status.othersOn", 								"&6<player> &7est paralysé."),
 		FREEZE_STATUS_OTHERS_OFF("freeze.status.othersOff", 							"&6<player> &7est libre."),
+		
+		FREEZE_NO_COMMAND("freeze.noCommand", 											"&7Vous ne pouvez pas exécuter de commande en étant paralysé."),
 
 		FLY_DESCRIPTION("fly.description", 										"Permet de vous envoler"),
 		FLY_ON_DESCRIPTION("fly.on.description", 								"Permet d'accorder le droit de s'envoler à un joueur"),
@@ -384,12 +386,17 @@ public class EEMessage extends EMessage {
 		ITEM_GIVE("item.give", "&7Vous avez reçu <item>"),
 		ITEM_GIVE_COLOR("item.giveColor", "&6"),
 		
+		ITEM_LORE_DESCRIPTION("itemlore.description", "Modifie la description d'un objet"),
+		
 		ITEM_NAME_DESCRIPTION("itemname.description", "Modifie le nom d'un objet"),
 		ITEM_NAME_SET_DESCRIPTION("itemname.set.description", "Défini le nom d'un objet"),
 		ITEM_NAME_SET_NAME("itemname.set.name", "&7Vous avez renommé &b[<item-before>&b] &7en &b[<item-after>&b]&7."),
 		ITEM_NAME_SET_COLOR("itemname.set.color", "&b"),
-		ITEM_NAME_CLEAR_DESCRIPTION("itemname.clear.description", "Réinitialise le nom d'un objet"),
-		ITEM_NAME_CLEAR_NAME("itemname.clear.name", "&7Vous avez réinitialisé le nom de votre objet &b[<item>&b]&7."),
+		
+		ITEM_NAME_CLEAR_DESCRIPTION("itemname.clear.description", "Supprime le nom d'un objet"),
+		ITEM_NAME_CLEAR_NAME("itemname.clear.name", "&7Votre nom de l'objet &b[<item>&b] &7a été supprimé."),
+		ITEM_NAME_CLEAR_ERROR("itemname.clear.error", "&cErreur : Votre objet &b[<item>&b] &cne possède pas de nom."),
+		ITEM_NAME_CLEAR_COLOR("itemname.clear.color", "&b"),
 		
 		JUMP_DESCRIPTION("jump.description", "Vous téléporte à l'endroit de votre choix"),
 		JUMP_TELEPORT("jump.teleport", "&7Vous avez été téléporté à l'endroit de votre choix."),
@@ -470,6 +477,8 @@ public class EEMessage extends EMessage {
 		MAIL_BUTTON_READ_HOVER("mail.button.readHover", "&cCliquez ici pour lire le message."),
 		MAIL_BUTTON_DELETE("mail.button.delete", "&c&nSupprimer"),
 		MAIL_BUTTON_DELETE_HOVER("mail.button.deleteHover", "&cCliquez ici pour supprimer le message."),
+		
+		MAIL_NEW_MESSAGE("mail.newMessage", "&7Vous avez un nouveau message."),
 		
 		ME_DESCRIPTION("me.description", "Envoie un texte d'action dans le tchat"),
 		ME_PREFIX("me.prefix", "&f* <player> &r"),
