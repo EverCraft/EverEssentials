@@ -114,6 +114,7 @@ public enum EEPermissions implements EnumPermission {
 	ITEM_BYPASS("item.bypass"),
 	
 	ITEM_NAME("itemname.command"),
+	ITEM_LORE("itemlore.command"),
 	
 	JUMP("jump.command"),
 	

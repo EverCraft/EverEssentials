@@ -385,6 +385,8 @@ public class EEMessage extends EMessage {
 		ITEM_GIVE("item.give", "&7Vous avez reçu <item>"),
 		ITEM_GIVE_COLOR("item.giveColor", "&6"),
 		
+		ITEM_LORE_DESCRIPTION("itemlore.description", "Modifie la description d'un objet"),
+		
 		ITEM_NAME_DESCRIPTION("itemname.description", "Modifie le nom d'un objet"),
 		ITEM_NAME_SET_DESCRIPTION("itemname.set.description", "Défini le nom d'un objet"),
 		ITEM_NAME_SET_NAME("itemname.set.name", "&7Vous avez renommé &b[<item-before>&b] &7en &b[<item-after>&b]&7."),
