@@ -74,6 +74,8 @@ public class EEMsg extends ECommand<EverEssentials> {
 					suggests.add(player.getName());
 				}
 			}
+		} else if (args.size() == 2) {
+			suggests.add("Hello world");
 		}
 		return suggests;
 	}

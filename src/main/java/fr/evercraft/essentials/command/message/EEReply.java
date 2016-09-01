@@ -64,7 +64,11 @@ public class EEReply extends ECommand<EverEssentials> {
 	
 	@Override
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
-		return new ArrayList<String>();
+		List<String> suggests = new ArrayList<String>();
+		if (args.size() == 1) {
+			suggests.add("Hello world");
+		}
+		return suggests;
 	}
 	
 	@Override
