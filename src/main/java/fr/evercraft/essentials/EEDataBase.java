@@ -297,7 +297,7 @@ public class EEDataBase extends EDataBase<EverEssentials> {
     		String query = 	  "INSERT INTO `" + this.getTableIgnores() + "` "
     						+ "VALUES (?, ?);";
 			preparedStatement = connection.prepareStatement(query);
-			preparedStatement.setString(1, identifier);;
+			preparedStatement.setString(1, identifier);
 			preparedStatement.setString(2, ignore);
 			
 			preparedStatement.execute();
