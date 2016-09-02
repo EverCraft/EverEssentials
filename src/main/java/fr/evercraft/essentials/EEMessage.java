@@ -387,6 +387,14 @@ public class EEMessage extends EMessage {
 		ITEM_GIVE_COLOR("item.giveColor", "&6"),
 		
 		ITEM_LORE_DESCRIPTION("itemlore.description", "Modifie la description d'un objet"),
+		ITEM_LORE_ADD_DESCRIPTION("itemlore.add.description", "Ajoute une ligne à la description d'un objet"),
+		ITEM_LORE_ADD_LORE("itemlore.add.name", "&7Description ajoutée à l'objet &b[<item>&b]&7."),
+		ITEM_LORE_ADD_COLOR("itemlore.add.color", "&b"),
+		
+		ITEM_LORE_CLEAR_DESCRIPTION("itemlore.clear.description", "Supprime la description d'un objet"),
+		ITEM_LORE_CLEAR_NAME("itemlore.clear.name", "&7La description de votre objet &b[<item>&b] &7a été supprimé."),
+		ITEM_LORE_CLEAR_ERROR("itemlore.clear.error", "&cErreur : Votre objet &b[<item>&b] &cne possède pas de description."),
+		ITEM_LORE_CLEAR_COLOR("itemlore.clear.color", "&b"),
 		
 		ITEM_NAME_DESCRIPTION("itemname.description", "Modifie le nom d'un objet"),
 		ITEM_NAME_SET_DESCRIPTION("itemname.set.description", "Défini le nom d'un objet"),
