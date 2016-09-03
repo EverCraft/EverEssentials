@@ -396,6 +396,8 @@ public class EEMessage extends EMessage {
 		ITEM_LORE_CLEAR_ERROR("itemlore.clear.error", "&cErreur : Votre objet &b[<item>&b] &cne possède pas de description."),
 		ITEM_LORE_CLEAR_COLOR("itemlore.clear.color", "&b"),
 		
+		ITEM_LORE_SET_DESCRIPTION("itemlore.set.description", "Défini une ligne à la description d'un objet"),
+		
 		ITEM_NAME_DESCRIPTION("itemname.description", "Modifie le nom d'un objet"),
 		ITEM_NAME_SET_DESCRIPTION("itemname.set.description", "Défini le nom d'un objet"),
 		ITEM_NAME_SET_NAME("itemname.set.name", "&7Vous avez renommé &b[<item-before>&b] &7en &b[<item-after>&b]&7."),
