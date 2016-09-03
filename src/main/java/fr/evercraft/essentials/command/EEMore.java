@@ -92,7 +92,7 @@ public class EEMore extends ECommand<EverEssentials> {
 		Optional<ItemStack> item = player.getItemInMainHand();
 		
 		// Le joueur a aucun item dans la main
-		if (item.isPresent()) {	
+		if (!item.isPresent()) {	
 			player.sendMessage(EEMessages.PREFIX.get() + EAMessages.EMPTY_ITEM_IN_HAND.get());
 			return false;
 		}
