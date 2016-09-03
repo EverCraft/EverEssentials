@@ -18,6 +18,7 @@ package fr.evercraft.essentials.command.itemname;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
@@ -92,16 +93,19 @@ public class EEItemNameSet extends ESubCommand<EverEssentials> {
 	}
 
 	private boolean commandItemName(final EPlayer player, final String name) {
-		if(player.getItemInHand(HandTypes.MAIN_HAND).isPresent()){
-			ItemStack item = player.getItemInHand(HandTypes.MAIN_HAND).get();
-			item.offer(Keys.DISPLAY_NAME, EChat.of(name));
+		Optional<ItemStack> item = player.getItemInMainHand();
+		if(player.getItemInMainHand().isPresent()){
+			this.plugin.getEServer().broadcast("displayname : " + item.get().get(Keys.DISPLAY_NAME));
+			this.plugin.getEServer().broadcast("BlockState : " + item.get().get(Keys.ITEM_BLOCKSTATE));
+			this.plugin.getEServer().broadcast("Spawn : " + item.get().get(Keys.SPAWNABLE_ENTITY_TYPE));
+			item.get().offer(Keys.DISPLAY_NAME, EChat.of(name));
 			player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get()).append(EEMessages.ITEM_NAME_SET_NAME.get())
 					.replace("<item-before>", EChat.getButtomItem(player.getItemInHand(HandTypes.MAIN_HAND).get(), 
 							EChat.getTextColor(EEMessages.ITEM_NAME_SET_COLOR.get())))
-					.replace("<item-after>", EChat.getButtomItem(item, 
+					.replace("<item-after>", EChat.getButtomItem(item.get(), 
 							EChat.getTextColor(EEMessages.ITEM_NAME_SET_COLOR.get())))
 				.build());
-			player.setItemInHand(HandTypes.MAIN_HAND, item);
+			player.setItemInMainHand(item.get());
 			return true;
 		} else {
 			player.sendMessage(EEMessages.PREFIX.get() + EAMessages.EMPTY_ITEM_IN_HAND.get());
