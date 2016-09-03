@@ -107,10 +107,13 @@ public class EEItem extends EReloadCommand<EverEssentials> {
 			}
 		} else if (args.size() == 3) {
 			Optional<ItemStack> optItem = UtilsItemStack.getItem(args.get(0));
-			if (optItem.isPresent()){
-				suggests.add(String.valueOf(optItem.get().getMaxStackQuantity()));
-				if (!suggests.contains("1")){
-					suggests.add("1");
+			if (optItem.isPresent()) {
+				Optional<Class<? extends CatalogType>> catalogType = UtilsItemType.getCatalogType(optItem.get());
+				if (catalogType.isPresent()) {
+					suggests.add(String.valueOf(optItem.get().getMaxStackQuantity()));
+					if (!suggests.contains("1")){
+						suggests.add("1");
+					}
 				}
 			}
 		}
