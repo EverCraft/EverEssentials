@@ -988,6 +988,7 @@ public class EEMessage extends EMessage {
 		WHOIS_UUID("whois.uuid", "    &6&l➤  &6UUID : <uuid>"),
 		WHOIS_UUID_STYLE("whois.uuidStyle", "&c<uuid>"),
 		WHOIS_IP("whois.ip", "    &6&l➤  &6IP : <ip>"),
+		WHOIS_LAST_IP("whois.lastIp", "    &6&l➤  &6Dernière IP : <ip>"),
 		WHOIS_IP_STYLE("whois.ipStyle", "&c<ip>"),
 		WHOIS_PING("whois.ping", "    &6&l➤  &6Ping : &c<ping> &6ms"),
 		WHOIS_HEAL("whois.heal", "    &6&l➤  &6Santé : &a<heal>&6/&c<max_heal>"),

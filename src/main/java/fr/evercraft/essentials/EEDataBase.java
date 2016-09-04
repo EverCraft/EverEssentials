@@ -16,6 +16,7 @@
  */
 package fr.evercraft.essentials;
 
+import java.net.InetAddress;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -30,6 +31,7 @@ import fr.evercraft.everapi.exception.ServerDisableException;
 import fr.evercraft.everapi.plugin.EDataBase;
 import fr.evercraft.everapi.server.location.LocationSQL;
 import fr.evercraft.everapi.services.essentials.Mail;
+import fr.evercraft.everapi.sponge.UtilsNetwork;
 
 public class EEDataBase extends EDataBase<EverEssentials> {
 	private String table_players;
@@ -54,6 +56,7 @@ public class EEDataBase extends EDataBase<EverEssentials> {
 							"`toggle` BOOL NOT NULL DEFAULT '1'," +
 							"`freeze` BOOL NOT NULL DEFAULT '0'," +
 							"`total_time_played` INT NOT NULL," +
+							"`last_ip` varchar(50)," +
 							"PRIMARY KEY (`uuid`));";
 		initTable(this.getTablePlayers(), players);
 		
@@ -158,6 +161,35 @@ public class EEDataBase extends EDataBase<EverEssentials> {
 	/*
 	 * Autres fonctions
 	 */
+	
+
+	public void setLastIp(final String identifier, final InetAddress last_ip) {
+		Connection connection = null;
+		PreparedStatement preparedStatement = null;
+    	try {
+    		connection = this.getConnection();
+    		String query = 	  "UPDATE `" + this.getTablePlayers() + "` "
+							+ "SET `last_ip` = ? "
+							+ "WHERE `uuid` = ? ;";
+			preparedStatement = connection.prepareStatement(query);
+			String address = UtilsNetwork.getHostString(last_ip);
+			
+			preparedStatement.setString(1, address);
+			preparedStatement.setString(2, identifier);
+			
+			preparedStatement.execute();
+			this.plugin.getLogger().debug("Updating the database : (identifier='" + identifier + "';last_ip='" + address + "')");
+    	} catch (SQLException e) {
+        	this.plugin.getLogger().warn("Error during a change of vanish : " + e.getMessage());
+		} catch (ServerDisableException e) {
+			e.execute();
+		} finally {
+			try {
+				if (preparedStatement != null) preparedStatement.close();
+				if (connection != null) connection.close();
+			} catch (SQLException e) {}
+	    }
+	}
 	
 	public void setVanish(final String identifier, final boolean vanish) {
 		Connection connection = null;

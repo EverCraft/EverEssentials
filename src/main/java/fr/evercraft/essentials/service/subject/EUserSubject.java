@@ -16,6 +16,7 @@
  */
 package fr.evercraft.essentials.service.subject;
 
+import java.net.InetAddress;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -59,6 +60,7 @@ import fr.evercraft.everapi.services.essentials.Mail;
 import fr.evercraft.everapi.services.essentials.TeleportDelay;
 import fr.evercraft.everapi.services.essentials.TeleportRequest;
 import fr.evercraft.everapi.services.essentials.TeleportRequest.Type;
+import fr.evercraft.everapi.sponge.UtilsNetwork;
 
 public class EUserSubject implements SubjectUserEssentials {
 	
@@ -75,6 +77,7 @@ public class EUserSubject implements SubjectUserEssentials {
 	private boolean vanish;
 	private boolean toggle;
 	private boolean freeze;
+	private Optional<InetAddress> last_ip;
 	private long total_played;
 	
 	// Tempo
@@ -108,6 +111,7 @@ public class EUserSubject implements SubjectUserEssentials {
 		this.vanish = false;
 		this.toggle = true;
 		this.freeze = false;
+		this.last_ip = Optional.empty();
 		
 		// Tempo
 		this.afk = false;
@@ -143,6 +147,7 @@ public class EUserSubject implements SubjectUserEssentials {
 			}
 			
 			this.startTotalTimePlayed();
+			this.setLastIp(player.getConnection().getAddress().getAddress());
 			
 		} else {
 			this.plugin.getLogger().warn("Player empty : connect");
@@ -196,6 +201,7 @@ public class EUserSubject implements SubjectUserEssentials {
 				this.toggle = list.getBoolean("toggle");
 				this.freeze = list.getBoolean("freeze");
 				this.total_played = list.getLong("total_time_played");
+				this.last_ip = UtilsNetwork.getHost(list.getString("last_ip"));
 				
 				this.plugin.getLogger().debug("Loading : (identifier='" + this.identifier + "';"
 														+ "vanish='" + this.vanish + "';"
@@ -203,6 +209,7 @@ public class EUserSubject implements SubjectUserEssentials {
 														+ "toggle='" + this.toggle + "';"
 														+ "freeze='" + this.freeze + "';"
 														+ "total_played='" + this.total_played + "';"
+														+ "last_ip='" + list.getString("last_ip") + "';"
 														+ ")");
 			} else {
 				this.insertPlayer(connection);
@@ -314,7 +321,7 @@ public class EUserSubject implements SubjectUserEssentials {
 		PreparedStatement preparedStatement = null;
 		try {
 			String query = 	  "INSERT INTO `" + this.plugin.getDataBases().getTablePlayers() + "` "
-							+ "VALUES (?, ?, ?, ?, ?, ?);";
+							+ "VALUES (?, ?, ?, ?, ?, ?, ?);";
 			preparedStatement = connection.prepareStatement(query);
 			preparedStatement.setString(1, this.getIdentifier());
 			preparedStatement.setBoolean(2, this.vanish);
@@ -322,6 +329,11 @@ public class EUserSubject implements SubjectUserEssentials {
 			preparedStatement.setBoolean(4, this.toggle);
 			preparedStatement.setBoolean(5, this.freeze);
 			preparedStatement.setLong(6, this.total_played);
+			if(this.last_ip.isPresent()) {
+				preparedStatement.setString(7, UtilsNetwork.getHostString(this.last_ip.get()));
+			} else {
+				preparedStatement.setString(7, null);
+			}
 			
 			preparedStatement.execute();
 			this.plugin.getLogger().debug("Insert : (identifier='" + this.identifier + "';"
@@ -330,6 +342,7 @@ public class EUserSubject implements SubjectUserEssentials {
 													+ "toggle='" + this.toggle + "';"
 													+ "freeze='" + this.freeze + "';"
 													+ "total_played='" + this.total_played + "';"
+													+ "last_ip='" + this.last_ip.orElse(null) + "';"
 													+ ")");
 		} catch (SQLException e) {
 	    	this.plugin.getLogger().warn("Error during a change of player : " + e.getMessage());
@@ -474,6 +487,27 @@ public class EUserSubject implements SubjectUserEssentials {
 		}
 		this.last_played = Optional.empty();
 		return true;
+	}
+	
+	/*
+	 * Last ip
+	 */
+	
+	@Override
+	public Optional<InetAddress> getLastIp() {
+		return this.last_ip;
+	}
+
+	
+	@Override
+	public boolean setLastIp(final InetAddress address) {
+		Preconditions.checkNotNull(address, "address");
+		if(!this.last_ip.isPresent() || !UtilsNetwork.getHostString(this.last_ip.get()).equals(UtilsNetwork.getHostString(address))) {
+			this.last_ip = Optional.of(address);
+			this.plugin.getThreadAsync().execute(() -> this.plugin.getDataBases().setLastIp(this.getIdentifier(), address));
+			return true;
+		}
+		return false;
 	}
 	
 	/*

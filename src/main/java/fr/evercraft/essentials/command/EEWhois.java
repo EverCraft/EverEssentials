@@ -16,6 +16,7 @@
  */
 package fr.evercraft.essentials.command;
 
+import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -23,6 +24,7 @@ import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
+import org.spongepowered.api.entity.living.player.User;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.chat.ChatVisibilities;
@@ -38,6 +40,7 @@ import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ECommand;
 import fr.evercraft.everapi.server.player.EPlayer;
 import fr.evercraft.everapi.server.user.EUser;
+import fr.evercraft.everapi.sponge.UtilsNetwork;
 import fr.evercraft.everapi.text.ETextBuilder;
 
 public class EEWhois extends ECommand<EverEssentials> {
@@ -178,6 +181,9 @@ public class EEWhois extends ECommand<EverEssentials> {
 		List<Text> lists = new ArrayList<Text>();
 
 		lists.add(this.getUUID(user));
+		if(user.getLastIp().isPresent()) {
+			lists.add(this.getLastIp(user, user.getLastIp().get()));
+		}
 		lists.add(this.getHeal(user));
 		lists.add(this.getFood(user));
 		lists.add(this.getExp());
@@ -223,16 +229,22 @@ public class EEWhois extends ECommand<EverEssentials> {
 	
 	private Text getIP(final EPlayer player){
 		return ETextBuilder.toBuilder(EEMessages.WHOIS_IP.get())
-				.replace("<ip>", getButtomIP(player))
+				.replace("<ip>", getButtomIP(UtilsNetwork.getHostString(player.getConnection().getAddress().getAddress())))
 				.build();
 	}
 	
-	private Text getButtomIP(final EPlayer player){
+	private Text getLastIp(final User user, final InetAddress address) {
+		return ETextBuilder.toBuilder(EEMessages.WHOIS_LAST_IP.get())
+				.replace("<ip>", this.getButtomIP(UtilsNetwork.getHostString(address)))
+				.build();
+	}
+	
+	private Text getButtomIP(String address){
 		return EChat.of(EEMessages.WHOIS_IP_STYLE.get()
-				.replaceAll("<ip>", player.getConnection().getAddress().getAddress().getHostAddress().toString())).toBuilder()
+				.replaceAll("<ip>", address)).toBuilder()
 			.onHover(TextActions.showText(EChat.of(EAMessages.HOVER_COPY.get())))
-			.onClick(TextActions.suggestCommand(player.getConnection().getAddress().getAddress().getHostAddress().toString()))
-			.onShiftClick(TextActions.insertText(player.getConnection().getAddress().getAddress().getHostAddress().toString()))
+			.onClick(TextActions.suggestCommand(address))
+			.onShiftClick(TextActions.insertText(address))
 			.build();
 	}
 	
