@@ -18,6 +18,7 @@ package fr.evercraft.essentials.command.itemname;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
@@ -82,15 +83,15 @@ public class EEItemNameClear extends ESubCommand<EverEssentials> {
 	}
 
 	private boolean commandItemNameClear(final EPlayer player) {
-		if(player.getItemInHand(HandTypes.MAIN_HAND).isPresent()){
-			ItemStack item = player.getItemInHand(HandTypes.MAIN_HAND).get();
-			if(item.get(Keys.DISPLAY_NAME).isPresent()){
+		Optional<ItemStack> item = player.getItemInMainHand();
+		if(player.getItemInMainHand().isPresent()){
+			if(item.get().get(Keys.DISPLAY_NAME).isPresent()){
 				player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get()).append(EEMessages.ITEM_NAME_CLEAR_NAME.get())
 						.replace("<item>", EChat.getButtomItem(player.getItemInHand(HandTypes.MAIN_HAND).get(), 
 								EChat.getTextColor(EEMessages.ITEM_NAME_CLEAR_COLOR.get())))
 					.build());
-				item.remove(Keys.DISPLAY_NAME);
-				player.setItemInHand(HandTypes.MAIN_HAND, item);
+				item.get().remove(Keys.DISPLAY_NAME);
+				player.setItemInMainHand(item.get());
 				return true;
 			} else {
 				player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get()).append(EEMessages.ITEM_NAME_CLEAR_ERROR.get())

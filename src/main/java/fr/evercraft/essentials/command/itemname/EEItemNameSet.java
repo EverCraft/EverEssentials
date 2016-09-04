@@ -95,9 +95,6 @@ public class EEItemNameSet extends ESubCommand<EverEssentials> {
 	private boolean commandItemName(final EPlayer player, final String name) {
 		Optional<ItemStack> item = player.getItemInMainHand();
 		if(player.getItemInMainHand().isPresent()){
-			this.plugin.getEServer().broadcast("displayname : " + item.get().get(Keys.DISPLAY_NAME));
-			this.plugin.getEServer().broadcast("BlockState : " + item.get().get(Keys.ITEM_BLOCKSTATE));
-			this.plugin.getEServer().broadcast("Spawn : " + item.get().get(Keys.SPAWNABLE_ENTITY_TYPE));
 			item.get().offer(Keys.DISPLAY_NAME, EChat.of(name));
 			player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get()).append(EEMessages.ITEM_NAME_SET_NAME.get())
 					.replace("<item-before>", EChat.getButtomItem(player.getItemInHand(HandTypes.MAIN_HAND).get(), 

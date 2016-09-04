@@ -390,19 +390,22 @@ public class EEMessage extends EMessage {
 		ITEM_LORE_ADD_DESCRIPTION("itemlore.add.description", "Ajoute une ligne à la description d'un objet"),
 		ITEM_LORE_ADD_LORE("itemlore.add.name", "&7Description ajoutée à l'objet &b[<item>&b]&7."),
 		ITEM_LORE_ADD_COLOR("itemlore.add.color", "&b"),
-		
 		ITEM_LORE_CLEAR_DESCRIPTION("itemlore.clear.description", "Supprime la description d'un objet"),
 		ITEM_LORE_CLEAR_NAME("itemlore.clear.name", "&7La description de votre objet &b[<item>&b] &7a été supprimé."),
 		ITEM_LORE_CLEAR_ERROR("itemlore.clear.error", "&cErreur : Votre objet &b[<item>&b] &cne possède pas de description."),
 		ITEM_LORE_CLEAR_COLOR("itemlore.clear.color", "&b"),
-		
 		ITEM_LORE_SET_DESCRIPTION("itemlore.set.description", "Défini une ligne à la description d'un objet"),
-		
+		ITEM_LORE_SET_LORE("itemlore.set.name", "&7La ligne &6<line> &7a été ajoutée de l'objet &b[<item>&b]&7."),
+		ITEM_LORE_SET_COLOR("itemlore.set.color", "&b"),
+		ITEM_LORE_REMOVE_DESCRIPTION("itemlore.remove.description", "Supprime une ligne à la description d'un objet"),
+		ITEM_LORE_REMOVE_LORE("itemlore.remove.name", "&7La ligne &6<line> &7a été supprimée de l'objet &b[<item>&b]&7."),
+		ITEM_LORE_REMOVE_ERROR("itemlore.remove.error", "&cErreur : La ligne doit être comprise entre &61 &7et &6<max>&7."),
+		ITEM_LORE_REMOVE_COLOR("itemlore.remove.color", "&b"),
+			
 		ITEM_NAME_DESCRIPTION("itemname.description", "Modifie le nom d'un objet"),
 		ITEM_NAME_SET_DESCRIPTION("itemname.set.description", "Défini le nom d'un objet"),
 		ITEM_NAME_SET_NAME("itemname.set.name", "&7Vous avez renommé &b[<item-before>&b] &7en &b[<item-after>&b]&7."),
 		ITEM_NAME_SET_COLOR("itemname.set.color", "&b"),
-		
 		ITEM_NAME_CLEAR_DESCRIPTION("itemname.clear.description", "Supprime le nom d'un objet"),
 		ITEM_NAME_CLEAR_NAME("itemname.clear.name", "&7Votre nom de l'objet &b[<item>&b] &7a été supprimé."),
 		ITEM_NAME_CLEAR_ERROR("itemname.clear.error", "&cErreur : Votre objet &b[<item>&b] &cne possède pas de nom."),
