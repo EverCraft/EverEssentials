@@ -23,6 +23,7 @@ import java.util.Optional;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.data.key.Keys;
+import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
@@ -56,24 +57,28 @@ public class EEItemLoreSet extends ESubCommand<EverEssentials> {
 	public List<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		List<String> suggests = new ArrayList<String>();
 		if (args.size() == 1) {
-			if(source instanceof EPlayer){
-				EPlayer player = (EPlayer) source;
-				Optional<ItemStack> item = player.getItemInMainHand();
-				if(item.isPresent()){
-					suggests.add("1");
-					Optional<List<Text>> lore = item.get().get(Keys.ITEM_LORE);
-					if(lore.isPresent()){
-						if(lore.get().size() > 1){
-							suggests.add(String.valueOf(lore.get().size()));
+			if(source instanceof Player){
+				Optional<EPlayer> player = this.plugin.getEServer().getEPlayer(((Player) source).getUniqueId());
+				if(player.isPresent()){
+					Optional<ItemStack> item = player.get().getItemInMainHand();
+					if(item.isPresent()){
+						suggests.add("1");
+						Optional<List<Text>> lore = item.get().get(Keys.ITEM_LORE);
+						if(lore.isPresent()){
+							if(lore.get().size() > 1){
+								suggests.add(String.valueOf(lore.get().size()));
+							}
 						}
 					}
 				}
 			}
 		} else if(args.size() == 2) {
-			if(source instanceof EPlayer){
-				EPlayer player = (EPlayer) source;
-				if(player.getItemInMainHand().isPresent()){
-					suggests.add("&bHello world");
+			if(source instanceof Player){
+				Optional<EPlayer> player = this.plugin.getEServer().getEPlayer(((Player) source).getUniqueId());
+				if(player.isPresent()){
+					if(player.get().getItemInMainHand().isPresent()){
+						suggests.add("&bHello world");
+					}
 				}
 			}
 		}

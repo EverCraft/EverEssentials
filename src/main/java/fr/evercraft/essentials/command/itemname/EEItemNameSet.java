@@ -59,9 +59,11 @@ public class EEItemNameSet extends ESubCommand<EverEssentials> {
 		List<String> suggests = new ArrayList<String>();
 		if (args.size() == 1) {
 			if(source instanceof Player){
-				Player player = (Player) source;
-				if(player.getItemInHand(HandTypes.MAIN_HAND).isPresent()){
-					suggests.add("&bHello world");
+				Optional<EPlayer> player = this.plugin.getEServer().getEPlayer(((Player) source).getUniqueId());
+				if(player.isPresent()){
+					if(player.get().getItemInMainHand().isPresent()){
+						suggests.add("&bHello world");
+					}
 				}
 			}
 		}

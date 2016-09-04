@@ -399,7 +399,7 @@ public class EEMessage extends EMessage {
 		ITEM_LORE_SET_COLOR("itemlore.set.color", "&b"),
 		ITEM_LORE_REMOVE_DESCRIPTION("itemlore.remove.description", "Supprime une ligne à la description d'un objet"),
 		ITEM_LORE_REMOVE_LORE("itemlore.remove.name", "&7La ligne &6<line> &7a été supprimée de l'objet &b[<item>&b]&7."),
-		ITEM_LORE_REMOVE_ERROR("itemlore.remove.error", "&cErreur : La ligne doit être comprise entre &61 &7et &6<max>&7."),
+		ITEM_LORE_REMOVE_ERROR("itemlore.remove.error", "&cErreur : La ligne doit être comprise entre &61 &cet &6<max>&c."),
 		ITEM_LORE_REMOVE_COLOR("itemlore.remove.color", "&b"),
 			
 		ITEM_NAME_DESCRIPTION("itemname.description", "Modifie le nom d'un objet"),
@@ -493,7 +493,9 @@ public class EEMessage extends EMessage {
 		MAIL_BUTTON_DELETE("mail.button.delete", "&c&nSupprimer"),
 		MAIL_BUTTON_DELETE_HOVER("mail.button.deleteHover", "&cCliquez ici pour supprimer le message."),
 		
-		MAIL_NEW_MESSAGE("mail.newMessage", "&7Vous avez un nouveau message."),
+		MAIL_NEW_MESSAGE("mail.newMessage", "&7Vous avez un nouveau message. <message>"),
+		MAIL_BUTTON_NEW_MESSAGE("mail.button.newMessage", "&2&nCliquez ici."),
+		MAIL_BUTTON_NEW_MESSAGE_HOVER("mail.button.newMessageHover", "&7Cliquez ici pour afficher la liste des mails."),
 		
 		ME_DESCRIPTION("me.description", "Envoie un texte d'action dans le tchat"),
 		ME_PREFIX("me.prefix", "&f* <player> &r"),
