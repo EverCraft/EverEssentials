@@ -19,7 +19,7 @@ package fr.evercraft.essentials.listeners;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-
+import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.hanging.Painting;
@@ -44,6 +44,8 @@ import org.spongepowered.api.event.item.inventory.ChangeInventoryEvent;
 import org.spongepowered.api.event.item.inventory.InteractInventoryEvent;
 import org.spongepowered.api.event.message.MessageChannelEvent;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
+import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.channel.MessageChannel;
 import org.spongepowered.api.text.channel.MessageReceiver;
 
@@ -53,9 +55,11 @@ import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.event.AfkEvent;
 import fr.evercraft.everapi.event.MailEvent;
+import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.server.player.EPlayer;
 import fr.evercraft.everapi.services.essentials.TeleportDelay;
 import fr.evercraft.everapi.sponge.UtilsPainting;
+import fr.evercraft.everapi.text.ETextBuilder;
 
 public class EEPlayerListeners {
 	private EverEssentials plugin;
@@ -325,7 +329,19 @@ public class EEPlayerListeners {
 	@Listener
 	public void onPlayerMail(MailEvent.Add event) {
 		EPlayer player = event.getPlayer();
-		player.sendMessage(EEMessages.PREFIX.get() + EEMessages.MAIL_NEW_MESSAGE.get());
+		if(!player.equals(event.getTo())){
+			player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get()).append(EEMessages.MAIL_NEW_MESSAGE.get())
+					.replace("<message>", getButtonReadMail(event.getTo()))
+				.build());
+		}
+	}
+	
+	private Text getButtonReadMail(final CommandSource source){
+		return EEMessages.MAIL_BUTTON_NEW_MESSAGE.getText().toBuilder()
+					.onHover(TextActions.showText(EChat.of(EEMessages.MAIL_BUTTON_NEW_MESSAGE_HOVER.get()
+							.replaceAll("<player>", source.getName()))))
+					.onClick(TextActions.runCommand("/mail read"))
+					.build();
 	}
 	
 	@Listener

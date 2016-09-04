@@ -57,9 +57,16 @@ public class EEItemLore extends EParentCommand<EverEssentials> {
 		if (args.size() > 1) {
 			List<String> args_send = new ArrayList<String>();
 			args_send.add(args.get(0));
-			args_send.add(Pattern.compile("^[ \"]*" + args.get(0) + "[ \"][ ]*").matcher(arg).replaceAll(""));
+			if(args.get(0).equalsIgnoreCase("set")){
+				args_send.add(args.get(1));
+				args_send.add(Pattern.compile("^[ \"]*" + args.get(0) + "[ \"]*" + args.get(1) + "[ \"][ ]*").matcher(arg).replaceAll(""));
+			} else {
+				args_send.add(Pattern.compile("^[ \"]*" + args.get(0) + "[ \"][ ]*").matcher(arg).replaceAll(""));
+			}
+			this.plugin.getEServer().broadcast("args_send" + args_send);
 			return args_send;
 		}
+		this.plugin.getEServer().broadcast("args" + args);
 		return args;
 	}
 }

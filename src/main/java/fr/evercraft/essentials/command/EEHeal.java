@@ -66,10 +66,11 @@ public class EEHeal extends ECommand<EverEssentials> {
 	
 	@Override
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
+		List<String> suggests = new ArrayList<String>();
 		if (args.size() == 1 && source.hasPermission(EEPermissions.HEAL_OTHERS.get())){
-			return null;
+			suggests.addAll(this.getAllPlayers());
 		}
-		return new ArrayList<String>();
+		return suggests;
 	}
 	
 	@Override

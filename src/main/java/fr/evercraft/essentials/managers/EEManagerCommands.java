@@ -34,6 +34,8 @@ import fr.evercraft.essentials.command.ignore.*;
 import fr.evercraft.essentials.command.itemlore.EEItemLore;
 import fr.evercraft.essentials.command.itemlore.EEItemLoreAdd;
 import fr.evercraft.essentials.command.itemlore.EEItemLoreClear;
+import fr.evercraft.essentials.command.itemlore.EEItemLoreRemove;
+import fr.evercraft.essentials.command.itemlore.EEItemLoreSet;
 import fr.evercraft.essentials.command.itemname.*;
 import fr.evercraft.essentials.command.mail.*;
 import fr.evercraft.essentials.command.message.*;
@@ -209,6 +211,8 @@ public class EEManagerCommands extends HashSet<ECommand<EverEssentials>> {
 		
 		EEItemLore itemlore = new EEItemLore(this.plugin);
 		itemlore.add(new EEItemLoreAdd(this.plugin, itemlore));
+		itemlore.add(new EEItemLoreSet(this.plugin, itemlore));
+		itemlore.add(new EEItemLoreRemove(this.plugin, itemlore));
 		itemlore.add(new EEItemLoreClear(this.plugin, itemlore));
 		
 		EEMail mail = new EEMail(this.plugin);

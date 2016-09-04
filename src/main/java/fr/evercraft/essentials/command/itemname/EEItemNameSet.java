@@ -59,9 +59,11 @@ public class EEItemNameSet extends ESubCommand<EverEssentials> {
 		List<String> suggests = new ArrayList<String>();
 		if (args.size() == 1) {
 			if(source instanceof Player){
-				Player player = (Player) source;
-				if(player.getItemInHand(HandTypes.MAIN_HAND).isPresent()){
-					suggests.add("&bHello world");
+				Optional<EPlayer> player = this.plugin.getEServer().getEPlayer(((Player) source).getUniqueId());
+				if(player.isPresent()){
+					if(player.get().getItemInMainHand().isPresent()){
+						suggests.add("&bHello world");
+					}
 				}
 			}
 		}
@@ -95,9 +97,6 @@ public class EEItemNameSet extends ESubCommand<EverEssentials> {
 	private boolean commandItemName(final EPlayer player, final String name) {
 		Optional<ItemStack> item = player.getItemInMainHand();
 		if(player.getItemInMainHand().isPresent()){
-			this.plugin.getEServer().broadcast("displayname : " + item.get().get(Keys.DISPLAY_NAME));
-			this.plugin.getEServer().broadcast("BlockState : " + item.get().get(Keys.ITEM_BLOCKSTATE));
-			this.plugin.getEServer().broadcast("Spawn : " + item.get().get(Keys.SPAWNABLE_ENTITY_TYPE));
 			item.get().offer(Keys.DISPLAY_NAME, EChat.of(name));
 			player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get()).append(EEMessages.ITEM_NAME_SET_NAME.get())
 					.replace("<item-before>", EChat.getButtomItem(player.getItemInHand(HandTypes.MAIN_HAND).get(), 

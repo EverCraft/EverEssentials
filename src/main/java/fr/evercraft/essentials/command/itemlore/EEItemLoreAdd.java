@@ -18,6 +18,7 @@ package fr.evercraft.essentials.command.itemlore;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
@@ -58,9 +59,11 @@ public class EEItemLoreAdd extends ESubCommand<EverEssentials> {
 		List<String> suggests = new ArrayList<String>();
 		if (args.size() == 1) {
 			if(source instanceof Player){
-				Player player = (Player) source;
-				if(player.getItemInHand(HandTypes.MAIN_HAND).isPresent()){
-					suggests.add("&bHello world");
+				Optional<EPlayer> player = this.plugin.getEServer().getEPlayer(((Player) source).getUniqueId());
+				if(player.isPresent()){
+					if(player.get().getItemInMainHand().isPresent()){
+						suggests.add("&bHello world");
+					}
 				}
 			}
 		}
