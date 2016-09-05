@@ -37,7 +37,6 @@ import org.spongepowered.api.event.entity.DamageEntityEvent;
 import org.spongepowered.api.event.entity.DestructEntityEvent;
 import org.spongepowered.api.event.entity.HealEntityEvent;
 import org.spongepowered.api.event.entity.InteractEntityEvent;
-import org.spongepowered.api.event.entity.MountEntityEvent;
 import org.spongepowered.api.event.entity.MoveEntityEvent;
 import org.spongepowered.api.event.filter.cause.First;
 import org.spongepowered.api.event.item.inventory.ChangeInventoryEvent;
@@ -342,10 +341,5 @@ public class EEPlayerListeners {
 							.replaceAll("<player>", source.getName()))))
 					.onClick(TextActions.runCommand("/mail read"))
 					.build();
-	}
-	
-	@Listener
-	public void onMountEntityEvent(MountEntityEvent event) {
-		// TODO : Apprivoiser en GM
 	}
 }
