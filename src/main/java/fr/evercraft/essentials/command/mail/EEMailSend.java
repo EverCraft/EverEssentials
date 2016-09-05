@@ -133,7 +133,7 @@ public class EEMailSend extends ESubCommand<EverEssentials> {
 			return false;
 		}
 		
-		if (staff.getIdentifier().equals(user.getIdentifier())) {
+		if (!staff.getIdentifier().equals(user.getIdentifier())) {
 			staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.MAIL_SEND_MESSAGE.get()
 					.replaceAll("<player>", user.getName())));
 		} else {
