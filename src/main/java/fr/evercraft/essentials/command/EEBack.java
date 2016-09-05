@@ -106,7 +106,7 @@ public class EEBack extends ECommand<EverEssentials> {
 		}
 			
 		// La position n'est pas Safe
-		if (!this.plugin.getEverAPI().getManagerUtils().getLocation().isPositionSafe(back.get()) || player.isGod() || player.isCreative()) {
+		if (!(this.plugin.getEverAPI().getManagerUtils().getLocation().isPositionSafe(back.get()) || player.isGod() || player.isCreative())) {
 			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.BACK_ERROR_LOCATION.get());
 			return false;
 		}
