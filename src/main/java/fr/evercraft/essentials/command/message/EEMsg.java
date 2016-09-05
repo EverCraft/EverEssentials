@@ -162,14 +162,16 @@ public class EEMsg extends ECommand<EverEssentials> {
 							.onHover(TextActions.showText(player.replaceVariable(EEMessages.MSG_PLAYER_RECEIVE_HOVER.get())))
 							.onClick(TextActions.suggestCommand("/msg " + player.getName() + " "))
 							.build());
-		
 				player.sendMessage(receive.replaceVariable(EEMessages.MSG_PLAYER_SEND.get()
 								.replaceAll("<message>", message))
 							.toBuilder()
 							.onHover(TextActions.showText(receive.replaceVariable(EEMessages.MSG_PLAYER_SEND_HOVER.get())))
 							.onClick(TextActions.suggestCommand("/msg " + receive.getName() + " "))
 							.build());
-				
+				if(receive.isAfk()){
+					player.sendMessage(EEMessages.PREFIX.get() + EEMessages.MSG_PLAYER_SEND_IS_AFK.get()
+							.replaceAll("<player>", receive.getDisplayName()));
+				}
 				receive.setReplyTo(player.getIdentifier());
 				player.setReplyTo(receive.getIdentifier());
 				return true;

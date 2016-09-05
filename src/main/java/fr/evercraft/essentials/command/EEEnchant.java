@@ -182,7 +182,9 @@ public class EEEnchant extends ECommand<EverEssentials> {
 		if (!UtilsEnchantment.canBeAppliedToItemStack(item, enchantment)) {
 			player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.getText())
 					.append(EEMessages.ENCHANT_INCOMPATIBLE.get()
-							.replaceAll("<enchantment>", enchantment.getId().toLowerCase().replace("minecraft:", ""))
+							.replaceAll("<enchantment>", enchantment.getId().toLowerCase()
+									.replace("minecraft:", "")
+									.replaceAll(" ", ""))
 							.replaceAll("<level>", String.valueOf(level)))
 					.replace("<item>", EChat.getButtomItem(item, EChat.getTextColor(EEMessages.ENCHANT_ITEM_COLOR.get())))
 					.build());
@@ -195,7 +197,9 @@ public class EEEnchant extends ECommand<EverEssentials> {
 		
 		player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
 				.append(EEMessages.ENCHANT_SUCCESSFULL.get()
-						.replaceAll("<enchantment>", enchantment.getId().toLowerCase().replace("minecraft:", ""))
+						.replaceAll("<enchantment>", enchantment.getId().toLowerCase()
+								.replace("minecraft:", "")
+								.replaceAll(" ", ""))
 						.replaceAll("<level>", String.valueOf(level)))
 				.replace("<item>", EChat.getButtomItem(item, EChat.getTextColor(EEMessages.ENCHANT_ITEM_COLOR.get())))
 				.build());

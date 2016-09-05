@@ -145,9 +145,9 @@ public class EEBack extends ECommand<EverEssentials> {
 		return EEMessages.BACK_NAME.getText().toBuilder()
 					.onHover(TextActions.showText(EChat.of(EEMessages.BACK_NAME_HOVER.get()
 							.replaceAll("<world>", location.getExtent().getName())
-							.replaceAll("<x>", String.valueOf(location.getX()))
-							.replaceAll("<y>", String.valueOf(location.getY()))
-							.replaceAll("<z>", String.valueOf(location.getZ())))))
+							.replaceAll("<x>", String.valueOf(location.getBlockX()))
+							.replaceAll("<y>", String.valueOf(location.getBlockY()))
+							.replaceAll("<z>", String.valueOf(location.getBlockZ())))))
 					.build();
 	}
 }
