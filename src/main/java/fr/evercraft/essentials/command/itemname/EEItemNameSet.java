@@ -40,10 +40,17 @@ import fr.evercraft.everapi.server.player.EPlayer;
 import fr.evercraft.everapi.text.ETextBuilder;
 
 public class EEItemNameSet extends ESubCommand<EverEssentials> {
+	private int max_displayname;
+	
 	public EEItemNameSet(final EverEssentials plugin, final EEItemName command) {
         super(plugin, command, "set");
+        this.reload();
     }
 	
+	public void reload() {
+		this.max_displayname = this.plugin.getConfigs().getMaxDisplayname();	
+	}
+
 	@Override
 	public boolean testPermission(final CommandSource source) {
 		return source.hasPermission(EEPermissions.ITEM_NAME.get());
@@ -95,19 +102,26 @@ public class EEItemNameSet extends ESubCommand<EverEssentials> {
 	}
 
 	private boolean commandItemName(final EPlayer player, final String name) {
-		Optional<ItemStack> item = player.getItemInMainHand();
-		if(player.getItemInMainHand().isPresent()){
-			item.get().offer(Keys.DISPLAY_NAME, EChat.of(name));
-			player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get()).append(EEMessages.ITEM_NAME_SET_NAME.get())
-					.replace("<item-before>", EChat.getButtomItem(player.getItemInHand(HandTypes.MAIN_HAND).get(), 
-							EChat.getTextColor(EEMessages.ITEM_NAME_SET_COLOR.get())))
-					.replace("<item-after>", EChat.getButtomItem(item.get(), 
-							EChat.getTextColor(EEMessages.ITEM_NAME_SET_COLOR.get())))
-				.build());
-			player.setItemInMainHand(item.get());
-			return true;
+		this.plugin.getEServer().broadcast("" + this.max_displayname);
+		if(name.length() <= this.max_displayname){
+			Optional<ItemStack> item = player.getItemInMainHand();
+			if(player.getItemInMainHand().isPresent()){
+				item.get().offer(Keys.DISPLAY_NAME, EChat.of(name));
+				player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get()).append(EEMessages.ITEM_NAME_SET_NAME.get())
+						.replace("<item-before>", EChat.getButtomItem(player.getItemInHand(HandTypes.MAIN_HAND).get(), 
+								EChat.getTextColor(EEMessages.ITEM_NAME_SET_COLOR.get())))
+						.replace("<item-after>", EChat.getButtomItem(item.get(), 
+								EChat.getTextColor(EEMessages.ITEM_NAME_SET_COLOR.get())))
+					.build());
+				player.setItemInMainHand(item.get());
+				return true;
+			} else {
+				player.sendMessage(EEMessages.PREFIX.get() + EAMessages.EMPTY_ITEM_IN_HAND.get());
+				return false;
+			}
 		} else {
-			player.sendMessage(EEMessages.PREFIX.get() + EAMessages.EMPTY_ITEM_IN_HAND.get());
+			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.ITEM_NAME_SET_ERROR.get()
+					.replaceAll("<amount>", String.valueOf(this.max_displayname)));
 			return false;
 		}
 	}

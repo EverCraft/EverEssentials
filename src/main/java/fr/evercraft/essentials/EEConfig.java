@@ -136,6 +136,13 @@ public class EEConfig extends EConfig {
 			addDefault("list.default", "hidden", "To hide groups, set the group as hidden");
 			addDefault("list.Players", "*", "All players with no grouping");
 		}
+		
+		// Item-name
+		addDefault("itemname-max-displayname", 64);
+		
+		// Item-lore
+		addDefault("itemlore-max-description", 15);
+		
 	}
 
 	/*
@@ -315,5 +322,21 @@ public class EEConfig extends EConfig {
 	
 	public boolean isWorldTeleportPermissions() {
 		return this.get("world-teleport-permissions").getBoolean(false);
+	}
+	
+	/*
+	 * Item Name
+	 */
+	
+	public int getMaxDisplayname() {
+		return this.get("itemname-max-displayname").getInt();	
+	}
+	
+	/*
+	 * Item Lore
+	 */
+	
+	public int getMaxDescription() {
+		return this.get("itemlore-max-description").getInt();
 	}
 }
