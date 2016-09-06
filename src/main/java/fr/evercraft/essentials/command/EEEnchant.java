@@ -196,9 +196,9 @@ public class EEEnchant extends ECommand<EverEssentials> {
 		player.setItemInMainHand(item);
 		
 		player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
-				.append(EEMessages.ENCHANT_SUCCESSFULL.get())
-						.replace("<enchantment>", enchantment.getTranslation())
-						.replace("<level>", String.valueOf(level))
+				.append(EEMessages.ENCHANT_SUCCESSFULL.get()
+					.replace("<level>", String.valueOf(level)))
+				.replace("<enchantment>", enchantment.getTranslation())
 				.replace("<item>", EChat.getButtomItem(item, EChat.getTextColor(EEMessages.ENCHANT_ITEM_COLOR.get())))
 				.build());
 		return true;
