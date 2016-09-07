@@ -83,7 +83,7 @@ public class EEItemLoreClear extends ESubCommand<EverEssentials> {
 
 	private boolean commandItemLoreClear(final EPlayer player) {
 		if(player.getItemInHand(HandTypes.MAIN_HAND).isPresent()){
-			ItemStack item = player.getItemInHand(HandTypes.MAIN_HAND).get();
+			ItemStack item = player.getItemInMainHand().get();
 			if(item.get(Keys.ITEM_LORE).isPresent()){
 				player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get()).append(EEMessages.ITEM_LORE_CLEAR_NAME.get())
 						.replace("<item>", EChat.getButtomItem(player.getItemInHand(HandTypes.MAIN_HAND).get(), 
@@ -93,8 +93,8 @@ public class EEItemLoreClear extends ESubCommand<EverEssentials> {
 				player.setItemInHand(HandTypes.MAIN_HAND, item);
 				return true;
 			} else {
-				player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get()).append(EEMessages.ITEM_LORE_CLEAR_NAME.get())
-						.replace("<item>", EChat.getButtomItem(player.getItemInHand(HandTypes.MAIN_HAND).get(), 
+				player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get()).append(EEMessages.ITEM_LORE_CLEAR_ERROR.get())
+						.replace("<item>", EChat.getButtomItem(item, 
 								EChat.getTextColor(EEMessages.ITEM_LORE_CLEAR_COLOR.get())))
 					.build());
 				return false;

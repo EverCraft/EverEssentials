@@ -76,9 +76,7 @@ public class EEMessage extends EMessage {
 		BACK_INCONNU("back.inconnu", 						"&cVous n'avez aucune position sauvegardé."),
 		BACK_DELAY("back.delay", 							"&7Votre téléportation commencera dans &6<delay>&7. Ne bougez pas."),
 		BACK_ERROR_LOCATION("back.errorLocation", 			"&cImpossible de trouver une position pour réaliser une téléportation."),
-		
-		BALANCE_PLAYER("balance.player", "&7Vous avez actuellement &6<solde> <symbol>&7.", "&7Balance : &6<solde> <symbol>"),
-		
+
 		BED_DESCRIPTION("bed.description", 					"Retourne à la dernière position ou vous avez dormi"),
 		
 		BROADCAST_DESCRIPTION("broadcast.description", 		"Envoie un message à tous les joueurs."),
@@ -312,7 +310,6 @@ public class EEMessage extends EMessage {
 		HOME_EMPTY("home.empty", 								"&cVous n'avez aucune résidence."),
 		HOME_INCONNU("home.inconnu", 							"&cVous n'avez pas de résidence qui s'appelle &6<home>&c."),
 		HOME_TELEPORT("home.teleport", 							"&7Vous avez été téléporté à la résidence &6<home>&7."),
-		HOME_TELEPORT_ERROR("home.teleportError", 				"&cImpossible de vous téléporter à la résidence &6<home>&c."),
 
 		DELHOME_DESCRIPTION("delhome.description", 							"Supprime une résidence"),
 		DELHOME_CONFIRMATION("delhome.confirmation", 						"&7Souhaitez-vous vraiment supprimer la résidence &6<home> &7: <confirmation>"),
@@ -503,19 +500,6 @@ public class EEMessage extends EMessage {
 		MOJANG_DESCRIPTION("mojang.description", 					"Affiche les informations sur les serveurs de mojang"),
 		MOJANG_TITLE("mojang.title", 								"&aLes serveurs de Mojang"),
 		MOJANG_LINE("mojang.line", 									"    &6&l➤  &6<server> : <color>"),
-		MOJANG_SERVER_ACCOUNT("mojang.serverAccount", 				"Account"),
-		MOJANG_SERVER_API("mojang.serverAPI", 						"API"),
-		MOJANG_SERVER_MOJANG("mojang.serverMojang", 				"Mojang"),
-		MOJANG_SERVER_AUTH("mojang.serverAuth", 					"Auth"),
-		MOJANG_SERVER_AUTHSERVER("mojang.serverAuthServer", 		"AuthServer"),
-		MOJANG_SERVER_MINECRAFT_NET("mojang.serverMinecraftNet", 	"Minecraft.net"),
-		MOJANG_SERVER_SESSION("mojang.serverSession", 				"Session"),
-		MOJANG_SERVER_SESSIONSERVER("mojang.serverSessionServer", 	"SessionServer"),
-		MOJANG_SERVER_SKINS("mojang.serverSkins", 					"Skins"),
-		MOJANG_SERVER_TEXTURES("mojang.serverTextures", 			"Textures"),
-		MOJANG_COLOR_GREEN("mojang.colorGreen", 					"&aEn ligne"),
-		MOJANG_COLOR_YELLOW("mojang.colorYellow", 					"&6Problème de connexion"),
-		MOJANG_COLOR_RED("mojang.colorRed", 						"&4Hors ligne"),
 		
 		MORE_DESCRIPTION("more.description", 						"Donne la quantité maximum d'un objet"),
 		MORE_PLAYER("more.player", 									"&7Vous avez maintenant &6<quantity> &6<item>&7."),
@@ -568,12 +552,12 @@ public class EEMessage extends EMessage {
 		REPAIR_ALL_PLAYER("repairall.player", 						"&7Vous venez de réparer tous les objets de votre inventaire."),
 		
 		MSG_DESCRIPTION("msg.description", 					"Envoie un message privé à un autre joueur"),
-		MSG_PLAYER_SEND("msg.playerSend", 					"&dEnvoyé à &f<DISPLAYNAME> &d: &7<message>"),
+		MSG_PLAYER_SEND("msg.playerSend", 					"&dEnvoyer à &f<DISPLAYNAME> &d: &7<message>"),
 		MSG_PLAYER_SEND_HOVER("msg.playerSendHover", 		"&cCliquez ici pour répondre à <DISPLAYNAME>"),
 		MSG_PLAYER_RECEIVE("msg.playerReceive", 			"&dReçu de &f<DISPLAYNAME> &d: &7<message>"),
 		MSG_PLAYER_RECEIVE_HOVER("msg.playerReceiveHover", 	"&cCliquez ici pour répondre à <DISPLAYNAME>"),
 		MSG_PLAYER_SEND_IS_AFK("msg.playerSendIsAFK", 		"&7<player> &7est absent."),
-		MSG_CONSOLE_SEND("msg.consoleSend", 				"&dEnvoyé à la &6console &d: &7<message>"),
+		MSG_CONSOLE_SEND("msg.consoleSend", 				"&dEnvoyer à la &6console &d: &7<message>"),
 		MSG_CONSOLE_SEND_HOVER("msg.consoleSendHover", 		"&cCliquez ici pour répondre à la console"),
 		MSG_CONSOLE_RECEIVE("msg.consoleReceive", 			"&dReçu de la &6console &d: &7<message>"),
 		MSG_CONSOLE_RECEIVE_HOVER("msg.consoleReceiveHover","&cCliquez ici pour répondre à la console"),
@@ -583,11 +567,11 @@ public class EEMessage extends EMessage {
 		MSG_IGNORE_RECEIVE("msg.ignoreReceive",				"&6<player>&c ne recevera pas votre message car il vous ignore."),
 		
 		REPLY_DESCRIPTION("reply.description", 					"Répond à un message privé d'un autre joueur"),
-		REPLY_PLAYER_SEND("reply.playerSend", 					"&dEnvoyé à &f<DISPLAYNAME> &d: &7<message>"),
+		REPLY_PLAYER_SEND("reply.playerSend", 					"&dEnvoyer à &f<DISPLAYNAME> &d: &7<message>"),
 		REPLY_PLAYER_SEND_HOVER("reply.playerSendHover", 		"&cCliquez ici pour répondre à <DISPLAYNAME>"),
 		REPLY_PLAYER_RECEIVE("reply.playerReceive", 			"&dReçu de &f<DISPLAYNAME> &d: &7<message>"),
 		REPLY_PLAYER_RECEIVE_HOVER("reply.playerReceiveHover", 	"&cCliquez ici pour répondre à <DISPLAYNAME>"),
-		REPLY_CONSOLE_SEND("reply.consoleSend", 				"&dEnvoyé à la &6console &d: &7<message>"),
+		REPLY_CONSOLE_SEND("reply.consoleSend", 				"&dEnvoyer à la &6console &d: &7<message>"),
 		REPLY_CONSOLE_SEND_HOVER("reply.consoleSendHover", 		"&cCliquez ici pour répondre à la console"),
 		REPLY_CONSOLE_RECEIVE("reply.consoleReceive", 			"&dReçu de la &6console &d: &7<message>"),
 		REPLY_CONSOLE_RECEIVE_HOVER("reply.consoleReceiveHover","&cCliquez ici pour répondre à la console"),
@@ -646,7 +630,6 @@ public class EEMessage extends EMessage {
 		DELSPAWN_CONFIRMATION_VALID("delspawn.confirmationValid", 					"&2&nConfirmer"),
 		DELSPAWN_CONFIRMATION_VALID_HOVER("delspawn.confirmationValidHover", 		"&cCliquez ici pour supprimer le spawn &6<spawn>&c."),
 		DELSPAWN_DELETE("delspawn.delete", 											"&7Vous avez supprimé le spawn &6<spawn>&7."),
-		DELSPAWN_CANCEL("delspawn.cancel", 											"&cImpossible de supprimé le spawn &6<spawn> &cpour le moment."),
 
 		SETSPAWN_DESCRIPTION("setspawn.description", 								"Permet de définir un spawn"),
 		SETSPAWN_ERROR_GROUP("setspawn.errorGroup", 								"&cIl y a aucun groupe qui porte le nom &6<name>."),
@@ -869,8 +852,6 @@ public class EEMessage extends EMessage {
 		
 		// UUID
 		UUID_DESCRIPTION("uuid.description", 										"Affiche l'identifiant unique du joueur."),
-		UUID_SUGGEST_UUID("uuid.suggestUUID", 										"&6&l<uuid>"),
-		UUID_SUGGEST_NAME("uuid.suggestName", 										"&6&l<name>"),
 		UUID_PLAYER_UUID("uuid.playerUUID", 										"&7Votre UUID est <uuid>"),
 		UUID_PLAYER_NAME("uuid.playerName", 										"&7Votre nom est <name>"),
 		UUID_OTHERS_PLAYER_UUID("uuid.otherPlayerUUID", 							"L'UUID de <player> est <uuid>"),
@@ -1080,10 +1061,7 @@ public class EEMessage extends EMessage {
 		WORLDS_TELEPORT_PLAYER_ERROR("worlds.teleportPlayerError", "&7Impossible de vous téléporter dans le monde <world>&7."),
 		WORLDS_TELEPORT_OTHERS_PLAYER("worlds.teleportOthersPlayer", "&7Vous avez été téléporté dans le monde <world> &7par &6<staff>&7."),
 		WORLDS_TELEPORT_OTHERS_STAFF("worlds.teleportOthersStaff", "&7Vous téléportez &6<player> &7dans le monde <world>&7."),
-		WORLDS_TELEPORT_OTHERS_ERROR("worlds.teleportOthersError", "&7Impossible de trouver une position pour téléporter &6<player> &7dans le monde &6<world>&7."),
-		
-		SIGN_CREATE("sign.create",		"&7Panneau crée avec succès."),
-		SIGN_DISABLE("sign.disable",    "&cSe panneau est désactivé.");
+		WORLDS_TELEPORT_OTHERS_ERROR("worlds.teleportOthersError", "&7Impossible de trouver une position pour téléporter &6<player> &7dans le monde &6<world>&7.");
 		
 		private final String path;
 	    private final Object french;

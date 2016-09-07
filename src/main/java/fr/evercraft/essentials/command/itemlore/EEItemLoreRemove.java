@@ -114,8 +114,8 @@ public class EEItemLoreRemove extends ESubCommand<EverEssentials> {
 				if(line <= lore.size() && line > 0){
 					lore.remove(line - 1);
 					item.get().offer(Keys.ITEM_LORE, lore);
-					player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get()).append(EEMessages.ITEM_LORE_SET_LORE.get())
-							.replace("<item>", EChat.getButtomItem(item.get(), EChat.getTextColor(EEMessages.ITEM_LORE_SET_COLOR.get())))
+					player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get()).append(EEMessages.ITEM_LORE_REMOVE_LORE.get())
+							.replace("<item>", EChat.getButtomItem(item.get(), EChat.getTextColor(EEMessages.ITEM_LORE_REMOVE_COLOR.get())))
 							.replace("<line>", String.valueOf(line))
 						.build());
 					item.get().offer(Keys.ITEM_LORE, lore);

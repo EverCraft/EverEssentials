@@ -45,7 +45,7 @@ public class EEGameruleSet extends ESubCommand<EverEssentials> {
 
 	@Override
 	public Text description(final CommandSource source) {
-		return EChat.of(EEMessages.GAMERULE_ADD_DESCRIPTION.get());
+		return EChat.of(EEMessages.GAMERULE_SET_DESCRIPTION.get());
 	}
 
 	@Override

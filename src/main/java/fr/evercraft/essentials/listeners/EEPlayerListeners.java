@@ -39,7 +39,6 @@ import org.spongepowered.api.event.entity.DestructEntityEvent;
 import org.spongepowered.api.event.entity.HealEntityEvent;
 import org.spongepowered.api.event.entity.InteractEntityEvent;
 import org.spongepowered.api.event.entity.MoveEntityEvent;
-import org.spongepowered.api.event.entity.RideEntityEvent;
 import org.spongepowered.api.event.filter.cause.First;
 import org.spongepowered.api.event.item.inventory.ChangeInventoryEvent;
 import org.spongepowered.api.event.item.inventory.InteractInventoryEvent;
@@ -345,8 +344,10 @@ public class EEPlayerListeners {
 					.build();
 	}
 	
+	/*
 	@Listener
 	public void onPlayerRideEntity(RideEntityEvent.Mount event) {
 		// TODO
 	}
+	*/
 }
