@@ -91,7 +91,7 @@ public class EEJump extends ECommand<EverEssentials> {
 	private boolean commandJump(final EPlayer player) {
 		Optional<Vector3i> block = player.getViewBlock();
 		
-		if (block.isPresent()) {
+		if (!block.isPresent()) {
 			player.sendMessage(EEMessages.PREFIX.get() + EAMessages.PLAYER_NO_LOOK_BLOCK.get());
 			return false;
 		}	
