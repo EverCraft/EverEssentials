@@ -794,7 +794,7 @@ public class EEMessage extends EMessage {
 		TPACCEPT_DESCRIPTION("tpaccept.description", 								"Permet d'accepter une demande de téléportation"),
 		
 		// TPDENY
-		TPDENY_DESCRIPTION("tpaccept.description", 									"Permet de refuser une demande de téléportation"),
+		TPDENY_DESCRIPTION("tpdeny.description", 									"Permet de refuser une demande de téléportation"),
 		
 		// TIME
 		TIME_DESCRIPTION("time.description", 										"Gère l'heure sur un monde"),
