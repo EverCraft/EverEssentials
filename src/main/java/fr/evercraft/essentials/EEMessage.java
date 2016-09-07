@@ -725,6 +725,7 @@ public class EEMessage extends EMessage {
 		
 		// TPA
 		TPA_DESCRIPTION("tpa.description", 											"Envoie une demande de téléportation à un joueur"),
+		
 		TPA_DESTINATION("tpa.destination", 											"&6&l<player>"),
 		TPA_DESTINATION_HOVER("tpa.destinationHover", 								"&cMonde : &6<world>[RT]&cX : &6<x>[RT]&cY : &6<y>[RT]&cZ : &6<z>"),
 		TPA_STAFF_QUESTION("tpa.staffQuestion", 									"&7Votre demande a été envoyée à &6<player>&7."),
@@ -738,10 +739,10 @@ public class EEMessage extends EMessage {
 		TPA_PLAYER_QUESTION_ACCEPT_HOVER("tpa.playerQuestionAcceptHover", 			"&cCliquez ici pour accepter la téléportation de &6<player>&c."),
 		TPA_PLAYER_QUESTION_DENY("tpa.playerQuestionDeny", 							"&4&l&nRefuser"),
 		TPA_PLAYER_QUESTION_DENY_HOVER("tpa.playerQuestionDenyHover", 				"&cCliquez ici pour refuser la téléportation de &6<player>&7."),
+		TPA_PLAYER_DENY("tpa.playerDeny", 											"&7Vous avez refusé la demande de téléportation de &6<player>&7."),
 		TPA_PLAYER_ACCEPT("tpa.playerAccept", 										"&6<player> &7sera téléporté dans &6<delay>&7."),
 		TPA_PLAYER_EXPIRE("tpa.playerExpire", 										"&cLa demande de téléportation de &6<player> &ca expirée."),
 		TPA_PLAYER_TELEPORT("tpa.playerTeleport", 									"&6<player> &7vient d'être téléporté."),
-		TPA_PLAYER_EMPTY("tpa.playerEmpty", 										"&cVous n'avez aucune demande de téléportation de &6<player>&c."),
 		TPA_ERROR_EQUALS("tpa.errorEquals", 										"&cImpossible de vous envoyer une demande à vous même."),
 		TPA_ERROR_DELAY("tpa.errorDelay", 											"&cIl y a déjà une demande de téléportation en cours."),
 		TPA_ERROR_LOCATION("tpa.errorLocation", 									"&cImpossible de trouver une position pour réaliser une téléportation."),
@@ -750,6 +751,7 @@ public class EEMessage extends EMessage {
 		
 		// TPHERE
 		TPAHERE_DESCRIPTION("tpahere.description", 									"Envoie une demande de téléportation à un joueur"),
+		
 		TPAHERE_DESTINATION("tpahere.destination", 									"&6&l<player>"),
 		TPAHERE_DESTINATION_HOVER("tpahere.destinationHover", 						"&cMonde : &6<world>[RT]&cX : &6<x>[RT]&cY : &6<y>[RT]&cZ : &6<z>"),
 		TPAHERE_STAFF_QUESTION("tpahere.staffQuestion", 							"&7Votre demande a été envoyée à &6<player>&7."),
@@ -767,7 +769,6 @@ public class EEMessage extends EMessage {
 		TPAHERE_PLAYER_DENY("tpahere.playerDeny", 									"&7La demande de &6<player> &7 a bien été refusé."),
 		TPAHERE_PLAYER_ACCEPT("tpahere.playerAccept", 								"&7Votre téléportation commencera dans &6<delay>&7. Ne bougez pas."),
 		TPAHERE_PLAYER_TELEPORT("tpahere.playerTeleport", 							"&7Vous avez été téléporté vers &6<destination>&7."),
-		TPAHERE_PLAYER_EMPTY("tpahere.playerEmpty", 								"&cVous n'avez aucune demande de téléportation de &6<player>&c."),
 		TPAHERE_ERROR_EQUALS("tpahere.errorEquals", 								"&cImpossible de vous envoyer une demande à vous même."),
 		TPAHERE_ERROR_DELAY("tpahere.errorDelay", 									"&cIl y a déjà une demande de téléportation en cours."),
 		TPAHERE_ERROR_LOCATION("tpahere.errorLocation", 							"&cImpossible de trouver une position pour réaliser une téléportation."),
@@ -778,6 +779,7 @@ public class EEMessage extends EMessage {
 		TPA_PLAYER_LIST_TITLE("tpa.playerListTitle", 								"&aListe des demandes de téléportation"),
 		TPA_PLAYER_LIST_LINE("tpa.playerListLine", 									"    &6&l➤  &6<player> &7: <accept> <deny>"),
 		TPA_PLAYER_LIST_EMPTY("tpa.playerListEmpty", 								"&7Aucune demande"),
+		TPA_PLAYER_EMPTY("tpa.playerEmpty", 										"&cVous n'avez aucune demande de téléportation de &6<player>&c."),
 		
 		// TPAALL
 		TPAALL_DESCRIPTION("tpaall.description", 									"Envoie une demande de téléportation à tous les joueurs"),
@@ -790,11 +792,9 @@ public class EEMessage extends EMessage {
 		
 		// TPACCEPT
 		TPACCEPT_DESCRIPTION("tpaccept.description", 								"Permet d'accepter une demande de téléportation"),
-		TPACCEPT_PLAYER("tpaccept.player", 											"&7Vous avez accepté la demande de téléportation de &6<player>&7."),
 		
 		// TPDENY
 		TPDENY_DESCRIPTION("tpaccept.description", 									"Permet de refuser une demande de téléportation"),
-		TPDENY_PLAYER("tpaccept.player", 											"&7Vous avez refusé la demande de téléportation de &6<player>&7."),
 		
 		// TIME
 		TIME_DESCRIPTION("time.description", 										"Gère l'heure sur un monde"),

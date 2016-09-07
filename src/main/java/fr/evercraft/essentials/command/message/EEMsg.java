@@ -192,17 +192,17 @@ public class EEMsg extends ECommand<EverEssentials> {
 	 * La console envoye un message à joueur
 	 */
 	private boolean commandMsgConsole(final CommandSource player, final EPlayer receive, final String message) {
-		player.sendMessage(receive.replaceVariable(EEMessages.REPLY_PLAYER_RECEIVE.get()
+		player.sendMessage(receive.replaceVariable(EEMessages.MSG_PLAYER_RECEIVE.get()
 						.replaceAll("<message>", message))
 					.toBuilder()
-					.onHover(TextActions.showText(receive.replaceVariable(EEMessages.REPLY_PLAYER_RECEIVE_HOVER.get())))
+					.onHover(TextActions.showText(receive.replaceVariable(EEMessages.MSG_PLAYER_RECEIVE_HOVER.get())))
 					.onClick(TextActions.suggestCommand("/msg " + receive.getName() + " "))
 					.build());
 
-		receive.sendMessage(EChat.of(EEMessages.REPLY_CONSOLE_RECEIVE.get()
+		receive.sendMessage(EChat.of(EEMessages.MSG_CONSOLE_RECEIVE.get()
 						.replaceAll("<message>", message))
 					.toBuilder()
-					.onHover(TextActions.showText(EChat.of(EEMessages.REPLY_CONSOLE_RECEIVE_HOVER.get())))
+					.onHover(TextActions.showText(EChat.of(EEMessages.MSG_CONSOLE_RECEIVE_HOVER.get())))
 					.onClick(TextActions.suggestCommand("/msg " + EEMsg.CONSOLE + " "))
 					.build());
 		
@@ -215,17 +215,17 @@ public class EEMsg extends ECommand<EverEssentials> {
 	 * Un joueur envoye un message à la console
 	 */
 	private boolean commandMsgConsole(final EPlayer player, final CommandSource receive, final String message) {
-		player.sendMessage(EChat.of(EEMessages.REPLY_CONSOLE_SEND.get()
+		player.sendMessage(EChat.of(EEMessages.MSG_CONSOLE_SEND.get()
 						.replaceAll("<message>", message))
 					.toBuilder()
-					.onHover(TextActions.showText(EChat.of(EEMessages.REPLY_CONSOLE_SEND_HOVER.get())))
+					.onHover(TextActions.showText(EChat.of(EEMessages.MSG_CONSOLE_SEND_HOVER.get())))
 					.onClick(TextActions.suggestCommand("/msg " + EEMsg.CONSOLE + " "))
 					.build());
 		
-		receive.sendMessage(player.replaceVariable(EEMessages.REPLY_PLAYER_RECEIVE.get()
+		receive.sendMessage(player.replaceVariable(EEMessages.MSG_PLAYER_RECEIVE.get()
 						.replaceAll("<message>", message))
 					.toBuilder()
-					.onHover(TextActions.showText(player.replaceVariable(EEMessages.REPLY_PLAYER_RECEIVE_HOVER.get())))
+					.onHover(TextActions.showText(player.replaceVariable(EEMessages.MSG_PLAYER_RECEIVE_HOVER.get())))
 					.onClick(TextActions.suggestCommand("/msg " + player.getName() + " "))
 					.build());
 		
