@@ -426,6 +426,7 @@ public class EEMessage extends EMessage {
 		KILL_PLAYER_CANCEL("kill.playerCancel", 					"&cImpossible de tuer &6<player>&c."),
 		KILL_STAFF("kill.staff", 									"&7Vous avez tué &6<player>&7."),
 		KILL_EQUALS("kill.equals", 									"&7Vous vous êtes suicidé."),
+		
 		KILL_EQUALS_DEATH_MESSAGE("kill.equalsDeathMessage", 		"&f< " + EChat.DISPLAYNAME_FORMAT + "> s'est suicidé."),
 		KILL_EQUALS_CANCEL("kill.equalsCancel", 					"&cImpossible de vous suicider."),
 		
@@ -474,12 +475,12 @@ public class EEMessage extends EMessage {
 		
 		MAIL_CLEAR_DESCRIPTION("mail.clear.description", 			"Supprime tous vos messages"),
 		MAIL_CLEAR_MESSAGE("mail.clear.message", 					"&7Vous avez supprimé tous vos messages."),
-		MAIL_CLEAR_CANCEL("mail.clear.message", 					"&7Impossible de supprimé tous vos messages."),
+		MAIL_CLEAR_CANCEL("mail.clear.cancel", 						"&7Impossible de supprimé tous vos messages."),
 		MAIL_CLEAR_ERROR("mail.clear.error", 						"&cVous n'avez pas de message à supprimer."),
 		
 		MAIL_SEND_DESCRIPTION("mail.send.description", 				"Envoie un message à un ou plusieurs joueurs"),
 		MAIL_SEND_MESSAGE("mail.send.message", 						"&7Votre message a été envoyé à &6<player>&7."),
-		MAIL_SEND_CANCEL("mail.send.message", 						"&cImpossible d'envoyé le message à &6<player>&7."),
+		MAIL_SEND_CANCEL("mail.send.cancel", 						"&cImpossible d'envoyé le message à &6<player>&7."),
 		MAIL_SEND_EQUALS("mail.send.equals", 						"&7Votre message a été envoyé."),
 		MAIL_SEND_ALL("mail.send.all", 								"&7Votre message a été envoyé à tous les joueurs."),
 		MAIL_SEND_IGNORE_PLAYER("mail.send.ignorePlayer", 			"&cImpossible d'envoyer un mail à &6<player>&c car vous l'ignorez."),
@@ -675,8 +676,9 @@ public class EEMessage extends EMessage {
 		// SUICIDE
 		SUICIDE_DESCRIPTION("suicide.description", 									"Permet de vous suicider"),
 		SUICIDE_PLAYER("suicide.player", 											"&7Vous vous êtes suicidé."),
-		SUICIDE_DEATH_MESSAGE("kill.equalsDeathMessage", 							"&f<" + EChat.DISPLAYNAME_FORMAT + "> c'est suicidé."),
-		SUICIDE_CANCEL("kill.equalsCancel", 										"&cImpossible de vous suicidé."),
+		
+		SUICIDE_DEATH_MESSAGE("suicide.equalsDeathMessage", 						"&f<" + EChat.DISPLAYNAME_FORMAT + "> s'est suicidé."),
+		SUICIDE_CANCEL("suicide.equalsCancel", 										"&cImpossible de vous suicider."),
 		
 		// TP
 		TP_DESCRIPTION("tp.description", 													"Téléporte le joueur vers un autre joueur"),
