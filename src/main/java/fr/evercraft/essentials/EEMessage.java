@@ -414,11 +414,11 @@ public class EEMessage extends EMessage {
 		
 		KICK_DESCRIPTION("kick.description", 						"Expulse un joueur du serveur"),
 		KICK_DEFAULT_REASON("kick.defaultReason", 					"&7Veuillez respecter les règles du serveur."),
-		KICK_MESSAGE("kick.message", 								"&c&lExpulsion du serveur[RT][RT]&cRaison : &7<message>[RT]"),
+		KICK_MESSAGE("kick.message", 								"&c&lExpulsion du serveur[RT][RT]&cRaison : &7<reason>[RT]"),
 		KICK_BYPASS("kick.bypass", 									"&cErreur : <player> ne peut pas être expulsé."),
 		
 		KICKALL_DESCRIPTION("kickall.description",				 	"Expulse tous les joueurs du serveur"),
-		KICKALL_MESSAGE("kickall.message", 							"&c&lExpulsion du serveur[RT][RT]&cRaison : &7<message>[RT]"),
+		KICKALL_MESSAGE("kickall.message", 							"&c&lExpulsion du serveur[RT][RT]&cRaison : &7<reason>[RT]"),
 		
 		KILL_DESCRIPTION("kill.description", 						"Tue un joueur"),
 		KILL_PLAYER("kill.player", 									"&7Vous avez été tué par &6<staff>&7."),

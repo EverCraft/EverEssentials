@@ -89,7 +89,7 @@ public class EEKickall extends ECommand<EverEssentials> {
 	private boolean commandKick(final CommandSource staff, final Text message) throws CommandException {
 		Text raison = ETextBuilder.toBuilder(EEMessages.KICKALL_MESSAGE.get()
 							.replaceAll("<staff>", staff.getName()))
-						.replace("<message>", message)
+						.replace("<reason>", message)
 						.build();
 		
 		this.plugin.getEServer().getOnlineEPlayers().forEach(player -> {

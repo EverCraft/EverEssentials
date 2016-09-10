@@ -130,7 +130,7 @@ public class EEKick extends ECommand<EverEssentials> {
 		
 		player.kick(ETextBuilder.toBuilder(EEMessages.KICK_MESSAGE.get()
 								.replaceAll("<staff>", staff.getName()))
-							.replace("<message>", message)
+							.replace("<reason>", message)
 							.build());
 		return true;
 	}
