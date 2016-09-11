@@ -182,7 +182,7 @@ public class EETeleportationAccept extends ECommand<EverEssentials> {
 	
 	private boolean commandTeleportationAcceptAsk(final EPlayer player, final EPlayer player_request, final TeleportRequest teleport) {
 		long delay = this.plugin.getConfigs().getTeleportDelay(player_request);
-		String delay_format = this.plugin.getEverAPI().getManagerUtils().getDate().formatDateDiff(System.currentTimeMillis() + delay);
+		String delay_format = this.plugin.getEverAPI().getManagerUtils().getDate().formatDate(System.currentTimeMillis() + delay);
 		
 		final Transform<World> location = player.getTransform();
 		
@@ -206,7 +206,7 @@ public class EETeleportationAccept extends ECommand<EverEssentials> {
 	
 	private boolean commandTeleportationAcceptAskHere(final EPlayer player, final EPlayer player_request, final TeleportRequest teleport) {
 		long delay = this.plugin.getConfigs().getTeleportDelay(player);
-		String delay_format = this.plugin.getEverAPI().getManagerUtils().getDate().formatDateDiff(System.currentTimeMillis() + delay);
+		String delay_format = this.plugin.getEverAPI().getManagerUtils().getDate().formatDate(System.currentTimeMillis() + delay);
 		
 		final Transform<World> location = teleport.getLocation().orElse(player_request.getTransform());
 		

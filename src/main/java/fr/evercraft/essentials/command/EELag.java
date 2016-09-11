@@ -115,7 +115,7 @@ public class EELag extends EReloadCommand<EverEssentials> {
 		List<Text> list = new ArrayList<Text>();
 		
 		list.add(EChat.of(EEMessages.LAG_TIME.get()
-				.replaceAll("<time>", this.plugin.getEverAPI().getManagerUtils().getDate().formatDateDiff(ManagementFactory.getRuntimeMXBean().getStartTime()))));
+				.replaceAll("<time>", this.plugin.getEverAPI().getManagerUtils().getDate().formatDate(ManagementFactory.getRuntimeMXBean().getStartTime()))));
 		list.add(ETextBuilder.toBuilder(EEMessages.LAG_TPS.get())
 				.replace("<tps>", Text.builder(tps.toString()).color(getColorTPS(tps)).build())
 				.build());

@@ -119,7 +119,7 @@ public class EETeleportationAskAll extends ECommand<EverEssentials> {
 			
 			if (this.plugin.getEverAPI().getManagerUtils().getLocation().isPositionSafe(location)) {
 				long delay = this.plugin.getConfigs().getTpaAcceptCancellation();
-				String delay_format = this.plugin.getEverAPI().getManagerUtils().getDate().formatDateDiff(System.currentTimeMillis() + delay);
+				String delay_format = this.plugin.getEverAPI().getManagerUtils().getDate().formatDate(System.currentTimeMillis() + delay);
 				
 				for (EPlayer player : this.plugin.getEServer().getOnlineEPlayers()) {
 					if (!staff.equals(player)) {
@@ -155,7 +155,7 @@ public class EETeleportationAskAll extends ECommand<EverEssentials> {
 				
 				if (this.plugin.getEverAPI().getManagerUtils().getLocation().isPositionSafe(location)) {
 					long delay = this.plugin.getConfigs().getTpaAcceptCancellation();
-					String delay_format = this.plugin.getEverAPI().getManagerUtils().getDate().formatDateDiff(System.currentTimeMillis() + delay);
+					String delay_format = this.plugin.getEverAPI().getManagerUtils().getDate().formatDate(System.currentTimeMillis() + delay);
 					
 					staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.TPAALL_OTHERS_STAFF.get()
 							.replaceAll("<player>", destination.getName())));

@@ -166,7 +166,7 @@ public class EESpawn extends EReloadCommand<EverEssentials> {
 		
 		if (delay > 0) {
 			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.SPAWN_DELAY.get()
-					.replaceAll("<delay>", this.plugin.getEverAPI().getManagerUtils().getDate().formatDateDiff(System.currentTimeMillis() + delay)));
+					.replaceAll("<delay>", this.plugin.getEverAPI().getManagerUtils().getDate().formatDate(System.currentTimeMillis() + delay)));
 		}
 		
 		player.setTeleport(delay, () -> this.teleport(player, spawn), player.hasPermission(EEPermissions.TELEPORT_BYPASS_MOVE.get()));
@@ -191,7 +191,7 @@ public class EESpawn extends EReloadCommand<EverEssentials> {
 		
 		if (delay > 0) {
 			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.SPAWNS_DELAY.get()
-					.replaceAll("<delay>", this.plugin.getEverAPI().getManagerUtils().getDate().formatDateDiff(System.currentTimeMillis() + delay)));
+					.replaceAll("<delay>", this.plugin.getEverAPI().getManagerUtils().getDate().formatDate(System.currentTimeMillis() + delay)));
 		}
 		
 		player.setTeleport(delay, () -> this.teleport(player, spawn, name), player.hasPermission(EEPermissions.TELEPORT_BYPASS_MOVE.get()));

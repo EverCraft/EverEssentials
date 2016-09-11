@@ -115,7 +115,7 @@ public class EEBack extends ECommand<EverEssentials> {
 		long delay = this.plugin.getConfigs().getTeleportDelay(player);
 		if (delay > 0) {
 			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.BACK_DELAY.get()
-					.replaceAll("<delay>", this.plugin.getEverAPI().getManagerUtils().getDate().formatDateDiff(System.currentTimeMillis() + delay)));
+					.replaceAll("<delay>", this.plugin.getEverAPI().getManagerUtils().getDate().diff(delay)));
 		}
 		
 		// Téléportation

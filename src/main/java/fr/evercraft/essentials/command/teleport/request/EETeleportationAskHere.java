@@ -136,7 +136,7 @@ public class EETeleportationAskHere extends ECommand<EverEssentials> {
 		}
 		
 		long delay = this.plugin.getConfigs().getTpaAcceptCancellation();
-		String delay_format = this.plugin.getEverAPI().getManagerUtils().getDate().formatDateDiff(System.currentTimeMillis() + delay);
+		String delay_format = this.plugin.getEverAPI().getManagerUtils().getDate().formatDate(System.currentTimeMillis() + delay);
 				
 		// Il y a déjà une demande de téléportation en cours
 		if (!player.addTeleportAskHere(staff.getUniqueId(), delay, staff.getTransform())) {

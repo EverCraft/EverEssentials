@@ -105,7 +105,7 @@ public class EETop extends ECommand<EverEssentials> {
 		
 		if (delay > 0) {
 			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.TOP_DELAY.get()
-					.replaceAll("<delay>", this.plugin.getEverAPI().getManagerUtils().getDate().formatDateDiff(System.currentTimeMillis() + delay)));
+					.replaceAll("<delay>", this.plugin.getEverAPI().getManagerUtils().getDate().formatDate(System.currentTimeMillis() + delay)));
 		}
 		
 		player.setTeleport(delay, () -> this.teleport(player, transform.get()), player.hasPermission(EEPermissions.TELEPORT_BYPASS_MOVE.get()));
