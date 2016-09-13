@@ -58,6 +58,9 @@ public enum EEPermissions implements EnumPermission {
 	
 	ENCHANT("enchant.command"),
 	
+	ENDERCHEST("enderchest.command"),
+	ENDERCHEST_OTHERS("enderchest.others"),
+	
 	EXP("exp.command"),
 	EXP_OTHERS("exp.others"),
 	

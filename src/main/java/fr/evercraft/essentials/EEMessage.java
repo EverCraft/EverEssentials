@@ -133,7 +133,9 @@ public class EEMessage extends EMessage {
 		ENCHANT_INCOMPATIBLE("enchant.incompatible", 		"&cErreur : L'enchantement &6<enchantment> &cest incompatible avec l'objet &b[<item>&b]&c."),
 		ENCHANT_ITEM_COLOR("enchant.itemColor", 			"&b"),
 		ENCHANT_SUCCESSFULL("enchant.successfull", 			"&7L'enchantement &6<enchantment> &7a été appliqué sur l'objet &b[<item>&b]&7."),
-				
+			
+		ENDERCHEST_DESCRIPTION("enderchest.description", 			"Ouvre le coffre de l'End d'un joueur"),
+		
 		EXP_DESCRIPTION("exp.description", 							"Modifie l'expérience d'un joueur."),
 		EXP_GIVE_LEVEL("exp.giveLevel",								"&7Vous vous êtes ajouté &6<level> &7niveau(x)."),
 		EXP_GIVE_EXP("exp.giveExp", 								"&7Vous vous êtes ajouté &6<experience> &7point(s) d'expérience."),

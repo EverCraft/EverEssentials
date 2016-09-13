@@ -84,6 +84,7 @@ public class EEManagerCommands extends HashSet<ECommand<EverEssentials>> {
 		register(new EEColor(this.plugin));
 		register(new EEEffect(this.plugin));
 		register(new EEEnchant(this.plugin));
+		register(new EEEnderchest(this.plugin));
 		register(new EEExp(this.plugin));
 		register(new EEExt(this.plugin));
 		register(new EEFeed(this.plugin));
