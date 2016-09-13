@@ -24,18 +24,19 @@ import fr.evercraft.essentials.managers.EEManagerCommands;
 import fr.evercraft.essentials.managers.EEManagerEvent;
 import fr.evercraft.essentials.managers.EEManagerServices;
 import fr.evercraft.essentials.service.EScheduler;
+import fr.evercraft.everapi.EverAPI;
 import fr.evercraft.everapi.exception.PluginDisableException;
 import fr.evercraft.everapi.plugin.EPlugin;
 
-@Plugin(id = "fr.evercraft.everessentials", 
+@Plugin(id = "everessentials", 
 		name = "EverEssentials", 
-		version = "1.2", 
+		version = EverAPI.VERSION, 
 		description = "Commande de base",
 		url = "http://evercraft.fr/",
 		authors = {"rexbut","lesbleu"},
 		dependencies = {
-		    @Dependency(id = "fr.evercraft.everapi", version = "1.2"),
-		    @Dependency(id = "fr.evercraft.everchat", optional = true)
+		    @Dependency(id = "everapi", version = EverAPI.VERSION),
+		    @Dependency(id = "everchat", version = EverAPI.VERSION, optional = true)
 		})
 public class EverEssentials extends EPlugin {
 
