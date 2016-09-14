@@ -164,6 +164,16 @@ public class EEMessage extends EMessage {
 		FEED_OTHERS_PLAYER("feed.othersPlayer", 			"&7Vous avez été rassasié par &6<staff>&7."),
 		FEED_ALL_STAFF("feed.allStaff", 					"&7Vous avez rassasié tous les joueurs."),
 		
+		FORMAT_DESCRIPTION("format.description", 			"Affiche les différents formats dans Minecraft."),
+		FORMAT_LIST_TITLE("format.listTitle", 				"&l&4Liste des formats"), 
+		FORMAT_LIST_MESSAGE("format.listMessage", 			"<format>Stone &0: <id>-<name>"),
+		FORMAT_OBFUSCATED("format.obfuscated", 				"Obfusqué"),
+		FORMAT_BOLD("format.bold", 							"Gras"),
+		FORMAT_STRIKETHROUGH("format.strikethrough", 		"Barré"),
+		FORMAT_UNDERLINE("format.underline", 				"Souligné"),
+		FORMAT_ITALIC("format.italic", 						"Italique"),
+		FORMAT_RESET("format.reset", 						"Réinitialisation"),
+		
 		FREEZE_DESCRIPTION("freeze.description", 										"Gère la paralysie sur un joueur"),
 		
 		FREEZE_ON_DESCRIPTION("freeze.on.description",									"Paralyse un joueur"),

@@ -54,6 +54,8 @@ public enum EEPermissions implements EnumPermission {
 	CLEARINVENTORY("clearinventory.command"),
 	CLEARINVENTORY_OTHERS("clearinventory.others"),
 	
+	COLOR("color.command"),
+	
 	EFFECT("effect.command"),
 	
 	ENCHANT("enchant.command"),
@@ -69,6 +71,8 @@ public enum EEPermissions implements EnumPermission {
 	
 	FEED("feed.command"),
 	FEED_OTHERS("feed.others"),
+	
+	FORMAT("format.command"),
 	
 	FREEZE("freeze.command"),
 	FREEZE_OTHERS("freeze.others"),
@@ -261,8 +265,6 @@ public enum EEPermissions implements EnumPermission {
 	
 	WHOIS("whois.command"),
 	WHOIS_OTHERS("whois.others"),
-	
-	COLOR("color.command"),
 	
 	SIGN_COLOR("sign.color"),
 	SIGN_FORMAT("sign.format"),
