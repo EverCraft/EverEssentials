@@ -25,6 +25,7 @@ import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.hanging.Painting;
 import org.spongepowered.api.entity.living.Creature;
+import org.spongepowered.api.entity.living.animal.Horse;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.living.player.gamemode.GameModes;
 import org.spongepowered.api.event.Listener;
@@ -39,6 +40,7 @@ import org.spongepowered.api.event.entity.DestructEntityEvent;
 import org.spongepowered.api.event.entity.HealEntityEvent;
 import org.spongepowered.api.event.entity.InteractEntityEvent;
 import org.spongepowered.api.event.entity.MoveEntityEvent;
+import org.spongepowered.api.event.entity.RideEntityEvent;
 import org.spongepowered.api.event.filter.cause.First;
 import org.spongepowered.api.event.item.inventory.ChangeInventoryEvent;
 import org.spongepowered.api.event.item.inventory.InteractInventoryEvent;
@@ -138,7 +140,8 @@ public class EEPlayerListeners {
 				Optional<EntityDamageSource> optDamageSource = event.getCause().first(EntityDamageSource.class);
 				if (optDamageSource.isPresent() && optDamageSource.get().getSource() instanceof Player) {
 					Player killer = (Player) optDamageSource.get().getSource();
-					if (killer.get(Keys.IS_SNEAKING).orElse(false) && killer.get(Keys.GAME_MODE).orElse(GameModes.SURVIVAL).equals(GameModes.CREATIVE)) {
+					if (killer.get(Keys.IS_SNEAKING).orElse(false) && 
+							killer.get(Keys.GAME_MODE).orElse(GameModes.SURVIVAL).equals(GameModes.CREATIVE)) {
 						Entity entity = event.getTargetEntity();
 						event.setBaseDamage(entity.get(Keys.MAX_HEALTH).orElse(Double.MAX_VALUE));
 					}
@@ -199,7 +202,8 @@ public class EEPlayerListeners {
 				EPlayer player = optPlayer.get();
 				
 				// AFK
-				if (event.getToTransform().getPitch() != event.getFromTransform().getPitch() || event.getToTransform().getYaw() != event.getFromTransform().getYaw()) {
+				if (event.getToTransform().getPitch() != event.getFromTransform().getPitch() || 
+						event.getToTransform().getYaw() != event.getFromTransform().getYaw()) {
 					player.updateLastActivated();
 				}
 				
@@ -344,10 +348,22 @@ public class EEPlayerListeners {
 					.build();
 	}
 	
-	/*
 	@Listener
-	public void onPlayerRideEntity(RideEntityEvent.Mount event) {
+	public void onPlayerRideEntity(RideEntityEvent.Mount event, @First Player player) {
+		if(event.getTargetEntity() instanceof Horse){
+			Entity entity = event.getTargetEntity();
+			if(entity.get(Keys.TAMED_OWNER).isPresent()){
+				if(entity.get(Keys.TAMED_OWNER).get().isPresent() && 
+						player.get(Keys.GAME_MODE).orElse(GameModes.SURVIVAL).equals(GameModes.CREATIVE)){
+					entity.offer(Keys.TAMED_OWNER, Optional.ofNullable(player.getUniqueId()));
+					this.plugin.getEServer().broadcast("test");
+				}
+			}
+		}
+	}
+	
+	@Listener
+	public void onPlayerRideEntity(RideEntityEvent.Dismount event, @First Player player) {
 		// TODO
 	}
-	*/
 }
