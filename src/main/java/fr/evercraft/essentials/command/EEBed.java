@@ -96,7 +96,7 @@ public class EEBed extends ECommand<EverEssentials> {
 		// On connais le joueur
 		} else if (args.size() == 1) {
 			// Si il a la permission
-			if (source.hasPermission(EEPermissions.PING_OTHERS.get())){
+			if (source.hasPermission(EEPermissions.BED_OTHERS.get())){
 				Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(args.get(0));
 				// Le joueur existe
 				if (optPlayer.isPresent()){
@@ -120,6 +120,8 @@ public class EEBed extends ECommand<EverEssentials> {
 		Optional<Map<UUID, RespawnLocation>> spawn = player.get(Keys.RESPAWN_LOCATIONS);
 		if (spawn.isPresent()){
 			player.sendMessage(spawn.get().toString());
+		} else {
+			player.sendMessage("En attente d'implémentation");
 		}
 		return true;
 	}
