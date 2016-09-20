@@ -18,8 +18,8 @@ package fr.evercraft.essentials.command;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
@@ -98,18 +98,11 @@ public class EEUuid extends ECommand<EverEssentials> {
 			
 			// Si il a la permission
 			if (source.hasPermission(EEPermissions.UUID_OTHERS.get())) {
-				Optional<GameProfile> profile = this.plugin.getEServer().getGameProfile(args.get(0));
-				// Le joueur existe
-				if (profile.isPresent()) {
-					if (args.get(0).length() == EServer.UUID_LENGTH) {
-						resultat = this.commandUUIDOthersName(source, profile.get());
-					} else {
-						resultat = this.commandUUIDOthersUUID(source, profile.get());
-					}
-				// Le joueur est introuvable
-				} else {
-					source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
-				}
+				this.plugin.getGame().getScheduler().createTaskBuilder()
+					.async()
+					.execute(() -> this.commandUUID(source, args.get(0)))
+					.name("Command : UUID").submit(this.plugin);
+				resultat = true;
 			// Il n'a pas la permission
 			} else {
 				source.sendMessage(EAMessages.NO_PERMISSION.getText());
@@ -132,6 +125,28 @@ public class EEUuid extends ECommand<EverEssentials> {
 		return true;
 	}
 	
+	private boolean commandUUID(final CommandSource source, String name) {
+		try {
+			CompletableFuture<GameProfile> future = this.plugin.getEServer().getGameProfileFuture(name);
+			future.exceptionally(e -> null).thenApplyAsync(profile -> {
+				if (profile != null && profile.isFilled() && profile.getName().isPresent()) {
+					if (name.length() == EServer.UUID_LENGTH) {
+						this.commandUUIDOthersName(source, profile);
+					} else {
+						this.commandUUIDOthersUUID(source, profile);
+					}
+				} else {
+					source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.PLAYER_NOT_FOUND.get()));
+				}
+				return profile;
+			}, this.plugin.getGame().getScheduler().createAsyncExecutor(this.plugin));
+			return true;
+		} catch (IllegalArgumentException e) {
+			source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.PLAYER_NOT_FOUND.get()));
+			return false;
+		}
+	}
+	
 	private boolean commandUUIDPlayerUUID(final EPlayer player) {
 		player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
 				.append(EEMessages.UUID_PLAYER_UUID.get())
@@ -141,7 +156,7 @@ public class EEUuid extends ECommand<EverEssentials> {
 		return true;
 	}
 	
-	private boolean commandUUIDOthersName(final CommandSource staff, final GameProfile profile) throws CommandException {
+	private boolean commandUUIDOthersName(final CommandSource staff, final GameProfile profile) {
 		// La source et le joueur sont identique
 		if (staff instanceof EPlayer && profile.getUniqueId().equals(((EPlayer) staff).getUniqueId())) {
 			return this.commandUUIDPlayerName((EPlayer) staff);
@@ -155,14 +170,14 @@ public class EEUuid extends ECommand<EverEssentials> {
 		
 		staff.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
 				.append(EEMessages.UUID_OTHERS_PLAYER_NAME.get()
-						.replaceAll("<player>", profile.getName().get()))
+						.replaceAll("<uuid>", profile.getUniqueId().toString()))
 				.replace("<uuid>", this.getButtonUUID(profile.getUniqueId()))
 				.replace("<name>", this.getButtonName(profile.getName().get()))
 				.build());				
 		return true;
 	}
 	
-	private boolean commandUUIDOthersUUID(final CommandSource staff, final GameProfile profile) throws CommandException {
+	private boolean commandUUIDOthersUUID(final CommandSource staff, final GameProfile profile) {
 		// La source et le joueur sont identique
 		if (staff instanceof EPlayer && profile.getUniqueId().equals(((EPlayer) staff).getUniqueId())) {
 			return this.commandUUIDPlayerUUID((EPlayer) staff);
@@ -178,19 +193,19 @@ public class EEUuid extends ECommand<EverEssentials> {
 	}
 	
 	private Text getButtonUUID(final UUID uuid){
-		return EChat.of(EEMessages.UUID_PLAYER_UUID.get().replace("<uuid>", uuid.toString())).toBuilder()
+		return EChat.of(EEMessages.UUID_UUID.get().replace("<uuid>", uuid.toString())).toBuilder()
 				.onHover(TextActions.showText(EAMessages.HOVER_COPY.getText()))
 					.onClick(TextActions.suggestCommand(uuid.toString()))
 					.onShiftClick(TextActions.insertText(uuid.toString()))
-					.build();
+				.build();
 	}
 	
 	private Text getButtonName(final String name){
-		return EChat.of(EEMessages.UUID_PLAYER_NAME.get().replace("<name>", name)).toBuilder()
+		return EChat.of(EEMessages.UUID_NAME.get().replace("<name>", name.toString())).toBuilder()
 				.onHover(TextActions.showText(EAMessages.HOVER_COPY.getText()))
 					.onClick(TextActions.suggestCommand(name))
 					.onShiftClick(TextActions.insertText(name))
-					.build();
+				.build();
 	}
 }
 

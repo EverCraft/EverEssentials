@@ -866,10 +866,12 @@ public class EEMessage extends EMessage {
 		
 		// UUID
 		UUID_DESCRIPTION("uuid.description", 										"Affiche l'identifiant unique du joueur."),
-		UUID_PLAYER_UUID("uuid.playerUUID", 										"&7Votre UUID est <uuid>"),
-		UUID_PLAYER_NAME("uuid.playerName", 										"&7Votre nom est <name>"),
-		UUID_OTHERS_PLAYER_UUID("uuid.otherPlayerUUID", 							"L'UUID de <player> est <uuid>"),
-		UUID_OTHERS_PLAYER_NAME("uuid.otherPlayerName", 							"Le name de <player> est <name>"),
+		UUID_NAME("uuid.name", 														"&6&l<name>"),
+		UUID_UUID("uuid.uuid", 														"&6&l<uuid>"),
+		UUID_PLAYER_UUID("uuid.playerUUID", 										"&7Votre UUID est &6&l<uuid>&7."),
+		UUID_PLAYER_NAME("uuid.playerName", 										"&7Votre nom est &6&l<name>&7."),
+		UUID_OTHERS_PLAYER_UUID("uuid.otherPlayerUUID", 							"&7L'UUID du joueur &6<player> &7est &6&l<uuid>&7."),
+		UUID_OTHERS_PLAYER_NAME("uuid.otherPlayerName", 							"&7L'UUID &6<uuid> &7correspond au pseudo &6&l<name>"),
 		
 		// VANISH
 		VANISH_DESCRIPTION("vanish.description", 									"Permet de vous rendre invisible."),
