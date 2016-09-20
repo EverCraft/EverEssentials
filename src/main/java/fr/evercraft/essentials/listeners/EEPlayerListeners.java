@@ -356,7 +356,8 @@ public class EEPlayerListeners {
 			if(entity.get(Keys.TAMED_OWNER).isPresent()){
 				if((!entity.get(Keys.TAMED_OWNER).get().isPresent()) &&	
 						player.get(Keys.GAME_MODE).orElse(GameModes.SURVIVAL).equals(GameModes.CREATIVE)){
-					entity.offer(Keys.TAMED_OWNER, Optional.ofNullable(player.getUniqueId()));		
+					entity.offer(Keys.TAMED_OWNER, Optional.ofNullable(player.getUniqueId()));
+					
 				}
 			}
 		}
