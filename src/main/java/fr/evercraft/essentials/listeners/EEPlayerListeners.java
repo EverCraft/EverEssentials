@@ -33,6 +33,7 @@ import org.spongepowered.api.event.Order;
 import org.spongepowered.api.event.cause.entity.damage.source.DamageSource;
 import org.spongepowered.api.event.cause.entity.damage.source.DamageSources;
 import org.spongepowered.api.event.cause.entity.damage.source.EntityDamageSource;
+import org.spongepowered.api.event.cause.entity.dismount.DismountType;
 import org.spongepowered.api.event.command.SendCommandEvent;
 import org.spongepowered.api.event.data.ChangeDataHolderEvent;
 import org.spongepowered.api.event.entity.DamageEntityEvent;
@@ -364,6 +365,21 @@ public class EEPlayerListeners {
 	
 	@Listener
 	public void onPlayerRideEntity(RideEntityEvent.Dismount event, @First Player player) {
-		// TODO
+		Optional<DismountType> dismount = event.getCause().first(DismountType.class);
+		if (dismount.isPresent()) {
+			this.plugin.getEServer().broadcast("RideEntityEvent.Dismount Player : " + dismount.get());
+		} else {
+			this.plugin.getEServer().broadcast("RideEntityEvent.Dismount Player : empty");
+		}
+	}
+	
+	@Listener
+	public void onPlayerRideEntity(RideEntityEvent.Dismount event) {
+		Optional<DismountType> dismount = event.getCause().first(DismountType.class);
+		if (dismount.isPresent()) {
+			this.plugin.getEServer().broadcast("RideEntityEvent.Dismount : " + dismount.get());
+		} else {
+			this.plugin.getEServer().broadcast("RideEntityEvent.Dismount : empty");
+		}
 	}
 }
