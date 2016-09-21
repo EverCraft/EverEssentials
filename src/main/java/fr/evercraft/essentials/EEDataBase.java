@@ -25,6 +25,7 @@ import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import fr.evercraft.essentials.service.subject.EMail;
@@ -773,7 +774,7 @@ public class EEDataBase extends EDataBase<EverEssentials> {
 	    }
 	}
 	
-	public List<UUID> getPlayersWithSameIP(String ip) {
+	public Optional<List<UUID>> getPlayersWithSameIP(String ip) {
 		Connection connection = null;
 		PreparedStatement preparedStatement = null;
 		List<UUID> uuids = new ArrayList<UUID>();
@@ -785,10 +786,10 @@ public class EEDataBase extends EDataBase<EverEssentials> {
 			preparedStatement = connection.prepareStatement(query);
 			preparedStatement.setString(1, ip);
 			ResultSet list = preparedStatement.executeQuery();
-			if (list.next()) {
+			while(list.next()) {
 				uuids.add(UUID.fromString(list.getString("uuid")));
 			}
-			return uuids;
+			return Optional.ofNullable(uuids);
     	} catch (SQLException e) {
     		this.plugin.getLogger().warn(": " + e.getMessage());
     	} catch (ServerDisableException e) {
@@ -798,6 +799,6 @@ public class EEDataBase extends EDataBase<EverEssentials> {
 				if (preparedStatement != null) preparedStatement.close();
 			} catch (SQLException e) {}
 	    }
-		return uuids;
+    	return Optional.empty();
 	}
 }

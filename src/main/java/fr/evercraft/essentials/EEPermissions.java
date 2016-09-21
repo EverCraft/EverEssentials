@@ -177,6 +177,8 @@ public enum EEPermissions implements EnumPermission {
 	RULES("rules.command"),
 	
 	SAY("say.command"),
+	
+	SEEN("seen.command"),
 
 	SKULL("skull.command"),
 	SKULL_OTHERS("skull.others"),

@@ -604,6 +604,17 @@ public class EEMessage extends EMessage {
 		SEED_MESSAGE("seed.message", 												"&7Le seed du monde &6<world> &7est &6<seed>&7."),
 		SEED_NAME("seed.name",														"&6&l<seed>"),
 		
+		SEEN_DESCRIPTION("seen.description", 										"Affiche la dernière IP de connexion d'un joueur"),
+		SEEN_IP("seen.ip", 															"&7Votre IP est &6<ip>&7."),
+		SEEN_IP_OTHERS("seen.ipOthers", 											"&7L'adresse IP de &6<player> &7est &6<ip>&7."),
+		SEEN_IP_OTHERS_NO_IP("seen.ipOthersNoIp", 									"&6<player> &7n'a pas d'adresse IP."),
+		SEEN_IP_STYLE("seen.ipStyle", 												"&6<ip>"),
+		SEEN_PLAYER_STYLE("seen.playerStyle", 										"&6<player>"),
+		SEEN_IP_TITLE("whois.ipTitle", 												"&aInformations : &c<ip>"),
+		SEEN_IP_MESSAGE("whois.ipMessage", 											"&7L'adresse IP &6<ip> &7correspond à :"),
+		SEEN_IP_LIST("whois.ipList", 												"    &6&l➤  &6<player>"),
+		SEEN_IP_NO_PLAYER("whois.ipNoPlayer", 										"&7Aucun joueur"),
+		
 		// SKULL
 		SKULL_DESCRIPTION("skull.description", 										"Donne la tête d'un joueur"),
 		SKULL_MY_HEAD("skull.myHead", 												"&7Vous avez reçu votre tête."),
@@ -1034,7 +1045,6 @@ public class EEMessage extends EMessage {
 		WHOIS_TOGGLE_ENABLE("whois.toggleEnable", "    &6&l➤  &6Requêtes de téléportation : &aActivé"),
 		WHOIS_TOGGLE_DISABLE("whois.toggleDisable", "    &6&l➤  &6Requêtes de téléportation : &cDésactivé"),
 		WHOIS_TOTAL_TIME_PLAYED("whois.totalTimePlayed", "    &6&l➤  &6Temps de jeu : &a<time>"),
-		WHOIS_IP_LIST("whois.IPList", "    &6&l➤  &6<player>"),
 		
 		WORLDBORDER_DESCRIPTION("worldborder.description", "Gère la bordure des mondes"),
 		WORLDBORDER_INFO_DESCRIPTION("worldborder.info.description", "Affiche les informations sur la bordure d'un monde"),

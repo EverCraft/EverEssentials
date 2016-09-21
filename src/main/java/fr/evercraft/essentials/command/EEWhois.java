@@ -20,8 +20,6 @@ import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
-
 import org.apache.commons.lang3.StringUtils;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
@@ -31,8 +29,6 @@ import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.chat.ChatVisibilities;
 import org.spongepowered.api.text.chat.ChatVisibility;
 import org.spongepowered.api.text.format.TextColors;
-
-import com.google.common.net.InetAddresses;
 
 import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
@@ -106,21 +102,17 @@ public class EEWhois extends ECommand<EverEssentials> {
 			
 			// Si il a la permission
 			if (source.hasPermission(EEPermissions.WHOIS_OTHERS.get())) {
-				if(InetAddresses.isInetAddress(args.get(0))){
-					resultat = this.commandWhoisIP(source, args.get(0));
-				} else { 
-					Optional<EUser> user = this.plugin.getEServer().getEUser(args.get(0));
-					// Le joueur existe
-					if (user.isPresent()) {
-						if(user.get() instanceof EPlayer) {
-							resultat = this.commandWhoisPlayer(source, (EPlayer) user.get());
-						} else {
-							resultat = this.commandWhoisPlayer(source, user.get());
-						}
-					// Joueur introuvable
+				Optional<EUser> user = this.plugin.getEServer().getEUser(args.get(0));
+				// Le joueur existe
+				if (user.isPresent()) {
+					if(user.get() instanceof EPlayer) {
+						resultat = this.commandWhoisPlayer(source, (EPlayer) user.get());
 					} else {
-						source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
+						resultat = this.commandWhoisPlayer(source, user.get());
 					}
+				// Joueur introuvable
+				} else {
+					source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
 				}
 			// Il n'a pas la permission
 			} else {
@@ -217,31 +209,6 @@ public class EEWhois extends ECommand<EverEssentials> {
 					.build(), 
 				lists, staff);
 		return false;
-	}
-	
-	private boolean commandWhoisIP(final CommandSource staff, final String ip) {
-		List<Text> lists = new ArrayList<Text>();
-		lists.addAll(getPlayers(ip));
-		
-		this.plugin.getEverAPI().getManagerService().getEPagination().sendTo(
-				EChat.of(EEMessages.WHOIS_TITLE_OTHERS.get().replace("<player>", ip.toString())).toBuilder()
-					.onClick(TextActions.runCommand("/whois \"" + ip.toString() + "\""))
-					.build(), 
-				lists, staff);
-		return false;
-	}
-	
-	private List<Text> getPlayers(final String ip){
-		List<UUID> uuids = this.plugin.getDataBases().getPlayersWithSameIP(ip);
-		List<Text> list = new ArrayList<Text>();
-		for(UUID uuid : uuids){
-			Optional<EPlayer> player = this.plugin.getEServer().getEPlayer(uuid);
-			if(player.isPresent()){
-				list.add(EChat.of(EEMessages.WHOIS_IP_LIST.get()
-						.replaceAll("<player>", player.get().getDisplayName())));
-			}
-		}
-		return list;
 	}
 	
 	private Text getUUID(final EUser player){
