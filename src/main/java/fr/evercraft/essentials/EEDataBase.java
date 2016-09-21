@@ -23,6 +23,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 import fr.evercraft.essentials.service.subject.EMail;
 import fr.evercraft.essentials.service.subject.EUserSubject;
@@ -768,5 +771,33 @@ public class EEDataBase extends EDataBase<EverEssentials> {
 				if (preparedStatement != null) preparedStatement.close();
 			} catch (SQLException e) {}
 	    }
+	}
+	
+	public List<UUID> getPlayersWithSameIP(String ip) {
+		Connection connection = null;
+		PreparedStatement preparedStatement = null;
+		List<UUID> uuids = new ArrayList<UUID>();
+    	try {
+    		connection = this.getConnection();
+    		String query = 	  "SELECT *" 
+					+ "FROM `" + this.plugin.getDataBases().getTablePlayers() + "` "
+					+ "WHERE `last_ip` = ? ;";
+			preparedStatement = connection.prepareStatement(query);
+			preparedStatement.setString(1, ip);
+			ResultSet list = preparedStatement.executeQuery();
+			if (list.next()) {
+				uuids.add(UUID.fromString(list.getString("uuid")));
+			}
+			return uuids;
+    	} catch (SQLException e) {
+    		this.plugin.getLogger().warn(": " + e.getMessage());
+    	} catch (ServerDisableException e) {
+			e.execute();
+		} finally {
+			try {
+				if (preparedStatement != null) preparedStatement.close();
+			} catch (SQLException e) {}
+	    }
+		return uuids;
 	}
 }

@@ -1034,6 +1034,7 @@ public class EEMessage extends EMessage {
 		WHOIS_TOGGLE_ENABLE("whois.toggleEnable", "    &6&l➤  &6Requêtes de téléportation : &aActivé"),
 		WHOIS_TOGGLE_DISABLE("whois.toggleDisable", "    &6&l➤  &6Requêtes de téléportation : &cDésactivé"),
 		WHOIS_TOTAL_TIME_PLAYED("whois.totalTimePlayed", "    &6&l➤  &6Temps de jeu : &a<time>"),
+		WHOIS_IP_LIST("whois.IPList", "    &6&l➤  &6<player>"),
 		
 		WORLDBORDER_DESCRIPTION("worldborder.description", "Gère la bordure des mondes"),
 		WORLDBORDER_INFO_DESCRIPTION("worldborder.info.description", "Affiche les informations sur la bordure d'un monde"),
