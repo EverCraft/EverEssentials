@@ -40,7 +40,7 @@ import fr.evercraft.everapi.server.player.EPlayer;
 public class EEReply extends ECommand<EverEssentials> {
 	
 	public EEReply(final EverEssentials plugin) {
-        super(plugin ,"r", "reply");
+        super(plugin , "reply", "r");
     }
 	
 	@Override
