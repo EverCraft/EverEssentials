@@ -121,10 +121,10 @@ public class EESeen extends ECommand<EverEssentials> {
 		if (user.equals(staff)) {
 			return this.commandSeen((EPlayer) user);
 		}
-		if(user.getLastIp().isPresent()){
+		if(user.getLastIP().isPresent()){
 			staff.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.getText()).append(EEMessages.SEEN_IP_OTHERS.get())
 					.replace("<player>", user.getName())
-					.replace("<ip>", getButtomIP(UtilsNetwork.getHostString(user.getLastIp().get())))
+					.replace("<ip>", getButtomIP(UtilsNetwork.getHostString(user.getLastIP().get())))
 				.build());
 		} else {
 			staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.SEEN_IP_OTHERS_NO_IP.get()

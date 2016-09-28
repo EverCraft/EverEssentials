@@ -180,8 +180,8 @@ public class EEWhois extends ECommand<EverEssentials> {
 		List<Text> lists = new ArrayList<Text>();
 
 		lists.add(this.getUUID(user));
-		if(user.getLastIp().isPresent()) {
-			lists.add(this.getLastIp(user, user.getLastIp().get()));
+		if(user.getLastIP().isPresent()) {
+			lists.add(this.getLastIp(user, user.getLastIP().get()));
 		}
 		lists.add(this.getHeal(user));
 		lists.add(this.getFood(user));

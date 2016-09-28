@@ -494,7 +494,7 @@ public class EUserSubject implements SubjectUserEssentials {
 	 */
 	
 	@Override
-	public Optional<InetAddress> getLastIp() {
+	public Optional<InetAddress> getLastIP() {
 		return this.last_ip;
 	}
 
