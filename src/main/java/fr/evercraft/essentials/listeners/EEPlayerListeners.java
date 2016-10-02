@@ -30,6 +30,7 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.living.player.gamemode.GameModes;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.Order;
+import org.spongepowered.api.event.block.InteractBlockEvent;
 import org.spongepowered.api.event.cause.entity.damage.source.DamageSource;
 import org.spongepowered.api.event.cause.entity.damage.source.DamageSources;
 import org.spongepowered.api.event.cause.entity.damage.source.EntityDamageSource;
@@ -46,15 +47,19 @@ import org.spongepowered.api.event.item.inventory.ChangeInventoryEvent;
 import org.spongepowered.api.event.item.inventory.InteractInventoryEvent;
 import org.spongepowered.api.event.message.MessageChannelEvent;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
+import org.spongepowered.api.item.ItemTypes;
+import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.channel.MessageChannel;
 import org.spongepowered.api.text.channel.MessageReceiver;
 
+import com.flowpowered.math.vector.Vector3i;
 import com.google.common.collect.Lists;
 
 import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EverEssentials;
+import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.event.AfkEvent;
 import fr.evercraft.everapi.event.MailEvent;
 import fr.evercraft.everapi.plugin.EChat;
@@ -165,9 +170,8 @@ public class EEPlayerListeners {
 	
 	
 	@Listener(order=Order.LAST)
-	public void onPlayerInteract(InteractEntityEvent event, @First Player player_sponge) {
+	public void onPlayerInteractEntity(InteractEntityEvent event, @First Player player_sponge) {
 		Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(player_sponge);
-		
 		if (optPlayer.isPresent()) {
 			EPlayer player = optPlayer.get();
 			
@@ -190,6 +194,25 @@ public class EEPlayerListeners {
 			// Freeze
 			if(player.isFreeze()) {
 				event.setCancelled(true);
+			}
+		}
+	}
+	
+	@Listener(order=Order.LAST)
+	public void onPlayerInteract(InteractBlockEvent.Secondary event, @First Player player_sponge) {
+		Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(player_sponge);
+		if (optPlayer.isPresent()) {
+			EPlayer player = optPlayer.get();
+			if(player.getItemInMainHand().isPresent()){
+				ItemStack item = player.getItemInMainHand().get();
+				if(item.getItem() ==  ItemTypes.COMPASS && player.isCreative()){
+					Optional<Vector3i> block = player.getViewBlock();
+					if (!block.isPresent()) {
+						player.sendMessage(EEMessages.PREFIX.get() + EAMessages.PLAYER_NO_LOOK_BLOCK.get());
+					} else {
+						player.teleport(player.getWorld().getLocation(block.get().add(0, 1, 0)));
+					}
+				}
 			}
 		}
 	}
