@@ -914,7 +914,7 @@ public class EEMessage extends EMessage {
 		// WARP
 		WARP_NAME("warp.name", 														"&6&l<name>"),
 		WARP_NAME_HOVER("warp.nameHover", 											"&cMonde : &6<world>[RT]&cX : &6<x>[RT]&cY : &6<y>[RT]&cZ : &6<z>"),
-		WARP_INCONNU("warp.inconnu", 												"&cIl n'y pas de warp qui s'appelle &6<warp>&c."),
+		WARP_INCONNU("warp.inconnu", 												"&cIl n'y a pas de warp qui s'appelle &6<warp>&c."),
 		WARP_NO_PERMISSION("warp.noPermission", 									"&cVous n'avez pas la permission pour vous téléporter au warp &6<warp>&c."),
 		
 		WARP_DESCRIPTION("warp.description", 										"Se téléporte à un warp"),
