@@ -59,7 +59,6 @@ import com.google.common.collect.Lists;
 
 import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EverEssentials;
-import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.event.AfkEvent;
 import fr.evercraft.everapi.event.MailEvent;
 import fr.evercraft.everapi.plugin.EChat;
@@ -207,9 +206,7 @@ public class EEPlayerListeners {
 				ItemStack item = player.getItemInMainHand().get();
 				if(item.getItem() ==  ItemTypes.COMPASS && player.isCreative()){
 					Optional<Vector3i> block = player.getViewBlock();
-					if (!block.isPresent()) {
-						player.sendMessage(EEMessages.PREFIX.get() + EAMessages.PLAYER_NO_LOOK_BLOCK.get());
-					} else {
+					if (block.isPresent()) {
 						player.teleport(player.getWorld().getLocation(block.get().add(0, 1, 0)), true);
 					}
 				}
