@@ -207,7 +207,7 @@ public class EEPlayerListeners {
 				if(item.getItem() ==  ItemTypes.COMPASS && player.isCreative()){
 					Optional<Vector3i> block = player.getViewBlock();
 					if (block.isPresent()) {
-						player.teleport(player.getWorld().getLocation(block.get().add(0, 1, 0)), true);
+						player.teleport(player.getWorld().getLocation(block.get().add(0, 1, 0)));
 					}
 				}
 			}
