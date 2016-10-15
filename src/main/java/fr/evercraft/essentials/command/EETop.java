@@ -114,7 +114,7 @@ public class EETop extends ECommand<EverEssentials> {
 	
 	private void teleport(final EPlayer player, final Transform<World> location) {
 		if (player.isOnline()) {
-			if (player.teleport(location)) {
+			if (player.teleport(location, true)) {
 				player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
 						.append(EEMessages.TOP_TELEPORT.get())
 						.replace("<position>", this.getButtonPosition(player.getLocation()))

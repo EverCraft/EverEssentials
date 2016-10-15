@@ -230,7 +230,7 @@ public class EETeleportationAccept extends ECommand<EverEssentials> {
 	
 	private void teleportAsk(final EPlayer player_request, final EPlayer player, final Transform<World> teleport) {
 		if (player_request.isOnline() && player.isOnline()) {
-			if (player_request.teleportSafe(teleport)) {
+			if (player_request.teleportSafe(teleport, true)) {
 				player_request.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.getText())
 						.append(EEMessages.TPA_STAFF_TELEPORT.get()
 							.replaceAll("<player>", player.getName()))
@@ -249,7 +249,7 @@ public class EETeleportationAccept extends ECommand<EverEssentials> {
 	
 	private void teleportAskHere(final EPlayer player_request, final EPlayer player, final Transform<World> teleport) {
 		if (player_request.isOnline() && player.isOnline()) {
-			if (player.teleportSafe(teleport)) {
+			if (player.teleportSafe(teleport, true)) {
 				player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.getText())
 						.append(EEMessages.TPAHERE_PLAYER_TELEPORT.get()
 							.replaceAll("<player>", player.getName()))

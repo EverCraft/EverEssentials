@@ -148,7 +148,7 @@ public class EEWorlds extends ECommand<EverEssentials> {
 		if (world.isPresent()) {
 			
 			if (this.plugin.getManagerServices().getEssentials().hasPermissionWorld(player, world.get())) {
-				if (player.teleport(world.get().getSpawnLocation())) {
+				if (player.teleport(world.get().getSpawnLocation(), true)) {
 					player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
 							.append(EEMessages.WORLDS_TELEPORT_PLAYER.get())
 							.replace("<world>", this.getButtonPosition(player.getLocation()))
@@ -179,7 +179,7 @@ public class EEWorlds extends ECommand<EverEssentials> {
 			if (world.isPresent()) {
 				
 				if (this.plugin.getManagerServices().getEssentials().hasPermissionWorld(player, world.get())) {
-					if (player.teleportSafe(world.get().getSpawnLocation())) {
+					if (player.teleportSafe(world.get().getSpawnLocation(), true)) {
 						player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
 								.append(EEMessages.WORLDS_TELEPORT_OTHERS_PLAYER.get()
 										.replaceAll("<staff>", staff.getName()))

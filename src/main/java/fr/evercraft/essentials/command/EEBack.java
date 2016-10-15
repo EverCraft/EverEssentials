@@ -130,7 +130,7 @@ public class EEBack extends ECommand<EverEssentials> {
 		}
 			
 		// La position n'est pas Safe
-		if (!player.teleportSafe(teleport)) {
+		if (!player.teleportSafe(teleport, true)) {
 			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.BACK_ERROR_LOCATION.get());
 			return;
 		}

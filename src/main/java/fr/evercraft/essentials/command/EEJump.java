@@ -96,7 +96,7 @@ public class EEJump extends ECommand<EverEssentials> {
 			return false;
 		}	
 		
-		if (!player.teleportSafe(player.getWorld().getLocation(block.get().add(0, 1, 0)))) {
+		if (!player.teleportSafe(player.getWorld().getLocation(block.get().add(0, 1, 0)), false)) {
 			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.JUMP_TELEPORT_ERROR.get());
 			return false;
 		}

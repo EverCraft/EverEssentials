@@ -226,7 +226,7 @@ public class EETeleportation extends ECommand<EverEssentials> {
 	
 	private boolean teleport(final EPlayer player, final EPlayer destination) {
 		if (destination.isFlying()) {
-			return player.teleportSafeZone(destination.getTransform());
+			return player.teleportSafeZone(destination.getTransform(), true);
 		} else {
 			player.setTransform(destination.getTransform());
 		}

@@ -210,7 +210,7 @@ public class EEPlayerListeners {
 					if (!block.isPresent()) {
 						player.sendMessage(EEMessages.PREFIX.get() + EAMessages.PLAYER_NO_LOOK_BLOCK.get());
 					} else {
-						player.teleport(player.getWorld().getLocation(block.get().add(0, 1, 0)));
+						player.teleport(player.getWorld().getLocation(block.get().add(0, 1, 0)), true);
 					}
 				}
 			}

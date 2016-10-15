@@ -162,7 +162,7 @@ public class EEHome extends ECommand<EverEssentials> {
 		Optional<Transform<World>> home = player.getHome(home_name);
 		// Le joueur a home qui porte ce nom
 		if (home.isPresent()) {
-			player.teleport(home.get());
+			player.teleport(home.get(), true);
 			player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.getText())
 					.append(EEMessages.HOME_TELEPORT.get())
 					.replace("<home>", this.getButtonHome(name, home.get()))

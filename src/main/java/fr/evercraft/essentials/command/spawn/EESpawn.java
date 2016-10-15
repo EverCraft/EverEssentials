@@ -200,7 +200,7 @@ public class EESpawn extends EReloadCommand<EverEssentials> {
 	
 	private void teleport(final EPlayer player, final Transform<World> location) {
 		if (player.isOnline()) {
-			if (player.teleport(location)) {
+			if (player.teleport(location, true)) {
 				player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
 						.append(EEMessages.SPAWN_PLAYER.get())
 						.replace("<spawn>", this.getButtonSpawn(location))
@@ -217,7 +217,7 @@ public class EESpawn extends EReloadCommand<EverEssentials> {
 	
 	private void teleport(final EPlayer player, final Transform<World> location, final String name) {
 		if (player.isOnline()) {
-			if (player.teleport(location)) {
+			if (player.teleport(location, true)) {
 				player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
 						.append(EEMessages.SPAWNS_PLAYER.get()
 								.replaceAll("<name>", name))

@@ -182,7 +182,7 @@ public class EEWarp extends EReloadCommand<EverEssentials> {
 			if (this.hasPermission(player, name)) {
 				
 				// Le joueur a bien été téléporter au warp
-				if (player.teleportSafe(warp.get())){
+				if (player.teleportSafe(warp.get(), true)){
 					player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
 							.append(EEMessages.WARP_TELEPORT_PLAYER.get())
 							.replace("<warp>", this.getButtonWarp(name, warp.get()))
@@ -215,7 +215,7 @@ public class EEWarp extends EReloadCommand<EverEssentials> {
 		// Le serveur a un warp qui porte ce nom
 		if (warp.isPresent()) {
 			// Le joueur a bien été téléporter au warp
-			if (player.teleportSafe(warp.get())){
+			if (player.teleportSafe(warp.get(), true)){
 				
 				player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
 						.append(EEMessages.WARP_TELEPORT_OTHERS_PLAYER.get()

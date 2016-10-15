@@ -122,7 +122,7 @@ public class EETeleportationAll extends ECommand<EverEssentials> {
 				if (!staff.equals(player)) {
 					if (player.getWorld().equals(transform.get().getExtent()) || 
 							this.plugin.getManagerServices().getEssentials().hasPermissionWorld(player, transform.get().getExtent())) {
-						player.teleport(transform.get());
+						player.teleport(transform.get(), true);
 						player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
 								.append(EEMessages.TPALL_PLAYER.get()
 										.replaceAll("<staff>", staff.getName()))
@@ -154,7 +154,7 @@ public class EETeleportationAll extends ECommand<EverEssentials> {
 						
 						if (player.getWorld().equals(transform.get().getExtent()) || 
 								this.plugin.getManagerServices().getEssentials().hasPermissionWorld(player, transform.get().getExtent())) {
-							player.teleport(transform.get());
+							player.teleport(transform.get(), true);
 							if (!player.equals(staff)) {
 								player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
 										.append(EEMessages.TPALL_OTHERS_PLAYER.get()
