@@ -23,6 +23,7 @@ import java.util.Optional;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.event.cause.Cause;
+import org.spongepowered.api.event.cause.NamedCause;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
@@ -67,7 +68,7 @@ public class EEEnderchest extends ECommand<EverEssentials> {
 	@Override
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		List<String> suggests = new ArrayList<String>();
-		if (args.size() == 1 && source.hasPermission(EEPermissions.ENDERCHEST_OTHERS.get())){
+		if (args.size() == 1 && source.hasPermission(EEPermissions.ENDERCHEST_OTHERS.get())) {
 			suggests.addAll(this.getAllPlayers());
 		}
 		return suggests;
@@ -114,14 +115,14 @@ public class EEEnderchest extends ECommand<EverEssentials> {
 			
 		// Nombre d'argument incorrect
 		} else {
-			source.sendMessage(help(source));
+			source.sendMessage(this.help(source));
 		}
 		
 		return resultat;
 	}
 	
 	private boolean commandEnderchest(final EPlayer player, final EPlayer target) {
-		player.openInventory(target.getEnderChestInventory(), Cause.builder().owner(this.plugin).build());
+		player.openInventory(target.getEnderChestInventory(), Cause.of(NamedCause.source(player)));
 		return true;
 	}
 }
