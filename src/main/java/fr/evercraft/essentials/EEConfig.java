@@ -36,8 +36,8 @@ public class EEConfig extends EConfig {
 
 	@Override
 	public void loadDefault() {
-		addDefault("debug", false, 	"Displays plugin performance in the logs");
-		addDefault("language", EMessage.FRENCH, 
+		addDefault("DEBUG", false, 	"Displays plugin performance in the logs");
+		addDefault("LANGUAGE", EMessage.FRENCH, 
 										"Select language messages", 
 										"Examples : ", 
 										"  French : FR_fr", 
