@@ -24,7 +24,7 @@ import org.spongepowered.api.text.Text;
 import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.file.EConfig;
 
-public class EEConfigRules extends EConfig {
+public class EEConfigRules extends EConfig<EverEssentials> {
 
 	public EEConfigRules(EverEssentials plugin, String name) {
 		super(plugin, name);

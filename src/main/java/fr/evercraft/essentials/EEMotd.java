@@ -22,7 +22,7 @@ import java.util.List;
 import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.file.EConfig;
 
-public class EEMotd extends EConfig {
+public class EEMotd extends EConfig<EverEssentials> {
 
 	public EEMotd(EverEssentials plugin, String name) {
 		super(plugin, name);

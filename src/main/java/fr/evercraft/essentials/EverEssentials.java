@@ -39,7 +39,7 @@ import fr.evercraft.everapi.plugin.EPlugin;
 		    @Dependency(id = "everchat", version = EverAPI.VERSION, optional = true),
 		    @Dependency(id = "spongeapi", version = EverAPI.SPONGEAPI_VERSION)
 		})
-public class EverEssentials extends EPlugin {
+public class EverEssentials extends EPlugin<EverEssentials> {
 
 	private EEDataBase databases;
 	

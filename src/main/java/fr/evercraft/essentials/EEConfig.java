@@ -23,7 +23,7 @@ import fr.evercraft.everapi.plugin.file.EConfig;
 import fr.evercraft.everapi.plugin.file.EMessage;
 import fr.evercraft.everapi.server.player.EPlayer;
 
-public class EEConfig extends EConfig {
+public class EEConfig extends EConfig<EverEssentials> {
 	
 	public EEConfig(EverEssentials plugin) {
 		super(plugin);		

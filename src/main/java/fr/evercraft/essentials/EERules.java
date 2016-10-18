@@ -25,7 +25,7 @@ import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.file.EConfig;
 
-public class EERules extends EConfig {
+public class EERules extends EConfig<EverEssentials> {
 
 	public EERules(EverEssentials plugin, String name) {
 		super(plugin, name);
