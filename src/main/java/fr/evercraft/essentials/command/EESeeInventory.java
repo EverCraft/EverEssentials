@@ -95,7 +95,7 @@ public class EESeeInventory extends ECommand<EverEssentials> {
 	}
 	
 	public boolean commandSeeInventory(final EPlayer staff, final EPlayer player){
-		player.openInventory(player.getInventory(), Cause.source(this.plugin).build());
+		staff.openInventory(player.getInventory(), Cause.source(this.plugin).build());
 		return true;
 	}
 }
