@@ -393,12 +393,12 @@ public class EEWhois extends ECommand<EverEssentials> {
 	
 	private Text getLastDatePlayed(final EPlayer player) {
 		return EChat.of(EEMessages.WHOIS_LAST_DATE_PLAYED_ONLINE.get()
-				.replaceAll("<time>", this.plugin.getEverAPI().getManagerUtils().getDate().formatDateDiff(player.getLastDatePlayed(), 3)));
+				.replaceAll("<time>", this.plugin.getEverAPI().getManagerUtils().getDate().parseDateTime(player.getLastDatePlayed())));
 	}
 	
 	private Text getLastDatePlayed(final EUser player) {
 		return EChat.of(EEMessages.WHOIS_LAST_DATE_PLAYED_OFFLINE.get()
-				.replaceAll("<time>", this.plugin.getEverAPI().getManagerUtils().getDate().formatDateDiff(player.getLastDatePlayed(), 3)));
+				.replaceAll("<time>", this.plugin.getEverAPI().getManagerUtils().getDate().parseDateTime(player.getLastDatePlayed())));
 	}
 	
 	private Text getTotalTimePlayed(final EUser player){
