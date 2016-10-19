@@ -30,7 +30,6 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.living.player.gamemode.GameModes;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.Order;
-import org.spongepowered.api.event.block.InteractBlockEvent;
 import org.spongepowered.api.event.cause.entity.damage.source.DamageSource;
 import org.spongepowered.api.event.cause.entity.damage.source.DamageSources;
 import org.spongepowered.api.event.cause.entity.damage.source.EntityDamageSource;
@@ -45,6 +44,7 @@ import org.spongepowered.api.event.entity.RideEntityEvent;
 import org.spongepowered.api.event.filter.cause.First;
 import org.spongepowered.api.event.item.inventory.ChangeInventoryEvent;
 import org.spongepowered.api.event.item.inventory.InteractInventoryEvent;
+import org.spongepowered.api.event.item.inventory.InteractItemEvent;
 import org.spongepowered.api.event.message.MessageChannelEvent;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
 import org.spongepowered.api.item.ItemTypes;
@@ -198,7 +198,7 @@ public class EEPlayerListeners {
 	}
 	
 	@Listener(order=Order.LAST)
-	public void onPlayerInteract(InteractBlockEvent.Secondary event, @First Player player_sponge) {
+	public void onPlayerInteract(InteractItemEvent.Secondary event, @First Player player_sponge) {
 		Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(player_sponge);
 		if (optPlayer.isPresent()) {
 			EPlayer player = optPlayer.get();

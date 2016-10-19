@@ -135,6 +135,7 @@ public class EEMessage extends EMessage<EverEssentials> {
 		ENCHANT_SUCCESSFULL("enchant.successfull", 			"&7L'enchantement &6<enchantment> &7a été appliqué sur l'objet &b[<item>&b]&7."),
 			
 		ENDERCHEST_DESCRIPTION("enderchest.description", 			"Ouvre le coffre de l'End d'un joueur"),
+		ENDERCHEST_TITLE("enderchest.title", 						"&8Coffre de l'Ender de <player>"),
 		
 		EXP_DESCRIPTION("exp.description", 							"Modifie l'expérience d'un joueur."),
 		EXP_GIVE_LEVEL("exp.giveLevel",								"&7Vous vous êtes ajouté &6<level> &7niveau(x)."),
