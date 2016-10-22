@@ -121,7 +121,7 @@ public class EEEnderchest extends ECommand<EverEssentials> {
 		return resultat;
 	}
 	
-	private boolean commandEnderchest(final EPlayer player, final EPlayer target) {
+	private boolean commandEnderchest(final EPlayer player, final EPlayer target) {		
 		player.openInventory(target.getEnderChestInventory(), Cause.of(NamedCause.source(player)));
 		return true;
 	}
