@@ -24,6 +24,7 @@ import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
+import org.spongepowered.api.world.storage.WorldProperties;
 
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.essentials.EEMessage.EEMessages;
@@ -66,9 +67,9 @@ public class EEGameruleSet extends ESubCommand<EverEssentials> {
 		// Résultat de la commande :
 		boolean resultat = false;
 		
-		if(args.size() == 0) {
+		if(args.size() == 2) {
 			if(source instanceof EPlayer) {
-				resultat = this.commandGameruleAdd((EPlayer) source);
+				resultat = this.commandGameruleSet((EPlayer) source, args.get(0), args.get(1));
 			} else {
 				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText()));
 			}
@@ -79,7 +80,14 @@ public class EEGameruleSet extends ESubCommand<EverEssentials> {
 		return resultat;
 	}
 
-	private boolean commandGameruleAdd(final EPlayer player) {
+	private boolean commandGameruleSet(final EPlayer player, final String gamerule, final String value) {
+		WorldProperties properties = player.getWorld().getProperties();
+		if (properties.getGameRule(gamerule).isPresent()) {
+			player.sendMessage("Set gamerule : " + gamerule + "; value : " + value);
+			properties.setGameRule(gamerule, value);
+		} else {
+			player.sendMessage("Il n'y a pas de gamerule : " + gamerule);
+		}
 		return true;
 	}
 }

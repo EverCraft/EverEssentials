@@ -24,6 +24,7 @@ import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
+import org.spongepowered.api.world.storage.WorldProperties;
 
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.essentials.EEMessage.EEMessages;
@@ -66,9 +67,9 @@ public class EEGameruleRemove extends ESubCommand<EverEssentials> {
 		// Résultat de la commande :
 		boolean resultat = false;
 		
-		if(args.size() == 0) {
+		if(args.size() == 1) {
 			if(source instanceof EPlayer) {
-				resultat = this.commandGameruleAdd((EPlayer) source);
+				resultat = this.commandGameruleRemove((EPlayer) source, args.get(0));
 			} else {
 				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText()));
 			}
@@ -79,7 +80,14 @@ public class EEGameruleRemove extends ESubCommand<EverEssentials> {
 		return resultat;
 	}
 
-	private boolean commandGameruleAdd(final EPlayer player) {
+	private boolean commandGameruleRemove(final EPlayer player, final String gamerule) {
+		WorldProperties properties = player.getWorld().getProperties();
+		if (properties.getGameRule(gamerule).isPresent()) {
+			player.sendMessage("Remove Gamerule : " + gamerule);
+			properties.removeGameRule(gamerule);
+		} else {
+			player.sendMessage("Il n'y a pas de gamerule : " + gamerule);
+		}
 		return true;
 	}
 }

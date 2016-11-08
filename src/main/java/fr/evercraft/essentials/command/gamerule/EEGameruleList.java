@@ -98,7 +98,6 @@ public class EEGameruleList extends ESubCommand<EverEssentials> {
 
 	private boolean commandGameruleList(final EPlayer player, final World world) {
 		Map<String, String> gamerules = world.getProperties().getGameRules();
-		player.getLocation().getExtent().getProperties().setGameRule("rez", null);
 		List<Text> lists = new ArrayList<Text>();
 		for(Entry<String, String> gamerule : gamerules.entrySet()){
 			lists.add(EChat.of(EEMessages.GAMERULE_LIST_LINE.get()
