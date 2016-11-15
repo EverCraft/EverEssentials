@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
+import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
@@ -59,7 +60,13 @@ public class EEGameruleRemove extends ESubCommand<EverEssentials> {
 	
 	@Override
 	public List<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
-		return new ArrayList<String>();
+		List<String> suggests = new ArrayList<String>();
+		if (args.size() == 1) {
+			if(source instanceof Player) {
+				((Player) source).getWorld().getGameRules().forEach((key, value) -> suggests.add(key));
+			}
+		}
+		return suggests;
 	}
 	
 	@Override
@@ -83,8 +90,11 @@ public class EEGameruleRemove extends ESubCommand<EverEssentials> {
 	private boolean commandGameruleRemove(final EPlayer player, final String gamerule) {
 		WorldProperties properties = player.getWorld().getProperties();
 		if (properties.getGameRule(gamerule).isPresent()) {
-			player.sendMessage("Remove Gamerule : " + gamerule);
-			properties.removeGameRule(gamerule);
+			/*if (properties.removeGameRule(gamerule)) {
+				player.sendMessage("Remove Gamerule : " + gamerule);
+			} else {
+				player.sendMessage("Default Gamerule : " + gamerule);
+			}*/
 		} else {
 			player.sendMessage("Il n'y a pas de gamerule : " + gamerule);
 		}
