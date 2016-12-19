@@ -32,7 +32,6 @@ import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
-import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ECommand;
 import fr.evercraft.everapi.server.player.EPlayer;
 import fr.evercraft.everapi.server.user.EUser;
@@ -69,7 +68,7 @@ public class EEGameMode extends ECommand<EverEssentials> {
 				.append(Text.of(">"));
 		
 		if (source.hasPermission(EEPermissions.GAMEMODE_OTHERS.get())){
-			build = build.append(Text.of(" [" + EAMessages.ARGS_PLAYER.get() + "]"));
+			build = build.append(Text.of(" [" + EAMessages.ARGS_PLAYER.getString() + "]"));
 		}
 		
 		return build.color(TextColors.RED)
@@ -146,14 +145,16 @@ public class EEGameMode extends ECommand<EverEssentials> {
 		
 		// Gamemode identique à celui du joueur
 		if (gamemode.equals(player.getGameMode())) {
-			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.GAMEMODE_PLAYER_EQUAL.get()
-					.replaceAll("<gamemode>", this.plugin.getEverAPI().getManagerUtils().getGameMode().getName(gamemode)));
+			EEMessages.GAMEMODE_PLAYER_EQUAL.sender()
+				.replace("<gamemode>", this.plugin.getEverAPI().getManagerUtils().getGameMode().getName(gamemode))
+				.sendTo(player);
 			return false;
 		}
 		
 		player.setGameMode(gamemode);
-		player.sendMessage(EEMessages.PREFIX.get() + EEMessages.GAMEMODE_PLAYER_CHANGE.get()
-				.replaceAll("<gamemode>", this.plugin.getEverAPI().getManagerUtils().getGameMode().getName(gamemode)));
+		EEMessages.GAMEMODE_PLAYER_CHANGE.sender()
+			.replace("<gamemode>", this.plugin.getEverAPI().getManagerUtils().getGameMode().getName(gamemode))
+			.sendTo(player);
 		return true;
 	}
 	
@@ -176,22 +177,25 @@ public class EEGameMode extends ECommand<EverEssentials> {
 		
 		// Gamemode identique à celui du joueur
 		if (gamemode_after.equals(gamemode_before)) {
-			staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.GAMEMODE_OTHERS_EQUAL.get()
-					.replaceAll("<gamemode>", this.plugin.getEverAPI().getManagerUtils().getGameMode().getName(gamemode_after))
-					.replaceAll("<player>", user.getName())));
+			EEMessages.GAMEMODE_OTHERS_EQUAL.sender()
+				.replace("<gamemode>", this.plugin.getEverAPI().getManagerUtils().getGameMode().getName(gamemode_after))
+				.replace("<player>", user.getName())
+				.sendTo(staff);
 			return false;
 		}
 		
 		user.setGameMode(gamemode_after);
 		
-		staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.GAMEMODE_OTHERS_STAFF_CHANGE.get()
-				.replaceAll("<player>", user.getName())
-				.replaceAll("<gamemode>", this.plugin.getEverAPI().getManagerUtils().getGameMode().getName(gamemode_after))));
+		EEMessages.GAMEMODE_OTHERS_STAFF_CHANGE.sender()
+			.replace("<gamemode>", this.plugin.getEverAPI().getManagerUtils().getGameMode().getName(gamemode_after))
+			.replace("<player>", user.getName())
+			.sendTo(staff);
 		
 		if (user instanceof EPlayer) {
-			((EPlayer) user).sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.GAMEMODE_OTHERS_PLAYER_CHANGE.get()
-					.replaceAll("<staff>", staff.getName())
-					.replaceAll("<gamemode>", this.plugin.getEverAPI().getManagerUtils().getGameMode().getName(gamemode_after))));
+			EEMessages.GAMEMODE_OTHERS_PLAYER_CHANGE.sender()
+				.replace("<gamemode>", this.plugin.getEverAPI().getManagerUtils().getGameMode().getName(gamemode_after))
+				.replace("<player>", user.getName())
+				.sendTo(((EPlayer) user));
 		}
 		return true;
 	}

@@ -326,8 +326,8 @@ public class EEWhois extends ECommand<EverEssentials> {
 	}
 	
 	private Text getGameMode(final EUser player){
-		return EChat.of(EEMessages.WHOIS_GAMEMODE.get()
-				.replaceAll("<gamemode>", this.plugin.getEverAPI().getManagerUtils().getGameMode().getName(player.getGameMode())));
+		return EEMessages.WHOIS_GAMEMODE.getFormat()
+				.toText("<gamemode>", this.plugin.getEverAPI().getManagerUtils().getGameMode().getName(player.getGameMode()));
 	}
 	
 	private Text getGod(final EUser player){
