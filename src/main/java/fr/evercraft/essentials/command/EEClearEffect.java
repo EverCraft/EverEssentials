@@ -30,7 +30,6 @@ import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
-import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ECommand;
 import fr.evercraft.everapi.server.player.EPlayer;
 
@@ -53,7 +52,7 @@ public class EEClearEffect extends ECommand<EverEssentials> {
 	@Override
 	public Text help(final CommandSource source) {
 		if (source.hasPermission(EEPermissions.CLEAREFFECT_OTHERS.get())){
-			return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_PLAYER.get() + "]")
+			return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_PLAYER.getString() + "]")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
 					.build();
@@ -85,7 +84,9 @@ public class EEClearEffect extends ECommand<EverEssentials> {
 				resultat = this.commandClearEffect((EPlayer) source);
 			// La source n'est pas un joueur
 			} else {
-				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText()));
+				EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()
+					.prefix(EEMessages.PREFIX)
+					.sendTo(source);
 			}
 		// On connais le joueur
 		} else if (args.size() == 1) {
@@ -97,11 +98,15 @@ public class EEClearEffect extends ECommand<EverEssentials> {
 					resultat = this.commandClearEffectOthers(source, player.get());
 				// Le joueur est introuvable
 				} else {
-					source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
+					EAMessages.PLAYER_NOT_FOUND.sender()
+						.prefix(EEMessages.PREFIX)
+						.sendTo(source);
 				}
 			// Il n'a pas la permission
 			} else {
-				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.NO_PERMISSION.getText()));
+				EAMessages.NO_PERMISSION.sender()
+					.prefix(EEMessages.PREFIX)
+					.sendTo(source);
 			}
 		// Nombre d'argument incorrect
 		} else {
@@ -114,12 +119,12 @@ public class EEClearEffect extends ECommand<EverEssentials> {
 	private boolean commandClearEffect(final EPlayer player) {
 		// Il n'y a pas d'effect de potion
 		if (player.getPotionEffects().isEmpty()) {
-			player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.CLEAREFFECT_NOEFFECT.getText()));
+			EEMessages.CLEAREFFECT_NOEFFECT.sendTo(player);
 			return false;
 		}
 		
 		player.clearPotions();
-		player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.CLEAREFFECT_PLAYER.getText()));
+		EEMessages.CLEAREFFECT_PLAYER.sendTo(player);
 		return true;
 	}
 	
@@ -132,16 +137,18 @@ public class EEClearEffect extends ECommand<EverEssentials> {
 		
 		// Il n'y a pas d'effect de potion
 		if (player.getPotionEffects().isEmpty()) {
-			staff.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.CLEAREFFECT_NOEFFECT.getText()));
+			EEMessages.CLEAREFFECT_NOEFFECT.sendTo(staff);
 			return false;
 		}
 		
 		player.clearPotions();
 		
-		player.sendMessage(EEMessages.PREFIX.get() + EEMessages.CLEAREFFECT_OTHERS_PLAYER.get()
-				.replaceAll("<staff>", staff.getName()));
-		staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.CLEAREFFECT_OTHERS_STAFF.get()
-				.replaceAll("<player>", player.getName())));
+		EEMessages.CLEAREFFECT_OTHERS_STAFF.sender()
+			.replace("<player>", player.getName())
+			.sendTo(staff);
+		EEMessages.CLEAREFFECT_OTHERS_PLAYER.sender()
+			.replace("<staff>", staff.getName())
+			.sendTo(player);
 		return true;
 	}
 }

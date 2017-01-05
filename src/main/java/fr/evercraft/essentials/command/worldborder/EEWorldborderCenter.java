@@ -89,7 +89,9 @@ public class EEWorldborderCenter extends ESubCommand<EverEssentials> {
 			if (source instanceof Locatable){
 				resultat = this.commandWorldborderCenter(source, ((Locatable) source).getWorld(), args.get(0), args.get(1));
 			} else {
-				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText()));
+				EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()
+					.prefix(EEMessages.PREFIX)
+					.sendTo(source);
 			}
 		} else if (args.size() == 3){
 			Optional<World> world = this.plugin.getEServer().getWorld(args.get(2));

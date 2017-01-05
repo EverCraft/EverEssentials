@@ -34,7 +34,6 @@ import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
-import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ECommand;
 import fr.evercraft.everapi.server.player.EPlayer;
 
@@ -61,7 +60,7 @@ public class EEBed extends ECommand<EverEssentials> {
 	@Override
 	public Text help(final CommandSource source) {
 		if (source.hasPermission(EEPermissions.BED_OTHERS.get())){
-			return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_PLAYER.get() + "]")
+			return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_PLAYER.getString() + "]")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
 					.build();
@@ -74,10 +73,11 @@ public class EEBed extends ECommand<EverEssentials> {
 	
 	@Override
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
+		List<String> suggest = new ArrayList<String>();
 		if (args.size() == 1 && source.hasPermission(EEPermissions.BED_OTHERS.get())){
-			return null;
+			suggest.addAll(this.getAllPlayers(source));
 		}
-		return new ArrayList<String>();
+		return suggest;
 	}
 	
 	@Override
@@ -91,7 +91,9 @@ public class EEBed extends ECommand<EverEssentials> {
 				resultat = commandBed((EPlayer) source);
 			// La source n'est pas un joueur
 			} else {
-				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
+				EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()
+					.prefix(EEMessages.PREFIX)
+					.sendTo(source);
 			}
 		// On connais le joueur
 		} else if (args.size() == 1) {
@@ -103,11 +105,15 @@ public class EEBed extends ECommand<EverEssentials> {
 					resultat = commandBedOthers(source, optPlayer.get());
 				// Le joueur est introuvable
 				} else {
-					source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
+					EAMessages.PLAYER_NOT_FOUND.sender()
+						.prefix(EEMessages.PREFIX)
+						.sendTo(source);
 				}
 			// Il n'a pas la permission
 			} else {
-				source.sendMessage(EAMessages.NO_PERMISSION.getText());
+				EAMessages.NO_PERMISSION.sender()
+					.prefix(EEMessages.PREFIX)
+					.sendTo(source);
 			}
 		// Nombre d'argument incorrect
 		} else {
@@ -128,10 +134,7 @@ public class EEBed extends ECommand<EverEssentials> {
 	
 	private boolean commandBedOthers(final CommandSource staff, final EPlayer player) throws CommandException {
 		// La source et le joueur sont différent
-		if (!player.equals(staff)){
-			staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.PING_OTHERS.get()
-					.replaceAll("<player>", player.getName())
-					.replaceAll("<ping>", String.valueOf(player.getConnection().getLatency()))));
+		if (!player.equals(staff)) {
 			return true;
 		// La source et le joueur sont identique
 		} else {

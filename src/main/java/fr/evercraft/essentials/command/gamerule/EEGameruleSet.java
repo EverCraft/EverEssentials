@@ -71,7 +71,9 @@ public class EEGameruleSet extends ESubCommand<EverEssentials> {
 			if(source instanceof EPlayer) {
 				resultat = this.commandGameruleSet((EPlayer) source, args.get(0), args.get(1));
 			} else {
-				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText()));
+				EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()
+					.prefix(EEMessages.PREFIX)
+					.sendTo(source);
 			}
 		} else {
 			source.sendMessage(this.help(source));

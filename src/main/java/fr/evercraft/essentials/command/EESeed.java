@@ -85,7 +85,9 @@ public class EESeed extends ECommand<EverEssentials> {
 				resultat = this.commandSeed(player, player.getWorld());
 			// La source n'est pas un joueur
 			} else {
-				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText()));
+				EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()
+					.prefix(EEMessages.PREFIX)
+					.sendTo(source);
 			}
 		// On connais le joueur
 		} else if(args.size() == 1) {

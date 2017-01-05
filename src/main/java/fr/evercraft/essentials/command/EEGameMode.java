@@ -103,7 +103,9 @@ public class EEGameMode extends ECommand<EverEssentials> {
 				resultat = this.commandGameMode((EPlayer) source, args.get(0));
 				// Si la source est une console ou un commande block
 			} else {
-				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText()));
+				EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()
+					.prefix(EEMessages.PREFIX)
+					.sendTo(source);
 			}
 			
 		// Si on connait le gamemode et le joueur

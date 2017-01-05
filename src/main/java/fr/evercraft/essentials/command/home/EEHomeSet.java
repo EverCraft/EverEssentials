@@ -123,7 +123,9 @@ public class EEHomeSet extends EReloadCommand<EverEssentials> {
 				resultat = this.commandSetHome((EPlayer) source, DEFAULT_HOME);
 			// La source n'est pas un joueur
 			} else {
-				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText()));
+				EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()
+					.prefix(EEMessages.PREFIX)
+					.sendTo(source);
 			}
 			
 		// Si on ne connait pas le joueur
@@ -137,7 +139,9 @@ public class EEHomeSet extends EReloadCommand<EverEssentials> {
 					resultat = this.commandSetHome((EPlayer) source); 
 				// La source n'est pas un joueur
 				} else {
-					source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText()));
+					EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()
+						.prefix(EEMessages.PREFIX)
+						.sendTo(source);
 				}
 			// Il n'a pas la permission
 			} else {

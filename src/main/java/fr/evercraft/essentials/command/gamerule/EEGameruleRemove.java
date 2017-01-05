@@ -78,7 +78,9 @@ public class EEGameruleRemove extends ESubCommand<EverEssentials> {
 			if(source instanceof EPlayer) {
 				resultat = this.commandGameruleRemove((EPlayer) source, args.get(0));
 			} else {
-				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText()));
+				EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()
+					.prefix(EEMessages.PREFIX)
+					.sendTo(source);
 			}
 		} else {
 			source.sendMessage(this.help(source));

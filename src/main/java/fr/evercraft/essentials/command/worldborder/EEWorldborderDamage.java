@@ -118,7 +118,9 @@ public class EEWorldborderDamage extends ESubCommand<EverEssentials> {
 					source.sendMessage(this.help(source));
 				}
 			} else {
-				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText()));
+				EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()
+					.prefix(EEMessages.PREFIX)
+					.sendTo(source);
 			}
 		} else if (args.size() == 3){
 			Optional<World> world = this.plugin.getEServer().getWorld(args.get(2));

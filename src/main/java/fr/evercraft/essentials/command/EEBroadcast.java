@@ -30,7 +30,6 @@ import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
-import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ECommand;
 
 public class EEBroadcast extends ECommand<EverEssentials> {
@@ -51,7 +50,7 @@ public class EEBroadcast extends ECommand<EverEssentials> {
 
 	@Override
 	public Text help(final CommandSource source) {
-		Text help = Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_MESSAGE.get() + ">")
+		Text help = Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_MESSAGE.getString() + ">")
 						.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 						.color(TextColors.RED)
 						.build();
@@ -84,8 +83,9 @@ public class EEBroadcast extends ECommand<EverEssentials> {
 	}
 	
 	private boolean commandBroadcast(final String message) {
-		this.plugin.getEServer().getBroadcastChannel().send(EChat.of(EEMessages.BROADCAST_MESSAGE.get()
-				.replaceAll("<message>", message)));
+		this.plugin.getEServer().getBroadcastChannel().send(
+				EEMessages.BROADCAST_MESSAGE.getFormat()
+					.toText("<message>", message));
 		return true;
 	}
 }

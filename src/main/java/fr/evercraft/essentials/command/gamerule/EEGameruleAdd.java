@@ -70,7 +70,9 @@ public class EEGameruleAdd extends ESubCommand<EverEssentials> {
 			if(source instanceof EPlayer) {
 				resultat = this.commandGameruleAdd((EPlayer) source, args.get(0), args.get(1));
 			} else {
-				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText()));
+				EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()
+					.prefix(EEMessages.PREFIX)
+					.sendTo(source);
 			}
 		} else {
 			source.sendMessage(this.help(source));
@@ -85,7 +87,7 @@ public class EEGameruleAdd extends ESubCommand<EverEssentials> {
 			player.sendMessage("Set gamerule : " + gamerule + "; value : " + value);
 			properties.setGameRule(gamerule, value);
 		} else {
-			player.sendMessage("Il y a déjà une gamerule : " + gamerule);
+			player.sendMessage("Il y a dï¿½jï¿½ une gamerule : " + gamerule);
 		}
 		return true;
 	}

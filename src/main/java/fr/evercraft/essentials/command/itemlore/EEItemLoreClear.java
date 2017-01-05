@@ -72,7 +72,9 @@ public class EEItemLoreClear extends ESubCommand<EverEssentials> {
 				commandItemLoreClear((EPlayer) source);
 				return true;
 			} else {
-				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText()));
+				EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()
+					.prefix(EEMessages.PREFIX)
+					.sendTo(source);
 				return false;
 			}
 		} else {

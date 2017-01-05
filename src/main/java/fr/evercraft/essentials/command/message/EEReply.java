@@ -94,7 +94,9 @@ public class EEReply extends ECommand<EverEssentials> {
 			} else if (source instanceof ConsoleSource) {
 				resultat = this.commandReply(source, this.plugin.getManagerServices().getEssentials().getConsole().getReplyTo(), message);
 			} else {
-				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText()));
+				EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()
+					.prefix(EEMessages.PREFIX)
+					.sendTo(source);
 			}
 			
 		} else {

@@ -122,7 +122,9 @@ public class EEWorldborderWarning extends ESubCommand<EverEssentials> {
 				}
 				
 			} else {
-				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText()));
+				EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()
+					.prefix(EEMessages.PREFIX)
+					.sendTo(source);
 			}
 		} else if (args.size() == 3) {
 			Optional<World> optWorld = this.plugin.getEServer().getWorld(args.get(2));

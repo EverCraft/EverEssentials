@@ -94,7 +94,9 @@ public class EETeleportationPosition extends ECommand<EverEssentials> {
 				resultat = this.commandTeleportationPosition((EPlayer) source, args.get(0), args.get(1), args.get(2));
 			// Si la source est une console ou un commande block
 			} else {
-				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText()));
+				EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()
+					.prefix(EEMessages.PREFIX)
+					.sendTo(source);
 			}
 			
 		} else if (args.size() == 4) {
@@ -104,7 +106,9 @@ public class EETeleportationPosition extends ECommand<EverEssentials> {
 				resultat = this.commandTeleportationPosition((EPlayer) source, args.get(0), args.get(1), args.get(2), args.get(3));
 			// Si la source est une console ou un commande block
 			} else {
-				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText()));
+				EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()
+					.prefix(EEMessages.PREFIX)
+					.sendTo(source);
 			}
 			
 		// Pour téléporter un autre joueur

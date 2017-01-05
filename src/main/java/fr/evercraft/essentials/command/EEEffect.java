@@ -69,7 +69,8 @@ public class EEEffect extends EReloadCommand<EverEssentials> {
 
 	@Override
 	public Text help(final CommandSource source) {
-		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_EFFECT.get() + "> [" + EAMessages.ARGS_AMPLIFICATION.get() + "] [" + EAMessages.ARGS_SECONDS.get() + "]")
+		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_EFFECT.getString() + "> "
+				+ "[" + EAMessages.ARGS_AMPLIFICATION.getString() + "] [" + EAMessages.ARGS_SECONDS.getString() + "]")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
 					.build();
@@ -126,8 +127,10 @@ public class EEEffect extends EReloadCommand<EverEssentials> {
 					resultat = this.commandEffect(player, args.get(0), Integer.valueOf(args.get(1)));
 					// Nombre invalide
 				} catch (NumberFormatException e) {
-					player.sendMessage(EEMessages.PREFIX.get() + EAMessages.IS_NOT_NUMBER.get()
-							.replaceAll("<number>", args.get(1)));
+					EAMessages.IS_NOT_NUMBER.sender()
+						.prefix(EEMessages.PREFIX)
+						.replace("<number>", args.get(1))
+						.sendTo(player);
 				}
 				
 			// Ajout de l'effect avec durée et amplifier personnalisé
@@ -139,19 +142,25 @@ public class EEEffect extends EReloadCommand<EverEssentials> {
 						int duration = Integer.valueOf(args.get(2)) * 20;
 						resultat = this.commandEffect(player, args.get(0), amplification, duration);
 					} catch (NumberFormatException e) {
-						player.sendMessage(EEMessages.PREFIX.get() + EAMessages.IS_NOT_NUMBER.get()
-								.replaceAll("<number>", args.get(2)));
+						EAMessages.IS_NOT_NUMBER.sender()
+							.prefix(EEMessages.PREFIX)
+							.replace("<number>", args.get(2))
+							.sendTo(player);
 					}
 				} catch (NumberFormatException e) {
-					player.sendMessage(EEMessages.PREFIX.get() + EAMessages.IS_NOT_NUMBER.get()
-							.replaceAll("<number>", args.get(1)));
+					EAMessages.IS_NOT_NUMBER.sender()
+						.prefix(EEMessages.PREFIX)
+						.replace("<number>", args.get(1))
+						.sendTo(player);
 				}
 				
 			} else {
 				source.sendMessage(this.help(source));
 			}
 		} else {
-			source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText()));
+			EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()
+				.prefix(EEMessages.PREFIX)
+				.sendTo(source);
 		}
 		
 		return resultat;
@@ -162,8 +171,9 @@ public class EEEffect extends EReloadCommand<EverEssentials> {
 		
 		// L'effet n'existe pas
 		if (!effect.isPresent()) {
-			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.EFFECT_ERROR_NAME.get()
-					.replaceAll("<effect>", name_effect));
+			EEMessages.EFFECT_ERROR_NAME.sender()
+				.replace("<effect>", name_effect)
+				.sendTo(player);
 			return false;
 		}
 		
@@ -176,16 +186,18 @@ public class EEEffect extends EReloadCommand<EverEssentials> {
 		
 		// L'effet n'existe pas
 		if (!effect.isPresent()) {
-			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.EFFECT_ERROR_NAME.get()
-					.replaceAll("<effect>", name_effect));
+			EEMessages.EFFECT_ERROR_NAME.sender()
+				.replace("<effect>", name_effect)
+				.sendTo(player);
 			return false;
 		}
 		
 		// La valeur de l'amplifieur n'est pas correcte
 		if (amplifier < 1 || (amplifier > effect.get().getMaxAmplifier() && !this.unsafe)) {
-			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.EFFECT_ERROR_AMPLIFIER.get()
-					.replaceAll("<min>", "1")
-					.replaceAll("<max>", String.valueOf(effect.get().getMaxAmplifier())));
+			EEMessages.EFFECT_ERROR_AMPLIFIER.sender()
+				.replace("<min>", "1")
+				.replace("<max>", String.valueOf(effect.get().getMaxAmplifier()))
+				.sendTo(player);
 			return false;
 		}
 		
@@ -198,24 +210,27 @@ public class EEEffect extends EReloadCommand<EverEssentials> {
 		
 		// L'effet n'existe pas
 		if (!effect.isPresent()) {
-			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.EFFECT_ERROR_NAME.get()
-					.replaceAll("<effect>", name_effect));
+			EEMessages.EFFECT_ERROR_NAME.sender()
+				.replace("<effect>", name_effect)
+				.sendTo(player);
 			return false;
 		}
 		
 		// La valeur de l'amplifieur n'est pas correcte
 		if (amplifier < 1 || (amplifier > effect.get().getMaxAmplifier() && !this.unsafe)) {
-			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.EFFECT_ERROR_AMPLIFIER.get()
-					.replaceAll("<min>", "1")
-					.replaceAll("<max>", String.valueOf(effect.get().getMaxAmplifier())));
+			EEMessages.EFFECT_ERROR_AMPLIFIER.sender()
+				.replace("<min>", "1")
+				.replace("<max>", String.valueOf(effect.get().getMaxAmplifier()))
+				.sendTo(player);
 			return false;
 		}
 		
 		// La durée n'est pas correcte
 		if (duration < 0 || duration > this.max_duration) {
-			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.EFFECT_ERROR_DURATION.get()
-					.replaceAll("<min>", "1")
-					.replaceAll("<max>", String.valueOf(this.max_duration)));
+			EEMessages.EFFECT_ERROR_DURATION.sender()
+				.replace("<min>", "1")
+				.replace("<max>", String.valueOf(this.max_duration))
+				.sendTo(player);
 			return false;
 		}
 		

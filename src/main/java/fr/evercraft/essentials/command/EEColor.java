@@ -35,7 +35,6 @@ import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.command.ECommand;
 import fr.evercraft.everapi.server.player.EPlayer;
-import fr.evercraft.everapi.text.ETextBuilder;
 
 public class EEColor extends ECommand<EverEssentials> {
 	
@@ -79,7 +78,9 @@ public class EEColor extends ECommand<EverEssentials> {
 				resultat = this.commandColor((EPlayer) source);
 			// La source n'est pas un joueur
 			} else {
-				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText()));
+				EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()
+					.prefix(EEMessages.PREFIX)
+					.sendTo(source);
 			}
 			
 		// Nombre d'argument incorrect
@@ -124,12 +125,11 @@ public class EEColor extends ECommand<EverEssentials> {
 	private Text getButtomColor(String id, TextColor text) {
 		Optional<EAMessages> color = EAMessages.getColor(text);
 		if (color.isPresent()) {
-			return ETextBuilder.toBuilder(EEMessages.COLOR_LIST_MESSAGE.get()
-					.replaceAll("<color>", "&" + id)
-					.replaceAll("<name>", color.get().get()))
-			.replace("<id>", Text.of("&" + id))
-			.build();
+			return EEMessages.COLOR_LIST_MESSAGE.getFormat().toText(
+					"<color>", "&" + id,
+					"<name>", color.get().getString(),
+					"<id>", Text.of("&" + id));
 		}
-		return Text.of();
+		return Text.EMPTY;
 	}
 }

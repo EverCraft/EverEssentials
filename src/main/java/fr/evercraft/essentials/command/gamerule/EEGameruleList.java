@@ -74,7 +74,9 @@ public class EEGameruleList extends ESubCommand<EverEssentials> {
 				EPlayer player = (EPlayer) source;
 				resultat = this.commandGameruleList(player, player.getWorld());
 			} else {
-				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText()));
+				EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()
+					.prefix(EEMessages.PREFIX)
+					.sendTo(source);
 			}
 		} else if(args.size() == 1) {
 			if(source instanceof EPlayer) {
@@ -87,7 +89,9 @@ public class EEGameruleList extends ESubCommand<EverEssentials> {
 							.replace("<world>", args.get(0)));
 				}
 			} else {
-				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText()));
+				EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()
+					.prefix(EEMessages.PREFIX)
+					.sendTo(source);
 			}
 		} else {
 			source.sendMessage(this.help(source));

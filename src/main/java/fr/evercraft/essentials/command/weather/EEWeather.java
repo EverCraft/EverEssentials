@@ -103,7 +103,9 @@ public class EEWeather extends ECommand<EverEssentials> {
 				resultat = this.commandWeather(source, getWeather(args.get(0)), ((Locatable) source).getWorld());
 			// La source n'est pas un joueur
 			} else {
-				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText()));
+				EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()
+					.prefix(EEMessages.PREFIX)
+					.sendTo(source);
 			}
 		// On connais le joueur
 		} else if (args.size() == 2) {
@@ -119,7 +121,9 @@ public class EEWeather extends ECommand<EverEssentials> {
 						resultat = this.commandWeather(source, getWeather(args.get(0)), ((Locatable) source).getWorld(), time);
 					// La source n'est pas un joueur
 					} else {
-						source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText()));
+						EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()
+							.prefix(EEMessages.PREFIX)
+							.sendTo(source);
 					}
 				} catch (NumberFormatException e) {
 					source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.WORLD_NOT_FOUND.get()

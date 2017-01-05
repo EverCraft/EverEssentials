@@ -33,10 +33,8 @@ import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
-import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ECommand;
 import fr.evercraft.everapi.server.player.EPlayer;
-import fr.evercraft.everapi.text.ETextBuilder;
 
 public class EEBack extends ECommand<EverEssentials> {
 	
@@ -80,7 +78,9 @@ public class EEBack extends ECommand<EverEssentials> {
 				resultat = this.commandBack((EPlayer) source);
 			// La source n'est pas un joueur
 			} else {
-				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText()));
+				EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()
+					.prefix(EEMessages.PREFIX)
+					.sendTo(source);
 			}
 			
 		// Nombre d'argument incorrect
@@ -95,27 +95,30 @@ public class EEBack extends ECommand<EverEssentials> {
 		
 		// Le joueur a une position de retour
 		if (!back.isPresent()) {
-			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.BACK_INCONNU.get());
+			EEMessages.BACK_INCONNU.sendTo(player);
 			return false;
 		}
 		
 		// Le joueur n'a pas la permission d'aller dans le monde
 		if (!this.plugin.getManagerServices().getEssentials().hasPermissionWorld(player, back.get().getExtent())) {
-			player.sendMessage(EEMessages.PREFIX.get() + EAMessages.NO_PERMISSION_WORLD_OTHERS.get());
+			EAMessages.NO_PERMISSION_WORLD_OTHERS.sender()
+				.prefix(EEMessages.PREFIX)
+				.sendTo(player);
 			return false;
 		}
 			
 		// La position n'est pas Safe
 		if (!(this.plugin.getEverAPI().getManagerUtils().getLocation().isPositionSafe(back.get()) || player.isGod() || player.isCreative())) {
-			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.BACK_ERROR_LOCATION.get());
+			EEMessages.BACK_ERROR_LOCATION.sendTo(player);
 			return false;
 		}
 		
 		// Delais de téléportation
 		long delay = this.plugin.getConfigs().getTeleportDelay(player);
 		if (delay > 0) {
-			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.BACK_DELAY.get()
-					.replaceAll("<delay>", this.plugin.getEverAPI().getManagerUtils().getDate().diff(delay)));
+			EEMessages.BACK_DELAY.sender()
+				.replace("<delay>", () -> this.plugin.getEverAPI().getManagerUtils().getDate().diff(delay))
+				.sendTo(player);
 		}
 		
 		// Téléportation
@@ -131,23 +134,22 @@ public class EEBack extends ECommand<EverEssentials> {
 			
 		// La position n'est pas Safe
 		if (!player.teleportSafe(teleport, true)) {
-			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.BACK_ERROR_LOCATION.get());
+			EEMessages.BACK_ERROR_LOCATION.sendTo(player);
 			return;
 		}
 		
-		player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.getText())
-				.append(EEMessages.BACK_TELEPORT.get())
-				.replace("<back>", getButtonLocation(teleport.getLocation()))
-				.build());
+		EEMessages.BACK_TELEPORT.sender()
+			.replace("<back>", () -> this.getButtonLocation(teleport.getLocation()))
+			.sendTo(player);
 	}
 	
 	private Text getButtonLocation(final Location<World> location){
 		return EEMessages.BACK_NAME.getText().toBuilder()
-					.onHover(TextActions.showText(EChat.of(EEMessages.BACK_NAME_HOVER.get()
-							.replaceAll("<world>", location.getExtent().getName())
-							.replaceAll("<x>", String.valueOf(location.getBlockX()))
-							.replaceAll("<y>", String.valueOf(location.getBlockY()))
-							.replaceAll("<z>", String.valueOf(location.getBlockZ())))))
+					.onHover(TextActions.showText(EEMessages.BACK_NAME_HOVER.getFormat().toText(
+							"<world>", location.getExtent().getName(),
+							"<x>", String.valueOf(location.getBlockX()),
+							"<y>", String.valueOf(location.getBlockY()),
+							"<z>", String.valueOf(location.getBlockZ()))))
 					.build();
 	}
 }

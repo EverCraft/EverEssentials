@@ -30,7 +30,6 @@ import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
-import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ECommand;
 import fr.evercraft.everapi.server.player.EPlayer;
 
@@ -53,7 +52,7 @@ public class EEClearInventory extends ECommand<EverEssentials> {
 	@Override
 	public Text help(final CommandSource source) {
 		if (source.hasPermission(EEPermissions.CLEARINVENTORY_OTHERS.get())){
-			return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_PLAYER.get() + "]")
+			return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_PLAYER.getString() + "]")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
 					.build();
@@ -86,7 +85,9 @@ public class EEClearInventory extends ECommand<EverEssentials> {
 				resultat = this.commandClearInventory((EPlayer) source);
 			// La source n'est pas un joueur
 			} else {
-				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText()));
+				EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()
+					.prefix(EEMessages.PREFIX)
+					.sendTo(source);
 			}
 			
 		// On connais le joueur
@@ -100,11 +101,15 @@ public class EEClearInventory extends ECommand<EverEssentials> {
 					resultat = this.commandClearInventory(source, optPlayer.get());
 				// Le joueur est introuvable
 				} else {
-					source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
+					EAMessages.PLAYER_NOT_FOUND.sender()
+						.prefix(EEMessages.PREFIX)
+						.sendTo(source);
 				}
 			// Il n'a pas la permission
 			} else {
-				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.NO_PERMISSION.getText()));
+				EAMessages.NO_PERMISSION.sender()
+					.prefix(EEMessages.PREFIX)
+					.sendTo(source);
 			}
 			
 		// Nombre d'argument incorrect
@@ -120,14 +125,15 @@ public class EEClearInventory extends ECommand<EverEssentials> {
 		
 		// Il n'y a pas d'item
 		if (total == 0) {
-			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.CLEARINVENTORY_NOITEM.get());
+			EEMessages.CLEARINVENTORY_NOITEM.sendTo(player);
 			return false;
 		}
 		
 		player.getInventory().clear();
 		
-		player.sendMessage(EEMessages.PREFIX.get() + EEMessages.CLEARINVENTORY_PLAYER.get()
-				.replaceAll("<amount>", String.valueOf(total)));
+		EEMessages.CLEARINVENTORY_PLAYER.sender()
+			.replace("<amount>", String.valueOf(total))
+			.sendTo(player);
 		return true;
 	}
 	
@@ -141,18 +147,20 @@ public class EEClearInventory extends ECommand<EverEssentials> {
 
 		// Il n'y a pas d'item
 		if (total == 0) {
-			staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.CLEARINVENTORY_OTHERS_NOITEM.get()));
+			EEMessages.CLEARINVENTORY_OTHERS_NOITEM.sendTo(staff);
 			return false;
 		}
 		
 		player.getInventory().clear();
 		
-		player.sendMessage(EEMessages.PREFIX.get() + EEMessages.CLEARINVENTORY_OTHERS_PLAYER.get()
-				.replaceAll("<staff>", staff.getName())
-				.replaceAll("<amount>", String.valueOf(total)));
-		staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.CLEARINVENTORY_OTHERS_STAFF.get()
-				.replaceAll("<player>", player.getName())
-				.replaceAll("<amount>", String.valueOf(total))));
+		EEMessages.CLEARINVENTORY_OTHERS_STAFF.sender()
+			.replace("<player>", player.getName())
+			.replace("<amount>", String.valueOf(total))
+			.sendTo(staff);
+		EEMessages.CLEARINVENTORY_OTHERS_PLAYER.sender()
+			.replace("<staff>", staff.getName())
+			.replace("<amount>", String.valueOf(total))
+			.sendTo(player);
 		return true;
 	}
 }
