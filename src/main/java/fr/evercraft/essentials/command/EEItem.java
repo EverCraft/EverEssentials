@@ -39,7 +39,6 @@ import fr.evercraft.everapi.plugin.command.EReloadCommand;
 import fr.evercraft.everapi.server.player.EPlayer;
 import fr.evercraft.everapi.sponge.UtilsItemStack;
 import fr.evercraft.everapi.sponge.UtilsItemType;
-import fr.evercraft.everapi.text.ETextBuilder;
 
 public class EEItem extends EReloadCommand<EverEssentials> {
 	
@@ -70,8 +69,8 @@ public class EEItem extends EReloadCommand<EverEssentials> {
 
 	@Override
 	public Text help(final CommandSource source) {
-		return Text.builder("/" + this.getName() + " <" +  EAMessages.ARGS_ITEM.get() + "> [" + EAMessages.ARGS_TYPE.get() 
-				+"] [" + EAMessages.ARGS_AMOUNT.get() + "]")
+		return Text.builder("/" + this.getName() + " <" +  EAMessages.ARGS_ITEM.getString() + "> [" + EAMessages.ARGS_TYPE.getString() +"] "
+				+ "[" + EAMessages.ARGS_AMOUNT.getString() + "]")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
 					.build();
@@ -152,14 +151,15 @@ public class EEItem extends EReloadCommand<EverEssentials> {
 		
 		// Le type n'existe pas
 		if (!type.isPresent()) {
-			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.ITEM_ERROR_ITEM_NOT_FOUND.get()
-					.replaceAll("<item>", type_string));
+			EEMessages.ITEM_ERROR_ITEM_NOT_FOUND.sender()
+				.replace("<item>", type_string)
+				.sendTo(player);
 			return false;
 		}
 		
 		// L'item est dans la BlackList
 		if (this.blacklist.contains(type.get())) {
-			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.ITEM_ERROR_ITEM_BLACKLIST.get());
+			EEMessages.ITEM_ERROR_ITEM_BLACKLIST.sendTo(player);
 			return false;
 		}
 		
@@ -172,14 +172,15 @@ public class EEItem extends EReloadCommand<EverEssentials> {
 		
 		// Le type n'existe pas
 		if (!type.isPresent()) {
-			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.ITEM_ERROR_ITEM_NOT_FOUND.get()
-					.replaceAll("<item>", type_string));
+			EEMessages.ITEM_ERROR_ITEM_NOT_FOUND.sender()
+				.replace("<item>", type_string)
+				.sendTo(player);
 			return false;
 		}
 		
 		// L'item est dans la BlackList
 		if (this.blacklist.contains(type.get())) {
-			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.ITEM_ERROR_ITEM_BLACKLIST.get());
+			EEMessages.ITEM_ERROR_ITEM_BLACKLIST.sendTo(player);
 			return false;
 		}
 		
@@ -196,14 +197,18 @@ public class EEItem extends EReloadCommand<EverEssentials> {
 		try {
 			quantity = Integer.parseInt(value);
 		} catch (NumberFormatException e) {
-			player.sendMessage(EEMessages.PREFIX.get() + EAMessages.IS_NOT_NUMBER.get().replaceAll("<number>", value));
+			EAMessages.IS_NOT_NUMBER.sender()
+				.prefix(EEMessages.PREFIX)
+				.replace("<number>", value)
+				.sendTo(player);
 			return false;
 		}
 			
 		// La valeur n'est pas correcte
-		if (quantity < 1 && quantity > type.get().getMaxStackQuantity()){
-			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.ITEM_ERROR_QUANTITY.get()
-					.replaceAll("<amount>", String.valueOf(type.get().getMaxStackQuantity())));
+		if (quantity < 1 && quantity > type.get().getMaxStackQuantity()) {
+			EEMessages.ITEM_ERROR_QUANTITY.sender()
+				.replace("<amount>", String.valueOf(type.get().getMaxStackQuantity()))
+				.sendTo(player);
 			return false;
 		}
 		
@@ -215,14 +220,15 @@ public class EEItem extends EReloadCommand<EverEssentials> {
 		
 		// Le type n'existe pas
 		if (!type.isPresent()) {
-			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.ITEM_ERROR_ITEM_NOT_FOUND.get()
-					.replaceAll("<item>", type_string));
+			EEMessages.ITEM_ERROR_ITEM_NOT_FOUND.sender()
+				.replace("<item>", type_string)
+				.sendTo(player);
 			return false;
 		}
 		
 		// L'item est dans la BlackList
 		if (this.blacklist.contains(type.get())) {
-			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.ITEM_ERROR_ITEM_BLACKLIST.get());
+			EEMessages.ITEM_ERROR_ITEM_BLACKLIST.sendTo(player);
 			return false;
 		}
 		
@@ -231,9 +237,10 @@ public class EEItem extends EReloadCommand<EverEssentials> {
 		Optional<ItemStack> item_data = UtilsItemType.getCatalogType(item, data_string);
 		
 		// Si la valeur est une data
-		if (!item_data.isPresent()){
-			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.ITEM_ERROR_DATA.get()
-					.replaceAll("<item>", data_string));
+		if (!item_data.isPresent()) {
+			EEMessages.ITEM_ERROR_DATA.sender()
+				.replace("<item>", data_string)
+				.sendTo(player);
 			return false;
 		}
 		
@@ -241,14 +248,18 @@ public class EEItem extends EReloadCommand<EverEssentials> {
 		try {
 			quantity = Integer.parseInt(quantity_string);
 		} catch (NumberFormatException e) {
-			player.sendMessage(EEMessages.PREFIX.get() + EAMessages.IS_NOT_NUMBER.get().replaceAll("<number>", quantity_string));
+			EAMessages.IS_NOT_NUMBER.sender()
+				.prefix(EEMessages.PREFIX)
+				.replace("<number>", quantity_string)
+				.sendTo(player);
 			return false;
 		}
 			
 		// La valeur n'est pas correcte
-		if (quantity < 1 && quantity > type.get().getMaxStackQuantity()){
-			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.ITEM_ERROR_QUANTITY.get()
-					.replaceAll("<amount>", String.valueOf(type.get().getMaxStackQuantity())));
+		if (quantity < 1 && quantity > type.get().getMaxStackQuantity()) {
+			EEMessages.ITEM_ERROR_DATA.sender()
+				.replace("<amount>", String.valueOf(type.get().getMaxStackQuantity()))
+				.sendTo(player);
 			return false;
 		}
 		
@@ -259,14 +270,15 @@ public class EEItem extends EReloadCommand<EverEssentials> {
 		item.setQuantity(quantity);
 		
 		if(player.giveItem(item).isPresent()) {
-			player.sendMessage(EEMessages.PREFIX.get() + EAMessages.PLAYER_INVENTORY_FULL.get());
-			return false;
+			EAMessages.PLAYER_INVENTORY_FULL_AND_DROP.sender()
+				.prefix(EEMessages.PREFIX)
+				.sendTo(player);
 		}
-			
-		player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
-			.append(EEMessages.ITEM_GIVE.get().replaceAll("<quantity>", quantity.toString()))
-				.replace("<item>", EChat.getButtomItem(item, EEMessages.ITEM_GIVE_COLOR.getColor()))
-			.build());
+		
+		EEMessages.ITEM_GIVE.sender()
+			.replace("<quantity>", quantity.toString())
+			.replace("<item>", EChat.getButtomItem(item, EEMessages.ITEM_GIVE_COLOR.getColor()))
+			.sendTo(player);
 		return true;
 	}
 	

@@ -449,8 +449,9 @@ public class EEMessage extends EMessage<EverEssentials> {
 		LAG_HISTORY_TPS_HOVER("lag.historyTpsHover", 				"&6Minute : &c<num>[RT]&6TPS : &c<tps>"),
 		LAG_MEMORY("lag.memory", 									"    &6&l➤  &6RAM : &c<usage>&6/&c<total> &6Mo"),
 		LAG_WORLDS("lag.worlds", 									"    &6&l➤  &6Liste des mondes :"),
-		LAG_WORLDS_LINE("lag.worldsLine", 							"        &6&l●  &6<world>"),
-		LAG_WORLDS_LINE_HOVER("lag.worldsLineHover", 				"&6Chunks : &c<chunks>[RT]&6Entités : &c<entities>[RT]&6Tiles : &c<tiles>"),
+		LAG_WORLDS_SEPARATOR("lag.worldsSeparator", 				"\n"),
+		LAG_WORLDS_WORLD("lag.worldsWorld", 						"        &6&l●  &6<world>"),
+		LAG_WORLDS_WORLD_HOVER("lag.worldsWorldHover", 				"&6Chunks : &c<chunks>[RT]&6Entités : &c<entities>[RT]&6Tiles : &c<tiles>"),
 		
 		LIST_DESCRIPTION("list.description", 						"Affiche la liste des joueurs connecté"),
 		LIST_TITLE("list.title", 									"&aListe des joueurs connectés : &6" + EReplacesServer.ONLINE_PLAYERS.getName() + " &a/ &6" + EReplacesServer.MAX_PLAYERS.getName() + ""),
@@ -507,7 +508,7 @@ public class EEMessage extends EMessage<EverEssentials> {
 		MAIL_BUTTON_NEW_MESSAGE_HOVER("mail.button.newMessageHover", 	"&7Cliquez ici pour afficher la liste des messages."),
 		
 		ME_DESCRIPTION("me.description", 							"Envoie un texte d'action dans le tchat"),
-		ME_PREFIX("me.prefix", 										"&f* <player> &r"),
+		ME_PLAYER("me.player", 										"&f* " + EReplacesPlayer.NAME + " &r<message>"),
 		
 		MOJANG_DESCRIPTION("mojang.description", 					"Affiche les informations sur les serveurs de mojang"),
 		MOJANG_TITLE("mojang.title", 								"&aLes serveurs de Mojang"),

@@ -32,10 +32,8 @@ import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
-import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ECommand;
 import fr.evercraft.everapi.server.player.EPlayer;
-import fr.evercraft.everapi.text.ETextBuilder;
 
 public class EEGetPos extends ECommand<EverEssentials> {
 	
@@ -56,7 +54,7 @@ public class EEGetPos extends ECommand<EverEssentials> {
 	@Override
 	public Text help(final CommandSource source) {
 		if (source.hasPermission(EEPermissions.GETPOS_OTHERS.get())){
-			return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_PLAYER.get() + "]")
+			return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_PLAYER.getString() + "]")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
 					.build();
@@ -104,11 +102,15 @@ public class EEGetPos extends ECommand<EverEssentials> {
 					resultat = this.commandGetPosOthers(source, optPlayer.get());
 				// Le joueur est introuvable
 				} else {
-					source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
+					EAMessages.PLAYER_NOT_FOUND.sender()
+						.prefix(EEMessages.PREFIX)
+						.sendTo(source);
 				}
 			// Il n'a pas la permission
 			} else {
-				source.sendMessage(EAMessages.NO_PERMISSION.getText());
+				EAMessages.NO_PERMISSION.sender()
+					.prefix(EEMessages.PREFIX)
+					.sendTo(source);
 			}
 			
 		// Nombre d'argument incorrect
@@ -120,37 +122,34 @@ public class EEGetPos extends ECommand<EverEssentials> {
 	}
 	
 	private boolean commandGetPos(final EPlayer player) {
-		player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.getText())
-				.append(EEMessages.GETPOS_MESSAGE.get()
-						.replaceAll("<world>", player.getWorld().getName())
-						.replaceAll("<x>", String.valueOf(player.getLocation().getBlockX()))
-						.replaceAll("<y>", String.valueOf(player.getLocation().getBlockY()))
-						.replaceAll("<z>", String.valueOf(player.getLocation().getBlockZ())))
-				.replace("<position>", this.getButtonPos(player.getLocation()))
-				.build());
+		EEMessages.GETPOS_MESSAGE.sender()
+			.replace("<world>", player.getWorld().getName())
+			.replace("<x>", String.valueOf(player.getLocation().getBlockX()))
+			.replace("<y>", String.valueOf(player.getLocation().getBlockY()))
+			.replace("<z>", String.valueOf(player.getLocation().getBlockZ()))
+			.sendTo(player);
 		return true;
 	}
 	
 	private boolean commandGetPosOthers(final CommandSource staff, final EPlayer player) throws CommandException {
-		staff.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.getText())
-				.append(EEMessages.GETPOS_MESSAGE_OTHERS.get()
-						.replaceAll("<player>", player.getName())
-						.replaceAll("<world>", player.getWorld().getName())
-						.replaceAll("<x>", String.valueOf(player.getLocation().getBlockX()))
-						.replaceAll("<y>", String.valueOf(player.getLocation().getBlockY()))
-						.replaceAll("<z>", String.valueOf(player.getLocation().getBlockZ())))
-				.replace("<position>", this.getButtonPos(player.getLocation()))
-				.build());
+		EEMessages.GETPOS_MESSAGE_OTHERS.sender()
+			.replace("<player>", player.getName())
+			.replace("<world>", player.getWorld().getName())
+			.replace("<x>", String.valueOf(player.getLocation().getBlockX()))
+			.replace("<y>", String.valueOf(player.getLocation().getBlockY()))
+			.replace("<z>", String.valueOf(player.getLocation().getBlockZ()))
+			.replace("<position>", this.getButtonPos(player.getLocation()))
+			.sendTo(staff);
 		return true;
 	}
 	
 	private Text getButtonPos(final Location<World> location){
 		return EEMessages.GETPOS_POTISITON_NAME.getText().toBuilder()
-					.onHover(TextActions.showText(EChat.of(EEMessages.GETPOS_POSITION_HOVER.get()
-							.replaceAll("<world>", location.getExtent().getName())
-							.replaceAll("<x>", String.valueOf(location.getBlockX()))
-							.replaceAll("<y>", String.valueOf(location.getBlockY()))
-							.replaceAll("<z>", String.valueOf(location.getBlockZ())))))
+					.onHover(TextActions.showText(EEMessages.GETPOS_POSITION_HOVER.getFormat().toText(
+							"<world>", location.getExtent().getName(),
+							"<x>", String.valueOf(location.getBlockX()),
+							"<y>", String.valueOf(location.getBlockY()),
+							"<z>", String.valueOf(location.getBlockZ()))))
 					.build();
 	}
 }

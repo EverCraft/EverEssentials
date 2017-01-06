@@ -38,10 +38,9 @@ import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.java.UtilsMap;
-import fr.evercraft.everapi.plugin.EChat;
+import fr.evercraft.everapi.message.replace.EReplace;
 import fr.evercraft.everapi.plugin.command.ECommand;
 import fr.evercraft.everapi.server.player.EPlayer;
-import fr.evercraft.everapi.text.ETextBuilder;
 
 public class EEList extends ECommand<EverEssentials> {
 	
@@ -164,56 +163,53 @@ public class EEList extends ECommand<EverEssentials> {
 			}
 		}
 		
-		String style_player = EEMessages.LIST_PLAYER.get();
-		String style_afk = EEMessages.LIST_TAG_AFK.get();
-		String style_vanish = EEMessages.LIST_TAG_VANISH.get();
-		
-		String style_group = EEMessages.LIST_GROUP.get();
 		Text style_separator = EEMessages.LIST_SEPARATOR.getText();
 		
+		Map<String, EReplace<?>> replaces = new HashMap<String, EReplace<?>>();
 		List<Text> group_texts = new ArrayList<Text>();
 		for (Entry<String, TreeMap<String, EPlayer>> group : groups_format.entrySet()) {
 			List<Text> player_texts = new ArrayList<Text>();
 			for (EPlayer player : group.getValue().values()) {
-				String text = style_player;
 				
 				if (player.isAfk()) {
-					text = text.replaceAll("<afk>", style_afk);
+					replaces.put("<afk>", EReplace.of(EEMessages.LIST_TAG_AFK));
 				} else {
-					text = text.replaceAll("<afk>", "");
+					replaces.put("<afk>", EReplace.of(""));
 				}
 				
 				if (player.isVanish()) {
-					text = text.replaceAll("<vanish>", style_vanish);
+					replaces.put("<vanish>", EReplace.of(EEMessages.LIST_TAG_VANISH));
 				} else {
-					text = text.replaceAll("<vanish>", "");
+					replaces.put("<vanish>", EReplace.of(""));
 				}
 				
-				player_texts.add(this.plugin.getChat().replaceFormat(player, this.plugin.getChat().replacePlayer(player, text)));
+				replaces.putAll(player.getReplacesPlayer());
+				player_texts.add(EEMessages.LIST_PLAYER.getFormat().toText(replaces));
 			}
-			group_texts.add(ETextBuilder.toBuilder(style_group
-								.replaceAll("<group>", group.getKey()))
-							.replace("<players>", Text.joinWith(style_separator, player_texts))
-							.build());
+			group_texts.add(EEMessages.LIST_GROUP.getFormat().toText(
+								"<group>", group.getKey(),
+								"<players>", Text.joinWith(style_separator, player_texts)));
 		}
 		
 		if (group_texts.isEmpty()) {
 			group_texts.add(EEMessages.LIST_EMPTY.getText());
 		}
 		
-		String title;
+		EEMessages title;
 		Integer vanish = players.size() - this.plugin.getEServer().playerNotVanish();
+		
+		replaces.clear();
+		replaces.putAll(this.plugin.getChat().getReplaceServer());
+		
 		if (vanish == 0) {
-			title = EEMessages.LIST_TITLE.get();
+			title = EEMessages.LIST_TITLE;
 		} else {
-			title = EEMessages.LIST_TITLE_VANISH.get();
-			title = title.replaceAll("<vanish>", vanish.toString());
+			title = EEMessages.LIST_TITLE_VANISH;
+			replaces.put("<vanish>", EReplace.of(vanish.toString()));
 		}
 		
-		title = this.plugin.getChat().replaceGlobal(title);
-		
 		this.plugin.getEverAPI().getManagerService().getEPagination().sendTo(
-				EChat.of(title).toBuilder()
+				title.getFormat().toText(replaces).toBuilder()
 					.onClick(TextActions.runCommand("/list"))
 					.build(), 
 				group_texts, staff);

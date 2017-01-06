@@ -97,9 +97,7 @@ public class EEPlayerListeners {
 			if (optPlayer.isPresent()) {
 				EPlayer player = optPlayer.get();
 				
-				for (String line : this.plugin.getMotd().getMotd()) {
-		    		player.sendMessage(player.replaceVariable(line));
-		    	}
+				player.sendMessage(this.plugin.getMotd().getMessage().toText(player.getReplacesAll()));
 			}
 		}
 	}

@@ -32,7 +32,6 @@ import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ECommand;
-import fr.evercraft.everapi.text.ETextBuilder;
 
 public class EEKickall extends ECommand<EverEssentials> {
 	
@@ -52,7 +51,7 @@ public class EEKickall extends ECommand<EverEssentials> {
 
 	@Override
 	public Text help(final CommandSource source) {
-		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_REASON.get() +">")
+		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_REASON.getString() +">")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
 					.build();
@@ -87,10 +86,9 @@ public class EEKickall extends ECommand<EverEssentials> {
 	}
 	
 	private boolean commandKick(final CommandSource staff, final Text message) throws CommandException {
-		Text raison = ETextBuilder.toBuilder(EEMessages.KICKALL_MESSAGE.get()
-							.replaceAll("<staff>", staff.getName()))
-						.replace("<reason>", message)
-						.build();
+		Text raison = EEMessages.KICKALL_MESSAGE.getFormat().toText(
+							"<staff>", staff.getName(),
+							"<reason>", message);
 		
 		this.plugin.getEServer().getOnlineEPlayers().forEach(player -> {
 			if (!player.equals(staff) && !player.hasPermission(EEPermissions.KICK_BYPASS.get())) {

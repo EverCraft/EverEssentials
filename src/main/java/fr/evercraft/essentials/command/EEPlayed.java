@@ -30,7 +30,6 @@ import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
-import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ECommand;
 import fr.evercraft.everapi.server.player.EPlayer;
 import fr.evercraft.everapi.server.user.EUser;
@@ -53,8 +52,8 @@ public class EEPlayed extends ECommand<EverEssentials> {
 
 	@Override
 	public Text help(final CommandSource source) {
-		if (source.hasPermission(EEPermissions.PLAYED_OTHERS.get())){
-			return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_PLAYER.get() + "]")
+		if (source.hasPermission(EEPermissions.PLAYED_OTHERS.get())) {
+			return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_PLAYER.getString() + "]")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
 					.build();
@@ -103,11 +102,15 @@ public class EEPlayed extends ECommand<EverEssentials> {
 					resultat = this.commandPlayedOthers(source, user.get());
 				// Le joueur est introuvable
 				} else {
-					source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
+					EAMessages.PLAYER_NOT_FOUND.sender()
+						.prefix(EEMessages.PREFIX)
+						.sendTo(source);
 				}
 			// Il n'a pas la permission
 			} else {
-				source.sendMessage(EAMessages.NO_PERMISSION.getText());
+				EAMessages.NO_PERMISSION.sender()
+					.prefix(EEMessages.PREFIX)
+					.sendTo(source);
 			}
 			
 		// Nombre d'argument incorrect
@@ -119,8 +122,9 @@ public class EEPlayed extends ECommand<EverEssentials> {
 	}
 	
 	private boolean commandPlayed(final EPlayer player) {
-		player.sendMessage(EEMessages.PREFIX.get() + EEMessages.PLAYED_PLAYER.get()
-				.replaceAll("<time>", this.plugin.getEverAPI().getManagerUtils().getDate().diff(player.getTotalTimePlayed())));
+		EEMessages.PLAYED_PLAYER.sender()
+			.replace("<time>", this.plugin.getEverAPI().getManagerUtils().getDate().diff(player.getTotalTimePlayed()))
+			.sendTo(player);
 		return true;
 	}
 	
@@ -130,9 +134,10 @@ public class EEPlayed extends ECommand<EverEssentials> {
 			return this.commandPlayed((EPlayer) staff);
 		}
 		
-		staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.PLAYED_OTHERS.get()
-				.replaceAll("<player>", user.getName())
-				.replaceAll("<time>", this.plugin.getEverAPI().getManagerUtils().getDate().diff(user.getTotalTimePlayed()))));
+		EEMessages.PLAYED_OTHERS.sender()
+			.replace("<player>", user.getName())
+			.replace("<time>", this.plugin.getEverAPI().getManagerUtils().getDate().diff(user.getTotalTimePlayed()))
+			.sendTo(staff);
 		return true;
 	}
 }

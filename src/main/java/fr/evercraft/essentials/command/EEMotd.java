@@ -88,9 +88,7 @@ public class EEMotd extends ECommand<EverEssentials> {
 	}
 	
 	private boolean commandMotd(final EPlayer player) {
-		for (String line : this.plugin.getMotd().getMotd()) {
-    		player.sendMessage(player.replaceVariable(line));
-    	}
+		player.sendMessage(this.plugin.getMotd().getMessage().toText(player.getReplacesAll()));
 		return true;
 	}
 }

@@ -19,13 +19,14 @@ package fr.evercraft.essentials;
 import java.util.Arrays;
 import java.util.List;
 
+import fr.evercraft.everapi.message.format.EFormatListString;
 import fr.evercraft.everapi.message.replace.EReplacesPlayer;
 import fr.evercraft.everapi.message.replace.EReplacesServer;
 import fr.evercraft.everapi.plugin.file.EConfig;
 
-public class EEMotd extends EConfig<EverEssentials> {
+public class EEConfigMotd extends EConfig<EverEssentials> {
 
-	public EEMotd(EverEssentials plugin, String name) {
+	public EEConfigMotd(EverEssentials plugin, String name) {
 		super(plugin, name);
 	}
 
@@ -46,7 +47,7 @@ public class EEMotd extends EConfig<EverEssentials> {
 		return this.get("enable").getBoolean(false);
 	}
 	
-	public List<String> getMotd() {
-		return this.getListString("motd");
+	public EFormatListString getMessage() {
+		return EFormatListString.of(this.getListString("motd"));
 	}
 }

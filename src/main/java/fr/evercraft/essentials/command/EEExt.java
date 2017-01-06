@@ -30,7 +30,6 @@ import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
-import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ECommand;
 import fr.evercraft.everapi.server.player.EPlayer;
 
@@ -53,7 +52,7 @@ public class EEExt extends ECommand<EverEssentials> {
 	@Override
 	public Text help(final CommandSource source) {
 		if (source.hasPermission(EEPermissions.EXT_OTHERS.get())){
-			return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_PLAYER.get() + "|*]")
+			return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_PLAYER.getString() + "|*]")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
 					.build();
@@ -141,18 +140,21 @@ public class EEExt extends ECommand<EverEssentials> {
 		
 		// Le joueur n'est pas en feu
 		if (player.getFireTicks() <= 0) {
-			staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.EXT_OTHERS_ERROR.get()
-					.replaceAll("<player>", player.getName())));
+			EEMessages.EXT_OTHERS_ERROR.sender()
+				.replace("<player>", player.getName())
+				.sendTo(staff);
 			return false;
 		}
 		
 		
 		player.setFireTicks(0);
 		
-		player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.EXT_OTHERS_PLAYER.get()
-				.replaceAll("<staff>", player.getName())));
-		staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.EXT_OTHERS_STAFF.get()
-				.replaceAll("<player>", player.getName())));
+		EEMessages.EXT_OTHERS_STAFF.sender()
+			.replace("<player>", player.getName())
+			.sendTo(staff);
+		EEMessages.EXT_OTHERS_PLAYER.sender()
+			.replace("<staff>", player.getName())
+			.sendTo(player);
 		return true;
 	}
 	
@@ -163,13 +165,13 @@ public class EEExt extends ECommand<EverEssentials> {
 				player.setFireTicks(0);
 				// La source et le joueur sont différent
 				if (!staff.equals(player)) {
-					player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.EXT_OTHERS_PLAYER.get()
-							.replaceAll("<staff>", staff.getName())));
+					EEMessages.EXT_OTHERS_PLAYER.sender()
+						.replace("<staff>", staff.getName())
+						.sendTo(player);
 				}
 			}
 		});
-
-		staff.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.EXT_ALL_STAFF.getText()));
+		EEMessages.EXT_ALL_STAFF.sendTo(staff);
 		return true;
 	}
 }

@@ -30,7 +30,6 @@ import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
-import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ECommand;
 import fr.evercraft.everapi.server.player.EPlayer;
 
@@ -53,7 +52,7 @@ public class EEHeal extends ECommand<EverEssentials> {
 	@Override
 	public Text help(final CommandSource source) {
 		if (source.hasPermission(EEPermissions.HEAL_OTHERS.get())){
-			return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_PLAYER.get() + "|*]")
+			return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_PLAYER.getString() + "|*]")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
 					.build();
@@ -107,12 +106,16 @@ public class EEHeal extends ECommand<EverEssentials> {
 						resultat = this.commandHealOthers(source, player.get());
 					// Le joueur est introuvable
 					} else {
-						source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
+						EAMessages.PLAYER_NOT_FOUND.sender()
+							.prefix(EEMessages.PREFIX)
+							.sendTo(source);
 					}
 				}
 			// Il n'a pas la permission
 			} else {
-				source.sendMessage(EAMessages.NO_PERMISSION.getText());
+				EAMessages.NO_PERMISSION.sender()
+					.prefix(EEMessages.PREFIX)
+					.sendTo(source);
 			}
 			
 		// Nombre d'argument incorrect
@@ -125,7 +128,7 @@ public class EEHeal extends ECommand<EverEssentials> {
 	
 	private boolean commandHeal(final EPlayer player) {
 		player.heal();
-		player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.HEAL_PLAYER.getText()));
+		EEMessages.HEAL_PLAYER.sendTo(player);
 		return true;
 	}
 	
@@ -137,16 +140,18 @@ public class EEHeal extends ECommand<EverEssentials> {
 			
 		// Le joueur est mort
 		if (player.isDead()) {
-			player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.HEAL_OTHERS_DEAD_STAFF.getText()));
+			EEMessages.HEAL_OTHERS_DEAD_STAFF.sendTo(staff);
 			return false;
 		}
 		
 		player.heal();
 		
-		player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.HEAL_OTHERS_PLAYER.get()
-				.replaceAll("<staff>", staff.getName())));
-		staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.HEAL_OTHERS_STAFF.get()
-				.replaceAll("<player>", player.getName())));
+		EEMessages.HEAL_OTHERS_STAFF.sender()
+			.replace("<player>", player.getName())
+			.sendTo(staff);
+		EEMessages.HEAL_OTHERS_PLAYER.sender()
+			.replace("<staff>", staff.getName())
+			.sendTo(player);
 		return true;
 	}
 	
@@ -159,13 +164,14 @@ public class EEHeal extends ECommand<EverEssentials> {
 				
 				// La source et le joueur sont différent
 				if (!staff.equals(player)) {
-					player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.HEAL_OTHERS_PLAYER.get()
-							.replaceAll("<staff>", staff.getName())));
+					EEMessages.HEAL_OTHERS_PLAYER.sender()
+						.replace("<staff>", staff.getName())
+						.sendTo(player);
 				}
 			}
 		});
 		
-		staff.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.HEAL_ALL_STAFF.getText()));
+		EEMessages.HEAL_ALL_STAFF.sendTo(staff);
 		return true;
 	}
 }

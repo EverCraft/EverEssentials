@@ -34,7 +34,6 @@ import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ECommand;
 import fr.evercraft.everapi.server.player.EPlayer;
-import fr.evercraft.everapi.text.ETextBuilder;
 
 public class EEMore extends ECommand<EverEssentials> {
 	
@@ -78,7 +77,9 @@ public class EEMore extends ECommand<EverEssentials> {
 				resultat = this.commandMore((EPlayer) source);
 			// La source n'est pas un joueur
 			} else {
-				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR.getText()));
+				EAMessages.COMMAND_ERROR.sender()
+					.prefix(EEMessages.PREFIX)
+					.sendTo(source);
 			}
 			
 		// Nombre d'argument incorrect
@@ -92,8 +93,10 @@ public class EEMore extends ECommand<EverEssentials> {
 		Optional<ItemStack> item = player.getItemInMainHand();
 		
 		// Le joueur a aucun item dans la main
-		if (!item.isPresent()) {	
-			player.sendMessage(EEMessages.PREFIX.get() + EAMessages.EMPTY_ITEM_IN_HAND.get());
+		if (!item.isPresent()) {
+			EAMessages.EMPTY_ITEM_IN_HAND.sender()
+				.prefix(EEMessages.PREFIX)
+				.sendTo(player);
 			return false;
 		}
 			
@@ -107,22 +110,20 @@ public class EEMore extends ECommand<EverEssentials> {
 		
 		// La quantité est invalide
 		if (item.get().getQuantity() > max) {
-			player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
-					.append(EEMessages.MORE_MAX_QUANTITY.get()
-							.replaceAll("<quantity>", max.toString()))
-					.replace("<item>", EChat.getButtomItem(item.get(), EChat.getTextColor(EEMessages.MORE_ITEM_COLOR.get())))
-					.build());
+			EEMessages.MORE_MAX_QUANTITY.sender()
+				.replace("<quantity>", max.toString())
+				.replace("<item>", EChat.getButtomItem(item.get(), EEMessages.MORE_ITEM_COLOR.getColor()))
+				.sendTo(player);
 			return false;
 		}
 		
 		item.get().setQuantity(max);
 		player.setItemInMainHand(item.get());
 		
-		player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
-				.append(EEMessages.MORE_PLAYER.get()
-						.replaceAll("<quantity>", max.toString()))
-				.replace("<item>", EChat.getButtomItem(item.get(), EChat.getTextColor(EEMessages.MORE_ITEM_COLOR.get())))
-				.build());
+		EEMessages.MORE_PLAYER.sender()
+			.replace("<quantity>", max.toString())
+			.replace("<item>", EChat.getButtomItem(item.get(), EEMessages.MORE_ITEM_COLOR.getColor()))
+			.sendTo(player);
 		return true;
 	}
 }

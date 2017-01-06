@@ -30,7 +30,6 @@ import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
-import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ECommand;
 import fr.evercraft.everapi.server.player.EPlayer;
 
@@ -53,7 +52,7 @@ public class EEPing extends ECommand<EverEssentials> {
 	@Override
 	public Text help(final CommandSource source) {
 		if (source.hasPermission(EEPermissions.PING_OTHERS.get())){
-			return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_PLAYER.get() + "]")
+			return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_PLAYER.getString() + "]")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
 					.build();
@@ -102,24 +101,29 @@ public class EEPing extends ECommand<EverEssentials> {
 					resultat = this.commandPingOthers(source, optPlayer.get());
 				// Le joueur est introuvable
 				} else {
-					source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
+					EAMessages.PLAYER_NOT_FOUND.sender()
+						.prefix(EEMessages.PREFIX)
+						.sendTo(source);
 				}
 			// Il n'a pas la permission
 			} else {
-				source.sendMessage(EAMessages.NO_PERMISSION.getText());
+				EAMessages.NO_PERMISSION.sender()
+					.prefix(EEMessages.PREFIX)
+					.sendTo(source);
 			}
 			
 		// Nombre d'argument incorrect
 		} else {
-			source.sendMessage(help(source));
+			source.sendMessage(this.help(source));
 		}
 		
 		return resultat;
 	}
 	
 	private boolean commandPing(final EPlayer player) {
-		player.sendMessage(EEMessages.PREFIX.get() + EEMessages.PING_PLAYER.get()
-				.replaceAll("<ping>", String.valueOf(player.getConnection().getLatency())));
+		EEMessages.PING_PLAYER.sender()
+			.replace("<ping>", String.valueOf(player.getConnection().getLatency()))
+			.sendTo(player);
 		return true;
 	}
 	
@@ -129,9 +133,10 @@ public class EEPing extends ECommand<EverEssentials> {
 			return this.commandPing(player);
 		}
 		
-		staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.PING_OTHERS.get()
-				.replaceAll("<player>", player.getName())
-				.replaceAll("<ping>", String.valueOf(player.getConnection().getLatency()))));
+		EEMessages.PING_OTHERS.sender()
+			.replace("<player>", player.getName())
+			.replace("<ping>", String.valueOf(player.getConnection().getLatency()))
+			.sendTo(staff);
 		return true;
 	}
 }

@@ -31,7 +31,6 @@ import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
-import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ECommand;
 import fr.evercraft.everapi.services.MojangService;
 import fr.evercraft.everapi.services.mojang.check.MojangServer;
@@ -91,14 +90,18 @@ public class EEMojang extends ECommand<EverEssentials> {
 		
 		// Le service n'est pas présent
 		if (!service.isPresent()) {
-			player.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR.getText()));
+			EAMessages.COMMAND_ERROR.sender()
+				.prefix(EEMessages.PREFIX)
+				.sendTo(player);
 			return false;
 		}
 		
 		try {
 			service.get().getCheck().update();
 		} catch (IOException e) {
-			player.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR.getText()));
+			EAMessages.COMMAND_ERROR.sender()
+				.prefix(EEMessages.PREFIX)
+				.sendTo(player);
 			return false;
 		}
 
@@ -126,9 +129,9 @@ public class EEMojang extends ECommand<EverEssentials> {
 		Optional<EEMessages> server_name = EEMojang.getMojangServer(server);
 		Optional<EEMessages> color_name = EEMojang.getMojangColor(server.getColor());
 		if (server_name.isPresent() && color_name.isPresent()) {
-			return EChat.of(EEMessages.MOJANG_LINE.get()
-					.replaceAll("<server>", server_name.get().get())
-					.replaceAll("<color>", color_name.get().get()));
+			return EEMessages.MOJANG_LINE.getFormat().toText(
+					"<server>", server_name.get().getText(),
+					"<color>", color_name.get().getText());
 		}
 		return Text.of();
 	}

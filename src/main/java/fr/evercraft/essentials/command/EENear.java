@@ -35,7 +35,6 @@ import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.java.UtilsMap;
-import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.EReloadCommand;
 import fr.evercraft.everapi.server.player.EPlayer;
 
@@ -126,15 +125,15 @@ public class EENear extends EReloadCommand<EverEssentials> {
 		
 		// Aucun joueur
 		if (list.isEmpty()) {
-			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.NEAR_NOPLAYER.get());
+			EEMessages.NEAR_NOPLAYER.sendTo(player);
 			return false;
 		}
 		
 		List<Text> lists = new ArrayList<Text>();
 		for (Entry<EPlayer, Integer> position : UtilsMap.valueASC(list)){
-			lists.add(EChat.of(EEMessages.NEAR_LIST_LINE.get()
-					.replaceAll("<player>", position.getKey().getName())
-					.replaceAll("<distance>", position.getValue().toString())));
+			lists.add(EEMessages.NEAR_LIST_LINE.getFormat().toText(
+					"<player>", position.getKey().getName(),
+					"<distance>", position.getValue().toString()));
 		}
 		this.plugin.getEverAPI().getManagerService().getEPagination().sendTo(EEMessages.NEAR_LIST_TITLE.getText().toBuilder()
 				.onClick(TextActions.runCommand("/near")).build(), lists, player);

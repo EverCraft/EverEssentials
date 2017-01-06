@@ -35,7 +35,6 @@ import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ECommand;
 import fr.evercraft.everapi.server.player.EPlayer;
 import fr.evercraft.everapi.sponge.UtilsItemType;
-import fr.evercraft.everapi.text.ETextBuilder;
 
 public class EEHat extends ECommand<EverEssentials> {
     
@@ -112,7 +111,7 @@ public class EEHat extends ECommand<EverEssentials> {
 		
 		// Le jouer n'a pas d'objet dans la main
 		if (!item.isPresent()) {
-			player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.EMPTY_ITEM_IN_HAND.get()));
+			EAMessages.EMPTY_ITEM_IN_HAND.sendTo(player);
 			return false;
 		}
 		
@@ -120,10 +119,9 @@ public class EEHat extends ECommand<EverEssentials> {
 			
 		// Le joueur a un casque sur la tête
 		if (helmet.isPresent() && UtilsItemType.isHelmet(helmet.get().getItem().getType())) {
-			player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
-					.append(EEMessages.HAT_NO_EMPTY.get())
-					.replace("<item>", EChat.getButtomItem(player.getHelmet().get(), EChat.getTextColor(EEMessages.HAT_ITEM_COLOR.get())))
-					.build());
+			EEMessages.HAT_NO_EMPTY.sender()
+				.replace("<item>", EChat.getButtomItem(player.getHelmet().get(), EEMessages.HAT_ITEM_COLOR.getColor()))
+				.sendTo(player);
 			return false;
 		}
 			
@@ -143,10 +141,9 @@ public class EEHat extends ECommand<EverEssentials> {
         stack.setQuantity(1);
         player.setHelmet(stack);
         
-        player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
-				.append(EEMessages.HAT_IS_HAT.get())
-				.replace("<item>", EChat.getButtomItem(item.get(), EChat.getTextColor(EEMessages.HAT_ITEM_COLOR.get())))
-				.build());
+        EEMessages.HAT_IS_HAT.sender()
+			.replace("<item>", EChat.getButtomItem(item.get(), EEMessages.HAT_ITEM_COLOR.getColor()))
+			.sendTo(player);
         return true;
 	}
 	
@@ -155,17 +152,16 @@ public class EEHat extends ECommand<EverEssentials> {
 		
 		// Le joueur n'a pas d'objet sur la tête
 		if (!helmet.isPresent() || UtilsItemType.isHelmet(helmet.get().getItem().getType())) {
-			player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.HAT_REMOVE_EMPTY.get()));
+			EEMessages.HAT_REMOVE_EMPTY.sendTo(player);
 			return false;
 		}
 		
 		player.setHelmet(null);
 		player.giveItemAndDrop(helmet.get());
 		
-		player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
-				.append(EEMessages.HAT_REMOVE.get())
-				.replace("<item>", EChat.getButtomItem(helmet.get(), EChat.getTextColor(EEMessages.HAT_ITEM_COLOR.get())))
-				.build());
+		EEMessages.HAT_REMOVE.sender()
+			.replace("<item>", EChat.getButtomItem(helmet.get(), EEMessages.HAT_ITEM_COLOR.getColor()))
+			.sendTo(player);
 		return false;
 	}
 }

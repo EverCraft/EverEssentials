@@ -33,7 +33,6 @@ import com.google.common.collect.Collections2;
 import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
-import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ECommand;
 
 public class EEHelp extends ECommand<EverEssentials> {
@@ -54,7 +53,7 @@ public class EEHelp extends ECommand<EverEssentials> {
 
 	@Override
 	public Text help(final CommandSource source) {
-		return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_COMMAND.get() + "]")
+		return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_COMMAND.getString() + "]")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
 					.build();
@@ -119,7 +118,7 @@ public class EEHelp extends ECommand<EverEssentials> {
 				source.sendMessage(EAMessages.NO_PERMISSION.getText());
 			}
 		} else {
-			Text title = EChat.of(EEMessages.HELP_SEARCH_TITLE.get().replaceAll("<command>", alias)).toBuilder()
+			Text title = EEMessages.HELP_SEARCH_TITLE.getFormat().toText("<command>", alias).toBuilder()
 					.onClick(TextActions.runCommand("/help " + alias))
 					.color(TextColors.RED)
 					.build();

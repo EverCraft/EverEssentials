@@ -32,7 +32,6 @@ import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.command.ECommand;
 import fr.evercraft.everapi.server.player.EPlayer;
-import fr.evercraft.everapi.text.ETextBuilder;
 
 public class EEFormat extends ECommand<EverEssentials> {
 	
@@ -94,22 +93,21 @@ public class EEFormat extends ECommand<EverEssentials> {
 		
 		List<Text> page = new ArrayList<Text>();
 		page.add(EEMessages.FORMAT_LIST_TITLE.getText());
-		page.add(this.getButtomColor("k", EEMessages.FORMAT_OBFUSCATED.get()));
-		page.add(this.getButtomColor("l", EEMessages.FORMAT_BOLD.get()));
-		page.add(this.getButtomColor("m", EEMessages.FORMAT_STRIKETHROUGH.get()));
-		page.add(this.getButtomColor("n", EEMessages.FORMAT_UNDERLINE.get()));
-		page.add(this.getButtomColor("o", EEMessages.FORMAT_ITALIC.get()));
-		page.add(this.getButtomColor("r", EEMessages.FORMAT_RESET.get()));
+		page.add(this.getButtomColor("k", EEMessages.FORMAT_OBFUSCATED.getText()));
+		page.add(this.getButtomColor("l", EEMessages.FORMAT_BOLD.getText()));
+		page.add(this.getButtomColor("m", EEMessages.FORMAT_STRIKETHROUGH.getText()));
+		page.add(this.getButtomColor("n", EEMessages.FORMAT_UNDERLINE.getText()));
+		page.add(this.getButtomColor("o", EEMessages.FORMAT_ITALIC.getText()));
+		page.add(this.getButtomColor("r", EEMessages.FORMAT_RESET.getText()));
 		book.addPage(Text.joinWith(Text.of("\n"), page));
 		player.sendBookView(book.build());
 		return true;
 	}
 	
-	private Text getButtomColor(String id, String text) {
-		return ETextBuilder.toBuilder(EEMessages.FORMAT_LIST_MESSAGE.get()
-				.replaceAll("<format>", "&" + id)
-				.replaceAll("<name>", text))
-			.replace("<id>", Text.of("&" + id))
-		.build();
+	private Text getButtomColor(String id, Text text) {
+		return EEMessages.FORMAT_LIST_MESSAGE.getFormat().toText(
+					"<format>", "&" + id,
+					"<name>", text,
+					"<id>", Text.of("&" + id));
 	}
 }

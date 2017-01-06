@@ -94,16 +94,16 @@ public class EEJump extends ECommand<EverEssentials> {
 		Optional<Vector3i> block = player.getViewBlock();
 		
 		if (!block.isPresent()) {
-			player.sendMessage(EEMessages.PREFIX.get() + EAMessages.PLAYER_NO_LOOK_BLOCK.get());
+			EAMessages.PLAYER_NO_LOOK_BLOCK.sendTo(player);
 			return false;
 		}	
 		
 		if (!player.teleportSafe(player.getWorld().getLocation(block.get().add(0, 1, 0)), false)) {
-			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.JUMP_TELEPORT_ERROR.get());
+			EEMessages.JUMP_TELEPORT_ERROR.sendTo(player);
 			return false;
 		}
 		
-		player.sendMessage(EEMessages.PREFIX.get() + EEMessages.JUMP_TELEPORT.get());
+		EEMessages.JUMP_TELEPORT.sendTo(player);
 		return true;
 	}
 }

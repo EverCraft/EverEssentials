@@ -17,7 +17,9 @@
 package fr.evercraft.essentials.command;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.spongepowered.api.command.CommandException;
@@ -36,7 +38,7 @@ import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
-import fr.evercraft.everapi.plugin.EChat;
+import fr.evercraft.everapi.message.replace.EReplace;
 import fr.evercraft.everapi.plugin.command.ECommand;
 import fr.evercraft.everapi.server.player.EPlayer;
 
@@ -58,7 +60,7 @@ public class EEKill  extends ECommand<EverEssentials> {
 
 	@Override
 	public Text help(final CommandSource source) {
-		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_PLAYER.get() + ">")
+		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_PLAYER.getString() + ">")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
 					.build();
@@ -84,7 +86,9 @@ public class EEKill  extends ECommand<EverEssentials> {
 			if (optPlayer.isPresent()){
 				resultat = this.commandKill(source, optPlayer.get());
 			} else {
-				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
+				EAMessages.PLAYER_NOT_FOUND.sender()
+					.prefix(EEMessages.PREFIX)
+					.sendTo(source);
 			}
 			
 		} else {
@@ -98,11 +102,13 @@ public class EEKill  extends ECommand<EverEssentials> {
 		// Event cancel
         if(!player.setHealth(0)) {
         	if (!player.equals(staff)) {
-    			staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.KILL_PLAYER_CANCEL.get()
-    					.replaceAll("<player>", player.getName())));
+    			EEMessages.KILL_PLAYER_CANCEL.sender()
+    				.replace("<player>", player.getName())
+    				.sendTo(staff);
     		} else {
-    			player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.KILL_EQUALS_CANCEL.get()
-    					.replaceAll("<player>", player.getName())));
+    			EEMessages.KILL_EQUALS_CANCEL.sender()
+					.replace("<player>", player.getName())
+					.sendTo(staff);
     		}
         	return false;
         }
@@ -117,14 +123,17 @@ public class EEKill  extends ECommand<EverEssentials> {
         originalChannel = player.getMessageChannel();
         channel = player.getMessageChannel();
 
+        Map<String, EReplace<?>> replaces = new HashMap<String, EReplace<?>>();
+        replaces.putAll(player.getReplacesAll());
+        replaces.put("<staff>", EReplace.of(staff.getName()));
+        replaces.put("<player>", EReplace.of(player.getName()));
+        
         if (!player.equals(staff)) {
-        	messageCancelled = !EEMessages.KILL_PLAYER_DEATH_MESSAGE.has();
-	        originalMessage = player.replaceVariable(EEMessages.KILL_PLAYER_DEATH_MESSAGE.get()
-	        		.replaceAll("<staff>", staff.getName()));
+        	messageCancelled = !EEMessages.KILL_PLAYER_DEATH_MESSAGE.getMessage().getChat().isPresent();
+	        originalMessage = EEMessages.KILL_PLAYER_DEATH_MESSAGE.getFormat().toText(replaces);
         } else {
-        	messageCancelled = !EEMessages.KILL_EQUALS_DEATH_MESSAGE.has();
-        	originalMessage = player.replaceVariable(EEMessages.KILL_EQUALS_DEATH_MESSAGE.get()
- 	        		.replaceAll("<staff>", staff.getName()));
+        	messageCancelled = !EEMessages.KILL_EQUALS_DEATH_MESSAGE.getMessage().getChat().isPresent();
+        	originalMessage = EEMessages.KILL_EQUALS_DEATH_MESSAGE.getFormat().toText(replaces);
         }
         formatter.getBody().add(new MessageEvent.DefaultBodyApplier(originalMessage));
         
@@ -140,13 +149,17 @@ public class EEKill  extends ECommand<EverEssentials> {
     		event.getChannel().ifPresent(eventChannel -> eventChannel.send(player, event.getMessage()));
     	} else {
     		if (!player.equals(staff)) {
-    			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.KILL_PLAYER.get()
-    					.replaceAll("<staff>", staff.getName()));
-    			staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.KILL_STAFF.get()
-    					.replaceAll("<player>", player.getName())));
+    			EEMessages.KILL_PLAYER.sender()
+    				.replace("<staff>", staff.getName())
+    				.sendTo(player);
+    			EEMessages.KILL_STAFF.sender()
+    				.replace("<player>", player.getName())
+    				.sendTo(staff);
     		} else {
-    			player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.KILL_EQUALS.get()
-    					.replaceAll("<player>", player.getName())));
+    			EEMessages.KILL_EQUALS.sender()
+    				.replace("<player>", player.getName())
+    				.replace("<staff>", staff.getName())
+    				.sendTo(player);
     		}
     	}
 		return true;

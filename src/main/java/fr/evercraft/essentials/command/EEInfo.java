@@ -34,7 +34,6 @@ import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ECommand;
 import fr.evercraft.everapi.server.player.EPlayer;
-import fr.evercraft.everapi.text.ETextBuilder;
 
 public class EEInfo extends ECommand<EverEssentials> {
 	
@@ -96,15 +95,16 @@ public class EEInfo extends ECommand<EverEssentials> {
 		
 		// Le joueur a aucun item dans la main
 		if (!item.isPresent()) {
-			player.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.EMPTY_ITEM_IN_HAND.getText()));
+			EAMessages.EMPTY_ITEM_IN_HAND.sender()
+				.prefix(EEMessages.PREFIX)
+				.sendTo(player);
 			return false;
 		}
 		
-		player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
-				.append(EEMessages.INFO_PLAYER.get()
-						.replaceAll("<type>", item.get().getItem().getName().replaceAll("minecraft:", "").toUpperCase()))
-				.replace("<item>", EChat.getButtomItem(item.get(), EChat.getTextColor(EEMessages.INFO_ITEM_COLOR.get())))
-				.build());
+		EEMessages.INFO_PLAYER.sender()
+			.replace("<type>", item.get().getItem().getName().replaceAll("minecraft:", "").toUpperCase())
+			.replace("<item>", EChat.getButtomItem(item.get(), EEMessages.INFO_ITEM_COLOR.getColor()))
+			.sendTo(player);
 		return true;
 	}
 }

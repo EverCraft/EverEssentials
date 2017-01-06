@@ -52,7 +52,7 @@ public class EverEssentials extends EPlugin<EverEssentials> {
 	
 	private EScheduler scheduler;
 	
-	private EEMotd motd;
+	private EEConfigMotd motd;
 	private EEConfigRules rules;
 
 	@Override
@@ -64,7 +64,7 @@ public class EverEssentials extends EPlugin<EverEssentials> {
 		this.managerServices = new EEManagerServices(this);
 		
 		this.messages = new EEMessage(this, "messages");
-		this.motd = new EEMotd(this, "motd");
+		this.motd = new EEConfigMotd(this, "motd");
 		this.rules = new EEConfigRules(this, "rules");
 	}
 	
@@ -108,7 +108,7 @@ public class EverEssentials extends EPlugin<EverEssentials> {
 		return this.messages;
 	}
 	
-	public EEMotd getMotd(){
+	public EEConfigMotd getMotd(){
 		return this.motd;
 	}
 

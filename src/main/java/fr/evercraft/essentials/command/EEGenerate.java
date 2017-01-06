@@ -31,10 +31,8 @@ import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
-import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.EReloadCommand;
 import fr.evercraft.everapi.server.player.EPlayer;
-import fr.evercraft.everapi.text.ETextBuilder;
 
 public class EEGenerate extends EReloadCommand<EverEssentials> {
 	
@@ -66,7 +64,7 @@ public class EEGenerate extends EReloadCommand<EverEssentials> {
 
 	@Override
 	public Text help(final CommandSource source) {
-		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_WORLD.get() + ">")
+		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_WORLD.getString() + ">")
 				.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 				.color(TextColors.RED)
 				.build();
@@ -109,8 +107,10 @@ public class EEGenerate extends EReloadCommand<EverEssentials> {
 			if (world.isPresent()) {
 				resultat = this.commandGenerate(source, world.get());
 			} else {
-				source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.WORLD_NOT_FOUND.get()
-					.replaceAll("<world>", args.get(0))));
+				EAMessages.WORLD_NOT_FOUND.sender()
+					.prefix(EEMessages.PREFIX)
+					.replace("<world>", args.get(0))
+					.sendTo(source);
 			}
 			
 		} else if (args.size() == 2 && args.get(1).equalsIgnoreCase("confirmation")) {
@@ -119,8 +119,10 @@ public class EEGenerate extends EReloadCommand<EverEssentials> {
 			if (world.isPresent()) {
 				resultat = this.commandGenerateConfirmation(source, world.get());
 			} else {
-				source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.WORLD_NOT_FOUND.get()
-					.replaceAll("<world>", args.get(0))));
+				EAMessages.WORLD_NOT_FOUND.sender()
+					.prefix(EEMessages.PREFIX)
+					.replace("<world>", args.get(0))
+					.sendTo(source);
 			}
 			
 		} else {
@@ -130,19 +132,18 @@ public class EEGenerate extends EReloadCommand<EverEssentials> {
 		return resultat;
 	}
 	
-	private boolean commandGenerate(final CommandSource source, final World world) {
+	private boolean commandGenerate(final CommandSource player, final World world) {
 		int chunk = (int) Math.round(Math.pow((world.getWorldBorder().getDiameter() / 16), 2)); 
 		
-		source.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.getText())
-			.append(EEMessages.GENERATE_WARNING.get()
-				.replaceAll("<world>", world.getName())
-				.replaceAll("<chunk>", String.valueOf(chunk)))
-				.replace("<confirmation>", this.getButtonConfirmation(world))
-			.build());
+		EEMessages.GENERATE_WARNING.sender()
+			.replace("<world>", world.getName())
+			.replace("<chunk>", String.valueOf(chunk))
+			.replace("<confirmation>", this.getButtonConfirmation(world))
+			.sendTo(player);
 		return true;
 	}
 
-	private boolean commandGenerateConfirmation(final CommandSource source, World world) {
+	private boolean commandGenerateConfirmation(final CommandSource player, World world) {
 		world.getWorldBorder()
 			.newChunkPreGenerate(world)
 			.logger(this.plugin.getLogger().getLogger())
@@ -152,15 +153,16 @@ public class EEGenerate extends EReloadCommand<EverEssentials> {
 			.chunksPerTick(this.chunksPerTick)
 			.start();
 		
-		source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.GENERATE_LAUNCH.get()
-				.replaceAll("<world>", world.getName())));
+		EEMessages.GENERATE_LAUNCH.sender()
+			.replace("<world>", world.getName())
+			.sendTo(player);
 		return true;
 	}
 	
 	private Text getButtonConfirmation(final World world){
 		return EEMessages.GENERATE_WARNING_VALID.getText().toBuilder()
-					.onHover(TextActions.showText(EChat.of(EEMessages.GENERATE_WARNING_VALID_HOVER.get()
-							.replaceAll("<world>", world.getName()))))
+					.onHover(TextActions.showText(EEMessages.GENERATE_WARNING_VALID_HOVER.getFormat()
+							.toText("<world>", world.getName())))
 					.onClick(TextActions.runCommand("/generate \"" + world.getUniqueId() + "\" confirmation"))
 					.build();
 	}

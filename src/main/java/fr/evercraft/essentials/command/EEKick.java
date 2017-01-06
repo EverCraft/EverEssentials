@@ -34,7 +34,6 @@ import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ECommand;
 import fr.evercraft.everapi.server.player.EPlayer;
-import fr.evercraft.everapi.text.ETextBuilder;
 
 public class EEKick extends ECommand<EverEssentials> {
 	
@@ -54,7 +53,7 @@ public class EEKick extends ECommand<EverEssentials> {
 
 	@Override
 	public Text help(final CommandSource source) {
-		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_PLAYER.get() + "> [" + EAMessages.ARGS_REASON.get() + "]")
+		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_PLAYER.getString() + "> [" + EAMessages.ARGS_REASON.getString() + "]")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
 					.build();
@@ -98,7 +97,9 @@ public class EEKick extends ECommand<EverEssentials> {
 				resultat = this.commandKick(source, optPlayer.get(), EEMessages.KICK_DEFAULT_REASON.getText());
 			// Le joueur est introuvable
 			} else {
-				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
+				EAMessages.PLAYER_NOT_FOUND.sender()
+					.prefix(EEMessages.PREFIX)
+					.sendTo(source);
 			}
 			
 		} else if (args.size() == 2) {
@@ -123,15 +124,15 @@ public class EEKick extends ECommand<EverEssentials> {
 	private boolean commandKick(final CommandSource staff, final EPlayer player, final Text message) throws CommandException {
 		// Le joueur a la permission bypass
 		if(player.hasPermission(EEPermissions.KICK_BYPASS.get())) {
-			staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.KICK_BYPASS.get()
-					.replaceAll("<player>", player.getName())));
+			EEMessages.KICK_BYPASS.sender()
+				.replace("<player>", player.getName())
+				.sendTo(staff);
 			return false;
 		}
 		
-		player.kick(ETextBuilder.toBuilder(EEMessages.KICK_MESSAGE.get()
-								.replaceAll("<staff>", staff.getName()))
-							.replace("<reason>", message)
-							.build());
+		player.kick(EEMessages.KICK_MESSAGE.getFormat().toText(
+			"<staff>", staff.getName(),
+			"<reason>", message));
 		return true;
 	}
 }

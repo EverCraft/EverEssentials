@@ -119,11 +119,15 @@ public class EEGameMode extends ECommand<EverEssentials> {
 					resultat = this.commandGameModeOthers(source, user.get(), args.get(0));
 				// Le joueur est introuvable
 				} else {
-					source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
+					EAMessages.PLAYER_NOT_FOUND.sender()
+						.prefix(EEMessages.PREFIX)
+						.sendTo(source);
 				}
 			// Il n'a pas la permission
 			} else {
-				source.sendMessage(EAMessages.NO_PERMISSION.getText());
+				EAMessages.NO_PERMISSION.sender()
+					.prefix(EEMessages.PREFIX)
+					.sendTo(source);
 			}
 			
 		// Nombre d'argument incorrect
@@ -139,7 +143,7 @@ public class EEGameMode extends ECommand<EverEssentials> {
 		
 		// Nom du gamemode inconnue
 		if (!optGamemode.isPresent()) {
-			player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.GAMEMODE_ERROR_NAME.getText()));
+			EEMessages.GAMEMODE_ERROR_NAME.sendTo(player);
 			return false;
 		}
 		
@@ -170,7 +174,7 @@ public class EEGameMode extends ECommand<EverEssentials> {
 		
 		// Nom du gamemode inconnue
 		if (!optGamemode.isPresent()) {
-			staff.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.GAMEMODE_ERROR_NAME.getText()));
+			EEMessages.GAMEMODE_ERROR_NAME.sendTo(staff);
 			return false;
 		}
 
