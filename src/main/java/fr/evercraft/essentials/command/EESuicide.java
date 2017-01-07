@@ -36,7 +36,6 @@ import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
-import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ECommand;
 import fr.evercraft.everapi.server.player.EPlayer;
 
@@ -82,7 +81,9 @@ public class EESuicide extends ECommand<EverEssentials> {
 				resultat = this.commandSuicide((EPlayer) source);
 			// La source n'est pas un joueur
 			} else {
-				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
+				EAMessages.PLAYER_NOT_FOUND.sender()
+					.prefix(EEMessages.PREFIX)
+					.sendTo(source);
 			}
 			
 		} else {
@@ -95,24 +96,23 @@ public class EESuicide extends ECommand<EverEssentials> {
 	private boolean commandSuicide(final EPlayer player) {
 		// Event cancel
 		if(!player.setHealth(0)) {
-			player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.SUICIDE_CANCEL.get()
-					.replaceAll("<player>", player.getName())));
+			EEMessages.SUICIDE_CANCEL.sender()
+				.replace("<player>", player.getName())
+				.sendTo(player);
 			return false;
 		}
 		
 		final MessageEvent.MessageFormatter formatter = new MessageEvent.MessageFormatter();
         MessageChannel originalChannel;
         MessageChannel channel;
-        Text originalMessage;
         boolean messageCancelled = false;
 
         originalChannel = player.getMessageChannel();
         channel = player.getMessageChannel();
 
-        messageCancelled = !EEMessages.SUICIDE_DEATH_MESSAGE.has();
-        originalMessage = player.replaceVariable(EEMessages.SUICIDE_DEATH_MESSAGE.get());
+        messageCancelled = !EEMessages.SUICIDE_DEATH_MESSAGE.getMessage().getChat().isPresent();
         
-        formatter.getBody().add(new MessageEvent.DefaultBodyApplier(originalMessage));
+        formatter.getBody().add(new MessageEvent.DefaultBodyApplier(EEMessages.SUICIDE_DEATH_MESSAGE.getFormat().toText(player.getReplacesAll())));
         
         List<NamedCause> causes = new ArrayList<NamedCause>();
         causes.add(NamedCause.of("Command", "kill"));
@@ -125,8 +125,9 @@ public class EESuicide extends ECommand<EverEssentials> {
     	if (!event.isMessageCancelled() && !event.getMessage().isEmpty()) {
     		event.getChannel().ifPresent(eventChannel -> eventChannel.send(player, event.getMessage()));
     	} else {
-    		player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.SUICIDE_PLAYER.get()
-					.replaceAll("<player>", player.getName())));
+    		EEMessages.SUICIDE_PLAYER.sender()
+    			.replace("<player>", player.getName())
+    			.sendTo(player);
     	}
 		return true;
 	}

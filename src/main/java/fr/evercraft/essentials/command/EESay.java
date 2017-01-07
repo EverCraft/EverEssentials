@@ -31,7 +31,6 @@ import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
-import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ECommand;
 import fr.evercraft.everapi.server.player.EPlayer;
 
@@ -53,7 +52,7 @@ public class EESay extends ECommand<EverEssentials> {
 
 	@Override
 	public Text help(final CommandSource source) {
-		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_MESSAGE.get() + ">")
+		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_MESSAGE.getString() + ">")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
 					.build();
@@ -95,21 +94,21 @@ public class EESay extends ECommand<EverEssentials> {
 	}
 	
 	private boolean commandSayPlayer(final EPlayer player, String message) {
-		this.plugin.getEServer().getBroadcastChannel().send(EChat.of(EEMessages.SAY_PLAYER.get()
-				.replaceAll("<player>", player.getName())
-				.replaceAll("<message>", message)));
+		this.plugin.getEServer().getBroadcastChannel().send(EEMessages.SAY_PLAYER.getFormat().toText(
+				"<player>", player.getName(),
+				"<message>", message));
 		return true;
 	}
 	
 	private boolean commandSayCommandBlock(final CommandSource player, String message) {
-		this.plugin.getEServer().getBroadcastChannel().send(EChat.of(EEMessages.SAY_COMMANDBLOCK.get()
-				.replaceAll("<message>", message)));
+		this.plugin.getEServer().getBroadcastChannel().send(EEMessages.SAY_COMMANDBLOCK.getFormat().toText(
+				"<message>", message));
 		return true;
 	}
 	
 	private boolean commandSayConsole(final CommandSource player, String message) {
-		this.plugin.getEServer().getBroadcastChannel().send(EChat.of(EEMessages.SAY_CONSOLE.get()
-				.replaceAll("<message>", message)));
+		this.plugin.getEServer().getBroadcastChannel().send(EEMessages.SAY_CONSOLE.getFormat().toText(
+				"<message>", message));
 		return true;
 	}
 }

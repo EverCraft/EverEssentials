@@ -31,10 +31,8 @@ import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
-import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ECommand;
 import fr.evercraft.everapi.server.player.EPlayer;
-import fr.evercraft.everapi.text.ETextBuilder;
 
 public class EESudo extends ECommand<EverEssentials> {
 	
@@ -55,12 +53,12 @@ public class EESudo extends ECommand<EverEssentials> {
 	@Override
 	public Text help(final CommandSource source) {
 		if (source.hasPermission(EEPermissions.SUDO_CONSOLE.get())){
-			return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_PLAYER.get() + "|console> <" + EAMessages.ARGS_COMMAND.get() + ">")
+			return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_PLAYER.getString() + "|console> <" + EAMessages.ARGS_COMMAND.getString() + ">")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
 					.build();
 		}
-		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_PLAYER.get() + "> <" + EAMessages.ARGS_COMMAND.get() + ">")
+		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_PLAYER.getString() + "> <" + EAMessages.ARGS_COMMAND.getString() + ">")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
 					.build();
@@ -103,18 +101,22 @@ public class EESudo extends ECommand<EverEssentials> {
 				Optional<EPlayer> player = this.plugin.getEServer().getEPlayer(args.get(0));
 				// Le joueur existe
 				if (player.isPresent()){
-					resultat = commandSudo(source, player.get(), args.get(1));
+					resultat = this.commandSudo(source, player.get(), args.get(1));
 				// Le joueur est introuvable
 				} else {
-					source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
+					EAMessages.PLAYER_NOT_FOUND.sender()
+						.prefix(EEMessages.PREFIX)
+						.sendTo(source);
 				} 
 			} else {
 				// Si il a la permission
 				if (source.hasPermission(EEPermissions.SUDO_CONSOLE.get())){
-					resultat = commandSudoConsole(source, args.get(1));
+					resultat = this.commandSudoConsole(source, args.get(1));
 				// Il n'a pas la permission
 				} else {
-					source.sendMessage(EAMessages.NO_PERMISSION.getText());
+					EAMessages.NO_PERMISSION.sender()
+						.prefix(EEMessages.PREFIX)
+						.sendTo(source);
 				}
 			}
 			
@@ -129,33 +131,32 @@ public class EESudo extends ECommand<EverEssentials> {
 	private boolean commandSudo(final CommandSource staff, final EPlayer player, final String command) {
 		// Le joueur a la permission bypass
 		if (player.hasPermission(EEPermissions.SUDO_BYPASS.get())) {
-			staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.SUDO_BYPASS.get()
-					.replaceAll("<player>", player.getName())));
+			EEMessages.SUDO_BYPASS.sender()
+				.replace("<player>", player.getName())
+				.sendTo(staff);
 			return false;
 		}
 			
 		this.plugin.getGame().getCommandManager().process(player.get(), command);
-		staff.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
-				.append(EEMessages.SUDO_PLAYER.get()
-						.replaceAll("<player>", player.getName()))
-				.replace("<command>", this.getButtonCommand(command))
-				.build());
+		EEMessages.SUDO_PLAYER.sender()
+			.replace("<player>", player.getName())
+			.replace("<command>", this.getButtonCommand(command))
+			.sendTo(staff);
 		return true;
 	}
 	
 	private boolean commandSudoConsole(final CommandSource staff, final String command) {			
 		this.plugin.getGame().getCommandManager().process(this.plugin.getGame().getServer().getConsole(), command);
-		staff.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
-				.append(EEMessages.SUDO_CONSOLE.get())
-				.replace("<command>", this.getButtonCommand(command))
-				.build());
+		EEMessages.SUDO_CONSOLE.sender()
+			.replace("<command>", this.getButtonCommand(command))
+			.sendTo(staff);
 		return true;
 	}
 	
 	private Text getButtonCommand(final String command){
-		return EChat.of(EEMessages.SUDO_COMMAND.get()).toBuilder()
-					.onHover(TextActions.showText(EChat.of(EEMessages.SUDO_COMMAND_HOVER.get()
-							.replaceAll("<command>", "/" + command))))
+		return EEMessages.SUDO_COMMAND.getText().toBuilder()
+					.onHover(TextActions.showText(EEMessages.SUDO_COMMAND_HOVER.getFormat()
+							.toText("<command>", "/" + command)))
 					.build();
 	}
 }

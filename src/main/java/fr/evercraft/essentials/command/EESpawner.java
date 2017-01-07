@@ -65,7 +65,7 @@ public class EESpawner extends ECommand<EverEssentials> {
 
 	@Override
 	public Text help(final CommandSource source) {
-		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_ENTITY.get() + "> [" + EAMessages.ARGS_SECONDS.get() + "]")
+		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_ENTITY.getString() + "> [" + EAMessages.ARGS_SECONDS.getString() + "]")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
 					.build();
@@ -96,7 +96,7 @@ public class EESpawner extends ECommand<EverEssentials> {
 				if (optEntity.isPresent()){
 					resultat = this.commandSpawner((EPlayer) source, optEntity.get());
 				} else {
-					source.sendMessage(EChat.of(EEMessages.PREFIX.get() + " inconnu"));
+					source.sendMessage(EChat.of("Inconnu"));
 				}
 			// La source n'est pas un joueur
 			} else {
@@ -116,7 +116,9 @@ public class EESpawner extends ECommand<EverEssentials> {
 		
 		// Aucun block
 		if (!block.isPresent()) {
-			player.sendMessage(EEMessages.PREFIX.get() + EAMessages.PLAYER_NO_LOOK_BLOCK.get());
+			 EAMessages.PLAYER_NO_LOOK_BLOCK.sender()
+			 	.prefix(EEMessages.PREFIX)
+			 	.sendTo(player);
 			return false;
 		}
 		

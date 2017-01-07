@@ -35,7 +35,6 @@ import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
-import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.EReloadCommand;
 import fr.evercraft.everapi.server.player.EPlayer;
 import fr.evercraft.everapi.sponge.UtilsEntity;
@@ -66,7 +65,7 @@ public class EESpawnMob extends EReloadCommand<EverEssentials> {
 
 	@Override
 	public Text help(final CommandSource source) {
-		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_ENTITY.get() + "> [" + EAMessages.ARGS_AMOUNT.get() + "]")
+		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_ENTITY.getString() + "> [" + EAMessages.ARGS_AMOUNT.getString() + "]")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
 					.build();
@@ -100,8 +99,9 @@ public class EESpawnMob extends EReloadCommand<EverEssentials> {
 				if (optEntity.isPresent()){
 					resultat = this.commandSpawnMob((EPlayer) source, optEntity.get(), 1);
 				} else {
-					source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.SPAWNMOB_ERROR_MOB.get()
-							.replaceAll("<entity>", args.get(0))));
+					EEMessages.SPAWNMOB_ERROR_MOB.sender()
+						.replace("<entity>", args.get(0))
+						.sendTo(source);
 				}
 			// La source n'est pas un joueur
 			} else {
@@ -118,13 +118,16 @@ public class EESpawnMob extends EReloadCommand<EverEssentials> {
 					try {
 						int amount = Math.max(Math.min(Integer.parseInt(args.get(1)), this.limit), 1);
 						resultat = this.commandSpawnMob((EPlayer) source, optEntity.get(), amount);						
-					} catch (NumberFormatException e){
-						source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.IS_NOT_NUMBER.get()
-								.replaceAll("<number>", args.get(1))));
+					} catch (NumberFormatException e) {
+						EAMessages.IS_NOT_NUMBER.sender()
+							.prefix(EEMessages.PREFIX)
+							.replace("<number>", args.get(1))
+							.sendTo(source);
 					}
 				} else {
-					source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.SPAWNMOB_ERROR_MOB.get()
-							.replaceAll("<entity>", args.get(0))));
+					EEMessages.SPAWNMOB_ERROR_MOB.sender()
+						.replace("<entity>", args.get(0))
+						.sendTo(source);
 				}
 			// La source n'est pas un joueur
 			} else {
@@ -144,16 +147,19 @@ public class EESpawnMob extends EReloadCommand<EverEssentials> {
 		
 		// Aucun block
 		if (!block.isPresent()) {
-			player.sendMessage(EEMessages.PREFIX.get() + EAMessages.PLAYER_NO_LOOK_BLOCK.get());
+			EAMessages.PLAYER_NO_LOOK_BLOCK.sender()
+				.prefix(EEMessages.PREFIX)
+				.sendTo(player);
 			return false;
 		}
 		
 		Location<World> spawnLocation = player.getWorld().getLocation(block.get().add(0, 1, 0));
 		entity.spawnEntity(spawnLocation, amount);
 		
-		player.sendMessage(EEMessages.PREFIX.get() + EEMessages.SPAWNMOB_MOB.get()
-				.replaceAll("<amount>", String.valueOf(amount))
-				.replaceAll("<entity>", StringUtils.capitalize(entity.getName())));
+		EEMessages.SPAWNMOB_MOB.sender()
+			.replace("<amount>", String.valueOf(amount))
+			.replace("<entity>", StringUtils.capitalize(entity.getName()))
+			.sendTo(player);
 		return true;
 	}
 }

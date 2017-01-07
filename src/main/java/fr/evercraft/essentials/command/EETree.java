@@ -38,7 +38,6 @@ import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
-import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ECommand;
 import fr.evercraft.everapi.server.player.EPlayer;
 
@@ -119,8 +118,9 @@ public class EETree extends ECommand<EverEssentials> {
 				if (generator.isPresent()){
 					resultat = this.commandTree((EPlayer) source, generator.get());
 				} else {
-					source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.TREE_INCONNU.get()
-							.replaceAll("<type>", args.get(0))));
+					EEMessages.TREE_INCONNU.sender()
+						.replace("<type>", args.get(0))
+						.sendTo(source);
 				}
 			// La source n'est pas un joueur
 			} else {
@@ -142,7 +142,9 @@ public class EETree extends ECommand<EverEssentials> {
 		
 		// Aucun block
 		if (!block.isPresent()) {
-			player.sendMessage(EEMessages.PREFIX.get() + EAMessages.PLAYER_NO_LOOK_BLOCK.get());
+			EAMessages.PLAYER_NO_LOOK_BLOCK.sender()
+				.prefix(EEMessages.PREFIX)
+				.sendTo(player);
 			return false;
 		}
 		
@@ -151,9 +153,9 @@ public class EETree extends ECommand<EverEssentials> {
 		// Impossible de le placer
 		if (!generator.canPlaceAt(player.getWorld(), location.getX(), location.getY(), location.getZ())) {
 			if (!generator.equals(PopulatorObjects.DESERT_WELL)) {
-				player.sendMessage(EEMessages.PREFIX.get() + EEMessages.TREE_NO_CAN_DIRT.get());
+				EEMessages.TREE_NO_CAN_DIRT.sendTo(player);
 			} else {
-				player.sendMessage(EEMessages.PREFIX.get() + EEMessages.TREE_NO_CAN_SAND.get());
+				EEMessages.TREE_NO_CAN_SAND.sendTo(player);
 			}
 		}
 			

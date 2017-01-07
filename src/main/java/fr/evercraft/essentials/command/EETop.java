@@ -34,10 +34,8 @@ import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
-import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ECommand;
 import fr.evercraft.everapi.server.player.EPlayer;
-import fr.evercraft.everapi.text.ETextBuilder;
 
 public class EETop extends ECommand<EverEssentials> {
 	
@@ -81,7 +79,9 @@ public class EETop extends ECommand<EverEssentials> {
 				resultat = this.commandTop((EPlayer) source);
 			// Si la source est une console ou un commande block
 			} else {
-				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
+				EAMessages.PLAYER_NOT_FOUND.sender()
+					.prefix(EEMessages.PREFIX)
+					.sendTo(source);
 			}
 			
 		} else {
@@ -97,15 +97,16 @@ public class EETop extends ECommand<EverEssentials> {
 															!(player.isGod() || player.getGameMode().equals(GameModes.CREATIVE)));
 		
 		if (!transform.isPresent()) {
-			player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.TOP_TELEPORT_ERROR.get()));
+			EEMessages.TOP_TELEPORT_ERROR.sendTo(player);
 			return false;
 		}
 		
 		long delay = this.plugin.getConfigs().getTeleportDelay(player);
 		
 		if (delay > 0) {
-			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.TOP_DELAY.get()
-					.replaceAll("<delay>", this.plugin.getEverAPI().getManagerUtils().getDate().formatDate(System.currentTimeMillis() + delay)));
+			EEMessages.TOP_DELAY.sender()
+				.replace("<delay>", this.plugin.getEverAPI().getManagerUtils().getDate().formatDate(System.currentTimeMillis() + delay))
+				.sendTo(player);
 		}
 		
 		player.setTeleport(delay, () -> this.teleport(player, transform.get()), player.hasPermission(EEPermissions.TELEPORT_BYPASS_MOVE.get()));
@@ -115,23 +116,22 @@ public class EETop extends ECommand<EverEssentials> {
 	private void teleport(final EPlayer player, final Transform<World> location) {
 		if (player.isOnline()) {
 			if (player.teleport(location, true)) {
-				player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
-						.append(EEMessages.TOP_TELEPORT.get())
-						.replace("<position>", this.getButtonPosition(player.getLocation()))
-						.build());
+				EEMessages.TOP_TELEPORT.sender()
+					.replace("<position>", this.getButtonPosition(player.getLocation()))
+					.sendTo(player);
 			} else {
-				player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.TOP_TELEPORT_ERROR.get()));
+				EEMessages.TOP_TELEPORT_ERROR.sendTo(player);
 			}
 		}
 	}
 	
 	private Text getButtonPosition(final Location<World> location){
 		return EEMessages.TOP_POSITION.getText().toBuilder()
-					.onHover(TextActions.showText(EChat.of(EEMessages.TOP_POSITION_HOVER.get()
-							.replaceAll("<world>", location.getExtent().getName())
-							.replaceAll("<x>", String.valueOf(location.getBlockX()))
-							.replaceAll("<y>", String.valueOf(location.getBlockY()))
-							.replaceAll("<z>", String.valueOf(location.getBlockZ())))))
+					.onHover(TextActions.showText(EEMessages.TOP_POSITION_HOVER.getFormat().toText(
+							"<world>", location.getExtent().getName(),
+							"<x>", String.valueOf(location.getBlockX()),
+							"<y>", String.valueOf(location.getBlockY()),
+							"<z>", String.valueOf(location.getBlockZ()))))
 					.build();
 	}
 }

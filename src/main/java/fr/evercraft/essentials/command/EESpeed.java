@@ -22,7 +22,6 @@ import java.util.Optional;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
-import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.LiteralText.Builder;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
@@ -33,7 +32,6 @@ import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.java.UtilsDouble;
-import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ECommand;
 import fr.evercraft.everapi.server.player.EPlayer;
 import fr.evercraft.everapi.server.user.EUser;
@@ -69,15 +67,15 @@ public class EESpeed extends ECommand<EverEssentials> {
 		
 		if (walk || fly) {
 			if (walk && fly) {
-				build.append(Text.of(" [" + EAMessages.ARGS_SPEED.get() + "] [walk|fly]"));
+				build.append(Text.of(" [" + EAMessages.ARGS_SPEED.getString() + "] [walk|fly]"));
 			} else if (fly) {
-				build.append(Text.of(" [" + EAMessages.ARGS_SPEED.get() + "] [fly]"));
+				build.append(Text.of(" [" + EAMessages.ARGS_SPEED.getString() + "] [fly]"));
 			} else if (walk) {
-				build.append(Text.of(" [" + EAMessages.ARGS_SPEED.get() + "] [walk]"));
+				build.append(Text.of(" [" + EAMessages.ARGS_SPEED.getString() + "] [walk]"));
 			}
 			
 			if(source.hasPermission(EEPermissions.SPEED_OTHERS.get())) {
-				build.append(Text.of(" [" + EAMessages.ARGS_PLAYER.get() + "]"));
+				build.append(Text.of(" [" + EAMessages.ARGS_PLAYER.getString() + "]"));
 			}
 		}
 		
@@ -130,7 +128,10 @@ public class EESpeed extends ECommand<EverEssentials> {
 				if (speed.isPresent()) {
 					resultat = this.commandSpeed((EPlayer) source, speed.get());
 				} else {
-					source.sendMessage(EChat.of(EAMessages.IS_NOT_NUMBER.get().replaceAll("<number>", args.get(0))));
+					EAMessages.IS_NOT_NUMBER.sender()
+						.prefix(EEMessages.PREFIX)
+						.replace("<number>", args.get(0))
+						.sendTo(source);
 				}
 			// La source n'est pas un joueur
 			} else {
@@ -153,10 +154,15 @@ public class EESpeed extends ECommand<EverEssentials> {
 						source.sendMessage(this.help(source));
 					}
 				} else {
-					source.sendMessage(EChat.of(EAMessages.IS_NOT_NUMBER.get().replaceAll("<number>", args.get(0))));
+					EAMessages.IS_NOT_NUMBER.sender()
+						.prefix(EEMessages.PREFIX)
+						.replace("<number>", args.get(0))
+						.sendTo(source);
 				}
 			} else {
-				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
+				EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()
+					.prefix(EEMessages.PREFIX)
+					.sendTo(source);
 			}
 			
 		// On connais le joueur
@@ -176,14 +182,21 @@ public class EESpeed extends ECommand<EverEssentials> {
 							source.sendMessage(this.help(source));
 						}
 					} else {
-						source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
+						EAMessages.PLAYER_NOT_FOUND.sender()
+							.prefix(EEMessages.PREFIX)
+							.sendTo(source);
 					}
 				} else {
-					source.sendMessage(EChat.of(EAMessages.IS_NOT_NUMBER.get().replaceAll("<number>", args.get(0))));
+					EAMessages.IS_NOT_NUMBER.sender()
+						.prefix(EEMessages.PREFIX)
+						.replace("<number>", args.get(0))
+						.sendTo(source);
 				}
 			// Il n'a pas la permission
 			} else {
-				source.sendMessage(EAMessages.NO_PERMISSION.getText());
+				EAMessages.NO_PERMISSION.sender()
+					.prefix(EEMessages.PREFIX)
+					.sendTo(source);
 			}
 			
 		// Nombre d'argument incorrect
@@ -196,11 +209,13 @@ public class EESpeed extends ECommand<EverEssentials> {
 	
 	private boolean commandSpeedInfo(final EPlayer player) {
 		if (player.isFlying()) {
-			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.SPEED_INFO_FLY.get()
-					.replaceAll("<speed>", UtilsDouble.round(player.getFlySpeed() / EPlayer.CONVERSION_FLY, 3).toString()));
+			EEMessages.SPEED_INFO_FLY.sender()
+				.replace("<speed>", UtilsDouble.round(player.getFlySpeed() / EPlayer.CONVERSION_FLY, 3).toString())
+				.sendTo(player);
 		} else {
-			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.SPEED_INFO_WALK.get()
-					.replaceAll("<speed>", UtilsDouble.round(player.getWalkSpeed() / EPlayer.CONVERSION_WALF, 3).toString()));
+			EEMessages.SPEED_INFO_WALK.sender()
+				.replace("<speed>", UtilsDouble.round(player.getWalkSpeed() / EPlayer.CONVERSION_WALF, 3).toString())
+				.sendTo(player);
 		}
 		return false;
 	}
@@ -216,68 +231,76 @@ public class EESpeed extends ECommand<EverEssentials> {
 	private boolean commandSpeedWalk(final EPlayer player, final Double speed) {
 		// Le joueur n'a pas la permission
 		if (!player.hasPermission(EEPermissions.SPEED_WALK.get())) {
-			player.sendMessage(EAMessages.NO_PERMISSION.getText());
+			EAMessages.NO_PERMISSION.sender()
+				.prefix(EEMessages.PREFIX)
+				.sendTo(player);
 			return false;
 		}
 		
 		player.setWalkSpeed(speed * EPlayer.CONVERSION_WALF);
-		player.sendMessage(EEMessages.PREFIX.get() + EEMessages.SPEED_PLAYER_WALK.get()
-				.replaceAll("<speed>", speed.toString()));
+		EEMessages.SPEED_PLAYER_WALK.sender()
+			.replace("<speed>", speed.toString())
+			.sendTo(player);
 		return true;
 	}
 
 	private boolean commandSpeedFly(final EPlayer player, final Double speed) {
 		// Le joueur n'a pas la permission
 		if (!player.hasPermission(EEPermissions.SPEED_FLY.get())) {
-			player.sendMessage(EAMessages.NO_PERMISSION.getText());
+			EAMessages.NO_PERMISSION.sender()
+				.prefix(EEMessages.PREFIX)
+				.sendTo(player);
 			return false;
 		}
 			
 		player.setFlySpeed(speed * EPlayer.CONVERSION_FLY);
-		player.sendMessage(EEMessages.PREFIX.get() + EEMessages.SPEED_PLAYER_FLY.get()
-				.replaceAll("<speed>", speed.toString()));
+		EEMessages.SPEED_PLAYER_FLY.sender()
+			.replace("<speed>", speed.toString())
+			.sendTo(player);
 		return true;
 	}
 
 	private boolean commandSpeedWalkOthers(final CommandSource staff, final EUser user, final Double speed) {
 		// Le joueur n'a pas la permission
 		if (!staff.hasPermission(EEPermissions.SPEED_WALK.get())) {
-			staff.sendMessage(EAMessages.NO_PERMISSION.getText());
+			EAMessages.NO_PERMISSION.sender()
+				.prefix(EEMessages.PREFIX)
+				.sendTo(staff);
 			return false;
 		}
 		
 		user.setWalkSpeed(speed * EPlayer.CONVERSION_WALF);
-		staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.SPEED_OTHERS_STAFF_WALK.get()
-				.replaceAll("<speed>", speed.toString())
-				.replaceAll("<player>", user.getName())));
+		EEMessages.SPEED_OTHERS_STAFF_WALK.sender()
+			.replace("<speed>", speed.toString())
+			.replace("<player>", user.getName())
+			.sendTo(staff);
 		
-		Optional<Player> player = user.getPlayer();
-		if (player.isPresent()) {
-			player.get().sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.SPEED_OTHERS_PLAYER_WALK.get()
-					.replaceAll("<speed>", speed.toString())
-					.replaceAll("<staff>", staff.getName())));
-		}
+		user.getPlayer().ifPresent(player -> EEMessages.SPEED_OTHERS_PLAYER_WALK.sender()
+				.replace("<speed>", speed.toString())
+				.replace("<staff>", staff.getName())
+				.sendTo(player));
 		return true;
 	}
 
 	private boolean commandSpeedFlyOthers(CommandSource staff, EUser user, Double speed) {
 		// Le joueur n'a pas la permission
 		if (!staff.hasPermission(EEPermissions.SPEED_FLY.get())) {
-			staff.sendMessage(EAMessages.NO_PERMISSION.getText());
+			EAMessages.NO_PERMISSION.sender()
+				.prefix(EEMessages.PREFIX)
+				.sendTo(staff);
 			return false;
 		}
 		
 		user.setFlySpeed(speed * EPlayer.CONVERSION_FLY);
-		staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.SPEED_OTHERS_STAFF_FLY.get()
-				.replaceAll("<speed>", speed.toString())
-				.replaceAll("<player>", user.getName())));
+		EEMessages.SPEED_OTHERS_STAFF_FLY.sender()
+			.replace("<speed>", speed.toString())
+			.replace("<player>", user.getName())
+			.sendTo(staff);
 
-		Optional<Player> player = user.getPlayer();
-		if (player.isPresent()) {
-			player.get().sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.SPEED_OTHERS_PLAYER_FLY.get()
-					.replaceAll("<speed>", speed.toString())
-					.replaceAll("<staff>", staff.getName())));
-		}
+		user.getPlayer().ifPresent(player -> EEMessages.SPEED_OTHERS_PLAYER_FLY.sender()
+				.replace("<speed>", speed.toString())
+				.replace("<staff>", staff.getName())
+				.sendTo(player));
 		return true;
 	}
 	

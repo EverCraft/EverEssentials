@@ -18,7 +18,9 @@ package fr.evercraft.essentials.command;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
@@ -31,7 +33,7 @@ import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
-import fr.evercraft.everapi.plugin.EChat;
+import fr.evercraft.everapi.message.replace.EReplace;
 import fr.evercraft.everapi.plugin.command.ECommand;
 
 public class EEStop extends ECommand<EverEssentials> {
@@ -52,7 +54,7 @@ public class EEStop extends ECommand<EverEssentials> {
 
 	@Override
 	public Text help(final CommandSource source) {
-		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_REASON.get() + ">")
+		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_REASON.getString() + ">")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
 					.build();
@@ -86,35 +88,30 @@ public class EEStop extends ECommand<EverEssentials> {
 	}
 
 	private boolean commandStop(final CommandSource player) {
+		Map<String, EReplace<?>> replaces = new HashMap<String, EReplace<?>>();
+		replaces.putAll(this.plugin.getChat().getReplaceServer());
+		replaces.put("<staff>", EReplace.of(player.getName()));
+		
 		this.plugin.getLogger().info("Server shutdown by '" + player.getName() + "'");
 		if (player instanceof ConsoleSource) {
-			this.plugin.getGame().getServer().shutdown(
-				EChat.of(this.plugin.getChat().replaceGlobal(
-					EEMessages.STOP_CONSOLE_MESSAGE.get()
-							.replaceAll("<staff>", player.getName()))));
+			this.plugin.getGame().getServer().shutdown(EEMessages.STOP_CONSOLE_MESSAGE.getFormat().toText(replaces));
 		} else {
-			this.plugin.getGame().getServer().shutdown(
-					EChat.of(this.plugin.getChat().replaceGlobal(
-						EEMessages.STOP_MESSAGE.get()
-								.replaceAll("<staff>", player.getName()))));
+			this.plugin.getGame().getServer().shutdown(EEMessages.STOP_MESSAGE.getFormat().toText(replaces));
 		}
 		return true;
 	}
 	
 	private boolean commandStop(final CommandSource player, String message) {
+		Map<String, EReplace<?>> replaces = new HashMap<String, EReplace<?>>();
+		replaces.putAll(this.plugin.getChat().getReplaceServer());
+		replaces.put("<staff>", EReplace.of(player.getName()));
+		replaces.put("<reason>", EReplace.of(this.plugin.getChat().replace(message)));
+		
 		this.plugin.getLogger().info("Server shutdown by '" + player.getName() + "' (reason='" + message + "')");
 		if (player instanceof ConsoleSource) {
-			this.plugin.getGame().getServer().shutdown(
-				EChat.of(this.plugin.getChat().replaceGlobal(
-					EEMessages.STOP_CONSOLE_MESSAGE_REASON.get()
-							.replaceAll("<staff>", player.getName())
-							.replaceAll("<reason>", this.plugin.getChat().replace(message)))));
+			this.plugin.getGame().getServer().shutdown(EEMessages.STOP_CONSOLE_MESSAGE_REASON.getFormat().toText(replaces));
 		} else {
-			this.plugin.getGame().getServer().shutdown(
-				EChat.of(this.plugin.getChat().replaceGlobal(
-					EEMessages.STOP_MESSAGE_REASON.get()
-							.replaceAll("<staff>", player.getName())
-							.replaceAll("<reason>", this.plugin.getChat().replace(message)))));
+			this.plugin.getGame().getServer().shutdown(EEMessages.STOP_MESSAGE_REASON.getFormat().toText(replaces));
 		}		
 		return true;
 	}

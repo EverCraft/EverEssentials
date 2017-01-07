@@ -32,12 +32,10 @@ import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.everapi.EAMessage.EAMessages;
-import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ECommand;
 import fr.evercraft.everapi.server.player.EPlayer;
 import fr.evercraft.everapi.server.user.EUser;
 import fr.evercraft.everapi.sponge.UtilsNetwork;
-import fr.evercraft.everapi.text.ETextBuilder;
 
 public class EESeen extends ECommand<EverEssentials> {
 	
@@ -57,7 +55,7 @@ public class EESeen extends ECommand<EverEssentials> {
 
 	@Override
 	public Text help(final CommandSource source) {
-		return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_PLAYER.get() + "|"  + EAMessages.ARGS_IP.get() + "]")
+		return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_PLAYER.getString() + "|"  + EAMessages.ARGS_IP.getString() + "]")
 				.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 				.color(TextColors.RED)
 				.build();
@@ -99,22 +97,24 @@ public class EESeen extends ECommand<EverEssentials> {
 					resultat = this.commandSeenOthers(source, optUser.get());
 				// Le joueur est introuvable
 				} else {
-					source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
+					EAMessages.PLAYER_NOT_FOUND.sender()
+						.prefix(EEMessages.PREFIX)
+						.sendTo(source);
 				}
 			}
 		
 		// Nombre d'argument incorrect
 		} else {
-			source.sendMessage(help(source));
+			source.sendMessage(this.help(source));
 		}
 		
 		return resultat;
 	}
 	
 	private boolean commandSeen(final EPlayer player) {
-		player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.getText()).append(EEMessages.SEEN_IP.get())
-				.replace("<ip>", getButtomIP(UtilsNetwork.getHostString(player.getConnection().getAddress().getAddress())))
-				.build());
+		EEMessages.SEEN_IP.sender()
+			.replace("<ip>", getButtomIP(UtilsNetwork.getHostString(player.getConnection().getAddress().getAddress())))
+			.sendTo(player);
 		return true;
 	}
 	
@@ -123,14 +123,15 @@ public class EESeen extends ECommand<EverEssentials> {
 		if (user.equals(staff)) {
 			return this.commandSeen((EPlayer) user);
 		}
-		if(user.getLastIP().isPresent()){
-			staff.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.getText()).append(EEMessages.SEEN_IP_OTHERS.get())
-					.replace("<player>", user.getName())
-					.replace("<ip>", getButtomIP(UtilsNetwork.getHostString(user.getLastIP().get())))
-				.build());
+		if(user.getLastIP().isPresent()) {
+			EEMessages.SEEN_IP_OTHERS.sender()
+				.replace("<player>", user.getDisplayName())
+				.replace("<ip>", getButtomIP(UtilsNetwork.getHostString(user.getLastIP().get())))
+				.sendTo(staff);
 		} else {
-			staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.SEEN_IP_OTHERS_NO_IP.get()
-				.replaceAll("<player>", user.getDisplayName())));
+			EEMessages.SEEN_IP_OTHERS_NO_IP.sender()
+				.replace("<player>", user.getDisplayName())
+				.sendTo(staff);
 		}
 		return true;
 	}
@@ -138,22 +139,19 @@ public class EESeen extends ECommand<EverEssentials> {
 	private boolean commandSeenOthers(final CommandSource staff, final String address) throws CommandException {
 		List<Text> lists = new ArrayList<Text>();
 		Optional<List<UUID>> uuids = this.plugin.getDataBases().getPlayersWithSameIP(address);
-		lists.add(EChat.of(EEMessages.SEEN_IP_MESSAGE.get()
-				.replaceAll("<ip>", address)));
+		lists.add(EEMessages.SEEN_IP_MESSAGE.getFormat().toText("<ip>", address));
 		if(uuids.isPresent()){
 			for(UUID uuid : uuids.get()){
 				Optional<EUser> player = this.plugin.getEServer().getEUser(uuid);
 				if(player.isPresent()){
-					lists.add(ETextBuilder.toBuilder(EEMessages.SEEN_IP_LIST.get())
-							.replace("<player>", getButtomUser(player.get()))
-						.build());
+					lists.add(EEMessages.SEEN_IP_LIST.getFormat().toText("<player>", getButtomUser(player.get())));
 				}
 			}
 		} else {
 			lists.add(EEMessages.SEEN_IP_NO_PLAYER.getText());
 		}
 		this.plugin.getEverAPI().getManagerService().getEPagination().sendTo(
-				EChat.of(EEMessages.SEEN_IP_TITLE.get().replace("<ip>", address)).toBuilder()
+				EEMessages.SEEN_IP_TITLE.getFormat().toText("<ip>", address).toBuilder()
 					.onClick(TextActions.runCommand("/s \"" + address + "\""))
 					.build(), 
 				lists, staff);
@@ -161,18 +159,16 @@ public class EESeen extends ECommand<EverEssentials> {
 	}
 	
 	private Text getButtomIP(final String address){
-		return EChat.of(EEMessages.SEEN_IP_STYLE.get()
-				.replaceAll("<ip>", address)).toBuilder()
-			.onHover(TextActions.showText(EChat.of(EAMessages.HOVER_COPY.get())))
+		return EEMessages.SEEN_IP_STYLE.getFormat().toText("<ip>", address).toBuilder()
+			.onHover(TextActions.showText(EAMessages.HOVER_COPY.getText()))
 			.onClick(TextActions.suggestCommand(address))
 			.onShiftClick(TextActions.insertText(address))
 			.build();
 	}
 	
 	private Text getButtomUser(final EUser player){
-		return EChat.of(EEMessages.SEEN_PLAYER_STYLE.get()
-				.replaceAll("<player>", player.getDisplayName())).toBuilder()
-			.onHover(TextActions.showText(EChat.of(EAMessages.HOVER_COPY.get())))
+		return EEMessages.SEEN_PLAYER_STYLE.getFormat().toText("<player>", player.getDisplayName()).toBuilder()
+			.onHover(TextActions.showText(EAMessages.HOVER_COPY.getText()))
 			.onClick(TextActions.suggestCommand(player.getName()))
 			.onShiftClick(TextActions.insertText(player.getName()))
 			.build();

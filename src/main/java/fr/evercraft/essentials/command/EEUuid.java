@@ -32,11 +32,9 @@ import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
-import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ECommand;
 import fr.evercraft.everapi.server.EServer;
 import fr.evercraft.everapi.server.player.EPlayer;
-import fr.evercraft.everapi.text.ETextBuilder;
 
 public class EEUuid extends ECommand<EverEssentials> {
 	
@@ -57,7 +55,7 @@ public class EEUuid extends ECommand<EverEssentials> {
 	@Override
 	public Text help(final CommandSource source) {
 		if (source.hasPermission(EEPermissions.UUID_OTHERS.get())){
-			return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_PLAYER.get() + "]")
+			return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_PLAYER.getString() + "]")
 						.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 						.color(TextColors.RED)
 						.build();
@@ -107,7 +105,9 @@ public class EEUuid extends ECommand<EverEssentials> {
 				resultat = true;
 			// Il n'a pas la permission
 			} else {
-				source.sendMessage(EAMessages.NO_PERMISSION.getText());
+				EAMessages.NO_PERMISSION.sender()
+					.prefix(EEMessages.PREFIX)
+					.sendTo(source);
 			}
 			
 		// Nombre d'argument incorrect
@@ -119,11 +119,10 @@ public class EEUuid extends ECommand<EverEssentials> {
 	}
 	
 	private boolean commandUUIDPlayerName(final EPlayer player) {
-		player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
-				.append(EEMessages.UUID_PLAYER_NAME.get())
-				.replace("<uuid>", this.getButtonUUID(player.getUniqueId()))
-				.replace("<name>", this.getButtonName(player.getName()))
-				.build());
+		EEMessages.UUID_PLAYER_NAME.sender()
+			.replace("<uuid>", this.getButtonUUID(player.getUniqueId()))
+			.replace("<name>", this.getButtonName(player.getName()))
+			.sendTo(player);
 		return true;
 	}
 	
@@ -138,23 +137,26 @@ public class EEUuid extends ECommand<EverEssentials> {
 						this.commandUUIDOthersUUID(source, profile);
 					}
 				} else {
-					source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.PLAYER_NOT_FOUND.get()));
+					EAMessages.PLAYER_NOT_FOUND.sender()
+						.prefix(EEMessages.PREFIX)
+						.sendTo(source);
 				}
 				return profile;
 			}, this.plugin.getGame().getScheduler().createAsyncExecutor(this.plugin));
 			return true;
 		} catch (IllegalArgumentException e) {
-			source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.PLAYER_NOT_FOUND.get()));
+			EAMessages.PLAYER_NOT_FOUND.sender()
+				.prefix(EEMessages.PREFIX)
+				.sendTo(source);
 			return false;
 		}
 	}
 	
 	private boolean commandUUIDPlayerUUID(final EPlayer player) {
-		player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
-				.append(EEMessages.UUID_PLAYER_UUID.get())
-				.replace("<uuid>", this.getButtonUUID(player.getUniqueId()))
-				.replace("<name>", this.getButtonName(player.getName()))
-				.build());
+		EEMessages.UUID_PLAYER_UUID.sender()
+			.replace("<uuid>", this.getButtonUUID(player.getUniqueId()))
+			.replace("<name>", this.getButtonName(player.getName()))
+			.sendTo(player);
 		return true;
 	}
 	
@@ -166,16 +168,16 @@ public class EEUuid extends ECommand<EverEssentials> {
 		
 		// Joueur introuvable
 		if(!profile.getName().isPresent()) {
-			staff.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
+			EAMessages.PLAYER_NOT_FOUND.sender()
+				.prefix(EEMessages.PREFIX)
+				.sendTo(staff);
 			return false;
 		}
 		
-		staff.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
-				.append(EEMessages.UUID_OTHERS_PLAYER_NAME.get()
-						.replaceAll("<uuid>", profile.getUniqueId().toString()))
-				.replace("<uuid>", this.getButtonUUID(profile.getUniqueId()))
-				.replace("<name>", this.getButtonName(profile.getName().get()))
-				.build());				
+		EEMessages.UUID_OTHERS_PLAYER_NAME.sender()
+			.replace("<uuid>", this.getButtonUUID(profile.getUniqueId()))
+			.replace("<name>", this.getButtonName(profile.getName().get()))
+			.sendTo(staff);				
 		return true;
 	}
 	
@@ -185,17 +187,16 @@ public class EEUuid extends ECommand<EverEssentials> {
 			return this.commandUUIDPlayerUUID((EPlayer) staff);
 		}
 		
-		staff.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
-				.append(EEMessages.UUID_OTHERS_PLAYER_UUID.get()
-						.replaceAll("<player>", profile.getName().orElse(profile.getUniqueId().toString())))
-				.replace("<uuid>", this.getButtonUUID(profile.getUniqueId()))
-				.replace("<name>", this.getButtonName(profile.getName().get()))
-				.build());				
+		EEMessages.UUID_OTHERS_PLAYER_UUID.sender()
+			.replace("<player>", profile.getName().orElse(profile.getUniqueId().toString()))
+			.replace("<uuid>", this.getButtonUUID(profile.getUniqueId()))
+			.replace("<name>", this.getButtonName(profile.getName().get()))
+			.sendTo(staff);				
 		return true;
 	}
 	
 	private Text getButtonUUID(final UUID uuid){
-		return EChat.of(EEMessages.UUID_UUID.get().replace("<uuid>", uuid.toString())).toBuilder()
+		return EEMessages.UUID_UUID.getFormat().toText("<uuid>", uuid.toString()).toBuilder()
 				.onHover(TextActions.showText(EAMessages.HOVER_COPY.getText()))
 					.onClick(TextActions.suggestCommand(uuid.toString()))
 					.onShiftClick(TextActions.insertText(uuid.toString()))
@@ -203,7 +204,7 @@ public class EEUuid extends ECommand<EverEssentials> {
 	}
 	
 	private Text getButtonName(final String name){
-		return EChat.of(EEMessages.UUID_NAME.get().replace("<name>", name.toString())).toBuilder()
+		return EEMessages.UUID_NAME.getFormat().toText("<name>", name.toString()).toBuilder()
 				.onHover(TextActions.showText(EAMessages.HOVER_COPY.getText()))
 					.onClick(TextActions.suggestCommand(name))
 					.onShiftClick(TextActions.insertText(name))

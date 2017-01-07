@@ -54,7 +54,7 @@ public class EESkull extends ECommand<EverEssentials> {
 	@Override
 	public Text help(final CommandSource source) {
 		if (source.hasPermission(EEPermissions.SKULL_OTHERS.get())) {
-			return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_PLAYER.get() + "]")
+			return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_PLAYER.getString() + "]")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
 					.build();
@@ -97,7 +97,9 @@ public class EESkull extends ECommand<EverEssentials> {
 				resultat = this.commandSkullOthers((EPlayer) source, args.get(0));
 				// Il n'a pas la permission
 			} else {
-				source.sendMessage(EAMessages.NO_PERMISSION.getText());
+				EAMessages.NO_PERMISSION.sender()
+					.prefix(EEMessages.PREFIX)
+					.sendTo(source);
 			}
 		// Nombre d'argument incorrect
 		} else {
@@ -109,7 +111,7 @@ public class EESkull extends ECommand<EverEssentials> {
 
 	private boolean commandSkull(final EPlayer player) {
 		player.giveItemAndDrop(UtilsItemStack.createPlayerHead(player.getProfile()));
-		player.sendMessage(EEMessages.PREFIX.get() + EEMessages.SKULL_MY_HEAD.get());
+		EEMessages.SKULL_MY_HEAD.sendTo(player);
 		return true;
 	}
 
@@ -121,12 +123,18 @@ public class EESkull extends ECommand<EverEssentials> {
 					try {
 						GameProfile profile_skin = this.plugin.getEServer().getGameProfileManager().fill(profile, true, false).get();
 						player.giveItemAndDrop(UtilsItemStack.createPlayerHead(profile_skin));
-						player.sendMessage(EEMessages.PREFIX.get() + EEMessages.SKULL_OTHERS.get().replaceAll("<player>", profile_skin.getName().get()));
+						EEMessages.SKULL_OTHERS.sender()
+							.replace("<player>", profile_skin.getName().get())
+							.sendTo(player);
 					} catch (Exception e) {
-						player.sendMessage(EEMessages.PREFIX.get() + EAMessages.PLAYER_NOT_FOUND.get());
+						EAMessages.PLAYER_NOT_FOUND.sender()
+							.prefix(EEMessages.PREFIX)
+							.sendTo(player);
 					}
 				} else {
-					player.sendMessage(EEMessages.PREFIX.get() + EAMessages.PLAYER_NOT_FOUND.get());
+					EAMessages.PLAYER_NOT_FOUND.sender()
+						.prefix(EEMessages.PREFIX)
+						.sendTo(player);
 				}
 			}
 			return profile;

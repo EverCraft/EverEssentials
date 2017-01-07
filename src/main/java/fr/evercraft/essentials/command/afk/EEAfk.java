@@ -42,7 +42,7 @@ public class EEAfk extends EParentCommand<EverEssentials> {
 
 	@Override
 	public Text description(final CommandSource source) {
-		return EChat.of(EEMessages.AFK_DESCRIPTION.get());
+		return EEMessages.AFK_DESCRIPTION.getText();
 	}
 
 	@Override

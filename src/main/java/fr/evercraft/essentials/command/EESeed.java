@@ -30,10 +30,8 @@ import org.spongepowered.api.world.World;
 import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
-import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ECommand;
 import fr.evercraft.everapi.server.player.EPlayer;
-import fr.evercraft.everapi.text.ETextBuilder;
 
 public class EESeed extends ECommand<EverEssentials> {
 	
@@ -54,7 +52,7 @@ public class EESeed extends ECommand<EverEssentials> {
 	@Override
 	public Text help(final CommandSource source) {
 		return Text.builder("/" + this.getName())
-					.onClick(TextActions.suggestCommand("/" + this.getName() + " [" + EAMessages.ARGS_WORLD.get() + "]"))
+					.onClick(TextActions.suggestCommand("/" + this.getName() + " [" + EAMessages.ARGS_WORLD.getString() + "]"))
 					.color(TextColors.RED)
 					.build();
 	}
@@ -97,29 +95,30 @@ public class EESeed extends ECommand<EverEssentials> {
 				if(optWorld.isPresent()) {
 					resultat = this.commandSeed((EPlayer) source, optWorld.get());
 				} else {
-					source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.WORLD_NOT_FOUND.get()
-							.replace("<world>", args.get(0))));
+					EAMessages.WORLD_NOT_FOUND.sender()
+						.prefix(EEMessages.PREFIX)
+						.replace("<world>", args.get(0))
+						.sendTo(source);
 				}
 			}
 		// Nombre d'argument incorrect
 		} else {
-			source.sendMessage(help(source));
+			source.sendMessage(this.help(source));
 		}
 		
 		return resultat;
 	}
 	
 	private boolean commandSeed(final EPlayer player, final World world) {
-		player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
-				.append(EEMessages.SEED_MESSAGE.get()
-				.replaceAll("<world>", world.getName()))
-				.replace("<seed>", this.getButtonSeed(world.getProperties().getSeed()))
-				.build());				
+		EEMessages.SEED_MESSAGE.sender()
+			.replace("<world>", world.getName())
+			.replace("<seed>", this.getButtonSeed(world.getProperties().getSeed()))
+			.sendTo(player);				
 		return true;
 	}
 	
 	private Text getButtonSeed(final Long seed){
-		return EChat.of(EEMessages.SEED_NAME.get().replace("<seed>", seed.toString())).toBuilder()
+		return EEMessages.SEED_NAME.getFormat().toText("<seed>", seed.toString()).toBuilder()
 				.onHover(TextActions.showText(EAMessages.HOVER_COPY.getText()))
 					.onClick(TextActions.suggestCommand(seed.toString()))
 					.onShiftClick(TextActions.insertText(seed.toString()))
