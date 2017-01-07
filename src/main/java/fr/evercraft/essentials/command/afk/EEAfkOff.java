@@ -30,7 +30,6 @@ import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.everapi.EAMessage.EAMessages;
-import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ESubCommand;
 import fr.evercraft.everapi.server.player.EPlayer;
 
@@ -47,13 +46,13 @@ public class EEAfkOff extends ESubCommand<EverEssentials> {
 
 	@Override
 	public Text description(final CommandSource source) {
-		return EChat.of(EEMessages.AFK_OFF_DESCRIPTION.get());
+		return EEMessages.AFK_OFF_DESCRIPTION.getText();
 	}
 
 	@Override
 	public Text help(final CommandSource source) {
 		if (source.hasPermission(EEPermissions.AFK_OTHERS.get())){
-			return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_PLAYER.get() + "]")
+			return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_PLAYER.getString() + "]")
 						.onClick(TextActions.suggestCommand("/" + this.getName()))
 						.color(TextColors.RED)
 						.build();
@@ -69,7 +68,7 @@ public class EEAfkOff extends ESubCommand<EverEssentials> {
 	public List<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		List<String> suggests = new ArrayList<String>();
 		if (args.size() == 1 && source.hasPermission(EEPermissions.AFK_OTHERS.get())){
-			suggests.addAll(this.getAllPlayers());
+			suggests.addAll(this.getAllPlayers(source));
 		}
 		return suggests;
 	}
@@ -96,11 +95,15 @@ public class EEAfkOff extends ESubCommand<EverEssentials> {
 					resultat = this.commandAfkOffOthers(source, player.get());
 				// Le joueur est introuvable
 				} else {
-					source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
+					EAMessages.PLAYER_NOT_FOUND.sender()
+						.prefix(EEMessages.PREFIX)
+						.sendTo(source);
 				}
 			// Il n'a pas la permission
 			} else {
-				source.sendMessage(EAMessages.NO_PERMISSION.getText());
+				EAMessages.NO_PERMISSION.sender()
+					.prefix(EEMessages.PREFIX)
+					.sendTo(source);
 			}
 		} else {
 			source.sendMessage(this.help(source));
@@ -114,17 +117,17 @@ public class EEAfkOff extends ESubCommand<EverEssentials> {
 		// Si le mode afk est déjà activé
 		if (afk){
 			if (player.setAfk(false)) {
-				player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.AFK_OFF_PLAYER.getText()));
-				if (EEMessages.AFK_OFF_ALL.has()) {
-					player.broadcastMessage(EEMessages.PREFIX.getText().concat(player.replaceVariable(EEMessages.AFK_OFF_ALL.get())));
-				}
+				EEMessages.AFK_OFF_PLAYER.sendTo(player);
+				EEMessages.AFK_OFF_ALL.sender()
+					.replace(player.getReplacesAll())
+					.sendAll(this.plugin.getEServer().getOnlineEPlayers(), other -> !other.equals(player));
 				return true;
 			} else {
-				player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.AFK_OFF_PLAYER_CANCEL.getText()));
+				EEMessages.AFK_OFF_PLAYER_CANCEL.sendTo(player);
 			}
 		// Le mode afk est déjà désactivé
 		} else {
-			player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.AFK_OFF_PLAYER_ERROR.getText()));
+			EEMessages.AFK_OFF_PLAYER_ERROR.sendTo(player);
 		}
 		return false;
 	}
@@ -136,27 +139,26 @@ public class EEAfkOff extends ESubCommand<EverEssentials> {
 			// Si le mode afk est déjà activé
 			if (afk){
 				if (player.setAfk(false)) {
-					player.sendMessage(EEMessages.PREFIX.get() + EEMessages.AFK_OFF_OTHERS_PLAYER.get()
-							.replaceAll("<staff>", staff.getName()));
-					staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.AFK_OFF_OTHERS_STAFF.get()
-							.replaceAll("<player>", player.getName())
-							.replaceAll("<staff>", staff.getName())));
-					if (EEMessages.AFK_OFF_ALL.has()) {
-						for (EPlayer other : this.plugin.getEServer().getOnlineEPlayers()) {
-							if (!other.equals(player) && other.equals(staff)) {
-								other.sendMessage(EEMessages.PREFIX.getText().concat(player.replaceVariable(EEMessages.AFK_OFF_ALL.get())));
-							}
-						}
-					}
+					EEMessages.AFK_OFF_OTHERS_PLAYER.sender()
+						.replace("<staff>", staff.getName())
+						.sendTo(player);
+					EEMessages.AFK_OFF_OTHERS_STAFF.sender()
+						.replace("<player>", player.getName())
+						.sendTo(player);
+					EEMessages.AFK_OFF_ALL.sender()
+						.replace(player.getReplacesAll())
+						.sendAll(this.plugin.getEServer().getOnlineEPlayers(), other -> !other.equals(player) && other.equals(staff));
 					return true;
 				} else {
-					staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.AFK_OFF_OTHERS_CANCEL.get()
-							.replaceAll("<player>", player.getName())));
+					EEMessages.AFK_OFF_OTHERS_CANCEL.sender()
+						.replace("<player>", player.getName())
+						.sendTo(staff);
 				}
 			// Le mode afk est déjà désactivé
 			} else {
-				staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.AFK_OFF_OTHERS_ERROR.get()
-						.replaceAll("<player>", player.getName())));
+				EEMessages.AFK_OFF_OTHERS_ERROR.sender()
+					.replace("<player>", player.getName())
+					.sendTo(staff);
 			}
 		// La source et le joueur sont identique
 		} else {

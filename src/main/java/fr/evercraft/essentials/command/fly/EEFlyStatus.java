@@ -30,7 +30,6 @@ import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.everapi.EAMessage.EAMessages;
-import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ESubCommand;
 import fr.evercraft.everapi.server.player.EPlayer;
 import fr.evercraft.everapi.server.user.EUser;
@@ -48,13 +47,13 @@ public class EEFlyStatus extends ESubCommand<EverEssentials> {
 
 	@Override
 	public Text description(final CommandSource source) {
-		return EChat.of(EEMessages.FLY_STATUS_DESCRIPTION.get());
+		return EEMessages.FLY_STATUS_DESCRIPTION.getText();
 	}
 
 	@Override
 	public Text help(final CommandSource source) {
 		if (source.hasPermission(EEPermissions.FLY_OTHERS.get())){
-			return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_PLAYER.get() + "]")
+			return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_PLAYER.getString() + "]")
 						.onClick(TextActions.suggestCommand("/" + this.getName()))
 						.color(TextColors.RED)
 						.build();
@@ -70,7 +69,7 @@ public class EEFlyStatus extends ESubCommand<EverEssentials> {
 	public List<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		List<String> suggests = new ArrayList<String>();
 		if (args.size() == 1 && source.hasPermission(EEPermissions.FLY_OTHERS.get())){
-			suggests.addAll(this.getAllUsers());
+			suggests.addAll(this.getAllUsers(source));
 		}
 		return suggests;
 	}
@@ -96,11 +95,15 @@ public class EEFlyStatus extends ESubCommand<EverEssentials> {
 					resultat = this.commandFlyStatusOthers(source, user.get());
 				// Le joueur est introuvable
 				} else {
-					source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
+					EAMessages.PLAYER_NOT_FOUND.sender()
+						.prefix(EEMessages.PREFIX)
+						.sendTo(source);
 				}
 			// Il n'a pas la permission
 			} else {
-				source.sendMessage(EAMessages.NO_PERMISSION.getText());
+				EAMessages.NO_PERMISSION.sender()
+					.prefix(EEMessages.PREFIX)
+					.sendTo(source);
 			}
 		} else {
 			source.sendMessage(this.help(source));
@@ -110,13 +113,15 @@ public class EEFlyStatus extends ESubCommand<EverEssentials> {
 
 	private boolean commandFlyStatus(final EPlayer player) {
 		// Fly activé
-		if (player.getAllowFlight()){
-			player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.FLY_STATUS_PLAYER_ON.get()
-					.replaceAll("<player>", player.getDisplayName())));
+		if (player.getAllowFlight()) {
+			EEMessages.FLY_STATUS_PLAYER_ON.sender()
+				.replace("<player>", player.getDisplayName())
+				.sendTo(player);
 		// Fly désactivé
 		} else {
-			player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.FLY_STATUS_PLAYER_OFF.get()
-					.replaceAll("<player>", player.getDisplayName())));
+			EEMessages.FLY_STATUS_PLAYER_OFF.sender()
+				.replace("<player>", player.getDisplayName())
+				.sendTo(player);
 		}
 		return true;
 	}
@@ -125,19 +130,19 @@ public class EEFlyStatus extends ESubCommand<EverEssentials> {
 		// La source et le joueur sont identique
 		if (staff instanceof EPlayer && user.getIdentifier().equals(staff.getIdentifier())) {
 			return this.commandFlyStatus((EPlayer) staff);
-			
-		// La source et le joueur sont différent
+		}	
+
+		// Fly activé
+		if (user.getAllowFlight()) {
+			EEMessages.FLY_STATUS_OTHERS_ON.sender()
+				.replace("<player>", user.getDisplayName())
+				.sendTo(staff);
+		// Fly désactivé
 		} else {
-			// Fly activé
-			if (user.getAllowFlight()){
-				staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.FLY_STATUS_OTHERS_ON.get()
-						.replaceAll("<player>", user.getDisplayName())));
-			// Fly désactivé
-			} else {
-				staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.FLY_STATUS_OTHERS_OFF.get()
-						.replaceAll("<player>", user.getDisplayName())));
-			}
-			return true;
+			EEMessages.FLY_STATUS_OTHERS_OFF.sender()
+				.replace("<player>", user.getDisplayName())
+				.sendTo(staff);
 		}
+		return true;
 	}
 }

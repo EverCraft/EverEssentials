@@ -30,7 +30,6 @@ import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.everapi.EAMessage.EAMessages;
-import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ESubCommand;
 import fr.evercraft.everapi.server.player.EPlayer;
 import fr.evercraft.everapi.server.user.EUser;
@@ -48,13 +47,13 @@ public class EEFreezeStatus extends ESubCommand<EverEssentials> {
 
 	@Override
 	public Text description(final CommandSource source) {
-		return EChat.of(EEMessages.FREEZE_STATUS_DESCRIPTION.get());
+		return EEMessages.FREEZE_STATUS_DESCRIPTION.getText();
 	}
 
 	@Override
 	public Text help(final CommandSource source) {
 		if (source.hasPermission(EEPermissions.FREEZE_OTHERS.get())){
-			return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_PLAYER.get() + "]")
+			return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_PLAYER.getString() + "]")
 						.onClick(TextActions.suggestCommand("/" + this.getName()))
 						.color(TextColors.RED)
 						.build();
@@ -96,11 +95,15 @@ public class EEFreezeStatus extends ESubCommand<EverEssentials> {
 					resultat = this.commandFreezeStatusOthers(source, user.get());
 				// Le joueur est introuvable
 				} else {
-					source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
+					EAMessages.PLAYER_NOT_FOUND.sender()
+						.prefix(EEMessages.PREFIX)
+						.sendTo(source);
 				}
 			// Il n'a pas la permission
 			} else {
-				source.sendMessage(EAMessages.NO_PERMISSION.getText());
+				EAMessages.NO_PERMISSION.sender()
+					.prefix(EEMessages.PREFIX)
+					.sendTo(source);
 			}
 		} else {
 			source.sendMessage(this.help(source));
@@ -112,12 +115,14 @@ public class EEFreezeStatus extends ESubCommand<EverEssentials> {
 	private boolean commandFreezeStatus(final EPlayer player) {
 		// Si le freeze est déjà activé
 		if (player.isFreeze()){
-			player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.FREEZE_STATUS_PLAYER_ON.get()
-					.replaceAll("<player>", player.getName())));
+			EEMessages.FREEZE_STATUS_PLAYER_ON.sender()
+				.replace("<player>", player.getDisplayName())
+				.sendTo(player);
 		// Freeze est déjà désactivé
 		} else {
-			player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.FREEZE_STATUS_PLAYER_OFF.get()
-					.replaceAll("<player>", player.getName())));
+			EEMessages.FREEZE_STATUS_PLAYER_OFF.sender()
+				.replace("<player>", player.getDisplayName())
+				.sendTo(player);
 		}
 		return true;
 	}
@@ -126,19 +131,19 @@ public class EEFreezeStatus extends ESubCommand<EverEssentials> {
 		// La source et le joueur sont identique
 		if (staff instanceof EPlayer && user.getIdentifier().equals(staff.getIdentifier())) {
 			return this.commandFreezeStatus((EPlayer) staff);
-			
-		// La source et le joueur sont différent
-		} else {
-			// Freeze activé
-			if (user.isFreeze()){
-				staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.FREEZE_STATUS_OTHERS_ON.get()
-						.replaceAll("<player>", user.getName())));
-			// Freeze désactivé
-			} else {
-				staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.FREEZE_STATUS_OTHERS_OFF.get()
-						.replaceAll("<player>", user.getName())));
-			}
-			return true;
 		}
+		
+		// Freeze activé
+		if (user.isFreeze()){
+			EEMessages.FREEZE_STATUS_OTHERS_ON.sender()
+				.replace("<player>", user.getDisplayName())
+				.sendTo(staff);
+		// Freeze désactivé
+		} else {
+			EEMessages.FREEZE_STATUS_OTHERS_OFF.sender()
+				.replace("<player>", user.getDisplayName())
+				.sendTo(staff);
+		}
+		return true;
 	}
 }

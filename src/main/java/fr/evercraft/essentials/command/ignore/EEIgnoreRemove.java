@@ -29,7 +29,6 @@ import org.spongepowered.api.text.format.TextColors;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.everapi.EAMessage.EAMessages;
-import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ESubCommand;
 import fr.evercraft.everapi.server.player.EPlayer;
 import fr.evercraft.everapi.server.user.EUser;
@@ -47,12 +46,12 @@ public class EEIgnoreRemove extends ESubCommand<EverEssentials> {
 
 	@Override
 	public Text description(final CommandSource source) {
-		return EChat.of(EEMessages.IGNORE_REMOVE_DESCRIPTION.get());
+		return EEMessages.IGNORE_REMOVE_DESCRIPTION.getText();
 	}
 
 	@Override
 	public Text help(final CommandSource source) {
-		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_PLAYER.get() + ">")
+		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_PLAYER.getString() + ">")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
 					.build();
@@ -81,7 +80,9 @@ public class EEIgnoreRemove extends ESubCommand<EverEssentials> {
 					resultat = this.commandIgnoreRemove((EPlayer) source, user.get());
 				// Le joueur est introuvable
 				} else {
-					source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
+					EAMessages.PLAYER_NOT_FOUND.sender()
+						.prefix(EEMessages.PREFIX)
+						.sendTo(source);
 				}
 			// La source n'est pas un joueur
 			} else {
@@ -97,19 +98,23 @@ public class EEIgnoreRemove extends ESubCommand<EverEssentials> {
 	}
 
 	private boolean commandIgnoreRemove(final EPlayer player, final EUser user) {
-		if(player.ignore(user.getUniqueId())) {
-			if (player.removeIgnore(user.getUniqueId())) {
-				player.sendMessage(EEMessages.PREFIX.get() + EEMessages.IGNORE_REMOVE_PLAYER.get()
-						.replaceAll("<player>", user.getName()));
-				return true;
-			} else {
-				player.sendMessage(EEMessages.PREFIX.get() + EEMessages.IGNORE_REMOVE_CANCEL.get()
-						.replaceAll("<player>", user.getName()));
-			}
-		} else {
-			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.IGNORE_REMOVE_ERROR.get()
-					.replaceAll("<player>", user.getName()));
+		if(!player.ignore(user.getUniqueId())) {
+			EEMessages.IGNORE_REMOVE_ERROR.sender()
+				.replace("<player>", user.getName())
+				.sendTo(player);
+			return false;
 		}
-		return false;
+		
+		if (!player.removeIgnore(user.getUniqueId())) {
+			EEMessages.IGNORE_REMOVE_CANCEL.sender()
+				.replace("<player>", user.getName())
+				.sendTo(player);
+			return false;
+		}
+		
+		EEMessages.IGNORE_REMOVE_PLAYER.sender()
+			.replace("<player>", user.getName())
+			.sendTo(player);
+		return true;
 	}
 }

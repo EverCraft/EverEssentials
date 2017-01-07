@@ -31,11 +31,9 @@ import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.everapi.EAMessage.EAMessages;
-import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ESubCommand;
 import fr.evercraft.everapi.server.player.EPlayer;
 import fr.evercraft.everapi.server.user.EUser;
-import fr.evercraft.everapi.text.ETextBuilder;
 
 public class EEIgnoreList extends ESubCommand<EverEssentials> {
 	public EEIgnoreList(final EverEssentials plugin, final EEIgnore command) {
@@ -49,13 +47,13 @@ public class EEIgnoreList extends ESubCommand<EverEssentials> {
 
 	@Override
 	public Text description(final CommandSource source) {
-		return EChat.of(EEMessages.IGNORE_LIST_DESCRIPTION.get());
+		return EEMessages.IGNORE_LIST_DESCRIPTION.getText();
 	}
 	
 	@Override
 	public Text help(final CommandSource source) {
 		if (source.hasPermission(EEPermissions.IGNORE_OTHERS.get())){
-			return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_PLAYER.get() + "]")
+			return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_PLAYER.getString() + "]")
 						.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 						.color(TextColors.RED)
 						.build();
@@ -70,7 +68,7 @@ public class EEIgnoreList extends ESubCommand<EverEssentials> {
 	public List<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		List<String> suggests = new ArrayList<String>();
 		if (args.size() == 1 && source.hasPermission(EEPermissions.IGNORE_OTHERS.get())){
-			suggests.addAll(this.getAllUsers());
+			suggests.addAll(this.getAllUsers(source));
 		}
 		return suggests;
 	}
@@ -99,11 +97,15 @@ public class EEIgnoreList extends ESubCommand<EverEssentials> {
 					resultat = this.commandIgnoreList(source, user.get());
 				// Le joueur est introuvable
 				} else {
-					source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
+					EAMessages.PLAYER_NOT_FOUND.sender()
+						.prefix(EEMessages.PREFIX)
+						.sendTo(source);
 				}
 			// Il n'a pas la permission
 			} else {
-				source.sendMessage(EAMessages.NO_PERMISSION.getText());
+				EAMessages.NO_PERMISSION.sender()
+					.prefix(EEMessages.PREFIX)
+					.sendTo(source);
 			}
 		} else {
 			source.sendMessage(this.help(source));
@@ -118,10 +120,9 @@ public class EEIgnoreList extends ESubCommand<EverEssentials> {
 		for (UUID uuid : player.getIgnores()) {
 			Optional<EUser> user = this.plugin.getEServer().getEUser(uuid);
 			if (user.isPresent()) {
-				lists.add(ETextBuilder.toBuilder(EEMessages.IGNORE_LIST_LINE_DELETE.get()
-						.replaceAll("<player>", user.get().getName()))
-					.replace("<delete>", getButtonDelete(user.get().getName(),  user.get().getUniqueId()))
-					.build());
+				lists.add(EEMessages.IGNORE_LIST_LINE_DELETE.getFormat().toText(
+						"<player>", user.get().getName(),
+						"<delete>", getButtonDelete(user.get().getName(),  user.get().getUniqueId())));
 			}
 		}
 			
@@ -130,7 +131,7 @@ public class EEIgnoreList extends ESubCommand<EverEssentials> {
 		}
 		
 		this.plugin.getEverAPI().getManagerService().getEPagination().sendTo(
-				EChat.of(EEMessages.IGNORE_LIST_PLAYER_TITLE.get().replaceAll("<player>", player.getName())).toBuilder()
+				EEMessages.IGNORE_LIST_PLAYER_TITLE.getFormat().toText("<player>", player.getName()).toBuilder()
 					.onClick(TextActions.runCommand("/" + this.getName())).build(), 
 				lists, player);
 		return true;
@@ -139,33 +140,33 @@ public class EEIgnoreList extends ESubCommand<EverEssentials> {
 	private boolean commandIgnoreList(final CommandSource staff, final EUser player) {
 		if (staff instanceof EPlayer && player.getIdentifier().equals(staff.getIdentifier())) {
 			return this.commandIgnoreList((EPlayer) staff);
-		} else {
-			List<Text> lists = new ArrayList<Text>();
-			
-			for (UUID uuid : player.getIgnores()) {
-				Optional<EUser> user = this.plugin.getEServer().getEUser(uuid);
-				if (user.isPresent()) {
-					lists.add(EChat.of(EEMessages.IGNORE_LIST_LINE.get()
-							.replaceAll("<player>", user.get().getName())));
-				}
-			}
-				
-			if (lists.isEmpty()) {
-				lists.add(EEMessages.IGNORE_LIST_EMPTY.getText());
-			}
-			
-			this.plugin.getEverAPI().getManagerService().getEPagination().sendTo(
-					EChat.of(EEMessages.IGNORE_LIST_OTHERS_TITLE.get().replaceAll("<player>", player.getName())).toBuilder()
-						.onClick(TextActions.runCommand("/" + this.getName() + " \"" + player.getUniqueId() + "\"")).build(), 
-					lists, staff);
-			return true;
 		}
+		
+		List<Text> lists = new ArrayList<Text>();
+		
+		for (UUID uuid : player.getIgnores()) {
+			Optional<EUser> user = this.plugin.getEServer().getEUser(uuid);
+			if (user.isPresent()) {
+				lists.add(EEMessages.IGNORE_LIST_LINE.getFormat()
+						.toText("<player>", user.get().getName()));
+			}
+		}
+			
+		if (lists.isEmpty()) {
+			lists.add(EEMessages.IGNORE_LIST_EMPTY.getText());
+		}
+		
+		this.plugin.getEverAPI().getManagerService().getEPagination().sendTo(
+				EEMessages.IGNORE_LIST_OTHERS_TITLE.getFormat().toText("<player>", player.getName()).toBuilder()
+					.onClick(TextActions.runCommand("/" + this.getName() + " \"" + player.getUniqueId() + "\"")).build(), 
+				lists, staff);
+		return true;
 	}
 	
 	private Text getButtonDelete(final String name, final UUID uuid){
 		return EEMessages.IGNORE_LIST_REMOVE.getText().toBuilder()
-					.onHover(TextActions.showText(EChat.of(EEMessages.IGNORE_LIST_REMOVE_HOVER.get()
-							.replaceAll("<player>", name))))
+					.onHover(TextActions.showText(EEMessages.IGNORE_LIST_REMOVE_HOVER.getFormat()
+							.toText("<player>", name)))
 					.onClick(TextActions.runCommand("/" + this.getParentName() + " remove " + uuid.toString()))
 					.build();
 	}

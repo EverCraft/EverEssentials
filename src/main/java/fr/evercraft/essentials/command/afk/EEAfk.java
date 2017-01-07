@@ -25,7 +25,6 @@ import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.everapi.EAMessage.EAMessages;
-import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.EParentCommand;
 import fr.evercraft.everapi.server.player.EPlayer;
 
@@ -72,22 +71,22 @@ public class EEAfk extends EParentCommand<EverEssentials> {
 		boolean afk = !player.isAfk();
 		if (player.setAfk(afk)) {
 			if (afk) {
-				player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.AFK_ON_PLAYER.getText()));
-				if (EEMessages.AFK_ON_ALL.has()) {
-					player.broadcastMessage(EEMessages.PREFIX.getText().concat(player.replaceVariable(EEMessages.AFK_ON_ALL.get())));
-				}
+				EEMessages.AFK_ON_PLAYER.sendTo(player);
+				EEMessages.AFK_ON_ALL.sender()
+					.replace(player.getReplacesAll())
+					.sendAll(this.plugin.getEServer().getOnlineEPlayers(), other -> !other.equals(player));
 			} else {
-				player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.AFK_OFF_PLAYER.getText()));
-				if (EEMessages.AFK_OFF_ALL.has()) {
-					player.broadcastMessage(EEMessages.PREFIX.getText().concat(player.replaceVariable(EEMessages.AFK_OFF_ALL.get())));
-				}
+				EEMessages.AFK_OFF_PLAYER.sendTo(player);
+				EEMessages.AFK_OFF_ALL.sender()
+					.replace(player.getReplacesAll())
+					.sendAll(this.plugin.getEServer().getOnlineEPlayers(), other -> !other.equals(player));
 			}
 			return true;
 		} else {
 			if (afk) {
-				player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.AFK_ON_PLAYER_CANCEL.getText()));
+				EEMessages.AFK_ON_PLAYER_CANCEL.sendTo(player);
 			} else {
-				player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.AFK_OFF_PLAYER_CANCEL.getText()));
+				EEMessages.AFK_OFF_PLAYER_CANCEL.sendTo(player);
 			}
 		}
 		return false;

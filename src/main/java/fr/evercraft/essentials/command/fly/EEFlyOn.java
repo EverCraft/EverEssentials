@@ -30,7 +30,6 @@ import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
-import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ESubCommand;
 import fr.evercraft.everapi.server.player.EPlayer;
 import fr.evercraft.everapi.server.user.EUser;
@@ -48,13 +47,13 @@ public class EEFlyOn extends ESubCommand<EverEssentials> {
 
 	@Override
 	public Text description(final CommandSource source) {
-		return EChat.of(EEMessages.FLY_ON_DESCRIPTION.get());
+		return EEMessages.FLY_ON_DESCRIPTION.getText();
 	}
 
 	@Override
 	public Text help(final CommandSource source) {
 		if (source.hasPermission(EEPermissions.FLY_OTHERS.get())){
-			return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_PLAYER.get() + "]")
+			return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_PLAYER.getString() + "]")
 						.onClick(TextActions.suggestCommand("/" + this.getName()))
 						.color(TextColors.RED)
 						.build();
@@ -70,7 +69,7 @@ public class EEFlyOn extends ESubCommand<EverEssentials> {
 	public List<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		List<String> suggests = new ArrayList<String>();
 		if (args.size() == 1 && source.hasPermission(EEPermissions.FLY_OTHERS.get())){
-			suggests.addAll(this.getAllUsers());
+			suggests.addAll(this.getAllUsers(source));
 		}
 		return suggests;
 	}
@@ -97,11 +96,15 @@ public class EEFlyOn extends ESubCommand<EverEssentials> {
 					resultat = this.commandFlyOnOthers(source, user.get());
 				// Le joueur est introuvable
 				} else {
-					source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
+					EAMessages.PLAYER_NOT_FOUND.sender()
+						.prefix(EEMessages.PREFIX)
+						.sendTo(source);
 				}
 			// Il n'a pas la permission
 			} else {
-				source.sendMessage(EAMessages.NO_PERMISSION.getText());
+				EAMessages.NO_PERMISSION.sender()
+					.prefix(EEMessages.PREFIX)
+					.sendTo(source);
 			}
 		} else {
 			source.sendMessage(this.help(source));
@@ -111,51 +114,50 @@ public class EEFlyOn extends ESubCommand<EverEssentials> {
 	}
 
 	private boolean commandFlyOn(final EPlayer player) {
-		boolean fly = player.getAllowFlight();
-		// Fly désactivé
-		if (!fly){
-			if (player.setAllowFlight(true)) {
-				player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.FLY_ON_PLAYER.getText()));
-				return true;
-			} else {
-				player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.FLY_ON_PLAYER_CANCEL.getText()));
-			}
 		// Fly activé
-		} else {
-			player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.FLY_ON_PLAYER_ERROR.getText()));
+		if (player.getAllowFlight()) {
+			EEMessages.FLY_ON_PLAYER_ERROR.sendTo(player);
+			return false;
 		}
-		return false;
+		
+		if (!player.setAllowFlight(true)) {
+			EEMessages.FLY_ON_PLAYER_CANCEL.sendTo(player);
+			return false;
+		}
+		
+		EEMessages.FLY_ON_PLAYER.sendTo(player);
+		return true;
 	}
 	
 	private boolean commandFlyOnOthers(final CommandSource staff, final EUser user) throws CommandException {
 		// La source et le joueur sont identique
 		if (staff instanceof EPlayer && user.getIdentifier().equals(staff.getIdentifier())) {
 			return this.commandFlyOn((EPlayer) staff);
-			
-		// La source et le joueur sont différent
-		} else {
-			boolean fly = user.getAllowFlight();
-			// Fly désactivé
-			if (!fly) {
-				if (user.setAllowFlight(true)) {
-					staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.FLY_ON_OTHERS_STAFF.get()
-							.replaceAll("<player>", user.getName())));
-					
-					if(user instanceof EPlayer) {
-						((EPlayer) user).sendMessage(EEMessages.PREFIX.get() + EEMessages.FLY_ON_OTHERS_PLAYER.get()
-								.replaceAll("<staff>", staff.getName()));
-					}
-					return true;
-				} else {
-					staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.FLY_ON_OTHERS_CANCEL.get()
-							.replaceAll("<player>", user.getName())));
-				}
-			// Fly désactivé
-			} else {
-				staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.FLY_ON_OTHERS_ERROR.get()
-						.replaceAll("<player>", user.getName())));
-			}
+		}
+		
+		if (user.getAllowFlight()) {
+			EEMessages.FLY_ON_OTHERS_ERROR.sender()
+				.replace("<player>", user.getName())
+				.sendTo(staff);
 			return false;
 		}
+		
+		if (!user.setAllowFlight(true)) {
+			EEMessages.FLY_ON_OTHERS_CANCEL.sender()
+				.replace("<player>", user.getName())
+				.sendTo(staff);
+			return false;
+		}
+		
+		EEMessages.FLY_ON_OTHERS_STAFF.sender()
+			.replace("<player>", user.getName())
+			.sendTo(staff);
+		
+		if(user instanceof EPlayer) {
+			EEMessages.FLY_ON_OTHERS_PLAYER.sender()
+				.replace("<staff>", staff.getName())
+				.sendTo((EPlayer) user);
+		}
+		return true;
 	}
 }

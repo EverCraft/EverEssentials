@@ -29,7 +29,6 @@ import org.spongepowered.api.world.storage.WorldProperties;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.everapi.EAMessage.EAMessages;
-import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ESubCommand;
 import fr.evercraft.everapi.server.player.EPlayer;
 
@@ -46,7 +45,7 @@ public class EEGameruleSet extends ESubCommand<EverEssentials> {
 
 	@Override
 	public Text description(final CommandSource source) {
-		return EChat.of(EEMessages.GAMERULE_SET_DESCRIPTION.get());
+		return EEMessages.GAMERULE_SET_DESCRIPTION.getText();
 	}
 
 	@Override

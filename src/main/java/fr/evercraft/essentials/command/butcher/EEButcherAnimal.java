@@ -33,7 +33,6 @@ import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.everapi.EAMessage.EAMessages;
-import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ESubCommand;
 import fr.evercraft.everapi.server.player.EPlayer;
 import fr.evercraft.everapi.sponge.UtilsEntityType;
@@ -50,14 +49,14 @@ public class EEButcherAnimal extends ESubCommand<EverEssentials> {
 
 	@Override
 	public Text description(final CommandSource source) {
-		return EChat.of(EEMessages.BUTCHER_ANIMAL_DESCRIPTION.get());
+		return EEMessages.BUTCHER_ANIMAL_DESCRIPTION.getText();
 	}
 	
 	@Override
 	public Text help(final CommandSource source) {
-		Builder build = Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_ENTITY.get() + "> <" + EAMessages.ARGS_RADIUS.get());
+		Builder build = Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_ENTITY.getString() + "> <" + EAMessages.ARGS_RADIUS.getString());
 		if (source.hasPermission(EEPermissions.BUTCHER_WORLD.get())) {
-			build.append(Text.of("|" + EAMessages.ARGS_ALL.get()));
+			build.append(Text.of("|" + EAMessages.ARGS_ALL.getString()));
 		}
 		return build.append(Text.of(">"))
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
@@ -88,10 +87,12 @@ public class EEButcherAnimal extends ESubCommand<EverEssentials> {
 			if (args.size() == 1) {
 				if (args.get(0).equals("all")){
 					if (player.hasPermission(EEPermissions.BUTCHER_WORLD.get())){
-						resultat = commandButcherAnimal(player);
+						resultat = this.commandButcherAnimal(player);
 					// Il n'a pas la permission
 					} else {
-						player.sendMessage(EAMessages.NO_PERMISSION.getText());
+						EAMessages.NO_PERMISSION.sender()
+							.prefix(EEMessages.PREFIX)
+							.sendTo(player);
 					}
 				} else {
 					try {
@@ -99,11 +100,15 @@ public class EEButcherAnimal extends ESubCommand<EverEssentials> {
 						if (radius > 0  && radius <= this.plugin.getConfigs().getButcherMaxRadius()) {
 							resultat = commandButcherAnimal(player, radius);
 						} else {
-							player.sendMessage(EEMessages.PREFIX.get() + EAMessages.NUMBER_INVALID.getText());
+							EAMessages.NUMBER_INVALID.sender()
+								.prefix(EEMessages.PREFIX)
+								.sendTo(player);
 						}
 					} catch (NumberFormatException e) {
-						player.sendMessage(EEMessages.PREFIX.get() + EAMessages.IS_NOT_NUMBER.get()
-								.replaceAll("<number>", args.get(0)));
+						EAMessages.IS_NOT_NUMBER.sender()
+							.prefix(EEMessages.PREFIX)
+							.replace("<number>", args.get(0))
+							.sendTo(player);
 					}
 				}
 			} else {
@@ -127,37 +132,36 @@ public class EEButcherAnimal extends ESubCommand<EverEssentials> {
 		Collection<Entity> list = player.getWorld().getEntities(predicate);
 		if (!list.isEmpty()){
 			list.forEach(entity -> entity.remove());
-			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.BUTCHER_ANIMAL.get()
-					.replaceAll("<count>", String.valueOf(list.size())));
+			EEMessages.BUTCHER_ANIMAL.sender()
+				.replace("<count>", String.valueOf(list.size()))
+				.sendTo(player);
 			return true;
 		} else {
-			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.BUTCHER_NOENTITY.get());
+			EEMessages.BUTCHER_NOENTITY.sendTo(player);
 			return false;
 		}
 	}
 	
 	private boolean commandButcherAnimal(final EPlayer player, final int radius) {
-		Predicate<Entity> predicate = new Predicate<Entity>() {
-		    @Override
-		    public boolean test(Entity entity) {
-		    	if (UtilsEntityType.isAnimal(entity)) {
-			    	if (entity.getLocation().getPosition().distance(player.getLocation().getPosition()) <= radius) {
-			    		return true;
-			    	}
+		Predicate<Entity> predicate = entity -> {
+	    	if (UtilsEntityType.isAnimal(entity)) {
+		    	if (entity.getLocation().getPosition().distance(player.getLocation().getPosition()) <= radius) {
+		    		return true;
 		    	}
-		    	return false;
-		    }
+	    	}
+	    	return false;
 		};		
 		
 		Collection<Entity> list = player.getWorld().getEntities(predicate);
 		if (!list.isEmpty()){
 			list.forEach(entity -> entity.remove());
-			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.BUTCHER_ANIMAL_RADIUS.get()
-					.replaceAll("<radius>", String.valueOf(radius))
-					.replaceAll("<count>", String.valueOf(list.size())));
+			EEMessages.BUTCHER_ANIMAL_RADIUS.sender()
+				.replace("<radius>", String.valueOf(radius))
+				.replace("<count>", String.valueOf(list.size()))
+				.sendTo(player);
 			return true;
 		} else {
-			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.BUTCHER_NOENTITY.get());
+			EEMessages.BUTCHER_NOENTITY.sendTo(player);
 			return false;
 		}
 	}

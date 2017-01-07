@@ -30,7 +30,6 @@ import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
-import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ESubCommand;
 import fr.evercraft.everapi.server.player.EPlayer;
 import fr.evercraft.everapi.server.user.EUser;
@@ -48,13 +47,13 @@ public class EEGodOn extends ESubCommand<EverEssentials> {
 
 	@Override
 	public Text description(final CommandSource source) {
-		return EChat.of(EEMessages.GOD_ON_DESCRIPTION.get());
+		return EEMessages.GOD_ON_DESCRIPTION.getText();
 	}
 
 	@Override
 	public Text help(final CommandSource source) {
 		if (source.hasPermission(EEPermissions.GOD_OTHERS.get())){
-			return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_PLAYER.get() + "]")
+			return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_PLAYER.getString() + "]")
 						.onClick(TextActions.suggestCommand("/" + this.getName()))
 						.color(TextColors.RED)
 						.build();
@@ -97,11 +96,15 @@ public class EEGodOn extends ESubCommand<EverEssentials> {
 					resultat = this.commandGodOnOthers(source, user.get());
 				// Le joueur est introuvable
 				} else {
-					source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
+					EAMessages.PLAYER_NOT_FOUND.sender()
+						.prefix(EEMessages.PREFIX)
+						.sendTo(source);
 				}
 			// Il n'a pas la permission
 			} else {
-				source.sendMessage(EAMessages.NO_PERMISSION.getText());
+				EAMessages.NO_PERMISSION.sender()
+					.prefix(EEMessages.PREFIX)
+					.sendTo(source);
 			}
 		} else {
 			source.sendMessage(this.help(source));
@@ -110,53 +113,52 @@ public class EEGodOn extends ESubCommand<EverEssentials> {
 	}
 
 	private boolean commandGodOn(final EPlayer player) {
-		boolean godMode = player.isGod();
-		// Si le god mode est déjà activé
-		if (!godMode){
-			if (player.setGod(true)) {
-				player.heal();
-				player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.GOD_ON_PLAYER.getText()));
-				return true;
-			} else {
-				player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.GOD_ON_PLAYER_CANCEL.getText()));
-			}
 		// God mode est déjà désactivé
-		} else {
-			player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.GOD_ON_PLAYER_ERROR.getText()));
+		if (player.isGod()) {
+			EEMessages.GOD_ON_PLAYER_ERROR.sendTo(player);
+			return false;
 		}
-		return false;
+
+		if (!player.setGod(true)) {
+			EEMessages.GOD_ON_PLAYER_CANCEL.sendTo(player);
+			return false;
+		}
+		
+		player.heal();
+		EEMessages.GOD_ON_PLAYER.sendTo(player);
+		return true;
 	}
 	
 	private boolean commandGodOnOthers(final CommandSource staff, final EUser user) throws CommandException {
 		// La source et le joueur sont identique
 		if (staff instanceof EPlayer && user.getIdentifier().equals(staff.getIdentifier())) {
 			return this.commandGodOn((EPlayer) staff);
-			
-		// La source et le joueur sont différent
-		} else {
-			boolean godMode = user.isGod();
-			// Si le god mode est déjà activé
-			if (!godMode) {
-				if (user.setGod(true)) {
-					user.heal();
-					staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.GOD_ON_OTHERS_STAFF.get()
-							.replaceAll("<player>", user.getName())));
-					
-					if (user instanceof EPlayer) {
-						((EPlayer) user).sendMessage(EEMessages.PREFIX.get() + EEMessages.GOD_ON_OTHERS_PLAYER.get()
-								.replaceAll("<staff>", staff.getName()));
-					}
-					return true;
-				} else {
-					staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.GOD_ON_OTHERS_CANCEL.get()
-							.replaceAll("<player>", user.getName())));
-				}
-			// God mode est déjà désactivé
-			} else {
-				staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.GOD_ON_OTHERS_ERROR.get()
-						.replaceAll("<player>", user.getName())));
-			}
 		}
-		return false;
+		
+		if (user.isGod()) {
+			EEMessages.GOD_ON_OTHERS_ERROR.sender()
+				.replace("<player>", user.getName())
+				.sendTo(staff);
+			return false;
+		}
+		
+		if (!user.setGod(true)) {
+			EEMessages.GOD_ON_OTHERS_CANCEL.sender()
+				.replace("<player>", user.getName())
+				.sendTo(staff);
+			return false;
+		}
+		
+		user.heal();
+		EEMessages.GOD_ON_OTHERS_STAFF.sender()
+			.replace("<player>", user.getName())
+			.sendTo(staff);
+		
+		if (user instanceof EPlayer) {
+			EEMessages.GOD_ON_OTHERS_PLAYER.sender()
+				.replace("<staff>", staff.getName())
+				.sendTo((EPlayer) user);
+		}
+		return true;
 	}
 }

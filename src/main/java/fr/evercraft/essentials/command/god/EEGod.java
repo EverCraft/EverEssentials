@@ -25,7 +25,6 @@ import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.everapi.EAMessage.EAMessages;
-import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.EParentCommand;
 import fr.evercraft.everapi.server.player.EPlayer;
 
@@ -42,7 +41,7 @@ public class EEGod extends EParentCommand<EverEssentials> {
 
 	@Override
 	public Text description(final CommandSource source) {
-		return EChat.of(EEMessages.GOD_DESCRIPTION.get());
+		return EEMessages.GOD_DESCRIPTION.getText();
 	}
 
 	@Override
@@ -73,16 +72,16 @@ public class EEGod extends EParentCommand<EverEssentials> {
 		if (player.setGod(god)) {
 			player.heal();
 			if (god) {
-				player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.GOD_ON_PLAYER.getText()));
+				EEMessages.GOD_ON_PLAYER.sendTo(player);
 			} else {
-				player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.GOD_OFF_PLAYER.getText()));
+				EEMessages.GOD_OFF_PLAYER.sendTo(player);
 			}
 			return true;
 		} else {
 			if (god) {
-				player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.GOD_ON_PLAYER_CANCEL.getText()));
+				EEMessages.GOD_ON_PLAYER_CANCEL.sendTo(player);
 			} else {
-				player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.GOD_OFF_PLAYER_CANCEL.getText()));
+				EEMessages.GOD_OFF_PLAYER_CANCEL.sendTo(player);
 			}
 		}
 		return false;

@@ -32,7 +32,6 @@ import org.spongepowered.api.world.World;
 import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
-import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ESubCommand;
 import fr.evercraft.everapi.server.player.EPlayer;
 
@@ -48,7 +47,7 @@ public class EEGameruleList extends ESubCommand<EverEssentials> {
 
 	@Override
 	public Text description(final CommandSource source) {
-		return EChat.of(EEMessages.GAMERULE_LIST_DESCRIPTION.get());
+		return EEMessages.GAMERULE_LIST_DESCRIPTION.getText();
 	}
 
 	@Override
@@ -85,8 +84,10 @@ public class EEGameruleList extends ESubCommand<EverEssentials> {
 				if(optWorld.isPresent()){
 					resultat = this.commandGameruleList(player, player.getWorld());
 				} else {
-					player.sendMessage(EEMessages.PREFIX.get() + EAMessages.WORLD_NOT_FOUND.get()
-							.replace("<world>", args.get(0)));
+					EAMessages.WORLD_NOT_FOUND.sender()
+						.prefix(EEMessages.PREFIX)
+						.replace("<world>", args.get(0))
+						.sendTo(source);
 				}
 			} else {
 				EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()
@@ -104,13 +105,13 @@ public class EEGameruleList extends ESubCommand<EverEssentials> {
 		Map<String, String> gamerules = world.getProperties().getGameRules();
 		List<Text> lists = new ArrayList<Text>();
 		for(Entry<String, String> gamerule : gamerules.entrySet()){
-			lists.add(EChat.of(EEMessages.GAMERULE_LIST_LINE.get()
-				.replaceAll("<gamerule>", gamerule.getKey())
-				.replaceAll("<statut>", gamerule.getValue())).toBuilder()
+			lists.add(EEMessages.GAMERULE_LIST_LINE.getFormat().toText(
+						"<gamerule>", gamerule.getKey(),
+						"<statut>", gamerule.getValue()).toBuilder()
 					.onClick(TextActions.suggestCommand("")).build());
 		}
-		this.plugin.getEverAPI().getManagerService().getEPagination().sendTo(EChat.of(EEMessages.GAMERULE_LIST_TITLE.get()
-			.replaceAll("<world>", player.getWorld().getName())).toBuilder()
+		this.plugin.getEverAPI().getManagerService().getEPagination().sendTo(EEMessages.GAMERULE_LIST_TITLE.getFormat()
+			.toText("<world>", player.getWorld().getName()).toBuilder()
 				.onClick(TextActions.runCommand("/" + this.getName())).build(), lists, player);
 		return true;
 	}

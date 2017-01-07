@@ -30,7 +30,6 @@ import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.everapi.EAMessage.EAMessages;
-import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ESubCommand;
 import fr.evercraft.everapi.server.player.EPlayer;
 import fr.evercraft.everapi.server.user.EUser;
@@ -48,13 +47,13 @@ public class EEFlyOff extends ESubCommand<EverEssentials> {
 
 	@Override
 	public Text description(final CommandSource source) {
-		return EChat.of(EEMessages.FLY_OFF_DESCRIPTION.get());
+		return EEMessages.FLY_OFF_DESCRIPTION.getText();
 	}
 	
 	@Override
 	public Text help(final CommandSource source) {
 		if (source.hasPermission(EEPermissions.FLY_OTHERS.get())){
-			return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_PLAYER.get() + "]")
+			return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_PLAYER.getString() + "]")
 						.onClick(TextActions.suggestCommand("/" + this.getName()))
 						.color(TextColors.RED)
 						.build();
@@ -70,7 +69,7 @@ public class EEFlyOff extends ESubCommand<EverEssentials> {
 	public List<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		List<String> suggests = new ArrayList<String>();
 		if (args.size() == 1 && source.hasPermission(EEPermissions.FLY_OTHERS.get())){
-			suggests.addAll(this.getAllUsers());
+			suggests.addAll(this.getAllUsers(source));
 		}
 		return suggests;
 	}
@@ -98,11 +97,15 @@ public class EEFlyOff extends ESubCommand<EverEssentials> {
 					resultat = this.commandFlyOffOthers(source, user.get());
 				// Le joueur est introuvable
 				} else {
-					source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
+					EAMessages.PLAYER_NOT_FOUND.sender()
+						.prefix(EEMessages.PREFIX)
+						.sendTo(source);
 				}
 			// Il n'a pas la permission
 			} else {
-				source.sendMessage(EAMessages.NO_PERMISSION.getText());
+				EAMessages.NO_PERMISSION.sender()
+					.prefix(EEMessages.PREFIX)
+					.sendTo(source);
 			}
 		} else {
 			source.sendMessage(this.help(source));
@@ -112,24 +115,25 @@ public class EEFlyOff extends ESubCommand<EverEssentials> {
 	}
 
 	private boolean commandFlyOff(final EPlayer player) {
-		boolean fly = player.getAllowFlight();
-		// Fly activé
-		if (fly){
-			if (!player.isCreative()){
-				if (player.setAllowFlight(false)) {
-					player.setFlying(false);
-					player.teleportBottom();
-					player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.FLY_OFF_PLAYER.getText()));
-				} else {
-					player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.FLY_OFF_PLAYER_CANCEL.getText()));
-				}
-			} else {
-				player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.FLY_OFF_PLAYER_CREATIVE.getText()));
-			}
 		// Fly désactivé
-		} else {
-			player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.FLY_OFF_PLAYER_ERROR.getText()));
+		if (!player.getAllowFlight()) {
+			EEMessages.FLY_OFF_PLAYER_ERROR.sendTo(player);
+			return false;
 		}
+		
+		if (player.isCreative()) {
+			EEMessages.FLY_OFF_PLAYER_CREATIVE.sendTo(player);
+			return false;
+		}
+		
+		if (!player.setAllowFlight(false)) {
+			EEMessages.FLY_OFF_PLAYER_CANCEL.sendTo(player);
+			return false;
+		}
+		
+		player.setFlying(false);
+		player.teleportBottom();
+		EEMessages.FLY_OFF_PLAYER.sendTo(player);
 		return true;
 	}
 	
@@ -137,39 +141,43 @@ public class EEFlyOff extends ESubCommand<EverEssentials> {
 		// La source et le joueur sont identique
 		if (staff instanceof EPlayer && user.getIdentifier().equals(staff.getIdentifier())) {
 			return this.commandFlyOff((EPlayer) staff);
-			
-		// La source et le joueur sont différent
-		} else {
-			boolean fly = user.getAllowFlight();
-			// Fly activé
-			if (fly){
-				if (!user.isCreative()){
-					if (user.setAllowFlight(false)) {
-						user.setFlying(false);
-						staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.FLY_OFF_OTHERS_STAFF.get()
-								.replaceAll("<player>", user.getName())));
-						
-						if(user instanceof EPlayer) {
-							EPlayer player = (EPlayer) user;
-							player.teleportBottom();
-							player.sendMessage(EEMessages.PREFIX.get() + EEMessages.FLY_OFF_OTHERS_PLAYER.get()
-									.replaceAll("<staff>", staff.getName()));
-						}
-						return true;
-					} else {
-						staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.FLY_OFF_OTHERS_CANCEL.get()
-								.replaceAll("<player>", user.getName())));
-					}
-				} else {
-					staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.FLY_OFF_OTHERS_CREATIVE.get()
-							.replaceAll("<player>", user.getName())));
-				}
-			// Fly désactivé
-			} else {
-				staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.FLY_OFF_OTHERS_ERROR.get()
-						.replaceAll("<player>", user.getName())));
-			}
+		}
+
+		// Fly activé
+		if (!user.getAllowFlight()) {
+			EEMessages.FLY_OFF_OTHERS_ERROR.sender()
+				.replace("<player>", user.getName())
+				.sendTo(staff);
 			return false;
 		}
+		
+		if (user.isCreative()) {
+			EEMessages.FLY_OFF_OTHERS_CREATIVE.sender()
+				.replace("<player>", user.getName())
+				.sendTo(staff);
+			return false;
+		}
+		
+		if (!user.setAllowFlight(false)) {
+			EEMessages.FLY_OFF_OTHERS_CANCEL.sender()
+				.replace("<player>", user.getName())
+				.sendTo(staff);
+			return false;
+		}
+		
+		user.setFlying(false);
+		
+		EEMessages.FLY_OFF_OTHERS_STAFF.sender()
+			.replace("<player>", user.getName())
+			.sendTo(staff);
+		
+		if(user instanceof EPlayer) {
+			EPlayer player = (EPlayer) user;
+			player.teleportBottom();
+			EEMessages.FLY_OFF_OTHERS_PLAYER.sender()
+				.replace("<staff>", staff.getName())
+				.sendTo(player);
+		}
+		return true;
 	}
 }

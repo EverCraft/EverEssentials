@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Predicate;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
@@ -35,11 +34,9 @@ import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.everapi.EAMessage.EAMessages;
-import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ESubCommand;
 import fr.evercraft.everapi.server.player.EPlayer;
 import fr.evercraft.everapi.sponge.UtilsEntityType;
-import fr.evercraft.everapi.text.ETextBuilder;
 
 public class EEButcherType extends ESubCommand<EverEssentials> {
 	
@@ -54,14 +51,14 @@ public class EEButcherType extends ESubCommand<EverEssentials> {
 
 	@Override
 	public Text description(final CommandSource source) {
-		return EChat.of(EEMessages.BUTCHER_TYPE_DESCRIPTION.get());
+		return EEMessages.BUTCHER_TYPE_DESCRIPTION.getText();
 	}
 	
 	@Override
 	public Text help(final CommandSource source) {
-		Builder build = Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_ENTITY.get() + "> <" + EAMessages.ARGS_RADIUS.get());
+		Builder build = Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_ENTITY.getString() + "> <" + EAMessages.ARGS_RADIUS.getString());
 		if (source.hasPermission(EEPermissions.BUTCHER_WORLD.get())) {
-			build.append(Text.of("|" + EAMessages.ARGS_ALL.get()));
+			build.append(Text.of("|" + EAMessages.ARGS_ALL.getString()));
 		}
 		return build.append(Text.of(">"))
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
@@ -98,14 +95,16 @@ public class EEButcherType extends ESubCommand<EverEssentials> {
 			EPlayer player = (EPlayer) source;
 			if (args.size() == 2) {
 				Optional<EntityType> optType = getEntityType(args.get(0));
-				if (args.get(1).equals("all")){
+				if (args.get(1).equals("all")) {
 					if (optType.isPresent()) {
 						// Si il a la permission
 						if (player.hasPermission(EEPermissions.BUTCHER_WORLD.get())){
 							resultat = this.commandButcherType(player, optType.get());
 						// Il n'a pas la permission
 						} else {
-							player.sendMessage(EAMessages.NO_PERMISSION.getText());
+							EAMessages.NO_PERMISSION.sender()
+								.prefix(EEMessages.PREFIX)
+								.sendTo(source);
 						}
 					}
 				} else {
@@ -114,11 +113,15 @@ public class EEButcherType extends ESubCommand<EverEssentials> {
 						if (radius > 0  && radius <= this.plugin.getConfigs().getButcherMaxRadius()) {
 							resultat = this.commandButcherType(player, optType.get(), radius);
 						} else {
-							player.sendMessage(EEMessages.PREFIX.get() + EAMessages.NUMBER_INVALID.getText());
+							EAMessages.NUMBER_INVALID.sender()
+								.prefix(EEMessages.PREFIX)
+								.sendTo(source);
 						}
 					} catch (NumberFormatException e) {
-						player.sendMessage(EEMessages.PREFIX.get() + EAMessages.IS_NOT_NUMBER.get()
-								.replaceAll("<number>", args.get(0)));
+						EAMessages.IS_NOT_NUMBER.sender()
+							.prefix(EEMessages.PREFIX)
+							.replace("<number>", args.get(0))
+							.sendTo(source);
 					}
 				}
 			} else {
@@ -129,62 +132,42 @@ public class EEButcherType extends ESubCommand<EverEssentials> {
 		return resultat;
 	}
 
-	private boolean commandButcherType(EPlayer player, EntityType type) {
-		Predicate<Entity> predicate = new Predicate<Entity>() {
-		    @Override
-		    public boolean test(Entity entity) {
-		    	if (entity.getType().equals(type)) {
-			    	return true;
-		    	}
-		    	return false;
-		    }
-		};
-		Collection<Entity> list = player.getWorld().getEntities(predicate);
+	private boolean commandButcherType(EPlayer player, EntityType type) {		
+		Collection<Entity> list = player.getWorld().getEntities(entity -> entity.getType().equals(type));
 		if (!list.isEmpty()){
 			list.forEach(entity -> entity.remove());
-			player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
-					.append(EEMessages.BUTCHER_TYPE.get()
-							.replaceAll("<count>", String.valueOf(list.size())))
-					.replace("<entity>", getButtomEntity(type))
-					.build());
+			EEMessages.BUTCHER_TYPE.sender()
+				.replace("<count>", String.valueOf(list.size()))
+				.replace("<entity>", getButtomEntity(type))
+				.sendTo(player);
 			return true;
 		} else {
-			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.BUTCHER_NOENTITY.get());
+			EEMessages.BUTCHER_NOENTITY.sendTo(player);
 			return false;
 		}
 	}
 	
 	private boolean commandButcherType(EPlayer player, EntityType type, int radius) {
-		Predicate<Entity> predicate = new Predicate<Entity>() {
-		    @Override
-		    public boolean test(Entity entity) {
-		    	if (entity.getType().equals(type)) {
-		    		if (entity.getLocation().getPosition().distance(player.getLocation().getPosition()) <= radius) {
-			    		return true;
-			    	}
-		    	}
-		    	return false;
-		    }
-		};
-		Collection<Entity> list = player.getWorld().getEntities(predicate);
+		Collection<Entity> list = player.getWorld().getEntities(entity -> 
+			entity.getType().equals(type) && entity.getLocation().getPosition().distance(player.getLocation().getPosition()) <= radius);
+		
 		if (!list.isEmpty()){
 			list.forEach(entity -> entity.remove());
-			player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
-					.append(EEMessages.BUTCHER_TYPE_RADIUS.get()
-							.replaceAll("<radius>", String.valueOf(radius))
-							.replaceAll("<count>", String.valueOf(list.size())))
-					.replace("<entity>", getButtomEntity(type))
-					.build());
+			EEMessages.BUTCHER_TYPE_RADIUS.sender()
+				.replace("<radius>", String.valueOf(radius))
+				.replace("<count>", String.valueOf(list.size()))
+				.replace("<entity>", getButtomEntity(type))
+				.sendTo(player);
 			return true;
 		} else {
-			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.BUTCHER_NOENTITY.get());
+			EEMessages.BUTCHER_NOENTITY.sendTo(player);
 			return false;
 		}
 	}
 	
 	public Text getButtomEntity(final EntityType type){
 		return Text.builder(type.getTranslation())
-				.color(EChat.getTextColor(EEMessages.BUTCHER_ENTITY_COLOR.get()))
+				.color(EEMessages.BUTCHER_ENTITY_COLOR.getColor())
 				.build();
 	}
 	

@@ -25,7 +25,6 @@ import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.everapi.EAMessage.EAMessages;
-import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.EParentCommand;
 import fr.evercraft.everapi.server.player.EPlayer;
 
@@ -42,7 +41,7 @@ public class EEFly extends EParentCommand<EverEssentials> {
 
 	@Override
 	public Text description(final CommandSource source) {
-		return EChat.of(EEMessages.FLY_DESCRIPTION.get());
+		return EEMessages.FLY_DESCRIPTION.getText();
 	}
 
 	@Override
@@ -73,22 +72,22 @@ public class EEFly extends EParentCommand<EverEssentials> {
 		if (!(player.isCreative() && !fly)) {
 			if (player.setAllowFlight(fly)) {
 				if (fly) {
-					player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.FLY_ON_PLAYER.getText()));
+					EEMessages.FLY_ON_PLAYER.sendTo(player);
 				} else {
 					player.setFlying(false);
 					player.teleportBottom();
-					player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.FLY_OFF_PLAYER.getText()));
+					EEMessages.FLY_OFF_PLAYER.sendTo(player);
 				}
 				return true;
 			} else {
 				if (fly) {
-					player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.FLY_ON_PLAYER_CANCEL.getText()));
+					EEMessages.FLY_ON_PLAYER_CANCEL.sendTo(player);
 				} else {
-					player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.FLY_OFF_PLAYER_CANCEL.getText()));
+					EEMessages.FLY_OFF_PLAYER_CANCEL.sendTo(player);
 				}
 			}
 		} else {
-			player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.FLY_OFF_PLAYER_CREATIVE.getText()));
+			EEMessages.FLY_OFF_PLAYER_CREATIVE.sendTo(player);
 		}
 		return false;
 	}

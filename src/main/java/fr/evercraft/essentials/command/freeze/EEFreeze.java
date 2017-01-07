@@ -25,7 +25,6 @@ import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.everapi.EAMessage.EAMessages;
-import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.EParentCommand;
 import fr.evercraft.everapi.server.player.EPlayer;
 
@@ -42,7 +41,7 @@ public class EEFreeze extends EParentCommand<EverEssentials> {
 
 	@Override
 	public Text description(final CommandSource source) {
-		return EChat.of(EEMessages.FREEZE_DESCRIPTION.get());
+		return EEMessages.FREEZE_DESCRIPTION.getText();
 	}
 
 	@Override
@@ -72,16 +71,16 @@ public class EEFreeze extends EParentCommand<EverEssentials> {
 		boolean freeze = !player.isFreeze();
 		if (player.setFreeze(freeze)) {
 			if (freeze) {
-				player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.FREEZE_ON_PLAYER.getText()));
+				EEMessages.FREEZE_ON_PLAYER.sendTo(player);
 			} else {
-				player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.FREEZE_OFF_PLAYER.getText()));
+				EEMessages.FREEZE_OFF_PLAYER.sendTo(player);
 			}
 			return true;
 		} else {
 			if (freeze) {
-				player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.FREEZE_ON_PLAYER_CANCEL.getText()));
+				EEMessages.FREEZE_ON_PLAYER_CANCEL.sendTo(player);
 			} else {
-				player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.FREEZE_OFF_PLAYER_CANCEL.getText()));
+				EEMessages.FREEZE_OFF_PLAYER_CANCEL.sendTo(player);
 			}
 		}
 		return false;

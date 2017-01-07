@@ -36,7 +36,6 @@ import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ECommand;
 import fr.evercraft.everapi.server.location.LocationSQL;
 import fr.evercraft.everapi.server.player.EPlayer;
-import fr.evercraft.everapi.text.ETextBuilder;
 
 public class EEHomeDel extends ECommand<EverEssentials> {
 	
@@ -56,7 +55,7 @@ public class EEHomeDel extends ECommand<EverEssentials> {
 
 	@Override
 	public Text help(final CommandSource source) {
-		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_HOME.get() + ">")
+		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_HOME.getString() + ">")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
 					.build();
@@ -115,25 +114,27 @@ public class EEHomeDel extends ECommand<EverEssentials> {
 		String name = EChat.fixLength(home_name, this.plugin.getEverAPI().getConfigs().getMaxCaractere());
 		
 		Optional<EUserSubject> subject = this.plugin.getManagerServices().getEssentials().getSubject(player.getUniqueId());
-		if (subject.isPresent()) {
-			
-			Optional<LocationSQL> home = subject.get().getHomeLocation(name);
-			// Le joueur a bien un home qui porte ce nom
-			if (home.isPresent()) {
-				player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
-						.append(EEMessages.DELHOME_CONFIRMATION.get())
-						.replace("<home>", this.getButtonHome(name, home.get()))
-						.replace("<confirmation>", this.getButtonConfirmation(name))
-						.build());
-			// Le n'a pas de home qui porte ce nom
-			} else {
-				player.sendMessage(EEMessages.PREFIX.get() + EEMessages.DELHOME_INCONNU.get().replaceAll("<home>", name));
-			}
-			
-		} else {
-			player.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
+		if (!subject.isPresent()) {
+			EAMessages.PLAYER_NOT_FOUND.sender()
+				.prefix(EEMessages.PREFIX)
+				.sendTo(player);
+			return false;
 		}
-		return false;
+			
+		Optional<LocationSQL> home = subject.get().getHomeLocation(name);
+		// Le n'a pas de home qui porte ce nom
+		if (!home.isPresent()) {
+			EEMessages.DELHOME_INCONNU.sender()
+				.replace("<home>", name)
+				.sendTo(player);
+			return false;
+		}
+		
+		EEMessages.DELHOME_CONFIRMATION.sender()
+			.replace("<home>", this.getButtonHome(name, home.get()))
+			.replace("<confirmation>", this.getButtonConfirmation(name))
+			.sendTo(player);
+		return true;
 	}
 	
 	
@@ -141,50 +142,51 @@ public class EEHomeDel extends ECommand<EverEssentials> {
 		String name = EChat.fixLength(home_name, this.plugin.getEverAPI().getConfigs().getMaxCaractere());
 		
 		Optional<EUserSubject> subject = this.plugin.getManagerServices().getEssentials().getSubject(player.getUniqueId());
-		if (subject.isPresent()) {
-			
-			Optional<LocationSQL> home = subject.get().getHomeLocation(name);
-			// Le joueur a bien un home qui porte ce nom
-			if (home.isPresent()) {
-				
-				// Si le home a bien été supprimer
-				if (player.removeHome(name)) {
-					player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.getText())
-							.append(EEMessages.DELHOME_DELETE.get())
-							.replace("<home>", this.getButtonHome(name, home.get()))
-							.build());
-					return true;
-				// Le home n'a pas été supprimer
-				} else {
-					player.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR.getText()));
-				}
-				
-			// Le n'a pas de home qui porte ce nom
-			} else {
-				player.sendMessage(EEMessages.PREFIX.get() + EEMessages.DELHOME_INCONNU.get().replaceAll("<home>", name));
-			}
-			
-		} else {
-			player.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
+		if (!subject.isPresent()) {
+			EAMessages.PLAYER_NOT_FOUND.sender()
+				.prefix(EEMessages.PREFIX)
+				.sendTo(player);
+			return false;
 		}
-		return false;
+			
+		Optional<LocationSQL> home = subject.get().getHomeLocation(name);
+		// Le joueur a bien un home qui porte ce nom
+		if (!home.isPresent()) {
+			EEMessages.DELHOME_INCONNU.sender()
+				.replace("<home>", name)
+				.sendTo(player);
+			return false;
+		}
+		
+		// Le home n'a pas été supprimer
+		if (!player.removeHome(name)) {
+			EAMessages.COMMAND_ERROR.sender()
+				.prefix(EEMessages.PREFIX)
+				.sendTo(player);
+			return false;
+		}
+		
+		EEMessages.DELHOME_DELETE.sender()
+			.replace("<home>", this.getButtonHome(name, home.get()))
+			.sendTo(player);
+		return true;
 	}
 	
 	private Text getButtonHome(final String name, final LocationSQL location){
-		return EChat.of(EEMessages.HOME_NAME.get().replaceAll("<name>", name)).toBuilder()
-					.onHover(TextActions.showText(EChat.of(EEMessages.HOME_NAME_HOVER.get()
-							.replaceAll("<home>", name)
-							.replaceAll("<world>", location.getWorldName())
-							.replaceAll("<x>", location.getX().toString())
-							.replaceAll("<y>", location.getY().toString())
-							.replaceAll("<z>", location.getZ().toString()))))
+		return EEMessages.HOME_NAME.getFormat().toText("<name>", name).toBuilder()
+					.onHover(TextActions.showText(EEMessages.HOME_NAME_HOVER.getFormat().toText(
+								"<home>", name,
+								"<world>", location.getWorldName(),
+								"<x>", location.getX().toString(),
+								"<y>", location.getY().toString(),
+								"<z>", location.getZ().toString())))
 					.build();
 	}
 	
 	private Text getButtonConfirmation(final String name){
 		return EEMessages.DELHOME_CONFIRMATION_VALID.getText().toBuilder()
-					.onHover(TextActions.showText(EChat.of(EEMessages.DELHOME_CONFIRMATION_VALID_HOVER.get()
-							.replaceAll("<home>", name))))
+					.onHover(TextActions.showText(EEMessages.DELHOME_CONFIRMATION_VALID_HOVER.getFormat()
+							.toText("<home>", name)))
 					.onClick(TextActions.runCommand("/delhome \"" + name + "\" confirmation"))
 					.build();
 	}

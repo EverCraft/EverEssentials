@@ -30,7 +30,6 @@ import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.everapi.EAMessage.EAMessages;
-import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ESubCommand;
 import fr.evercraft.everapi.server.player.EPlayer;
 import fr.evercraft.everapi.server.user.EUser;
@@ -49,13 +48,13 @@ public class EEGodOff extends ESubCommand<EverEssentials> {
 
 	@Override
 	public Text description(final CommandSource source) {
-		return EChat.of(EEMessages.GOD_OFF_DESCRIPTION.get());
+		return EEMessages.GOD_OFF_DESCRIPTION.getText();
 	}
 
 	@Override
 	public Text help(final CommandSource source) {
 		if (source.hasPermission(EEPermissions.GOD_OTHERS.get())){
-			return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_PLAYER.get() + "]")
+			return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_PLAYER.getString() + "]")
 						.onClick(TextActions.suggestCommand("/" + this.getName()))
 						.color(TextColors.RED)
 						.build();
@@ -71,7 +70,7 @@ public class EEGodOff extends ESubCommand<EverEssentials> {
 	public List<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		List<String> suggests = new ArrayList<String>();
 		if (args.size() == 1 && source.hasPermission(EEPermissions.GOD_OTHERS.get())){
-			suggests.addAll(this.getAllUsers());
+			suggests.addAll(this.getAllUsers(source));
 		}
 		return suggests;
 	}
@@ -101,15 +100,21 @@ public class EEGodOff extends ESubCommand<EverEssentials> {
 						resultat = this.commandGodOffOthers(source, user.get());
 					// Le joueur est introuvable
 					} else {
-						source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
+						EAMessages.PLAYER_NOT_FOUND.sender()
+							.prefix(EEMessages.PREFIX)
+							.sendTo(source);
 					}
 				// Le joueur est introuvable
 				} else {
-					source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
+					EAMessages.PLAYER_NOT_FOUND.sender()
+						.prefix(EEMessages.PREFIX)
+						.sendTo(source);
 				}
 			// Il n'a pas la permission
 			} else {
-				source.sendMessage(EAMessages.NO_PERMISSION.getText());
+				EAMessages.NO_PERMISSION.sender()
+					.prefix(EEMessages.PREFIX)
+					.sendTo(source);
 			}
 		} else {
 			source.sendMessage(this.help(source));
@@ -119,19 +124,19 @@ public class EEGodOff extends ESubCommand<EverEssentials> {
 	}
 
 	private boolean commandGodOff(final EPlayer player) {
-		boolean godMode = player.isGod();
-		// Si le god mode est déjà activé
-		if (godMode){
-			if (player.setGod(false)) {
-				player.heal();
-				player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.GOD_OFF_PLAYER.getText()));
-			} else {
-				player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.GOD_OFF_PLAYER_CANCEL.getText()));
-			}
 		// God mode est déjà désactivé
-		} else {
-			player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.GOD_OFF_PLAYER_ERROR.getText()));
+		if (!player.isGod()) {
+			EEMessages.GOD_OFF_PLAYER_ERROR.sendTo(player);
+			return false;
 		}
+		
+		if (!player.setGod(false)) {
+			EEMessages.GOD_OFF_PLAYER_CANCEL.sendTo(player);
+			return false;
+		}
+		
+		player.heal();
+		EEMessages.GOD_OFF_PLAYER.sendTo(player);
 		return true;
 	}
 	
@@ -139,32 +144,33 @@ public class EEGodOff extends ESubCommand<EverEssentials> {
 		// La source et le joueur sont identique
 		if (staff instanceof EPlayer && user.getIdentifier().equals(staff.getIdentifier())) {
 			return this.commandGodOff((EPlayer) staff);
-			
-		// La source et le joueur sont différent
-		} else {
-			boolean godMode = user.isGod();
-			// Si le god mode est déjà activé
-			if (godMode){
-				if (user.setGod(false)) {
-					user.heal();
-					staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.GOD_OFF_OTHERS_STAFF.get()
-							.replaceAll("<player>", user.getName())));
-					
-					if(user instanceof EPlayer) {
-						((EPlayer) user).sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.GOD_OFF_OTHERS_PLAYER.get()
-								.replaceAll("<staff>", staff.getName())));
-					}
-					return true;
-				} else {
-					staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.GOD_OFF_OTHERS_CANCEL.get()
-							.replaceAll("<player>", user.getName())));
-				}
-			// God mode est déjà désactivé
-			} else {
-				staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.GOD_OFF_OTHERS_ERROR.get()
-						.replaceAll("<player>", user.getName())));
-			}
 		}
-		return false;
+		
+		// God mode est déjà désactivé
+		if (!user.isGod()) {
+			EEMessages.GOD_OFF_OTHERS_ERROR.sender()
+				.replace("<player>", user.getName())
+				.sendTo(staff);
+			return false;
+		}
+			
+		if (!user.setGod(false)) {
+			EEMessages.GOD_OFF_OTHERS_CANCEL.sender()
+				.replace("<player>", user.getName())
+				.sendTo(staff);
+			return false;
+		}
+		
+		user.heal();
+		EEMessages.GOD_OFF_OTHERS_STAFF.sender()
+			.replace("<player>", user.getName())
+			.sendTo(staff);
+		
+		if(user instanceof EPlayer) {
+			EEMessages.GOD_OFF_OTHERS_PLAYER.sender()
+				.replace("<staff>", staff.getName())
+				.sendTo((EPlayer) user);
+		}
+		return true;
 	}
 }

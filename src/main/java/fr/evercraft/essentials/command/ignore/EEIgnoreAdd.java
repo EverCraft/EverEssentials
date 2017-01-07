@@ -30,7 +30,6 @@ import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.everapi.EAMessage.EAMessages;
-import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ESubCommand;
 import fr.evercraft.everapi.server.player.EPlayer;
 import fr.evercraft.everapi.server.user.EUser;
@@ -48,12 +47,12 @@ public class EEIgnoreAdd extends ESubCommand<EverEssentials> {
 
 	@Override
 	public Text description(final CommandSource source) {
-		return EChat.of(EEMessages.IGNORE_ADD_DESCRIPTION.get());
+		return EEMessages.IGNORE_ADD_DESCRIPTION.getText();
 	}
 	
 	@Override
 	public Text help(final CommandSource source) {
-		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_PLAYER.get() + ">")
+		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_PLAYER.getString() + ">")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
 					.build();
@@ -63,7 +62,7 @@ public class EEIgnoreAdd extends ESubCommand<EverEssentials> {
 	public List<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		List<String> suggests = new ArrayList<String>();
 		if (args.size() == 1) {
-			suggests.addAll(this.getAllUsers());
+			suggests.addAll(this.getAllUsers(source));
 		}
 		return suggests;
 	}
@@ -82,7 +81,9 @@ public class EEIgnoreAdd extends ESubCommand<EverEssentials> {
 					resultat = this.commandIgnoreAdd((EPlayer) source, user.get());
 				// Le joueur est introuvable
 				} else {
-					source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
+					EAMessages.PLAYER_NOT_FOUND.sender()
+						.prefix(EEMessages.PREFIX)
+						.sendTo(source);
 				}
 			// La source n'est pas un joueur
 			} else {
@@ -97,24 +98,30 @@ public class EEIgnoreAdd extends ESubCommand<EverEssentials> {
 	}
 
 	private boolean commandIgnoreAdd(final EPlayer player, final EUser user) {
-		if(!player.ignore(user.getUniqueId())) {
-			if (!user.hasPermission(EEPermissions.IGNORE_BYPASS.get())) {
-				if (player.addIgnore(user.getUniqueId())) {
-					player.sendMessage(EEMessages.PREFIX.get() + EEMessages.IGNORE_ADD_PLAYER.get()
-							.replaceAll("<player>", user.getName()));
-					return true;
-				} else {
-					player.sendMessage(EEMessages.PREFIX.get() + EEMessages.IGNORE_ADD_CANCEL.get()
-							.replaceAll("<player>", user.getName()));
-				}
-			} else {
-				player.sendMessage(EEMessages.PREFIX.get() + EEMessages.IGNORE_ADD_BYPASS.get()
-						.replaceAll("<player>", user.getName()));
-			}
-		} else {
-			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.IGNORE_ADD_ERROR.get()
-					.replaceAll("<player>", user.getName()));
+		if(player.ignore(user.getUniqueId())) {
+			EEMessages.IGNORE_ADD_ERROR.sender()
+				.replace("<player>", user.getName())
+				.sendTo(player);
+			return false;
 		}
-		return false;
+		
+		if (user.hasPermission(EEPermissions.IGNORE_BYPASS.get())) {
+			EEMessages.IGNORE_ADD_BYPASS.sender()
+				.replace("<player>", user.getName())
+				.sendTo(player);
+			return false;
+		}
+		
+		if (!player.addIgnore(user.getUniqueId())) {
+			EEMessages.IGNORE_ADD_CANCEL.sender()
+				.replace("<player>", user.getName())
+				.sendTo(player);
+			return false;
+		}
+		
+		EEMessages.IGNORE_ADD_PLAYER.sender()
+			.replace("<player>", user.getName())
+			.sendTo(player);
+		return true;
 	}
 }
