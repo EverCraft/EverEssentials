@@ -26,7 +26,6 @@ import org.spongepowered.api.text.Text;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.essentials.EEMessage.EEMessages;
-import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.EParentCommand;
 
 public class EEItemLore extends EParentCommand<EverEssentials> {
@@ -42,7 +41,7 @@ public class EEItemLore extends EParentCommand<EverEssentials> {
 
 	@Override
 	public Text description(final CommandSource source) {
-		return EChat.of(EEMessages.ITEM_LORE_DESCRIPTION.get());
+		return EEMessages.ITEM_LORE_DESCRIPTION.getText();
 	}
 
 	@Override

@@ -23,7 +23,6 @@ import java.util.Optional;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.data.key.Keys;
-import org.spongepowered.api.data.type.HandTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
@@ -36,7 +35,6 @@ import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ESubCommand;
 import fr.evercraft.everapi.server.player.EPlayer;
-import fr.evercraft.everapi.text.ETextBuilder;
 
 public class EEItemNameClear extends ESubCommand<EverEssentials> {
 	public EEItemNameClear(final EverEssentials plugin, final EEItemName command) {
@@ -50,7 +48,7 @@ public class EEItemNameClear extends ESubCommand<EverEssentials> {
 
 	@Override
 	public Text description(final CommandSource source) {
-		return EChat.of(EEMessages.ITEM_NAME_CLEAR_DESCRIPTION.get());
+		return EEMessages.ITEM_NAME_CLEAR_DESCRIPTION.getText();
 	}
 	
 	@Override
@@ -70,8 +68,7 @@ public class EEItemNameClear extends ESubCommand<EverEssentials> {
 	public boolean subExecute(final CommandSource source, final List<String> args) {
 		if(args.size() == 0){
 			if(source instanceof EPlayer){
-				commandItemNameClear((EPlayer) source);
-				return true;
+				return this.commandItemNameClear((EPlayer) source);
 			} else {
 				EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()
 					.prefix(EEMessages.PREFIX)
@@ -86,25 +83,25 @@ public class EEItemNameClear extends ESubCommand<EverEssentials> {
 
 	private boolean commandItemNameClear(final EPlayer player) {
 		Optional<ItemStack> item = player.getItemInMainHand();
-		if(player.getItemInMainHand().isPresent()){
-			if(item.get().get(Keys.DISPLAY_NAME).isPresent()){
-				player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get()).append(EEMessages.ITEM_NAME_CLEAR_NAME.get())
-						.replace("<item>", EChat.getButtomItem(player.getItemInHand(HandTypes.MAIN_HAND).get(), 
-								EChat.getTextColor(EEMessages.ITEM_NAME_CLEAR_COLOR.get())))
-					.build());
-				item.get().remove(Keys.DISPLAY_NAME);
-				player.setItemInMainHand(item.get());
-				return true;
-			} else {
-				player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get()).append(EEMessages.ITEM_NAME_CLEAR_ERROR.get())
-						.replace("<item>", EChat.getButtomItem(player.getItemInHand(HandTypes.MAIN_HAND).get(), 
-								EChat.getTextColor(EEMessages.ITEM_NAME_CLEAR_COLOR.get())))
-					.build());
-				return false;
-			}
-		} else {
-			player.sendMessage(EEMessages.PREFIX.get() + EAMessages.EMPTY_ITEM_IN_HAND.get());
+		if(!item.isPresent()) {
+			EAMessages.EMPTY_ITEM_IN_HAND.sender()
+				.prefix(EEMessages.PREFIX)
+				.sendTo(player);
 			return false;
 		}
+		
+		if(!item.get().get(Keys.DISPLAY_NAME).isPresent()) {
+			EEMessages.ITEM_NAME_CLEAR_ERROR.sender()
+				.replace("<item>", EChat.getButtomItem(item.get(), EEMessages.ITEM_NAME_CLEAR_COLOR.getColor()))
+				.sendTo(player);
+			return false;
+		}
+		
+		EEMessages.ITEM_NAME_CLEAR_NAME.sender()
+			.replace("<item>", EChat.getButtomItem(item.get(), EEMessages.ITEM_NAME_CLEAR_COLOR.getColor()))
+			.sendTo(player);
+		item.get().remove(Keys.DISPLAY_NAME);
+		player.setItemInMainHand(item.get());
+		return true;
 	}
 }

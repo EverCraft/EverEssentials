@@ -37,7 +37,6 @@ import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ESubCommand;
 import fr.evercraft.everapi.server.player.EPlayer;
-import fr.evercraft.everapi.text.ETextBuilder;
 
 public class EEItemLoreAdd extends ESubCommand<EverEssentials> {
 	public EEItemLoreAdd(final EverEssentials plugin, final EEItemLore command) {
@@ -51,7 +50,7 @@ public class EEItemLoreAdd extends ESubCommand<EverEssentials> {
 
 	@Override
 	public Text description(final CommandSource source) {
-		return EChat.of(EEMessages.ITEM_LORE_ADD_DESCRIPTION.get());
+		return EEMessages.ITEM_LORE_ADD_DESCRIPTION.getText();
 	}
 	
 	@Override
@@ -72,7 +71,7 @@ public class EEItemLoreAdd extends ESubCommand<EverEssentials> {
 
 	@Override
 	public Text help(final CommandSource source) {
-		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_DESCRIPTION.get() + ">")
+		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_DESCRIPTION.getString() + ">")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
 					.build();
@@ -97,23 +96,25 @@ public class EEItemLoreAdd extends ESubCommand<EverEssentials> {
 	}
 
 	private boolean commandItemLoreAdd(final EPlayer player, final String name) {
-		if(player.getItemInHand(HandTypes.MAIN_HAND).isPresent()){
-			ItemStack item = player.getItemInHand(HandTypes.MAIN_HAND).get();
-			List<Text> lore = new ArrayList<Text>();
-			if(item.get(Keys.ITEM_LORE).isPresent()){
-				lore = item.get(Keys.ITEM_LORE).get();
-			}
-			lore.add(EChat.of(name));
-			item.offer(Keys.ITEM_LORE, lore);
-			player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get()).append(EEMessages.ITEM_LORE_ADD_LORE.get())
-					.replace("<item>", EChat.getButtomItem(item, EChat.getTextColor(EEMessages.ITEM_LORE_ADD_COLOR.get())))
-				.build());
-			item.offer(Keys.ITEM_LORE, lore);
-			player.setItemInHand(HandTypes.MAIN_HAND, item);
-			return true;
-		} else {
-			player.sendMessage(EEMessages.PREFIX.get() + EAMessages.EMPTY_ITEM_IN_HAND.get());
+		if(!player.getItemInHand(HandTypes.MAIN_HAND).isPresent()) {
+			EAMessages.EMPTY_ITEM_IN_HAND.sender()
+				.prefix(EEMessages.PREFIX)
+				.sendTo(player);
 			return false;
 		}
+		
+		ItemStack item = player.getItemInHand(HandTypes.MAIN_HAND).get();
+		List<Text> lore = new ArrayList<Text>();
+		if(item.get(Keys.ITEM_LORE).isPresent()){
+			lore = item.get(Keys.ITEM_LORE).get();
+		}
+		lore.add(EChat.of(name));
+		item.offer(Keys.ITEM_LORE, lore);
+		EEMessages.ITEM_LORE_ADD_LORE.sender()
+			.replace("<item>", EChat.getButtomItem(item, EEMessages.ITEM_LORE_ADD_COLOR.getColor()))
+			.sendTo(player);
+		item.offer(Keys.ITEM_LORE, lore);
+		player.setItemInHand(HandTypes.MAIN_HAND, item);
+		return true;
 	}
 }

@@ -23,7 +23,6 @@ import java.util.Optional;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.data.key.Keys;
-import org.spongepowered.api.data.type.HandTypes;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.text.Text;
@@ -37,7 +36,6 @@ import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ESubCommand;
 import fr.evercraft.everapi.server.player.EPlayer;
-import fr.evercraft.everapi.text.ETextBuilder;
 
 public class EEItemNameSet extends ESubCommand<EverEssentials> {
 	private int max_displayname;
@@ -58,7 +56,7 @@ public class EEItemNameSet extends ESubCommand<EverEssentials> {
 
 	@Override
 	public Text description(final CommandSource source) {
-		return EChat.of(EEMessages.ITEM_NAME_SET_DESCRIPTION.get());
+		return EEMessages.ITEM_NAME_SET_DESCRIPTION.getText();
 	}
 	
 	@Override
@@ -79,7 +77,7 @@ public class EEItemNameSet extends ESubCommand<EverEssentials> {
 
 	@Override
 	public Text help(final CommandSource source) {
-		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_NAME.get() + ">")
+		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_NAME.getString() + ">")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
 					.build();
@@ -89,8 +87,7 @@ public class EEItemNameSet extends ESubCommand<EverEssentials> {
 	public boolean subExecute(final CommandSource source, final List<String> args) {
 		if(args.size() == 1){
 			if(source instanceof EPlayer){
-				commandItemName((EPlayer) source, args.get(0));
-				return true;
+				return this.commandItemName((EPlayer) source, args.get(0));
 			} else {
 				EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()
 					.prefix(EEMessages.PREFIX)
@@ -105,26 +102,27 @@ public class EEItemNameSet extends ESubCommand<EverEssentials> {
 
 	private boolean commandItemName(final EPlayer player, final String name) {
 		this.plugin.getEServer().broadcast("" + this.max_displayname);
-		if(name.length() <= this.max_displayname){
-			Optional<ItemStack> item = player.getItemInMainHand();
-			if(player.getItemInMainHand().isPresent()){
-				item.get().offer(Keys.DISPLAY_NAME, EChat.of(name));
-				player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get()).append(EEMessages.ITEM_NAME_SET_NAME.get())
-						.replace("<item-before>", EChat.getButtomItem(player.getItemInHand(HandTypes.MAIN_HAND).get(), 
-								EChat.getTextColor(EEMessages.ITEM_NAME_SET_COLOR.get())))
-						.replace("<item-after>", EChat.getButtomItem(item.get(), 
-								EChat.getTextColor(EEMessages.ITEM_NAME_SET_COLOR.get())))
-					.build());
-				player.setItemInMainHand(item.get());
-				return true;
-			} else {
-				player.sendMessage(EEMessages.PREFIX.get() + EAMessages.EMPTY_ITEM_IN_HAND.get());
-				return false;
-			}
-		} else {
-			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.ITEM_NAME_SET_ERROR.get()
-					.replaceAll("<amount>", String.valueOf(this.max_displayname)));
+		if(name.length() > this.max_displayname) {
+			EEMessages.ITEM_NAME_SET_ERROR.sender()
+				.replace("<amount>", String.valueOf(this.max_displayname))
+				.sendTo(player);
 			return false;
 		}
+		
+		Optional<ItemStack> item = player.getItemInMainHand();
+		if(!player.getItemInMainHand().isPresent()) {
+			EAMessages.EMPTY_ITEM_IN_HAND.sender()
+				.prefix(EEMessages.PREFIX)
+				.sendTo(player);
+			return false;
+		}
+		
+		item.get().offer(Keys.DISPLAY_NAME, EChat.of(name));
+		EEMessages.ITEM_NAME_SET_NAME.sender()
+			.replace("<item-before>", EChat.getButtomItem(item.get(), EEMessages.ITEM_NAME_SET_COLOR.getColor()))
+			.replace("<item-after>", EChat.getButtomItem(item.get(), EEMessages.ITEM_NAME_SET_COLOR.getColor()))
+			.sendTo(player);
+		player.setItemInMainHand(item.get());
+		return true;
 	}
 }

@@ -29,7 +29,6 @@ import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
-import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ESubCommand;
 import fr.evercraft.everapi.server.player.EPlayer;
 
@@ -46,7 +45,7 @@ public class EEMailClear extends ESubCommand<EverEssentials> {
 
 	@Override
 	public Text description(final CommandSource source) {
-		return EChat.of(EEMessages.MAIL_CLEAR_DESCRIPTION.get());
+		return EEMessages.MAIL_CLEAR_DESCRIPTION.getText();
 	}
 	
 	@Override
@@ -89,18 +88,17 @@ public class EEMailClear extends ESubCommand<EverEssentials> {
 	 */
 	
 	private boolean commandClear(EPlayer player) {
-		if (!player.getMails().isEmpty()) {
-			
-			if (player.clearMails()) {
-				player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.MAIL_CLEAR_MESSAGE.getText()));
-				return true;
-			} else {
-				player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.MAIL_CLEAR_CANCEL.getText()));
-			}
-			
-		} else {
-			player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.MAIL_CLEAR_ERROR.getText()));
+		if (player.getMails().isEmpty()) {
+			EEMessages.MAIL_CLEAR_ERROR.sendTo(player);
+			return false;
 		}
-		return false;
+		
+		if (!player.clearMails()) {
+			EEMessages.MAIL_CLEAR_CANCEL.sendTo(player);
+			return false;
+		}
+		
+		EEMessages.MAIL_CLEAR_MESSAGE.sendTo(player);
+		return true;
 	}
 }

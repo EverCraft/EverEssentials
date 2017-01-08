@@ -35,7 +35,6 @@ import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ESubCommand;
 import fr.evercraft.everapi.server.player.EPlayer;
-import fr.evercraft.everapi.text.ETextBuilder;
 
 public class EEItemLoreClear extends ESubCommand<EverEssentials> {
 	public EEItemLoreClear(final EverEssentials plugin, final EEItemLore command) {
@@ -49,7 +48,7 @@ public class EEItemLoreClear extends ESubCommand<EverEssentials> {
 
 	@Override
 	public Text description(final CommandSource source) {
-		return EChat.of(EEMessages.ITEM_LORE_CLEAR_DESCRIPTION.get());
+		return EEMessages.ITEM_LORE_CLEAR_DESCRIPTION.getText();
 	}
 	
 	@Override
@@ -67,7 +66,7 @@ public class EEItemLoreClear extends ESubCommand<EverEssentials> {
 	
 	@Override
 	public boolean subExecute(final CommandSource source, final List<String> args) {
-		if(args.size() == 0){
+		if (args.size() == 0) {
 			if(source instanceof EPlayer){
 				commandItemLoreClear((EPlayer) source);
 				return true;
@@ -84,26 +83,26 @@ public class EEItemLoreClear extends ESubCommand<EverEssentials> {
 	}
 
 	private boolean commandItemLoreClear(final EPlayer player) {
-		if(player.getItemInHand(HandTypes.MAIN_HAND).isPresent()){
-			ItemStack item = player.getItemInMainHand().get();
-			if(item.get(Keys.ITEM_LORE).isPresent()){
-				player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get()).append(EEMessages.ITEM_LORE_CLEAR_NAME.get())
-						.replace("<item>", EChat.getButtomItem(player.getItemInHand(HandTypes.MAIN_HAND).get(), 
-								EChat.getTextColor(EEMessages.ITEM_LORE_CLEAR_COLOR.get())))
-					.build());
-				item.remove(Keys.ITEM_LORE);
-				player.setItemInHand(HandTypes.MAIN_HAND, item);
-				return true;
-			} else {
-				player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get()).append(EEMessages.ITEM_LORE_CLEAR_ERROR.get())
-						.replace("<item>", EChat.getButtomItem(item, 
-								EChat.getTextColor(EEMessages.ITEM_LORE_CLEAR_COLOR.get())))
-					.build());
-				return false;
-			}
-		} else {
-			player.sendMessage(EEMessages.PREFIX.get() + EAMessages.EMPTY_ITEM_IN_HAND.get());
+		if(!player.getItemInHand(HandTypes.MAIN_HAND).isPresent()) {
+			EAMessages.EMPTY_ITEM_IN_HAND.sender()
+				.prefix(EEMessages.PREFIX)
+				.sendTo(player);
 			return false;
 		}
+		
+		ItemStack item = player.getItemInMainHand().get();
+		if(!item.get(Keys.ITEM_LORE).isPresent()) {
+			EEMessages.ITEM_LORE_CLEAR_ERROR.sender()
+				.replace("<item>", EChat.getButtomItem(item, EEMessages.ITEM_LORE_CLEAR_COLOR.getColor()))
+				.sendTo(player);
+		}
+		
+		EEMessages.ITEM_LORE_CLEAR_NAME.sender()
+			.replace("<item>", EChat.getButtomItem(item, EEMessages.ITEM_LORE_CLEAR_COLOR.getColor()))
+			.sendTo(player);
+		
+		item.remove(Keys.ITEM_LORE);
+		player.setItemInHand(HandTypes.MAIN_HAND, item);
+		return true;
 	}
 }

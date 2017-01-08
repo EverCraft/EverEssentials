@@ -33,10 +33,10 @@ import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
+import fr.evercraft.everapi.java.UtilsInteger;
 import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ESubCommand;
 import fr.evercraft.everapi.server.player.EPlayer;
-import fr.evercraft.everapi.text.ETextBuilder;
 
 public class EEItemLoreSet extends ESubCommand<EverEssentials> {
 	public EEItemLoreSet(final EverEssentials plugin, final EEItemLore command) {
@@ -50,7 +50,7 @@ public class EEItemLoreSet extends ESubCommand<EverEssentials> {
 
 	@Override
 	public Text description(final CommandSource source) {
-		return EChat.of(EEMessages.ITEM_LORE_SET_DESCRIPTION.get());
+		return EEMessages.ITEM_LORE_SET_DESCRIPTION.getText();
 	}
 	
 	@Override
@@ -87,7 +87,7 @@ public class EEItemLoreSet extends ESubCommand<EverEssentials> {
 
 	@Override
 	public Text help(final CommandSource source) {
-		return Text.builder("/" + this.getName() + "<" + EAMessages.ARGS_LINE.get() +  "> <" + EAMessages.ARGS_DESCRIPTION.get() + ">")
+		return Text.builder("/" + this.getName() + "<" + EAMessages.ARGS_LINE.getString() +  "> <" + EAMessages.ARGS_DESCRIPTION.getString() + ">")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
 					.build();
@@ -115,41 +115,47 @@ public class EEItemLoreSet extends ESubCommand<EverEssentials> {
 	}
 
 	private boolean commandItemLoreSet(final EPlayer player, final String line_name, final String description) {
-		try {
-			int line = Integer.parseInt(line_name) ;
-			if(line > 0){
-				Optional<ItemStack> item = player.getItemInMainHand();
-				if(item.isPresent()){
-					List<Text> lore = new ArrayList<Text>();
-					if(item.get().get(Keys.ITEM_LORE).isPresent()){
-						lore = item.get().get(Keys.ITEM_LORE).get();
-					}
-					if(line >= lore.size()){
-						lore.add(EChat.of(description));
-					} else {
-						lore.set(line - 1, EChat.of(description));
-					}
-					item.get().offer(Keys.ITEM_LORE, lore);
-					player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get()).append(EEMessages.ITEM_LORE_SET_LORE.get())
-							.replace("<item>", EChat.getButtomItem(item.get(), EChat.getTextColor(EEMessages.ITEM_LORE_SET_COLOR.get())))
-							.replace("<line>", String.valueOf(line))
-						.build());
-					item.get().offer(Keys.ITEM_LORE, lore);
-					player.setItemInMainHand(item.get());
-					return true;
-				} else {
-					player.sendMessage(EEMessages.PREFIX.get() + EAMessages.EMPTY_ITEM_IN_HAND.get());
-					return false;
-				}
-			} else {
-				player.sendMessage(EEMessages.PREFIX.get() + EAMessages.IS_NOT_NUMBER.get()
-						.replaceAll("<number>", line_name));
-				return false;
-			}
-		} catch (NumberFormatException e) {
-			player.sendMessage(EEMessages.PREFIX.get() + EAMessages.IS_NOT_NUMBER.get()
-					.replaceAll("<number>", line_name));
+		Optional<Integer> line = UtilsInteger.parseInt(line_name);
+		if (line.isPresent()) {
+			EAMessages.IS_NOT_NUMBER.sender()
+				.prefix(EEMessages.PREFIX)
+				.replace("<number>", line_name)
+				.sendTo(player);
 			return false;
 		}
+		
+		if (line.get() > 0) {
+			EAMessages.NUMBER_INVALID.sender()
+				.prefix(EEMessages.PREFIX)
+				.sendTo(player);
+			return false;
+		}
+		
+		Optional<ItemStack> item = player.getItemInMainHand();
+		if(!item.isPresent()) {
+			EAMessages.EMPTY_ITEM_IN_HAND.sender()
+				.prefix(EEMessages.PREFIX)
+				.sendTo(player);
+			return false;
+		}
+
+		List<Text> lore = new ArrayList<Text>();
+		if(item.get().get(Keys.ITEM_LORE).isPresent()){
+			lore = item.get().get(Keys.ITEM_LORE).get();
+		}
+		if(line.get() >= lore.size()){
+			lore.add(EChat.of(description));
+		} else {
+			lore.set(line.get() - 1, EChat.of(description));
+		}
+		item.get().offer(Keys.ITEM_LORE, lore);
+		EEMessages.ITEM_LORE_SET_LORE.sender()
+			.replace("<item>", EChat.getButtomItem(item.get(), EEMessages.ITEM_LORE_SET_COLOR.getColor()))
+			.replace("<line>", line.get().toString())
+			.sendTo(player);
+		item.get().offer(Keys.ITEM_LORE, lore);
+		player.setItemInMainHand(item.get());
+		return true;
+
 	}
 }

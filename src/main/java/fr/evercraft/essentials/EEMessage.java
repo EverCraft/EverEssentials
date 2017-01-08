@@ -59,7 +59,7 @@ public class EEMessage extends EMessage<EverEssentials> {
 		AFK_OFF_OTHERS_PLAYER("afk.off.othersPlayer", 							"&7Vous n'êtes plus AFK à cause de &6<staff>&7."),
 		AFK_OFF_OTHERS_STAFF("afk.off.othersStaff", 							"&6<player> &7n'est plus AFK à cause de &6<staff>&7."),
 		AFK_OFF_OTHERS_ERROR("afk.off.othersError", 							"&6<player> &cn'est pas AFK."),
-		AFK_OFF_OTHERS_CANCEL("afk.off.othersCancel", 							"&cImpossible de rendre sortir &6<player> &cd'AFK."),
+		AFK_OFF_OTHERS_CANCEL("afk.off.othersCancel", 							"&cImpossible de sortir &6<player> &cd'AFK."),
 		
 		AFK_STATUS_DESCRIPTION("afk.status.description", 						"Affiche si le joueur est AFK où pas"),
 		AFK_STATUS_PLAYER_ON("afk.status.playerOn", 							"&7Vous êtes AFK."),
@@ -206,7 +206,7 @@ public class EEMessage extends EMessage<EverEssentials> {
 
 		FLY_ON_PLAYER("fly.on.player", 											"&7Vous pouvez désormais vous envoler."),
 		FLY_ON_PLAYER_ERROR("fly.on.playerError", 								"&cVous possèdez déjà le droit de vous envoler."),
-		FLY_ON_PLAYER_CANCEL("fly.on.playerCancel", 							"&cImpossible de vous rendre invulnérable."),
+		FLY_ON_PLAYER_CANCEL("fly.on.playerCancel", 							"&cImpossible de vous accorder le droit de vous envoler."),
 		FLY_ON_OTHERS_PLAYER("fly.on.othersPlayer", 							"&7Vous pouvez désormais vous envoler grâce à &6<staff>&7."),
 		FLY_ON_OTHERS_STAFF("fly.on.othersStaff", 								"&7Vous venez d'accorder le droit de s'envoler à &6<player>&7."),
 		FLY_ON_OTHERS_ERROR("fly.on.othersError", 								"&6<player> &7possède déjà le droit de s'envoler."),
@@ -217,7 +217,7 @@ public class EEMessage extends EMessage<EverEssentials> {
 		FLY_OFF_PLAYER("fly.off.player", 										"&7Vous ne pouvez plus vous envoler."),
 		FLY_OFF_PLAYER_ERROR("fly.off.playerError", 							"&7Vous ne pouvez pas vous envoler."),
 		FLY_OFF_PLAYER_CREATIVE("fly.off.playerCreative", 						"&7Vous ne pouvez pas vous enlever le droit de vous envoler quand vous êtes en mode créative."),
-		FLY_OFF_PLAYER_CANCEL("fly.off.playerCancel", 							"&cImpossible de vous rendre vulnérable."),
+		FLY_OFF_PLAYER_CANCEL("fly.off.playerCancel", 							"&cImpossible de vous retirer le droit de vous envoler."),
 		FLY_OFF_OTHERS_PLAYER("fly.off.othersPlayer", 							"&7Vous ne pouvez plus vous envoler à cause de &6<staff>&7."),
 		FLY_OFF_OTHERS_STAFF("fly.off.othersStaff", 							"&7Vous venez de retirer le droit de s'envoler à &6<player>&7."),
 		FLY_OFF_OTHERS_ERROR("fly.off.othersError", 							"&6<player> &7ne possède pas le droit de s'envoler."),
