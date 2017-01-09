@@ -37,7 +37,7 @@ public class EEWhitelist extends EParentCommand<EverEssentials> {
 
 	@Override
 	public Text description(final CommandSource source) {
-		return EChat.of(EEMessages.WHITELIST_DESCRIPTION.get());
+		return EChat.of(EEMessages.WHITELIST_DESCRIPTION.getString());
 	}
 
 	@Override

@@ -35,7 +35,7 @@ import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
-import fr.evercraft.everapi.plugin.EChat;
+import fr.evercraft.everapi.message.EMessageSender;
 import fr.evercraft.everapi.plugin.command.ECommand;
 import fr.evercraft.everapi.sponge.UtilsTick;
 
@@ -64,7 +64,7 @@ public class EEWeather extends ECommand<EverEssentials> {
 				.append(Text.builder("rain").onClick(TextActions.suggestCommand("/" + this.getName() + " rain")).build())
 				.append(Text.of("|"))
 				.append(Text.builder("storm").onClick(TextActions.suggestCommand("/" + this.getName() + " storm")).build())
-				.append(Text.of("> [" + EAMessages.ARGS_WORLD.get() + "] [" + EAMessages.ARGS_MINUTES.get() + "]"))
+				.append(Text.of("> [" + EAMessages.ARGS_WORLD.getString() + "] [" + EAMessages.ARGS_MINUTES.getString() + "]"))
 				.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 				.color(TextColors.RED)
 				.build();
@@ -126,8 +126,10 @@ public class EEWeather extends ECommand<EverEssentials> {
 							.sendTo(source);
 					}
 				} catch (NumberFormatException e) {
-					source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.WORLD_NOT_FOUND.get()
-							.replaceAll("<world>", args.get(1))));
+					EAMessages.WORLD_NOT_FOUND.sender()
+						.prefix(EEMessages.PREFIX)
+						.replace("<world>", args.get(1))
+						.sendTo(source);
 				}
 			}
 		// On connais le joueur
@@ -138,12 +140,16 @@ public class EEWeather extends ECommand<EverEssentials> {
 				try {
 					resultat = this.commandWeather(source, getWeather(args.get(0)), world.get(), Integer.parseInt(args.get(2)));
 				} catch (NumberFormatException e) {
-					source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.IS_NOT_NUMBER.get()
-							.replaceAll("<number>", args.get(2))));
+					EAMessages.IS_NOT_NUMBER.sender()
+						.prefix(EEMessages.PREFIX)
+						.replace("<number>", args.get(2))
+						.sendTo(source);
 				}
 			} else {
-				source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.WORLD_NOT_FOUND.get()
-						.replaceAll("<world>", args.get(1))));
+				EAMessages.WORLD_NOT_FOUND.sender()
+					.prefix(EEMessages.PREFIX)
+					.replace("<world>", args.get(1))
+					.sendTo(source);
 			}
 		// Nombre d'argument incorrect
 		} else {
@@ -154,46 +160,57 @@ public class EEWeather extends ECommand<EverEssentials> {
 	}
 
 	private boolean commandWeather(final CommandSource player, final Optional<Weather> weather, final World world) {
-		if (this.plugin.getManagerServices().getEssentials().hasPermissionWorld(player, world)) {
-			if (world.getProperties().getDimensionType().equals(DimensionTypes.OVERWORLD)) {			
-				if (weather.isPresent()) {
-					world.setWeather(weather.get());
-					player.sendMessage(EChat.of(EEMessages.PREFIX.get() + getMessage(weather.get())
-								.replaceAll("<world>", world.getName())
-								.replaceAll("<weather>", weather.get().getName())));
-					return true;
-				} else {
-					player.sendMessage(this.help(player));
-				}
-			} else {
-				player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.WEATHER_ERROR.get()));
-			}
-		} else {
-			player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.NO_PERMISSION_WORLD.get()
-					.replaceAll("<world>", world.getName())));
+		if (!this.plugin.getManagerServices().getEssentials().hasPermissionWorld(player, world)) {
+			EAMessages.NO_PERMISSION_WORLD.sender()
+				.prefix(EEMessages.PREFIX)
+				.replace("<world>", world.getName())
+				.sendTo(player);
+			return false;
 		}
-		return false;
+		
+		if (!world.getProperties().getDimensionType().equals(DimensionTypes.OVERWORLD)) {
+			EEMessages.WEATHER_ERROR.sendTo(player);
+			return false;
+		}
+		
+		if (!weather.isPresent()) {
+			player.sendMessage(this.help(player));
+			return false;
+		}
+		
+		world.setWeather(weather.get());
+		this.getMessage(weather.get())
+			.replace("<world>", world.getName())
+			.replace("<weather>", weather.get().getName())
+			.sendTo(player);
+		return true;
 	}
 	
 	private boolean commandWeather(final CommandSource player, final Optional<Weather> weather, final World world, final int duration) {
-		if (this.plugin.getManagerServices().getEssentials().hasPermissionWorld(player, world)) {
-			if (world.getProperties().getDimensionType().equals(DimensionTypes.OVERWORLD)) {			
-				if (weather.isPresent()) {
-					world.setWeather(weather.get(), UtilsTick.parseMinutes(duration));
-					player.sendMessage(EChat.of(EEMessages.PREFIX.get() + getMessageDuration(weather.get())
-								.replaceAll("<world>", world.getName())
-								.replaceAll("<duration>", String.valueOf(duration))
-								.replaceAll("<weather>", weather.get().getName())));
-				} else {
-					player.sendMessage(this.help(player));
-				}
-			} else {
-				player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.WEATHER_ERROR.get()));
-			}
-		} else {
-			player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.NO_PERMISSION_WORLD.get()
-					.replaceAll("<world>", world.getName())));
+		if (!this.plugin.getManagerServices().getEssentials().hasPermissionWorld(player, world)) {
+			EAMessages.NO_PERMISSION_WORLD.sender()
+				.prefix(EEMessages.PREFIX)
+				.replace("<world>", world.getName())
+				.sendTo(player);
+			return false;
 		}
+		
+		if (!world.getProperties().getDimensionType().equals(DimensionTypes.OVERWORLD)) {
+			EEMessages.WEATHER_ERROR.sendTo(player);
+			return false;
+		}
+		
+		if (!weather.isPresent()) {
+			player.sendMessage(this.help(player));
+			return false;
+		}
+		
+		world.setWeather(weather.get(), UtilsTick.parseMinutes(duration));
+		this.getMessageDuration(weather.get())
+			.replace("<world>", world.getName())
+			.replace("<duration>", String.valueOf(duration))
+			.replace("<weather>", weather.get().getName())
+			.sendTo(player);
 		return true;
 	}
 	
@@ -209,27 +226,22 @@ public class EEWeather extends ECommand<EverEssentials> {
 		return Optional.ofNullable(weather);
 	}
 	
-	private String getMessage(final Weather weather) {
-		String message = null;
+	private EMessageSender getMessage(final Weather weather) {
 		if (weather.equals(Weathers.RAIN)) {
-			message = EEMessages.WEATHER_RAIN.get();
+			return EEMessages.WEATHER_RAIN.sender();
 		} else if (weather.equals(Weathers.THUNDER_STORM)) {
-			message = EEMessages.WEATHER_STORM.get();
-		} else {
-			message = EEMessages.WEATHER_SUN.get();
+			return EEMessages.WEATHER_STORM.sender();
 		}
-		return message;
+		return EEMessages.WEATHER_SUN.sender();
 	}
 	
-	private String getMessageDuration(final Weather weather) {
-		String message = null;
+	private EMessageSender getMessageDuration(final Weather weather) {
 		if (weather.equals(Weathers.RAIN)) {
-			message = EEMessages.WEATHER_RAIN_DURATION.get();
+			return EEMessages.WEATHER_RAIN_DURATION.sender();
 		} else if (weather.equals(Weathers.THUNDER_STORM)) {
-			message = EEMessages.WEATHER_STORM_DURATION.get();
-		} else {
-			message = EEMessages.WEATHER_SUN_DURATION.get();
+			return EEMessages.WEATHER_STORM_DURATION.sender();
 		}
-		return message;
+		return EEMessages.WEATHER_SUN_DURATION.sender();
+
 	}
 }

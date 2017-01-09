@@ -36,7 +36,6 @@ import fr.evercraft.everapi.exception.ServerDisableException;
 import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ECommand;
 import fr.evercraft.everapi.server.player.EPlayer;
-import fr.evercraft.everapi.text.ETextBuilder;
 
 public class EEWarpDel extends ECommand<EverEssentials> {
 	
@@ -56,7 +55,7 @@ public class EEWarpDel extends ECommand<EverEssentials> {
 
 	@Override
 	public Text help(final CommandSource source) {
-		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_WARP.get() + ">")
+		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_WARP.getString() + ">")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
 					.build();
@@ -95,17 +94,18 @@ public class EEWarpDel extends ECommand<EverEssentials> {
 		String name = EChat.fixLength(warp_name, this.plugin.getEverAPI().getConfigs().getMaxCaractere());
 		
 		Optional<Transform<World>> warp = this.plugin.getManagerServices().getWarp().get(name);
-		// Le serveur a un warp qui porte ce nom
-		if (warp.isPresent()) {
-			player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
-					.append(EEMessages.DELWARP_CONFIRMATION.get())
-					.replace("<warp>", this.getButtonWarp(name, warp.get()))
-					.replace("<confirmation>", this.getButtonConfirmation(name))
-					.build());
 		// Le serveur n'a pas de warp qui porte ce nom
-		} else {
-			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.DELWARP_INCONNU.get().replaceAll("<warp>", name));
+		if (!warp.isPresent()) {
+			EEMessages.DELWARP_INCONNU.sender()
+				.replace("<warp>", name)
+				.sendTo(player);
+			return false;
 		}
+		
+		EEMessages.DELWARP_CONFIRMATION.sender()
+			.replace("<warp>", () -> this.getButtonWarp(name, warp.get()))
+			.replace("<confirmation>", () -> this.getButtonConfirmation(name))
+			.sendTo(player);
 		return false;
 	}
 	
@@ -113,41 +113,43 @@ public class EEWarpDel extends ECommand<EverEssentials> {
 		String name = EChat.fixLength(warp_name, this.plugin.getEverAPI().getConfigs().getMaxCaractere());
 		
 		Optional<Transform<World>> warp = this.plugin.getManagerServices().getWarp().get(name);
-		// Le serveur a un warp qui porte ce nom
-		if (warp.isPresent()) {
-			// Si le warp a bien été supprimer
-			if (this.plugin.getManagerServices().getWarp().remove(name)) {
-				player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
-						.append(EEMessages.DELWARP_DELETE.get())
-						.replace("<warp>", this.getButtonWarp(name, warp.get()))
-						.build());
-				return true;
-			// Le warp n'a pas été supprimer
-			} else {
-				player.sendMessage(EEMessages.PREFIX.get() + EEMessages.DELWARP_CANCEL.get().replaceAll("<warp>", name));
-			}
-			// Le serveur n'a pas de warp qui porte ce nom
-		} else {
-			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.DELWARP_INCONNU.get().replaceAll("<warp>", name));
+		// Le serveur n'a pas de warp qui porte ce nom
+		if (!warp.isPresent()) {
+			EEMessages.DELWARP_INCONNU.sender()
+				.replace("<warp>", name)
+				.sendTo(player);
+			return false;
 		}
-		return false;
+		
+		// Le warp n'a pas été supprimer
+		if (!this.plugin.getManagerServices().getWarp().remove(name)) {
+			EEMessages.DELWARP_CANCEL.sender()
+				.replace("<warp>", name)
+				.sendTo(player);
+			return false;
+		}
+		
+		EEMessages.DELWARP_DELETE.sender()
+			.replace("<warp>", () -> this.getButtonWarp(name, warp.get()))
+			.sendTo(player);
+		return true;
 	}
 	
 	private Text getButtonWarp(final String name, final Transform<World> location){
-		return EChat.of(EEMessages.DELWARP_NAME.get().replaceAll("<name>", name)).toBuilder()
-					.onHover(TextActions.showText(EChat.of(EEMessages.DELWARP_NAME_HOVER.get()
-							.replaceAll("<warp>", name)
-							.replaceAll("<world>", location.getExtent().getName())
-							.replaceAll("<x>", String.valueOf(location.getLocation().getBlockX()))
-							.replaceAll("<y>", String.valueOf(location.getLocation().getBlockY()))
-							.replaceAll("<z>", String.valueOf(location.getLocation().getBlockZ())))))
+		return EEMessages.DELWARP_NAME.getFormat().toText("<name>", name).toBuilder()
+					.onHover(TextActions.showText(EEMessages.DELWARP_NAME_HOVER.getFormat().toText(
+								"<warp>", name,
+								"<world>", location.getExtent().getName(),
+								"<x>", String.valueOf(location.getLocation().getBlockX()),
+								"<y>", String.valueOf(location.getLocation().getBlockY()),
+								"<z>", String.valueOf(location.getLocation().getBlockZ()))))
 					.build();
 	}
 	
 	private Text getButtonConfirmation(final String name){
 		return EEMessages.DELWARP_CONFIRMATION_VALID.getText().toBuilder()
-					.onHover(TextActions.showText(EChat.of(EEMessages.DELWARP_CONFIRMATION_VALID_HOVER.get()
-							.replaceAll("<warp>", name))))
+					.onHover(TextActions.showText(EEMessages.DELWARP_CONFIRMATION_VALID_HOVER.getFormat()
+							.toText("<warp>", name)))
 					.onClick(TextActions.runCommand("/delwarp \"" + name + "\" confirmation"))
 					.build();
 	}

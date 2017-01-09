@@ -32,7 +32,6 @@ import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.everapi.EAMessage.EAMessages;
-import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ESubCommand;
 
 public class EEWhitelistAdd extends ESubCommand<EverEssentials> {
@@ -48,7 +47,7 @@ public class EEWhitelistAdd extends ESubCommand<EverEssentials> {
 
 	@Override
 	public Text description(final CommandSource source) {
-		return EChat.of(EEMessages.WHITELIST_ADD_DESCRIPTION.get());
+		return EEMessages.WHITELIST_ADD_DESCRIPTION.getText();
 	}
 	
 	@Override
@@ -66,7 +65,7 @@ public class EEWhitelistAdd extends ESubCommand<EverEssentials> {
 
 	@Override
 	public Text help(final CommandSource source) {
-		return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_PLAYER.get() + "]")
+		return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_PLAYER.getString() + "]")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
 					.build();
@@ -89,26 +88,31 @@ public class EEWhitelistAdd extends ESubCommand<EverEssentials> {
 	private boolean commandWhitelistAdd(final CommandSource player, final String identifier) {
 		Optional<GameProfile> gameprofile = this.plugin.getEServer().getGameProfile(identifier);
 		// Le joueur existe
-		if (gameprofile.isPresent()) {
-			Optional<WhitelistService> whitelist = this.plugin.getEverAPI().getManagerService().getWhitelist();
-			if (whitelist.isPresent()){	
-				
-				if (!whitelist.get().addProfile(gameprofile.get())) {
-					player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.WHITELIST_ADD_PLAYER.get()
-							.replaceAll("<player>", gameprofile.get().getName().orElse(identifier))));
-				} else {
-					player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.WHITELIST_ADD_ERROR.get()
-							.replaceAll("<player>", gameprofile.get().getName().orElse(identifier))));
-				}
-				
-			} else {
-				player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.COMMAND_ERROR.get()));
-			}
-			return true;
-		// Le joueur est introuvable
-		} else {
-			player.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
+		if (!gameprofile.isPresent()) {
+			EAMessages.PLAYER_NOT_FOUND.sender()
+				.prefix(EEMessages.PREFIX)
+				.sendTo(player);
+			return false;
 		}
-		return false;
+		
+		Optional<WhitelistService> whitelist = this.plugin.getEverAPI().getManagerService().getWhitelist();
+		if (!whitelist.isPresent()) {	
+			EAMessages.COMMAND_ERROR.sender()
+				.prefix(EEMessages.PREFIX)
+				.sendTo(player);
+			return false;
+		}
+				
+		if (whitelist.get().addProfile(gameprofile.get())) {
+			EEMessages.WHITELIST_ADD_ERROR.sender()
+				.replace("<player>", gameprofile.get().getName().orElse(identifier))
+				.sendTo(player);
+			return false;
+		}
+		
+		EEMessages.WHITELIST_ADD_PLAYER.sender()
+			.replace("<player>", gameprofile.get().getName().orElse(identifier))
+			.sendTo(player);
+		return true;
 	}
 }

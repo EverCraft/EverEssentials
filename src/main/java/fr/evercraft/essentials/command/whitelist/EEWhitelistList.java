@@ -33,9 +33,8 @@ import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.everapi.EAMessage.EAMessages;
-import fr.evercraft.everapi.plugin.EChat;
+import fr.evercraft.everapi.message.replace.EReplace;
 import fr.evercraft.everapi.plugin.command.ESubCommand;
-import fr.evercraft.everapi.text.ETextBuilder;
 
 public class EEWhitelistList extends ESubCommand<EverEssentials> {
 	public EEWhitelistList(final EverEssentials plugin, final EEWhitelist command) {
@@ -49,7 +48,7 @@ public class EEWhitelistList extends ESubCommand<EverEssentials> {
 
 	@Override
 	public Text description(final CommandSource source) {
-		return EChat.of(EEMessages.WHITELIST_LIST_DESCRIPTION.get());
+		return EEMessages.WHITELIST_LIST_DESCRIPTION.getText();
 	}
 	
 	@Override
@@ -81,46 +80,45 @@ public class EEWhitelistList extends ESubCommand<EverEssentials> {
 
 	private boolean commandWhitelistList(final CommandSource player) {
 		Optional<WhitelistService> optWhitelist = this.plugin.getEverAPI().getManagerService().getWhitelist();
-		if (optWhitelist.isPresent()) {
-			
-			List<Text> lists = new ArrayList<Text>();
-			WhitelistService whitelist = optWhitelist.get();
-			if (!whitelist.getWhitelistedProfiles().isEmpty()){
-				if (player.hasPermission(EEPermissions.WHITELIST_MANAGE.get())) {
-					
-					for (GameProfile profile : whitelist.getWhitelistedProfiles()) {
-						String name = profile.getName().orElse(profile.getUniqueId().toString());
-						lists.add(ETextBuilder.toBuilder(EEMessages.WHITELIST_LIST_LINE_DELETE.get()
-									.replaceAll("<player>", name))
-								.replace("<delete>", getButtonDelete(name, profile.getUniqueId()))
-								.build());
-					}
-					
-				} else {
-					
-					for (GameProfile profile : whitelist.getWhitelistedProfiles()) {
-						lists.add(EChat.of(EEMessages.WHITELIST_LIST_LINE.get()
-									.replaceAll("<player>", profile.getName().orElse(profile.getUniqueId().toString()))));
-					}
-					
-				}
-			} else {
-				lists.add(EEMessages.WHITELIST_LIST_NO_PLAYER.getText());
-			}
-			this.plugin.getEverAPI().getManagerService().getEPagination().sendTo(EEMessages.WHITELIST_LIST_TITLE.getText().toBuilder()
-					.onClick(TextActions.runCommand("/" + this.getName())).build(), lists, player);
-			return true;
-			
-		} else {
-			player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.COMMAND_ERROR.get()));
+		if (!optWhitelist.isPresent()) {	
+			EAMessages.COMMAND_ERROR.sender()
+				.prefix(EEMessages.PREFIX)
+				.sendTo(player);
+			return false;
 		}
-		return false;
+			
+		List<Text> lists = new ArrayList<Text>();
+		WhitelistService whitelist = optWhitelist.get();
+		if (!whitelist.getWhitelistedProfiles().isEmpty()){
+			if (player.hasPermission(EEPermissions.WHITELIST_MANAGE.get())) {
+				
+				for (GameProfile profile : whitelist.getWhitelistedProfiles()) {
+					String name = profile.getName().orElse(profile.getUniqueId().toString());
+					lists.add(EEMessages.WHITELIST_LIST_LINE_DELETE.getFormat().toText(
+								"<player>", EReplace.of(name),
+								"<delete>", EReplace.of(() ->this.getButtonDelete(name, profile.getUniqueId()))));
+				}
+				
+			} else {
+				
+				for (GameProfile profile : whitelist.getWhitelistedProfiles()) {
+					lists.add(EEMessages.WHITELIST_LIST_LINE.getFormat()
+							.toText("<player>", profile.getName().orElse(profile.getUniqueId().toString())));
+				}
+				
+			}
+		} else {
+			lists.add(EEMessages.WHITELIST_LIST_NO_PLAYER.getText());
+		}
+		this.plugin.getEverAPI().getManagerService().getEPagination().sendTo(EEMessages.WHITELIST_LIST_TITLE.getText().toBuilder()
+				.onClick(TextActions.runCommand("/" + this.getName())).build(), lists, player);
+		return true;
 	}
 	
 	private Text getButtonDelete(final String name, final UUID uuid){
 		return EEMessages.WHITELIST_LIST_REMOVE.getText().toBuilder()
-					.onHover(TextActions.showText(EChat.of(EEMessages.WHITELIST_LIST_REMOVE_HOVER.get()
-							.replaceAll("<player>", name))))
+					.onHover(TextActions.showText(EEMessages.WHITELIST_LIST_REMOVE_HOVER.getFormat()
+							.toText("<player>", name)))
 					.onClick(TextActions.runCommand("/" + this.getParentName() + " remove " + uuid.toString()))
 					.build();
 	}

@@ -37,7 +37,6 @@ import fr.evercraft.everapi.exception.ServerDisableException;
 import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ECommand;
 import fr.evercraft.everapi.server.player.EPlayer;
-import fr.evercraft.everapi.text.ETextBuilder;
 
 public class EEWarpSet extends ECommand<EverEssentials> {
 	
@@ -57,7 +56,7 @@ public class EEWarpSet extends ECommand<EverEssentials> {
 
 	@Override
 	public Text help(final CommandSource source) {
-		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_WARP.get() + ">")
+		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_WARP.getString() + ">")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
 					.build();
@@ -100,36 +99,38 @@ public class EEWarpSet extends ECommand<EverEssentials> {
 		Optional<Transform<World>> warp = this.plugin.getManagerServices().getWarp().get(name);
 		if (warp.isPresent()) {
 			if (this.plugin.getManagerServices().getWarp().update(name, player.getTransform())) {
-				player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
-						.append(EEMessages.SETWARP_REPLACE.get())
-						.replace("<warp>", this.getButtonWarp(name, player.getLocation()))
-						.build());
+				EEMessages.SETWARP_REPLACE.sender()
+					.replace("<warp>", () -> this.getButtonWarp(name, player.getLocation()))
+					.sendTo(player);
 				return true;
 			} else {
-				player.sendMessage(EEMessages.PREFIX.get() + EEMessages.SETWARP_REPLACE_CANCEL.get().replaceAll("<warp>", name));
+				EEMessages.SETWARP_REPLACE_CANCEL.sender()
+					.replace("<warp>", name)
+					.sendTo(player);
 			}
 		} else {
 			if (this.plugin.getManagerServices().getWarp().add(name, player.getTransform())) {
-				player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
-						.append(EEMessages.SETWARP_NEW.get())
-						.replace("<warp>", this.getButtonWarp(name, player.getLocation()))
-						.build());
+				EEMessages.SETWARP_NEW.sender()
+					.replace("<warp>", () -> this.getButtonWarp(name, player.getLocation()))
+					.sendTo(player);
 				return true;
 			} else {
-				player.sendMessage(EEMessages.PREFIX.get() + EEMessages.SETWARP_NEW_CANCEL.get().replaceAll("<warp>", name));
+				EEMessages.SETWARP_NEW_CANCEL.sender()
+					.replace("<warp>", name)
+					.sendTo(player);
 			}
 		}
 		return false;
 	}
 
 	private Text getButtonWarp(final String name, final Location<World> location){
-		return EChat.of(EEMessages.SETWARP_NAME.get().replaceAll("<name>", name)).toBuilder()
-					.onHover(TextActions.showText(EChat.of(EEMessages.SETWARP_NAME_HOVER.get()
-							.replaceAll("<warp>", name)
-							.replaceAll("<world>", location.getExtent().getName())
-							.replaceAll("<x>", String.valueOf(location.getBlockX()))
-							.replaceAll("<y>", String.valueOf(location.getBlockY()))
-							.replaceAll("<z>", String.valueOf(location.getBlockZ())))))
+		return EEMessages.SETWARP_NAME.getFormat().toText("<name>", name).toBuilder()
+					.onHover(TextActions.showText(EEMessages.SETWARP_NAME_HOVER.getFormat().toText(
+								"<warp>", name,
+								"<world>", location.getExtent().getName(),
+								"<x>", String.valueOf(location.getBlockX()),
+								"<y>", String.valueOf(location.getBlockY()),
+								"<z>", String.valueOf(location.getBlockZ()))))
 					.build();
 	}
 }

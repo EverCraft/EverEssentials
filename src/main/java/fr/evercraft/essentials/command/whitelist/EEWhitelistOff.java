@@ -28,7 +28,6 @@ import org.spongepowered.api.text.format.TextColors;
 import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
-import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ESubCommand;
 
 public class EEWhitelistOff extends ESubCommand<EverEssentials> {
@@ -44,7 +43,7 @@ public class EEWhitelistOff extends ESubCommand<EverEssentials> {
 
 	@Override
 	public Text description(final CommandSource source) {
-		return EChat.of(EEMessages.WHITELIST_OFF_DESCRIPTION.get());
+		return EEMessages.WHITELIST_OFF_DESCRIPTION.getText();
 	}
 	
 	@Override
@@ -77,9 +76,9 @@ public class EEWhitelistOff extends ESubCommand<EverEssentials> {
 	private boolean commandWhitelistOff(final CommandSource player) {
 		if (this.plugin.getEServer().hasWhitelist()){
 			this.plugin.getEServer().setHasWhitelist(false);
-			player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.WHITELIST_OFF_DISABLED.get()));
+			EEMessages.WHITELIST_OFF_DISABLED.sendTo(player);
 		} else {
-			player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.WHITELIST_OFF_ALREADY_DISABLED.get()));
+			EEMessages.WHITELIST_OFF_ALREADY_DISABLED.sendTo(player);
 		}
 		return true;
 	}
