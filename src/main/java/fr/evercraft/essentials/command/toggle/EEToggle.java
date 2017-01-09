@@ -25,7 +25,6 @@ import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.everapi.EAMessage.EAMessages;
-import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.EParentCommand;
 import fr.evercraft.everapi.server.player.EPlayer;
 
@@ -42,7 +41,7 @@ public class EEToggle extends EParentCommand<EverEssentials> {
 
 	@Override
 	public Text description(final CommandSource source) {
-		return EChat.of(EEMessages.TOGGLE_DESCRIPTION.get());
+		return EEMessages.TOGGLE_DESCRIPTION.getText();
 	}
 
 	@Override
@@ -60,7 +59,9 @@ public class EEToggle extends EParentCommand<EverEssentials> {
 			resultat = this.commandToggle((EPlayer) source);
 		// La source n'est pas un joueur
 		} else {
-			source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
+			EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()
+				.prefix(EEMessages.PREFIX)
+				.sendTo(source);
 		}
 		
 		return resultat;
@@ -71,16 +72,16 @@ public class EEToggle extends EParentCommand<EverEssentials> {
 		
 		if (player.setToggle(toggle)) {
 			if (toggle) {
-				player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.TOGGLE_ON_PLAYER.getText()));
+				EEMessages.TOGGLE_ON_PLAYER.sendTo(player);
 			} else {
-				player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.TOGGLE_OFF_PLAYER.getText()));
+				EEMessages.TOGGLE_OFF_PLAYER.sendTo(player);
 			}
 			return true;
 		} else {
 			if (toggle) {
-				player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.TOGGLE_ON_PLAYER_CANCEL.getText()));
+				EEMessages.TOGGLE_ON_PLAYER_CANCEL.sendTo(player);
 			} else {
-				player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.TOGGLE_OFF_PLAYER_CANCEL.getText()));
+				EEMessages.TOGGLE_OFF_PLAYER_CANCEL.sendTo(player);
 			}
 		}
 		return false;

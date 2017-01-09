@@ -22,7 +22,6 @@ import org.spongepowered.api.text.Text;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.essentials.EEMessage.EEMessages;
-import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.EParentCommand;
 
 public class EEWorldborder extends EParentCommand<EverEssentials> {
@@ -38,7 +37,7 @@ public class EEWorldborder extends EParentCommand<EverEssentials> {
 
 	@Override
 	public Text description(final CommandSource source) {
-		return EChat.of(EEMessages.WORLDBORDER_DESCRIPTION.get());
+		return EEMessages.WORLDBORDER_DESCRIPTION.getText();
 	}
 
 	@Override

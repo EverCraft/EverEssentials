@@ -30,7 +30,6 @@ import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
-import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ESubCommand;
 
 public class EEReload extends ESubCommand<EverEssentials> {
@@ -73,7 +72,9 @@ public class EEReload extends ESubCommand<EverEssentials> {
 
 	private boolean commandReload(final CommandSource player) {
 		this.plugin.reload();
-		player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.RELOAD_COMMAND.get()));
+		EAMessages.RELOAD_COMMAND.sender()
+			.prefix(EEMessages.PREFIX)
+			.sendTo(player);
 		return true;
 	}
 }

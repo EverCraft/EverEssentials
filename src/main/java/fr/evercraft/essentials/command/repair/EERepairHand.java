@@ -35,7 +35,6 @@ import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ECommand;
 import fr.evercraft.everapi.server.player.EPlayer;
-import fr.evercraft.everapi.text.ETextBuilder;
 
 public class EERepairHand extends ECommand<EverEssentials> {
 
@@ -90,35 +89,32 @@ public class EERepairHand extends ECommand<EverEssentials> {
 
 	private boolean commandRepair(final EPlayer player) {
 		Optional<ItemStack> optItem = player.getItemInMainHand();
-		if (optItem.isPresent()) {
-			ItemStack item = optItem.get();
-			Optional<Integer> durability = item.get(Keys.ITEM_DURABILITY);
-			if (durability.isPresent()) {
-				item.offer(Keys.ITEM_DURABILITY, Integer.MAX_VALUE);
-				if (item.get(Keys.ITEM_DURABILITY).get() != durability.get()){
-		            player.setItemInMainHand(item);
-		            player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
-		            		.append(EEMessages.REPAIR_HAND_PLAYER.get())
-		            		.replace("<item>", EChat.getButtomItem(item, EChat.getTextColor(EEMessages.REPAIR_HAND_ITEM_COLOR.get())))
-		            		.build());
-		            return true;
-				} else {
-		            player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
-		            		.append(EEMessages.REPAIR_HAND_MAX_DURABILITY.get())
-		            		.replace("<item>", EChat.getButtomItem(item, EChat.getTextColor(EEMessages.REPAIR_HAND_ITEM_COLOR.get())))
-		            		.build());
-					return false;
-				}
-			} else {
-	            player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
-	            		.append(EEMessages.REPAIR_HAND_ERROR.get())
-	            		.replace("<item>",  EChat.getButtomItem(item, EChat.getTextColor(EEMessages.REPAIR_HAND_ITEM_COLOR.get())))
-	            		.build());
-				return false;
-			}
-		} else {
-			player.sendMessage(EEMessages.PREFIX.get() + EAMessages.EMPTY_ITEM_IN_HAND.get());
+		if (!optItem.isPresent()) {
+			EAMessages.EMPTY_ITEM_IN_HAND.sendTo(player);
 			return false;
 		}
+		
+		ItemStack item = optItem.get();
+		Optional<Integer> durability = item.get(Keys.ITEM_DURABILITY);
+		if (!durability.isPresent()) {
+			EEMessages.REPAIR_HAND_ERROR.sender()
+	        	.replace("<item>", EChat.getButtomItem(item, EEMessages.REPAIR_HAND_ITEM_COLOR.getColor()))
+	        	.sendTo(player);
+			return false;
+		}
+		
+		item.offer(Keys.ITEM_DURABILITY, Integer.MAX_VALUE);
+		if (item.get(Keys.ITEM_DURABILITY).get() == durability.get()) {
+			EEMessages.REPAIR_HAND_MAX_DURABILITY.sender()
+	        	.replace("<item>", EChat.getButtomItem(item, EEMessages.REPAIR_HAND_ITEM_COLOR.getColor()))
+	        	.sendTo(player);
+			return false;
+		}
+		
+        player.setItemInMainHand(item);
+        EEMessages.REPAIR_HAND_PLAYER.sender()
+        	.replace("<item>", EChat.getButtomItem(item, EEMessages.REPAIR_HAND_ITEM_COLOR.getColor()))
+        	.sendTo(player);
+        return true;
 	}
 }

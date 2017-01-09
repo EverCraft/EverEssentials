@@ -136,11 +136,13 @@ public class EScheduler {
 						Optional<EPlayer> others = this.plugin.getEServer().getEPlayer(teleport.getKey());
 						if (others.isPresent()) {
 							if (teleport.getValue().getType().equals(Type.TPA)) {
-								others.get().sendMessage(EEMessages.PREFIX.get() + EEMessages.TPA_STAFF_EXPIRE.get()
-										.replaceAll("<player>", player.getName()));
+								EEMessages.TPA_STAFF_EXPIRE.sender()
+									.replace("<player>", player.getName())
+									.sendTo(others.get());
 							} else if (teleport.getValue().getType().equals(Type.TPAHERE)) {
-								others.get().sendMessage(EEMessages.PREFIX.get() + EEMessages.TPAHERE_STAFF_EXPIRE.get()
-										.replaceAll("<player>", player.getName()));
+								EEMessages.TPAHERE_STAFF_EXPIRE.sender()
+									.replace("<player>", player.getName())
+									.sendTo(others.get());
 							}
 						}
 					}
@@ -160,10 +162,10 @@ public class EScheduler {
 						Optional<EUserSubject> subject = this.plugin.getManagerServices().getEssentials().getSubject(player.getUniqueId());
 						if (subject.isPresent()) {
 							if (subject.get().setAfkAuto(true)) {
-								player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.AFK_ON_PLAYER.getText()));
-								if (EEMessages.AFK_ON_ALL.has()) {
-									player.broadcastMessage(EEMessages.PREFIX.getText().concat(player.replaceVariable(EEMessages.AFK_ON_ALL.get())));
-								}
+								EEMessages.AFK_ON_PLAYER.sendTo(player);
+								EEMessages.AFK_ON_ALL.sender()
+									.replace(player.getReplacesAll())
+									.sendAll(this.plugin.getEServer().getOnlineEPlayers(), others -> !others.equals(player));
 							} else {
 								player.setAfkAutoFake(true);
 							}

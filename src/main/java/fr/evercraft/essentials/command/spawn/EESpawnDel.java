@@ -34,10 +34,8 @@ import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.exception.ServerDisableException;
-import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ECommand;
 import fr.evercraft.everapi.server.player.EPlayer;
-import fr.evercraft.everapi.text.ETextBuilder;
 
 public class EESpawnDel extends ECommand<EverEssentials> {
 	
@@ -57,7 +55,7 @@ public class EESpawnDel extends ECommand<EverEssentials> {
 
 	@Override
 	public Text help(final CommandSource source) {
-		return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_GROUP.get() + "]")
+		return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_GROUP.getString() + "]")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
 					.build();
@@ -97,14 +95,15 @@ public class EESpawnDel extends ECommand<EverEssentials> {
 		
 		// Le serveur a un spawn qui porte ce nom
 		if (spawn.isPresent()) {
-			player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
-					.append(EEMessages.DELSPAWN_CONFIRMATION.get())
-					.replace("<spawn>", this.getButtonSpawn(spawn_name, spawn.get()))
-					.replace("<confirmation>", this.getButtonConfirmation(spawn_name))
-					.build());
+			EEMessages.DELSPAWN_CONFIRMATION.sender()
+				.replace("<spawn>", () -> this.getButtonSpawn(spawn_name, spawn.get()))
+				.replace("<confirmation>", () -> this.getButtonConfirmation(spawn_name))
+				.sendTo(player);
 		// Le serveur n'a pas de spawn qui porte ce nom
 		} else {
-			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.DELSPAWN_INCONNU.get().replaceAll("<name>", spawn_name));
+			EEMessages.DELSPAWN_INCONNU.sender()
+				.replace("<name>", spawn_name)
+				.sendTo(player);
 		}
 		return false;
 	}
@@ -112,41 +111,42 @@ public class EESpawnDel extends ECommand<EverEssentials> {
 	private boolean commandDeleteSpawnConfirmation(final EPlayer player, final String spawn_name) throws ServerDisableException {
 		Optional<Transform<World>> spawn = this.plugin.getManagerServices().getSpawn().get(spawn_name);
 		
-		// Le serveur a un spawn qui porte ce nom
-		if (spawn.isPresent()) {
-			// Si le spawn a bien été supprimer
-			if (this.plugin.getManagerServices().getSpawn().remove(spawn_name)) {
-				player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
-						.append(EEMessages.DELSPAWN_DELETE.get())
-						.replace("<spawn>", this.getButtonSpawn(spawn_name, spawn.get()))
-						.build());
-				return true;
-			// Le spawn n'a pas été supprimer
-			} else {
-				player.sendMessage(EEMessages.PREFIX.get() + EAMessages.COMMAND_ERROR.get());
-			}
 		// Le serveur n'a pas de spawn qui porte ce nom
-		} else {
-			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.DELSPAWN_INCONNU.get().replaceAll("<name>", spawn_name));
+		if (!spawn.isPresent()) {
+			EEMessages.DELSPAWN_INCONNU.sender()
+				.replace("<name>", spawn_name)
+				.sendTo(player);
+			return false;
 		}
-		return false;
+
+		// Le spawn n'a pas été supprimer
+		if (!this.plugin.getManagerServices().getSpawn().remove(spawn_name)) {
+			EAMessages.COMMAND_ERROR.sender()
+				.prefix(EEMessages.PREFIX)
+				.sendTo(player);
+		}
+		
+		EEMessages.DELSPAWN_DELETE.sender()
+			.replace("<spawn>", this.getButtonSpawn(spawn_name, spawn.get()))
+			.sendTo(player);
+		return true;
 	}
 	
 	private Text getButtonSpawn(final String name, final Transform<World> location){
-		return EChat.of(EEMessages.DELSPAWN_NAME.get().replaceAll("<name>", name)).toBuilder()
-					.onHover(TextActions.showText(EChat.of(EEMessages.DELSPAWN_NAME_HOVER.get()
-							.replaceAll("<name>", name)
-							.replaceAll("<world>", location.getExtent().getName())
-							.replaceAll("<x>", String.valueOf(location.getLocation().getBlockX()))
-							.replaceAll("<y>", String.valueOf(location.getLocation().getBlockY()))
-							.replaceAll("<z>", String.valueOf(location.getLocation().getBlockZ())))))
+		return EEMessages.DELSPAWN_NAME.getFormat().toText("<name>", name).toBuilder()
+					.onHover(TextActions.showText(EEMessages.DELSPAWN_NAME_HOVER.getFormat().toText(
+							"<name>", name,
+							"<world>", location.getExtent().getName(),
+							"<x>", String.valueOf(location.getLocation().getBlockX()),
+							"<y>", String.valueOf(location.getLocation().getBlockY()),
+							"<z>", String.valueOf(location.getLocation().getBlockZ()))))
 					.build();
 	}
 	
 	private Text getButtonConfirmation(final String name){
 		return EEMessages.DELSPAWN_CONFIRMATION_VALID.getText().toBuilder()
-					.onHover(TextActions.showText(EChat.of(EEMessages.DELSPAWN_CONFIRMATION_VALID_HOVER.get()
-							.replaceAll("<name>", name))))
+					.onHover(TextActions.showText(EEMessages.DELSPAWN_CONFIRMATION_VALID_HOVER.getFormat()
+							.toText("<name>", name)))
 					.onClick(TextActions.runCommand("/delspawn \"" + name + "\" confirmation"))
 					.build();
 	}

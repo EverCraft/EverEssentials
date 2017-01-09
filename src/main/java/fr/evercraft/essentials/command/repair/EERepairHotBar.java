@@ -88,7 +88,7 @@ public class EERepairHotBar extends ECommand<EverEssentials> {
 	private boolean commandRepairHotBar(final EPlayer player) {
 		UtilsInventory.repair(player.getInventory().query(Hotbar.class));
 		
-		player.sendMessage(EEMessages.PREFIX.get() + EEMessages.REPAIR_HOTBAR_PLAYER.get());
+		 EEMessages.REPAIR_HOTBAR_PLAYER.sendTo(player);
 		return true;
 	}
 }

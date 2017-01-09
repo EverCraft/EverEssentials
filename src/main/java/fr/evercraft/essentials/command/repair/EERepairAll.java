@@ -92,7 +92,7 @@ public class EERepairAll extends ECommand<EverEssentials> {
 		UtilsInventory.repair(player.getInventory().query(GridInventory.class));
 		UtilsInventory.repair(player.getInventory().query(EquipmentInventory.class));
 		
-		player.sendMessage(EEMessages.PREFIX.get() + EEMessages.REPAIR_ALL_PLAYER.get());
+		EEMessages.REPAIR_ALL_PLAYER.sendTo(player);
 		return true;
 	}
 }

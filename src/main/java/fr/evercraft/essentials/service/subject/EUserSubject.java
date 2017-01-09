@@ -446,10 +446,10 @@ public class EUserSubject implements SubjectUserEssentials {
 			
 			Optional<EPlayer> player = this.plugin.getEServer().getEPlayer(this.identifier);
 			if (player.isPresent()) {
-				player.get().sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.AFK_OFF_PLAYER.getText()));
-				if (EEMessages.AFK_OFF_ALL.has()) {
-					player.get().broadcastMessage(EEMessages.PREFIX.getText().concat(player.get().replaceVariable(EEMessages.AFK_OFF_ALL.get())));
-				}
+				EEMessages.AFK_OFF_PLAYER.sendTo(player.get());
+				EEMessages.AFK_OFF_ALL.sender()
+					.replace(player.get().getReplacesAll())
+					.sendAll(this.plugin.getEServer().getOnlineEPlayers(), other -> !other.equals(player));
 			}
 		}
 		this.afk_auto_fake = false;
@@ -822,7 +822,13 @@ public class EUserSubject implements SubjectUserEssentials {
 		Preconditions.checkNotNull(message, "message");
 		
 		if (!this.plugin.getManagerEvent().mail(this.getUniqueId(), to, message)) {
-			this.plugin.getThreadAsync().execute(() -> this.plugin.getDataBases().sendMail(this, to.getIdentifier(), message));
+			this.plugin.getThreadAsync().execute(() -> {
+				Optional<Mail> optMail = this.plugin.getDataBases().sendMail(this, to.getIdentifier(), message);
+				optMail.ifPresent(mail -> 
+					this.plugin.getGame().getScheduler().createTaskBuilder()
+						.execute(() -> this.plugin.getManagerEvent().mail(this.getUniqueId(), mail, MailEvent.Action.RECEIVE))
+						.submit(this.plugin));
+			});
 			return true;
 		}
 		return false;

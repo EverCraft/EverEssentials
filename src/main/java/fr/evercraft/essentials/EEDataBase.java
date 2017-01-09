@@ -619,7 +619,7 @@ public class EEDataBase extends EDataBase<EverEssentials> {
 	 * Mails
 	 */
 
-	public void sendMail(EUserSubject subject, String to, String message) {
+	public Optional<Mail> sendMail(EUserSubject subject, String to, String message) {
 		Connection connection = null;
 		PreparedStatement preparedStatement = null;
     	try {
@@ -638,13 +638,15 @@ public class EEDataBase extends EDataBase<EverEssentials> {
 			
 			ResultSet tableKeys = preparedStatement.getGeneratedKeys();
 			if (tableKeys.next()) {
-				subject.addMail(new EMail(this.plugin, tableKeys.getInt(1), datetime.getTime(), to, false, message));
+				EMail mail = new EMail(this.plugin, tableKeys.getInt(1), datetime.getTime(), to, false, message);
+				subject.addMail(mail);
 				this.plugin.getLogger().debug("Adding to the database : ("
 								+ "id='" + tableKeys.getInt(1) + "';"
 								+ "time='" + datetime.getTime() + "';"
 								+ "player='" + subject.getIdentifier() + "';"
 								+ "to='" + to + "';"
 								+ "message='" + message + "';)");
+				return Optional.of(mail);
 			} else {
 				this.plugin.getLogger().debug("Error while adding an email in the database : ("
 						+ "time='" + datetime.getTime() + "';"
@@ -665,6 +667,7 @@ public class EEDataBase extends EDataBase<EverEssentials> {
 				if (connection != null) connection.close();
 			} catch (SQLException e) {}
 	    }
+		return Optional.empty();
 	}
 	
 	public void updateMail(Mail mail) {

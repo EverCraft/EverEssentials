@@ -36,11 +36,9 @@ import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
-import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.EReloadCommand;
 import fr.evercraft.everapi.server.player.EPlayer;
 import fr.evercraft.everapi.services.essentials.SpawnService;
-import fr.evercraft.everapi.text.ETextBuilder;
 
 public class EESpawn extends EReloadCommand<EverEssentials> {
 	
@@ -70,7 +68,7 @@ public class EESpawn extends EReloadCommand<EverEssentials> {
 	@Override
 	public Text help(final CommandSource source) {
 		if (source.hasPermission(EEPermissions.SPAWNS.get())) {
-			return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_GROUP + "]")
+			return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_GROUP.getString() + "]")
 						.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 						.color(TextColors.RED)
 						.build();
@@ -109,7 +107,9 @@ public class EESpawn extends EReloadCommand<EverEssentials> {
 				resultat = this.commandSpawn((EPlayer) source);
 			// La source n'est pas un joueur
 			} else {
-				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
+				EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()
+					.prefix(EEMessages.PREFIX)
+					.sendTo(source);
 			}
 			
 		// Groupe connu
@@ -135,17 +135,22 @@ public class EESpawn extends EReloadCommand<EverEssentials> {
 								resultat = this.commandSpawn((EPlayer) source, group.getIdentifier());
 							// Groupe inexistant
 							} else {
-								source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.SPAWN_ERROR_GROUP.get()
-										.replaceAll("<name>", args.get(0))));
+								EEMessages.SPAWN_ERROR_GROUP.sender()
+									.replace("<name>", args.get(0))
+									.sendTo(source);
 							}
 						} else {
-							source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.SPAWN_ERROR_GROUP.get()));
+							EEMessages.SPAWN_ERROR_GROUP.sender()
+								.replace("<name>", args.get(0))
+								.sendTo(source);
 						}
 					}
 					
 				// Il n'a pas la permission
 				} else {
-					source.sendMessage(EAMessages.NO_PERMISSION.getText());
+					EAMessages.NO_PERMISSION.sender()
+						.prefix(EEMessages.PREFIX)
+						.sendTo(source);
 				}
 			// La source n'est pas un joueur
 			} else {
@@ -167,8 +172,9 @@ public class EESpawn extends EReloadCommand<EverEssentials> {
 		long delay = this.plugin.getConfigs().getTeleportDelay(player);
 		
 		if (delay > 0) {
-			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.SPAWN_DELAY.get()
-					.replaceAll("<delay>", this.plugin.getEverAPI().getManagerUtils().getDate().formatDate(System.currentTimeMillis() + delay)));
+			EEMessages.SPAWN_DELAY.sender()
+				.replace("<delay>", () -> this.plugin.getEverAPI().getManagerUtils().getDate().formatDate(System.currentTimeMillis() + delay))
+				.sendTo(player);
 		}
 		
 		player.setTeleport(delay, () -> this.teleport(player, spawn), player.hasPermission(EEPermissions.TELEPORT_BYPASS_MOVE.get()));
@@ -181,8 +187,9 @@ public class EESpawn extends EReloadCommand<EverEssentials> {
 		if (spawn.isPresent()) {
 			return this.commandSpawn(player, spawn.get(), group);
 		} else {
-			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.SPAWN_ERROR_SET.get()
-					.replaceAll("<name>", group));
+			EEMessages.SPAWN_ERROR_SET.sender()
+				.replace("<name>", group)
+				.sendTo(player);
 		}
 		
 		return false;
@@ -192,8 +199,9 @@ public class EESpawn extends EReloadCommand<EverEssentials> {
 		long delay = this.plugin.getConfigs().getTeleportDelay(player);
 		
 		if (delay > 0) {
-			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.SPAWNS_DELAY.get()
-					.replaceAll("<delay>", this.plugin.getEverAPI().getManagerUtils().getDate().formatDate(System.currentTimeMillis() + delay)));
+			EEMessages.SPAWNS_DELAY.sender()
+				.replace("<delay>", () -> this.plugin.getEverAPI().getManagerUtils().getDate().formatDate(System.currentTimeMillis() + delay))
+				.sendTo(player);
 		}
 		
 		player.setTeleport(delay, () -> this.teleport(player, spawn, name), player.hasPermission(EEPermissions.TELEPORT_BYPASS_MOVE.get()));
@@ -203,16 +211,14 @@ public class EESpawn extends EReloadCommand<EverEssentials> {
 	private void teleport(final EPlayer player, final Transform<World> location) {
 		if (player.isOnline()) {
 			if (player.teleport(location, true)) {
-				player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
-						.append(EEMessages.SPAWN_PLAYER.get())
-						.replace("<spawn>", this.getButtonSpawn(location))
-						.build());
+				EEMessages.SPAWN_PLAYER.sender()
+					.replace("<spawn>", this.getButtonSpawn(location))
+					.sendTo(player);
 
 			} else {
-				player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
-						.append(EEMessages.SPAWN_ERROR_TELEPORT.get())
-						.replace("<spawn>", this.getButtonSpawn(location))
-						.build());
+				EEMessages.SPAWN_ERROR_TELEPORT.sender()
+					.replace("<spawn>", this.getButtonSpawn(location))
+					.sendTo(player);
 			}
 		}
 	}
@@ -220,28 +226,26 @@ public class EESpawn extends EReloadCommand<EverEssentials> {
 	private void teleport(final EPlayer player, final Transform<World> location, final String name) {
 		if (player.isOnline()) {
 			if (player.teleport(location, true)) {
-				player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
-						.append(EEMessages.SPAWNS_PLAYER.get()
-								.replaceAll("<name>", name))
-						.replace("<spawn>", this.getButtonSpawn(location))
-						.build());
+				EEMessages.SPAWNS_PLAYER.sender()
+					.replace("<name>", name)
+					.replace("<spawn>", () -> this.getButtonSpawn(location))
+					.sendTo(player);
 			} else {
-				player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
-						.append(EEMessages.SPAWNS_ERROR_TELEPORT.get()
-							.replaceAll("<name>",  name))
-						.replace("<spawn>", this.getButtonSpawn(location))
-						.build());
+				EEMessages.SPAWNS_ERROR_TELEPORT.sender()
+					.replace("<name>",  name)
+					.replace("<spawn>", () -> this.getButtonSpawn(location))
+					.sendTo(player);
 			}
 		}
 	}
 	
 	private Text getButtonSpawn(final Transform<World> location){
-		return EChat.of(EEMessages.SPAWN_NAME.get()).toBuilder()
-					.onHover(TextActions.showText(EChat.of(EEMessages.SPAWN_NAME_HOVER.get()
-							.replaceAll("<world>", location.getExtent().getName())
-							.replaceAll("<x>", String.valueOf(location.getLocation().getBlockX()))
-							.replaceAll("<y>", String.valueOf(location.getLocation().getBlockY()))
-							.replaceAll("<z>", String.valueOf(location.getLocation().getBlockZ())))))
+		return EEMessages.SPAWN_NAME.getText().toBuilder()
+					.onHover(TextActions.showText(EEMessages.SPAWN_NAME_HOVER.getFormat().toText(
+							"<world>", location.getExtent().getName(),
+							"<x>", String.valueOf(location.getLocation().getBlockX()),
+							"<y>", String.valueOf(location.getLocation().getBlockY()),
+							"<z>", String.valueOf(location.getLocation().getBlockZ()))))
 					.build();
 	}
 }

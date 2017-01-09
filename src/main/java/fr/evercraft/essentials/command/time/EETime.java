@@ -35,7 +35,6 @@ import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
-import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ECommand;
 import fr.evercraft.everapi.server.player.EPlayer;
 
@@ -78,7 +77,7 @@ public class EETime extends ECommand<EverEssentials> {
 				.append(Text.builder("17:30").onClick(TextActions.suggestCommand("/" + this.getName() + " 17:30")).build())
 				.append(Text.of("|"))
 				.append(Text.builder("4000").onClick(TextActions.suggestCommand("/" + this.getName() + " 4000")).build())
-				.append(Text.of("] [" + EAMessages.ARGS_WORLD.get() + "|*]"))
+				.append(Text.of("] [" + EAMessages.ARGS_WORLD.getString() + "|*]"))
 				.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 				.color(TextColors.RED)
 				.build();
@@ -143,8 +142,10 @@ public class EETime extends ECommand<EverEssentials> {
 				if (world.isPresent()) {
 					resultat = this.commandTimeSet(source, parseTime(args.get(0)), world.get());
 				} else {
-					source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.WORLD_NOT_FOUND.get()
-							.replaceAll("<world>", args.get(1))));
+					EAMessages.WORLD_NOT_FOUND.sender()
+						.prefix(EEMessages.PREFIX)
+						.replace("<world>", args.get(1))
+						.sendTo(source);
 				}
 			}
 		// Nombre d'argument incorrect
@@ -156,49 +157,55 @@ public class EETime extends ECommand<EverEssentials> {
 	}
 
 	private boolean commandTime(final EPlayer player) {
-		player.sendMessage(EEMessages.PREFIX.get() + EEMessages.TIME_INFORMATION.get()
-				.replaceAll("<world>", player.getWorld().getName())
-				.replaceAll("<hours>", this.getTime(player.getWorld().getProperties().getWorldTime()))
-				.replaceAll("<ticks>", String.valueOf(player.getWorld().getProperties().getWorldTime())));
+		EEMessages.TIME_INFORMATION.sender()
+			.replace("<world>", player.getWorld().getName())
+			.replace("<hours>", this.getTime(player.getWorld().getProperties().getWorldTime()))
+			.replace("<ticks>", String.valueOf(player.getWorld().getProperties().getWorldTime()))
+			.sendTo(player);
 		return false;
 	}
 	
 	private boolean commandTimeSet(final CommandSource player, final Optional<Long> time, final World world) {
-		if (this.plugin.getManagerServices().getEssentials().hasPermissionWorld(player, world)) {
-			if (time.isPresent()) {
-				this.setWorldTime(world.getProperties(), time.get());
-				player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.TIME_SET_WORLD.get()
-						.replaceAll("<world>", world.getName())
-						.replaceAll("<hours>", this.getTime(time.get()))
-						.replaceAll("<ticks>", String.valueOf(time))));
-				return true;
-			} else {
-				player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.TIME_ERROR.get()));
-			}
-		} else {
-			player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.NO_PERMISSION_WORLD.get()
-					.replaceAll("<world>", world.getName())));
+		if (!this.plugin.getManagerServices().getEssentials().hasPermissionWorld(player, world)) {
+			EAMessages.NO_PERMISSION_WORLD.sender()
+				.prefix(EEMessages.PREFIX)
+				.replace("<world>", world.getName())
+				.sendTo(player);
+			return false;
 		}
-		return false;
+		
+		if (!time.isPresent()) {
+			EEMessages.TIME_ERROR.sendTo(player);
+			return false;
+		}
+		
+		this.setWorldTime(world.getProperties(), time.get());
+		EEMessages.TIME_SET_WORLD.sender()
+			.replace("<world>", world.getName())
+			.replace("<hours>", this.getTime(time.get()))
+			.replace("<ticks>", String.valueOf(time))
+			.sendTo(player);
+		return true;
 	}
 	
 	private boolean commandTimeSetAll(final CommandSource player, final Optional<Long> time) {
-		if (time.isPresent()) {
-			for (World world : this.plugin.getEServer().getWorlds()) {
-				if (this.plugin.getManagerServices().getEssentials().hasPermissionWorld(player, world)) {
-					if (world.getProperties().getDimensionType().equals(DimensionTypes.OVERWORLD)) {
-						setWorldTime(world.getProperties(), time.get());
-					}
+		if (!time.isPresent()) {
+			EEMessages.TIME_ERROR.sendTo(player);
+			return false;
+		}
+		
+		for (World world : this.plugin.getEServer().getWorlds()) {
+			if (this.plugin.getManagerServices().getEssentials().hasPermissionWorld(player, world)) {
+				if (world.getProperties().getDimensionType().equals(DimensionTypes.OVERWORLD)) {
+					setWorldTime(world.getProperties(), time.get());
 				}
 			}
-			player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.TIME_SET_ALL_WORLD.get()
-					.replaceAll("<hours>", this.getTime(time.get()))
-					.replaceAll("<ticks>", String.valueOf(time.get()))));
-			return true;
-		} else {
-			player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.TIME_ERROR.get()));
 		}
-		return false;
+		EEMessages.TIME_SET_ALL_WORLD.sender()
+			.replace("<hours>", this.getTime(time.get()))
+			.replace("<ticks>", String.valueOf(time.get()))
+			.sendTo(player);
+		return true;
 	}
 	
 	private void setWorldTime(WorldProperties world, long time) {
@@ -248,7 +255,7 @@ public class EETime extends ECommand<EverEssentials> {
 		return Optional.empty();
 	}
 	
-	private String getTime(long ticks){
+	private Text getTime(long ticks){
 		ticks = ticks - DIFF_TIME;
 		ticks = ticks % MAX_TIME;
 		
@@ -256,8 +263,8 @@ public class EETime extends ECommand<EverEssentials> {
 		double hours = Math.floor((ticks - minutes) / DIFF_HOURS_TIME);
 		minutes = Math.floor(minutes / DIFF_MINUTES_TIME);
 		
-		return EEMessages.TIME_FORMAT.get()
-				.replaceAll("<hours>", FORMAT.format(hours))
-				.replaceAll("<minutes>", FORMAT.format(minutes));
+		return EEMessages.TIME_FORMAT.getFormat().toText(
+				"<hours>", FORMAT.format(hours),
+				"<minutes>", FORMAT.format(minutes));
 	}
 }

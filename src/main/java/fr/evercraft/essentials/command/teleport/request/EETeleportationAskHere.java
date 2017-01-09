@@ -33,10 +33,8 @@ import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
-import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ECommand;
 import fr.evercraft.everapi.server.player.EPlayer;
-import fr.evercraft.everapi.text.ETextBuilder;
 
 public class EETeleportationAskHere extends ECommand<EverEssentials> {
 	
@@ -56,7 +54,7 @@ public class EETeleportationAskHere extends ECommand<EverEssentials> {
 
 	@Override
 	public Text help(final CommandSource source) {
-		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_PLAYER.get() + ">")
+		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_PLAYER.getString() + ">")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
 					.build();
@@ -86,7 +84,9 @@ public class EETeleportationAskHere extends ECommand<EverEssentials> {
 					resultat = this.commandTeleportation((EPlayer) source, optPlayer.get());
 				// Joueur introuvable
 				} else {
-					source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
+					EAMessages.PLAYER_NOT_FOUND.sender()
+						.prefix(EEMessages.PREFIX)
+						.sendTo(source);
 				}
 			// Si la source est une console ou un commande block
 			} else {
@@ -105,35 +105,40 @@ public class EETeleportationAskHere extends ECommand<EverEssentials> {
 	private boolean commandTeleportation(EPlayer staff, EPlayer player) {
 		// La source et le joueur sont identique
 		if (staff.equals(player)) {
-			staff.sendMessage(EEMessages.PREFIX.get() + EEMessages.TPAHERE_ERROR_EQUALS.get());
+			EEMessages.TPAHERE_ERROR_EQUALS.sendTo(staff);
 			return false;
 		}
 		
 		// Le staff ignore le joueur
 		if (staff.ignore(player)) {
-			staff.sendMessage(EEMessages.PREFIX.get() + EEMessages.TPAHERE_IGNORE_STAFF.get()
-					.replaceAll("<player>", player.getName()));
+			EEMessages.TPAHERE_IGNORE_STAFF.sender()
+				.replace("<player>", player.getName())
+				.sendTo(staff);
 			return false;
 		}
 		
 		// Le joueur ignore le staff
 		if (player.ignore(staff)) {
-			staff.sendMessage(EEMessages.PREFIX.get() + EEMessages.TPAHERE_IGNORE_PLAYER.get()
-					.replaceAll("<player>", player.getName()));
+			EEMessages.TPAHERE_IGNORE_PLAYER.sender()
+				.replace("<player>", player.getName())
+				.sendTo(staff);
 			return false;
 		}
 					
 		// La destination n'accepte pas les demandes de téléportation
 		if (!player.isToggle()) {
-			staff.sendMessage(EEMessages.PREFIX.get() + EEMessages.TOGGLE_DISABLED.get()
-					.replaceAll("<player>", player.getName()));
+			EEMessages.TOGGLE_DISABLED.sender()
+				.replace("<player>", player.getName())
+				.sendTo(staff);
 			return false;
 		}
 		
 		// Le joueur n'a pas la permission
 		if (!player.getWorld().equals(staff.getWorld()) && !this.plugin.getManagerServices().getEssentials().hasPermissionWorld(player, staff.getWorld())) {
-			staff.sendMessage(EEMessages.PREFIX.get() + EAMessages.NO_PERMISSION_WORLD_OTHERS.get()
-					.replaceAll("<world>", staff.getWorld().getName()));
+			EAMessages.NO_PERMISSION_WORLD_OTHERS.sender()
+				.prefix(EEMessages.PREFIX)
+				.replace("<world>", staff.getWorld().getName())
+				.sendTo(staff);
 			return false;
 		}
 		
@@ -142,46 +147,47 @@ public class EETeleportationAskHere extends ECommand<EverEssentials> {
 				
 		// Il y a déjà une demande de téléportation en cours
 		if (!player.addTeleportAskHere(staff.getUniqueId(), delay, staff.getTransform())) {
-			staff.sendMessage(EEMessages.PREFIX.get() + EEMessages.TPAHERE_ERROR_DELAY.get()
-					.replaceAll("<player>", player.getName()));
+			EEMessages.TPAHERE_ERROR_DELAY.sender()
+				.replace("<player>", player.getName())
+				.sendTo(staff);
 			return false;
 		}
 		
-		staff.sendMessage(EEMessages.PREFIX.get() + EEMessages.TPAHERE_STAFF_QUESTION.get()
-				.replaceAll("<player>", player.getName())
-				.replaceAll("<delay>", delay_format));
-		player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.getText())
-						.append(EEMessages.TPAHERE_PLAYER_QUESTION.get()
-							.replaceAll("<player>", staff.getName())
-							.replaceAll("<delay>", delay_format))
-						.replace("<accept>", EETeleportationAskHere.getButtonAccept(staff.getName()))
-						.replace("<deny>", EETeleportationAskHere.getButtonDeny(staff.getName()))
-						.build());
+		EEMessages.TPAHERE_STAFF_QUESTION.sender()
+			.replace("<player>", player.getName())
+			.replace("<delay>", delay_format)
+			.sendTo(staff);
+		EEMessages.TPAHERE_PLAYER_QUESTION.sender()
+			.replace("<player>", staff.getName())
+			.replace("<delay>", delay_format)
+			.replace("<accept>", EETeleportationAskHere.getButtonAccept(staff.getName()))
+			.replace("<deny>", EETeleportationAskHere.getButtonDeny(staff.getName()))
+			.sendTo(player);
 		return true;
 	}
 	
 	public static Text getButtonPosition(final String player, final Location<World> location){
-		return EChat.of(EEMessages.TPAHERE_DESTINATION.get().replaceAll("<player>", player)).toBuilder()
-					.onHover(TextActions.showText(EChat.of(EEMessages.TPAHERE_DESTINATION_HOVER.get()
-							.replaceAll("<world>", location.getExtent().getName())
-							.replaceAll("<x>", String.valueOf(location.getBlockX()))
-							.replaceAll("<y>", String.valueOf(location.getBlockY()))
-							.replaceAll("<z>", String.valueOf(location.getBlockZ())))))
+		return EEMessages.TPAHERE_DESTINATION.getFormat().toText("<player>", player).toBuilder()
+					.onHover(TextActions.showText(EEMessages.TPAHERE_DESTINATION_HOVER.getFormat().toText(
+							"<world>", location.getExtent().getName(),
+							"<x>", String.valueOf(location.getBlockX()),
+							"<y>", String.valueOf(location.getBlockY()),
+							"<z>", String.valueOf(location.getBlockZ()))))
 					.build();
 	}
 	
 	public static Text getButtonAccept(final String player){
-		return EChat.of(EEMessages.TPAHERE_PLAYER_QUESTION_ACCEPT.get()).toBuilder()
-					.onHover(TextActions.showText(EChat.of(EEMessages.TPAHERE_PLAYER_QUESTION_ACCEPT_HOVER.get()
-							.replaceAll("<player>", player))))
+		return EEMessages.TPAHERE_PLAYER_QUESTION_ACCEPT.getText().toBuilder()
+					.onHover(TextActions.showText(EEMessages.TPAHERE_PLAYER_QUESTION_ACCEPT_HOVER.getFormat()
+							.toText("<player>", player)))
 					.onClick(TextActions.runCommand("/tpaccept " + player))
 					.build();
 	}
 	
 	public static Text getButtonDeny(final String player){
-		return EChat.of(EEMessages.TPAHERE_PLAYER_QUESTION_DENY.get()).toBuilder()
-					.onHover(TextActions.showText(EChat.of(EEMessages.TPAHERE_PLAYER_QUESTION_DENY_HOVER.get()
-							.replaceAll("<player>", player))))
+		return EEMessages.TPAHERE_PLAYER_QUESTION_DENY.getText().toBuilder()
+					.onHover(TextActions.showText(EEMessages.TPAHERE_PLAYER_QUESTION_DENY_HOVER.getFormat()
+							.toText("<player>", player)))
 					.onClick(TextActions.runCommand("/tpdeny " + player))
 					.build();
 	}

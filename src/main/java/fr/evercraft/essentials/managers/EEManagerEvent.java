@@ -167,7 +167,7 @@ public class EEManagerEvent {
 	
 	public boolean mail(final EPlayer player, final CommandSource source, final String message) {
 		this.plugin.getLogger().debug("Event MailEvent.Add : (UUID='" + player.getIdentifier() + "';to='" + source.getIdentifier() + "';message='" + message + "')");
-		return this.plugin.getGame().getEventManager().post(ESpongeEventFactory.createMailEventAdd(player, source, message, this.getCause()));
+		return this.plugin.getGame().getEventManager().post(ESpongeEventFactory.createMailEventSend(player, source, message, this.getCause()));
 	}
 	
 	public boolean mail(UUID uuid, final Mail mail, final MailEvent.Action action) {
@@ -185,6 +185,9 @@ public class EEManagerEvent {
 		} else if (action.equals(MailEvent.Action.READ)) {
 			this.plugin.getLogger().debug("Event MailEvent.Read : (UUID='" + player.getIdentifier() + "';mail='" + mail + "')");
 			return this.plugin.getGame().getEventManager().post(ESpongeEventFactory.createMailEventRead(player, mail, this.getCause()));
+		} else if (action.equals(MailEvent.Action.RECEIVE)) {
+			this.plugin.getLogger().debug("Event MailEvent.Receive : (UUID='" + player.getIdentifier() + "';mail='" + mail + "')");
+			return this.plugin.getGame().getEventManager().post(ESpongeEventFactory.createMailEventReceive(player, mail, this.getCause()));
 		}
 		return false;
 	}

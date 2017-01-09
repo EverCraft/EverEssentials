@@ -17,7 +17,9 @@
 package fr.evercraft.essentials.command.mail;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
@@ -34,11 +36,11 @@ import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.everapi.EAMessage.EAMessages;
-import fr.evercraft.everapi.plugin.EChat;
+import fr.evercraft.everapi.java.UtilsInteger;
+import fr.evercraft.everapi.message.replace.EReplace;
 import fr.evercraft.everapi.plugin.command.ESubCommand;
 import fr.evercraft.everapi.server.player.EPlayer;
 import fr.evercraft.everapi.services.essentials.Mail;
-import fr.evercraft.everapi.text.ETextBuilder;
 
 public class EEMailRead extends ESubCommand<EverEssentials> {
 	
@@ -53,7 +55,7 @@ public class EEMailRead extends ESubCommand<EverEssentials> {
 
 	@Override
 	public Text description(final CommandSource source) {
-		return EChat.of(EEMessages.MAIL_READ_DESCRIPTION.get());
+		return EEMessages.MAIL_READ_DESCRIPTION.getText();
 	}
 
 	@Override
@@ -119,83 +121,93 @@ public class EEMailRead extends ESubCommand<EverEssentials> {
 		Set<Mail> mails = player.getMails();
 		
 		if (mails.size() == 0) {
-			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.MAIL_READ_EMPTY.get());
-		} else {
-			List<Text> lists = new ArrayList<Text>();
-			
-			TreeMap<Long, Mail> noread = new TreeMap<Long, Mail>();
-			TreeMap<Long, Mail> read = new TreeMap<Long, Mail>();
-			for (Mail mail : mails) {
-				if (mail.isRead()) {
-					read.put(mail.getDateTime(), mail);
-				} else {
-					noread.put(mail.getDateTime(), mail);
-				}
-			}
-			
-			// Mail non lu
-			for (Mail mail : noread.descendingMap().values()) {
-				lists.add(ETextBuilder.toBuilder(EEMessages.MAIL_READ_LINE_NO_READ.get()
-							.replaceAll("<player>", mail.getToName())
-							.replaceAll("<time>", this.plugin.getEverAPI().getManagerUtils().getDate().parseTime(mail.getDateTime()))
-							.replaceAll("<date>", this.plugin.getEverAPI().getManagerUtils().getDate().parseDate(mail.getDateTime()))
-							.replaceAll("<datetime>", this.plugin.getEverAPI().getManagerUtils().getDate().parseDateTime(mail.getDateTime())))
-						.replace("<read>", this.getButtonRead(mail))
-						.replace("<delete>", this.getButtonDelete(mail))
-						.build());
-			}
-			
-			// Mail lu
-			for (Mail mail : read.descendingMap().values()) {
-				lists.add(ETextBuilder.toBuilder(EEMessages.MAIL_READ_LINE_READ.get()
-							.replaceAll("<player>", mail.getToName())
-							.replaceAll("<time>", this.plugin.getEverAPI().getManagerUtils().getDate().parseTime(mail.getDateTime()))
-							.replaceAll("<date>", this.plugin.getEverAPI().getManagerUtils().getDate().parseDate(mail.getDateTime()))
-							.replaceAll("<datetime>", this.plugin.getEverAPI().getManagerUtils().getDate().parseDateTime(mail.getDateTime())))
-						.replace("<read>", this.getButtonRead(mail))
-						.replace("<delete>", this.getButtonDelete(mail))
-						.build());
-			}
-			
-			this.plugin.getEverAPI().getManagerService().getEPagination().sendTo(EEMessages.MAIL_READ_TITLE.getText().toBuilder()
-					.onClick(TextActions.runCommand("/mail read")).build(), lists, player);
+			EEMessages.MAIL_READ_EMPTY.sendTo(player);
+			return false;
 		}
+		
+		List<Text> lists = new ArrayList<Text>();
+		
+		TreeMap<Long, Mail> noread = new TreeMap<Long, Mail>();
+		TreeMap<Long, Mail> read = new TreeMap<Long, Mail>();
+		for (Mail mail : mails) {
+			if (mail.isRead()) {
+				read.put(mail.getDateTime(), mail);
+			} else {
+				noread.put(mail.getDateTime(), mail);
+			}
+		}
+		
+		Map<String, EReplace<?>> replaces = new HashMap<String, EReplace<?>>();
+		
+		// Mail non lu
+		for (Mail mail : noread.descendingMap().values()) {
+			replaces.put("<id>", EReplace.of(String.valueOf(mail.getID())));
+			replaces.put("<player>", EReplace.of(mail.getToName()));
+			replaces.put("<time>", EReplace.of(() -> this.plugin.getEverAPI().getManagerUtils().getDate().parseTime(mail.getDateTime())));
+			replaces.put("<date>", EReplace.of(() -> this.plugin.getEverAPI().getManagerUtils().getDate().parseDate(mail.getDateTime())));
+			replaces.put("<datetime>", EReplace.of(() -> this.plugin.getEverAPI().getManagerUtils().getDate().parseDateTime(mail.getDateTime())));
+			replaces.put("<read>", EReplace.of(() -> this.getButtonRead(mail)));
+			replaces.put("<delete>", EReplace.of(() -> this.getButtonDelete(mail)));
+			
+			lists.add(EEMessages.MAIL_READ_LINE_NO_READ.getFormat().toText(replaces));
+		}
+		
+		// Mail lu
+		for (Mail mail : read.descendingMap().values()) {
+			replaces.put("<id>", EReplace.of(String.valueOf(mail.getID())));
+			replaces.put("<player>", EReplace.of(mail.getToName()));
+			replaces.put("<time>", EReplace.of(() -> this.plugin.getEverAPI().getManagerUtils().getDate().parseTime(mail.getDateTime())));
+			replaces.put("<date>", EReplace.of(() -> this.plugin.getEverAPI().getManagerUtils().getDate().parseDate(mail.getDateTime())));
+			replaces.put("<datetime>", EReplace.of(() -> this.plugin.getEverAPI().getManagerUtils().getDate().parseDateTime(mail.getDateTime())));
+			replaces.put("<read>", EReplace.of(() -> this.getButtonRead(mail)));
+			replaces.put("<delete>", EReplace.of(() -> this.getButtonDelete(mail)));
+			
+			lists.add(EEMessages.MAIL_READ_LINE_READ.getFormat().toText(replaces));
+		}
+		
+		this.plugin.getEverAPI().getManagerService().getEPagination().sendTo(EEMessages.MAIL_READ_TITLE.getText().toBuilder()
+				.onClick(TextActions.runCommand("/mail read")).build(), lists, player);
 		return true;
 	}
 	
 	private boolean commandRead(EPlayer player, String id_string) {
-		try {
-			Optional<Mail> mail = player.getMail(Integer.parseInt(id_string));
-			if (mail.isPresent()) {
-				
-				if (player.readMail(mail.get())) {
-					
-					player.sendBookView(BookView.builder()
-												.addPage(mail.get().getText())
-												.build());
-					
-					return true;
-				} else {
-					player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
-							.append(EEMessages.MAIL_READ_CANCEL.get()
-								.replaceAll("<id>", String.valueOf(mail.get().getID()))
-								.replaceAll("<player>", mail.get().getToName())
-								.replaceAll("<time>", this.plugin.getEverAPI().getManagerUtils().getDate().parseTime(mail.get().getDateTime()))
-								.replaceAll("<date>", this.plugin.getEverAPI().getManagerUtils().getDate().parseDate(mail.get().getDateTime()))
-								.replaceAll("<datetime>", this.plugin.getEverAPI().getManagerUtils().getDate().parseDateTime(mail.get().getDateTime())))
-							.replace("<mail>", getButtomReadMail(mail.get()))
-							.build());
-				}
-				
-			} else {
-				player.sendMessage(EEMessages.PREFIX.get() + EEMessages.MAIL_READ_ERROR.get()
-						.replaceAll("<id>", id_string));
-			}
-		} catch (NumberFormatException e){
-			player.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.IS_NOT_NUMBER.get()
-					.replaceAll("<number>", id_string)));
+		Optional<Integer> id = UtilsInteger.parseInt(id_string);
+		if (!id.isPresent()) {
+			EAMessages.IS_NOT_NUMBER.sender()
+				.prefix(EEMessages.PREFIX)
+				.replace("<number>", id_string)
+				.sendTo(player);
+			return false;
 		}
-		return false;
+		
+		Optional<Mail> mail = player.getMail(id.get());
+		if (!mail.isPresent()) {
+			EEMessages.MAIL_DELETE_ERROR.sender()
+				.replace("<number>", id_string)
+				.sendTo(player);
+			return false;
+		}
+		
+		Map<String, EReplace<?>> replaces = new HashMap<String, EReplace<?>>();
+		replaces.put("<id>", EReplace.of(String.valueOf(mail.get().getID())));
+		replaces.put("<player>", EReplace.of(mail.get().getToName()));
+		replaces.put("<time>", EReplace.of(() -> this.plugin.getEverAPI().getManagerUtils().getDate().parseTime(mail.get().getDateTime())));
+		replaces.put("<date>", EReplace.of(() -> this.plugin.getEverAPI().getManagerUtils().getDate().parseDate(mail.get().getDateTime())));
+		replaces.put("<datetime>", EReplace.of(() -> this.plugin.getEverAPI().getManagerUtils().getDate().parseDateTime(mail.get().getDateTime())));
+		replaces.put("<read>", EReplace.of(() -> this.getButtomReadMail(mail.get())));
+		
+		if (!player.readMail(mail.get())) {
+			EEMessages.MAIL_READ_CANCEL.sender()
+				.replace(replaces)
+				.sendTo(player);
+			return false;
+		}
+					
+		player.sendBookView(BookView.builder()
+									.addPage(mail.get().getText())
+									.build());
+		
+		return true;
 	}
 	
 	private Text getButtonRead(final Mail mail){
@@ -213,13 +225,15 @@ public class EEMailRead extends ESubCommand<EverEssentials> {
 	}
 	
 	private Text getButtomReadMail(final Mail mail) {
+		Map<String, EReplace<?>> replaces = new HashMap<String, EReplace<?>>();
+		replaces.put("<id>", EReplace.of(String.valueOf(mail.getID())));
+		replaces.put("<player>", EReplace.of(mail.getToName()));
+		replaces.put("<time>", EReplace.of(() -> this.plugin.getEverAPI().getManagerUtils().getDate().parseTime(mail.getDateTime())));
+		replaces.put("<date>", EReplace.of(() -> this.plugin.getEverAPI().getManagerUtils().getDate().parseDate(mail.getDateTime())));
+		replaces.put("<datetime>", EReplace.of(() -> this.plugin.getEverAPI().getManagerUtils().getDate().parseDateTime(mail.getDateTime())));
+		
 		return EEMessages.MAIL_READ_MAIL.getText().toBuilder()
-					.onHover(TextActions.showText(EChat.of(EEMessages.MAIL_READ_MAIL_HOVER.get()
-							.replaceAll("<id>", String.valueOf(mail.getID()))
-							.replaceAll("<player>", mail.getToName())
-							.replaceAll("<time>", this.plugin.getEverAPI().getManagerUtils().getDate().parseTime(mail.getDateTime()))
-							.replaceAll("<date>", this.plugin.getEverAPI().getManagerUtils().getDate().parseDate(mail.getDateTime()))
-							.replaceAll("<datetime>", this.plugin.getEverAPI().getManagerUtils().getDate().parseDateTime(mail.getDateTime())))))
+					.onHover(TextActions.showText(EEMessages.MAIL_READ_MAIL_HOVER.getFormat().toText(replaces)))
 					.build();
 	}
 }

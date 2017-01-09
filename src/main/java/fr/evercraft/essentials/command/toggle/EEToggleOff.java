@@ -30,7 +30,6 @@ import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.everapi.EAMessage.EAMessages;
-import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ESubCommand;
 import fr.evercraft.everapi.server.player.EPlayer;
 import fr.evercraft.everapi.server.user.EUser;
@@ -48,13 +47,13 @@ public class EEToggleOff extends ESubCommand<EverEssentials> {
 
 	@Override
 	public Text description(final CommandSource source) {
-		return EChat.of(EEMessages.TOGGLE_OFF_DESCRIPTION.get());
+		return EEMessages.TOGGLE_OFF_DESCRIPTION.getText();
 	}
 
 	@Override
 	public Text help(final CommandSource source) {
 		if (source.hasPermission(EEPermissions.TOGGLE_OTHERS.get())){
-			return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_PLAYER.get() + "]")
+			return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_PLAYER.getString() + "]")
 						.onClick(TextActions.suggestCommand("/" + this.getName()))
 						.color(TextColors.RED)
 						.build();
@@ -70,7 +69,7 @@ public class EEToggleOff extends ESubCommand<EverEssentials> {
 	public List<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		List<String> suggests = new ArrayList<String>();
 		if (args.size() == 1 && source.hasPermission(EEPermissions.TOGGLE_OTHERS.get())){
-			suggests.addAll(this.getAllUsers());
+			suggests.addAll(this.getAllUsers(source));
 		}
 		return suggests;
 	}
@@ -97,11 +96,15 @@ public class EEToggleOff extends ESubCommand<EverEssentials> {
 					resultat = this.commandToggleOffOthers(source, user.get());
 				// Le joueur est introuvable
 				} else {
-					source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
+					EAMessages.PLAYER_NOT_FOUND.sender()
+						.prefix(EEMessages.PREFIX)
+						.sendTo(source);
 				}
 			// Il n'a pas la permission
 			} else {
-				source.sendMessage(EAMessages.NO_PERMISSION.getText());
+				EAMessages.NO_PERMISSION.sender()
+					.prefix(EEMessages.PREFIX)
+					.sendTo(source);
 			}
 		} else {
 			source.sendMessage(this.help(source));
@@ -111,19 +114,18 @@ public class EEToggleOff extends ESubCommand<EverEssentials> {
 	}
 
 	private boolean commandToggleOff(final EPlayer player) {
-		boolean toggle = player.isToggle();
-		
-		// Toggle activé
-		if (toggle) {
-			if (player.setToggle(false)) {
-				player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.TOGGLE_OFF_PLAYER.getText()));
-			} else {
-				player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.TOGGLE_OFF_PLAYER_CANCEL.getText()));
-			}
 		// Toggle désactivé
-		} else {
-			player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.TOGGLE_OFF_PLAYER_ERROR.getText()));
+		if (!player.isToggle()) {
+			EEMessages.TOGGLE_OFF_PLAYER_ERROR.sendTo(player);
+			return false;
 		}
+		
+		if (!player.setToggle(false)) {
+			EEMessages.TOGGLE_OFF_PLAYER_CANCEL.sendTo(player);
+			return false;
+		}
+		
+		EEMessages.TOGGLE_OFF_PLAYER.sendTo(player);
 		return true;
 	}
 	
@@ -131,31 +133,32 @@ public class EEToggleOff extends ESubCommand<EverEssentials> {
 		// La source et le joueur sont identique
 		if (staff instanceof EPlayer && user.getIdentifier().equals(staff.getIdentifier())) {
 			return this.commandToggleOff((EPlayer) staff);
-			
-		// La source et le joueur sont différent
-		} else {
-			boolean toggle = user.isToggle();
-			// Toggle activé
-			if (toggle) {
-				if (user.setToggle(false)) {
-					staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.TOGGLE_OFF_OTHERS_STAFF.get()
-							.replaceAll("<player>", user.getName())));
-					
-					if(user instanceof EPlayer) {
-						((EPlayer) user).sendMessage(EEMessages.PREFIX.get() + EEMessages.TOGGLE_OFF_OTHERS_PLAYER.get()
-								.replaceAll("<staff>", staff.getName()));
-					}
-					return true;
-				} else {
-					staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.TOGGLE_OFF_OTHERS_CANCEL.get()
-							.replaceAll("<player>", user.getName())));
-				}
-			// Toggle désactivé
-			} else {
-				staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.TOGGLE_OFF_OTHERS_ERROR.get()
-						.replaceAll("<player>", user.getName())));
-			}
+		}
+		
+		// Toggle désactivé
+		if (!user.isToggle()) {
+			EEMessages.TOGGLE_OFF_OTHERS_ERROR.sender()
+				.replace("<player>", user.getName())
+				.sendTo(staff);
 			return false;
 		}
+		
+		if (!user.setToggle(false)) {
+			EEMessages.TOGGLE_OFF_OTHERS_CANCEL.sender()
+				.replace("<player>", user.getName())
+				.sendTo(staff);
+			return false;
+		}
+		
+		EEMessages.TOGGLE_OFF_OTHERS_STAFF.sender()
+			.replace("<player>", user.getName())
+			.sendTo(staff);
+		
+		if(user instanceof EPlayer) {
+			EEMessages.TOGGLE_OFF_OTHERS_PLAYER.sender()
+				.replace("<staff>", staff.getName())
+				.sendTo((EPlayer) user);
+		}
+		return true;
 	}
 }

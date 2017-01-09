@@ -32,10 +32,8 @@ import org.spongepowered.api.world.World;
 import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
-import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ECommand;
 import fr.evercraft.everapi.server.location.LocationSQL;
-import fr.evercraft.everapi.text.ETextBuilder;
 
 public class EESpawns extends ECommand<EverEssentials> {
 		
@@ -89,16 +87,14 @@ public class EESpawns extends ECommand<EverEssentials> {
 			for (Entry<String, LocationSQL> spawn : spawns.entrySet()) {
 				Optional<World> world = spawn.getValue().getWorld();
 				if (world.isPresent()){
-					lists.add(ETextBuilder.toBuilder(EEMessages.SPAWNS_LINE_DELETE.get())
-						.replace("<spawn>", this.getButtonSpawn(spawn.getKey(), spawn.getValue()))
-						.replace("<teleport>", this.getButtonTeleport(spawn.getKey(), spawn.getValue()))
-						.replace("<delete>", this.getButtonDelete(spawn.getKey(), spawn.getValue()))
-						.build());
+					lists.add(EEMessages.SPAWNS_LINE_DELETE.getFormat().toText(
+							"<spawn>", () -> this.getButtonSpawn(spawn.getKey(), spawn.getValue()),
+							"<teleport>", () -> this.getButtonTeleport(spawn.getKey(), spawn.getValue()),
+							"<delete>", () -> this.getButtonDelete(spawn.getKey(), spawn.getValue())));
 				} else {
-					lists.add(ETextBuilder.toBuilder(EEMessages.SPAWNS_LINE_DELETE_ERROR_WORLD.get())
-							.replace("<spawn>", this.getButtonSpawn(spawn.getKey(), spawn.getValue()))
-							.replace("<delete>", this.getButtonDelete(spawn.getKey(), spawn.getValue()))
-							.build());
+					lists.add(EEMessages.SPAWNS_LINE_DELETE_ERROR_WORLD.getFormat().toText(
+							"<spawn>", () -> this.getButtonSpawn(spawn.getKey(), spawn.getValue()),
+							"<delete>", () -> this.getButtonDelete(spawn.getKey(), spawn.getValue())));
 				}
 			}
 			
@@ -107,10 +103,9 @@ public class EESpawns extends ECommand<EverEssentials> {
 			for (Entry<String, LocationSQL> spawn : spawns.entrySet()) {
 				Optional<World> world = spawn.getValue().getWorld();
 				if (world.isPresent()){
-					lists.add(ETextBuilder.toBuilder(EEMessages.SPAWNS_LINE.get())
-						.replace("<spawn>", this.getButtonSpawn(spawn.getKey(), spawn.getValue()))
-						.replace("<teleport>", this.getButtonTeleport(spawn.getKey(), spawn.getValue()))
-						.build());
+					lists.add(EEMessages.SPAWNS_LINE.getFormat().toText(
+							"<spawn>", () -> this.getButtonSpawn(spawn.getKey(), spawn.getValue()),
+							"<teleport>", () -> this.getButtonTeleport(spawn.getKey(), spawn.getValue())));
 				}
 			}
 			
@@ -127,28 +122,28 @@ public class EESpawns extends ECommand<EverEssentials> {
 	
 	private Text getButtonTeleport(final String name, final LocationSQL location){
 		return EEMessages.SPAWNS_TELEPORT.getText().toBuilder()
-					.onHover(TextActions.showText(EChat.of(EEMessages.SPAWNS_TELEPORT_HOVER.get()
-							.replaceAll("<name>", name))))
+					.onHover(TextActions.showText(EEMessages.SPAWNS_TELEPORT_HOVER.getFormat()
+							.toText("<name>", name)))
 					.onClick(TextActions.runCommand("/spawn \"" + name + "\""))
 					.build();
 	}
 	
 	private Text getButtonDelete(final String name, final LocationSQL location){
 		return EEMessages.SPAWNS_DELETE.getText().toBuilder()
-					.onHover(TextActions.showText(EChat.of(EEMessages.SPAWNS_DELETE_HOVER.get()
-							.replaceAll("<name>", name))))
+					.onHover(TextActions.showText(EEMessages.SPAWNS_DELETE_HOVER.getFormat()
+							.toText("<name>", name)))
 					.onClick(TextActions.runCommand("/delspawn \"" + name + "\""))
 					.build();
 	}
 	
 	private Text getButtonSpawn(final String name, final LocationSQL location){
-		return EChat.of(EEMessages.SPAWNS_NAME.get().replaceAll("<name>", name)).toBuilder()
-					.onHover(TextActions.showText(EChat.of(EEMessages.SPAWNS_NAME_HOVER.get()
-							.replaceAll("<name>", name)
-							.replaceAll("<world>", location.getWorldName())
-							.replaceAll("<x>", location.getX().toString())
-							.replaceAll("<y>", location.getY().toString())
-							.replaceAll("<z>", location.getZ().toString()))))
+		return EEMessages.SPAWNS_NAME.getFormat().toText("<name>", name).toBuilder()
+					.onHover(TextActions.showText(EEMessages.SPAWNS_NAME_HOVER.getFormat().toText(
+							"<name>", name,
+							"<world>", location.getWorldName(),
+							"<x>", location.getX().toString(),
+							"<y>", location.getY().toString(),
+							"<z>", location.getZ().toString())))
 					.build();
 	}
 }

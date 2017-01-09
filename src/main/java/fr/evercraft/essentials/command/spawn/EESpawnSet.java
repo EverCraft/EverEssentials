@@ -35,11 +35,9 @@ import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.exception.ServerDisableException;
-import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ECommand;
 import fr.evercraft.everapi.server.player.EPlayer;
 import fr.evercraft.everapi.services.essentials.SpawnService;
-import fr.evercraft.everapi.text.ETextBuilder;
 
 public class EESpawnSet extends ECommand<EverEssentials> {
 	
@@ -59,7 +57,7 @@ public class EESpawnSet extends ECommand<EverEssentials> {
 
 	@Override
 	public Text help(final CommandSource source) {
-		return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_GROUP.get() + "]")
+		return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_GROUP.getString() + "]")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
 					.build();
@@ -104,8 +102,9 @@ public class EESpawnSet extends ECommand<EverEssentials> {
 					if (group != null) {
 						resultat = this.commandSetSpawn((EPlayer) source, group.getIdentifier());
 					} else {
-						source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.SETSPAWN_ERROR_GROUP.get()
-								.replaceAll("<name>", args.get(0))));
+						EEMessages.SETSPAWN_ERROR_GROUP.sender()
+							.replace("<name>", args.get(0))
+							.sendTo(source);
 					}
 				} else {
 					resultat = this.commandSetSpawn((EPlayer) source, SpawnService.DEFAULT);
@@ -131,25 +130,27 @@ public class EESpawnSet extends ECommand<EverEssentials> {
 		if (group.isPresent()) {
 			
 			if (this.plugin.getManagerServices().getSpawn().update(group_name, player.getTransform())) {
-				player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
-						.append(EEMessages.SETSPAWN_REPLACE.get())
-						.replace("<name>", this.getButtonSpawn(group_name, player.getLocation()))
-						.build());
+				EEMessages.SETSPAWN_REPLACE.sender()
+					.replace("<name>", this.getButtonSpawn(group_name, player.getLocation()))
+					.sendTo(player);
 				return true;
 			} else {
-				player.sendMessage(EEMessages.PREFIX.get() + EAMessages.COMMAND_ERROR.get());
+				EAMessages.COMMAND_ERROR.sender()
+					.prefix(EEMessages.PREFIX)
+					.sendTo(player);
 			}
 			
 		} else {
 			
 			if (this.plugin.getManagerServices().getSpawn().add(group_name, player.getTransform())) {
-				player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
-						.append(EEMessages.SETSPAWN_NEW.get())
-						.replace("<name>", this.getButtonSpawn(group_name, player.getLocation()))
-						.build());
+				EEMessages.SETSPAWN_NEW.sender()
+					.replace("<name>", this.getButtonSpawn(group_name, player.getLocation()))
+					.sendTo(player);
 				return true;
 			} else {
-				player.sendMessage(EEMessages.PREFIX.get() + EAMessages.COMMAND_ERROR.get());
+				EAMessages.COMMAND_ERROR.sender()
+					.prefix(EEMessages.PREFIX)
+					.sendTo(player);
 			}
 			
 		}
@@ -157,13 +158,13 @@ public class EESpawnSet extends ECommand<EverEssentials> {
 	}
 
 	private Text getButtonSpawn(final String name, final Location<World> location){
-		return EChat.of(EEMessages.SETSPAWN_NAME.get().replaceAll("<name>", name)).toBuilder()
-					.onHover(TextActions.showText(EChat.of(EEMessages.SETSPAWN_NAME_HOVER.get()
-							.replaceAll("<name>", name)
-							.replaceAll("<world>", location.getExtent().getName())
-							.replaceAll("<x>", String.valueOf(location.getBlockX()))
-							.replaceAll("<y>", String.valueOf(location.getBlockY()))
-							.replaceAll("<z>", String.valueOf(location.getBlockZ())))))
+		return EEMessages.SETSPAWN_NAME.getFormat().toText("<name>", name).toBuilder()
+					.onHover(TextActions.showText(EEMessages.SETSPAWN_NAME_HOVER.getFormat().toText(
+							"<name>", name,
+							"<world>", location.getExtent().getName(),
+							"<x>", String.valueOf(location.getBlockX()),
+							"<y>", String.valueOf(location.getBlockY()),
+							"<z>", String.valueOf(location.getBlockZ()))))
 					.build();
 	}
 }

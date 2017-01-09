@@ -17,7 +17,9 @@
 package fr.evercraft.essentials.command.message;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
@@ -34,6 +36,7 @@ import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
+import fr.evercraft.everapi.message.replace.EReplace;
 import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ECommand;
 import fr.evercraft.everapi.server.player.EPlayer;
@@ -58,7 +61,7 @@ public class EEMsg extends ECommand<EverEssentials> {
 
 	@Override
 	public Text help(final CommandSource source) {
-		Text help = Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_PLAYER.get() + "> <" + EAMessages.ARGS_MESSAGE.get() + ">")
+		Text help = Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_PLAYER.getString() + "> <" + EAMessages.ARGS_MESSAGE.getString() + ">")
 						.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 						.color(TextColors.RED)
 						.build();
@@ -69,11 +72,7 @@ public class EEMsg extends ECommand<EverEssentials> {
 	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		List<String> suggests = new ArrayList<String>();
 		if (args.size() == 1) {
-			for (EPlayer player : this.plugin.getEServer().getOnlineEPlayers()) {
-				if (!player.equals(source)) {
-					suggests.add(player.getName());
-				}
-			}
+			suggests.addAll(this.getAllPlayers(source));
 		} else if (args.size() == 2) {
 			suggests.add("Hello world");
 		}
@@ -109,13 +108,15 @@ public class EEMsg extends ECommand<EverEssentials> {
 					resultat = this.commandMsgConsole((EPlayer) source, this.plugin.getEServer().getConsole(), message);
 				// La source est la console
 				} else if (source instanceof ConsoleSource) {
-					source.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.MSG_CONSOLE_ERROR.getText()));
+					EEMessages.MSG_CONSOLE_ERROR.sendTo(source);
 				// La source est un commande block
 				} else if (source instanceof CommandBlockSource) {
 					resultat = this.commandMsgCommandBlock(source, this.plugin.getEServer().getConsole(), message);
 				// La source est inconnue
 				} else {
-					source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
+					EAMessages.PLAYER_NOT_FOUND.sender()
+						.prefix(EEMessages.PREFIX)
+						.sendTo(source);
 				}
 				
 			// Le destinataire est un joueur
@@ -129,17 +130,21 @@ public class EEMsg extends ECommand<EverEssentials> {
 						resultat = this.commandMsgPlayer((EPlayer) source, optPlayer.get(), message);
 					// La source est la console
 					} else if (source instanceof ConsoleSource) {
-						resultat = this.commandMsgConsole(source, optPlayer.get(), args.get(1));
+						resultat = this.commandMsgConsole(source, optPlayer.get(), message);
 					// La source est un commande block
 					} else if (source instanceof CommandBlockSource) {
 						resultat = this.commandMsgCommandBlock(source, optPlayer.get(), message);
 					// La source est inconnue
 					} else {
-						source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR.getText()));
+						EAMessages.COMMAND_ERROR.sender()
+							.prefix(EEMessages.PREFIX)
+							.sendTo(source);
 					}
 				// Le joueur est introuvable
 				} else {
-					source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
+					EAMessages.PLAYER_NOT_FOUND.sender()
+						.prefix(EEMessages.PREFIX)
+						.sendTo(source);
 				}
 				
 			}
@@ -154,56 +159,66 @@ public class EEMsg extends ECommand<EverEssentials> {
 	 * Un joueur parle à un autre joueur
 	 */
 	private boolean commandMsgPlayer(final EPlayer player, final EPlayer receive, final String message) {
-		if (!receive.ignore(player)) {
-			if (!player.ignore(receive)) {
-				receive.sendMessage(player.replaceVariable(EEMessages.MSG_PLAYER_RECEIVE.get()
-								.replaceAll("<message>", message))
-							.toBuilder()
-							.onHover(TextActions.showText(player.replaceVariable(EEMessages.MSG_PLAYER_RECEIVE_HOVER.get())))
-							.onClick(TextActions.suggestCommand("/msg " + player.getName() + " "))
-							.build());
-				player.sendMessage(receive.replaceVariable(EEMessages.MSG_PLAYER_SEND.get()
-								.replaceAll("<message>", message))
-							.toBuilder()
-							.onHover(TextActions.showText(receive.replaceVariable(EEMessages.MSG_PLAYER_SEND_HOVER.get())))
-							.onClick(TextActions.suggestCommand("/msg " + receive.getName() + " "))
-							.build());
-				if(receive.isAfk()){
-					player.sendMessage(EEMessages.PREFIX.get() + EEMessages.MSG_PLAYER_SEND_IS_AFK.get()
-							.replaceAll("<player>", receive.getDisplayName()));
-				}
-				receive.setReplyTo(player.getIdentifier());
-				player.setReplyTo(receive.getIdentifier());
-				return true;
-			} else {
-				player.sendMessage(EEMessages.PREFIX.get() + EEMessages.MSG_IGNORE_PLAYER.get()
-						.replaceAll("<message>", message)
-						.replaceAll("<player>", receive.getName()));
-			}
-		} else {
-			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.MSG_IGNORE_RECEIVE.get()
-					.replaceAll("<message>", message)
-					.replaceAll("<player>", receive.getName()));
+		if (receive.ignore(player)) {
+			EEMessages.MSG_IGNORE_RECEIVE.sender()
+				.replace("<message>", message)
+				.replace("<player>", receive.getName())
+				.sendTo(player);
+			return false;
 		}
-		return false;
+		
+		if (player.ignore(receive)) {
+			EEMessages.MSG_IGNORE_PLAYER.sender()
+				.replace("<message>", message)
+				.replace("<player>", receive.getName())
+				.sendTo(player);
+			return false;
+		}
+		
+		Map<String, EReplace<?>> replaces = new HashMap<String, EReplace<?>>();
+		replaces.put("<message>", EReplace.of(message));
+		
+		replaces.putAll(player.getReplacesAll());
+		receive.sendMessage(EEMessages.MSG_PLAYER_RECEIVE.getFormat().toText(replaces)
+					.toBuilder()
+					.onHover(TextActions.showText(EEMessages.MSG_PLAYER_RECEIVE_HOVER.getFormat().toText(replaces)))
+					.onClick(TextActions.suggestCommand("/msg " + player.getName() + " "))
+					.build());
+		
+		replaces.putAll(receive.getReplacesAll());
+		player.sendMessage(EEMessages.MSG_PLAYER_SEND.getFormat().toText(replaces)
+					.toBuilder()
+					.onHover(TextActions.showText(EEMessages.MSG_PLAYER_SEND_HOVER.getFormat().toText(replaces)))
+					.onClick(TextActions.suggestCommand("/msg " + receive.getName() + " "))
+					.build());
+		if(receive.isAfk()){
+			EEMessages.MSG_PLAYER_SEND_IS_AFK.sender()
+				.replace("<player>", receive.getDisplayName())
+				.sendTo(player);
+		}
+		receive.setReplyTo(player.getIdentifier());
+		player.setReplyTo(receive.getIdentifier());
+		return true;
 	}
 	
 	/*
 	 * La console envoye un message à joueur
 	 */
 	private boolean commandMsgConsole(final CommandSource player, final EPlayer receive, final String message) {
-		player.sendMessage(receive.replaceVariable(EEMessages.MSG_PLAYER_RECEIVE.get()
-						.replaceAll("<message>", message))
+		Map<String, EReplace<?>> replaces = new HashMap<String, EReplace<?>>();
+		replaces.put("<message>", EReplace.of(message));
+		
+		receive.sendMessage(EEMessages.MSG_CONSOLE_RECEIVE.getFormat().toText(replaces)
+				.toBuilder()
+				.onHover(TextActions.showText(EEMessages.MSG_CONSOLE_RECEIVE_HOVER.getFormat().toText(replaces)))
+				.onClick(TextActions.suggestCommand("/msg " + EEMsg.CONSOLE + " "))
+				.build());
+		
+		replaces.putAll(receive.getReplacesAll());
+		player.sendMessage(EEMessages.MSG_PLAYER_RECEIVE.getFormat().toText(replaces)
 					.toBuilder()
-					.onHover(TextActions.showText(receive.replaceVariable(EEMessages.MSG_PLAYER_RECEIVE_HOVER.get())))
+					.onHover(TextActions.showText(EEMessages.MSG_PLAYER_RECEIVE_HOVER.getFormat().toText(replaces)))
 					.onClick(TextActions.suggestCommand("/msg " + receive.getName() + " "))
-					.build());
-
-		receive.sendMessage(EChat.of(EEMessages.MSG_CONSOLE_RECEIVE.get()
-						.replaceAll("<message>", message))
-					.toBuilder()
-					.onHover(TextActions.showText(EChat.of(EEMessages.MSG_CONSOLE_RECEIVE_HOVER.get())))
-					.onClick(TextActions.suggestCommand("/msg " + EEMsg.CONSOLE + " "))
 					.build());
 		
 		receive.setReplyTo(player.getIdentifier());
@@ -215,17 +230,19 @@ public class EEMsg extends ECommand<EverEssentials> {
 	 * Un joueur envoye un message à la console
 	 */
 	private boolean commandMsgConsole(final EPlayer player, final CommandSource receive, final String message) {
-		player.sendMessage(EChat.of(EEMessages.MSG_CONSOLE_SEND.get()
-						.replaceAll("<message>", message))
+		Map<String, EReplace<?>> replaces = new HashMap<String, EReplace<?>>();
+		replaces.put("<message>", EReplace.of(message));
+		
+		player.sendMessage(EEMessages.MSG_CONSOLE_SEND.getFormat().toText(replaces)
 					.toBuilder()
-					.onHover(TextActions.showText(EChat.of(EEMessages.MSG_CONSOLE_SEND_HOVER.get())))
+					.onHover(TextActions.showText(EEMessages.MSG_CONSOLE_SEND_HOVER.getFormat().toText(replaces)))
 					.onClick(TextActions.suggestCommand("/msg " + EEMsg.CONSOLE + " "))
 					.build());
 		
-		receive.sendMessage(player.replaceVariable(EEMessages.MSG_PLAYER_RECEIVE.get()
-						.replaceAll("<message>", message))
+		replaces.putAll(player.getReplacesAll());
+		receive.sendMessage(EEMessages.MSG_PLAYER_RECEIVE.getFormat().toText(replaces)
 					.toBuilder()
-					.onHover(TextActions.showText(player.replaceVariable(EEMessages.MSG_PLAYER_RECEIVE_HOVER.get())))
+					.onHover(TextActions.showText(EEMessages.MSG_PLAYER_RECEIVE_HOVER.getFormat().toText(replaces)))
 					.onClick(TextActions.suggestCommand("/msg " + player.getName() + " "))
 					.build());
 		
@@ -238,7 +255,9 @@ public class EEMsg extends ECommand<EverEssentials> {
 	 * Un commande block envoye un message à un joueur
 	 */
 	private boolean commandMsgCommandBlock(final CommandSource player, final EPlayer receive, final String message) {
-		receive.sendMessage(EChat.of(EEMessages.MSG_COMMANDBLOCK_RECEIVE.get().replaceAll("<message>", message)));
+		EEMessages.MSG_COMMANDBLOCK_RECEIVE.sender()
+			.replace("<message>", message)
+			.sendTo(receive);
 		return true;
 	}
 	
@@ -246,7 +265,9 @@ public class EEMsg extends ECommand<EverEssentials> {
 	 * Un commande block envoye un message la console
 	 */
 	private boolean commandMsgCommandBlock(final CommandSource player, final CommandSource receive, final String message) {
-		receive.sendMessage(EChat.of(EEMessages.MSG_COMMANDBLOCK_RECEIVE.get().replaceAll("<message>", message)));
+		EEMessages.MSG_COMMANDBLOCK_RECEIVE.sender()
+			.replace("<message>", message)
+			.sendTo(receive);
 		return true;
 	}
 	

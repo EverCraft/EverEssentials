@@ -32,10 +32,8 @@ import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
-import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ECommand;
 import fr.evercraft.everapi.server.player.EPlayer;
-import fr.evercraft.everapi.text.ETextBuilder;
 
 public class EETeleportationHere extends ECommand<EverEssentials> {
 	
@@ -55,7 +53,7 @@ public class EETeleportationHere extends ECommand<EverEssentials> {
 
 	@Override
 	public Text help(final CommandSource source) {
-		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_PLAYER.get() + ">")
+		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_PLAYER.getString() + ">")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
 					.build();
@@ -101,34 +99,33 @@ public class EETeleportationHere extends ECommand<EverEssentials> {
 	}
 	
 	private boolean commandTeleportationHere(EPlayer staff, EPlayer player) {
-		if (!player.equals(staff)) {
-			if (player.getWorld().equals(staff.getWorld()) || this.plugin.getManagerServices().getEssentials().hasPermissionWorld(player, staff.getWorld())) {
-				
-				if (this.teleport(player, staff)) {
-					player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
-							.append(EEMessages.TPHERE_PLAYER.get()
-									.replaceAll("<staff>", staff.getName()))
-							.replace("<destination>", this.getButtonPosition(staff.getName(), player.getLocation()))
-							.build());
-					staff.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get())
-							.append(EEMessages.TPHERE_STAFF.get()
-									.replaceAll("<player>", player.getName()))
-							.replace("<destination>", this.getButtonPosition(staff.getName(), player.getLocation()))
-							.build());
-					return true;
-				} else {
-					staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.TPHERE_ERROR.get()));
-				}
-				
-			} else {
-				staff.sendMessage(EEMessages.PREFIX.get() + EAMessages.NO_PERMISSION_WORLD_OTHERS.get()
-						.replaceAll("<world>", staff.getWorld().getName()));
-			}
-		} else {
+		if (player.equals(staff)) {
 			player.reposition();
-			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.TPHERE_EQUALS.get());
+			EEMessages.TPHERE_EQUALS.sendTo(player);
+			return false;
 		}
-		return false;
+		
+		if (!player.getWorld().equals(staff.getWorld()) && !this.plugin.getManagerServices().getEssentials().hasPermissionWorld(player, staff.getWorld())) {
+			EAMessages.NO_PERMISSION_WORLD_OTHERS.sender()
+				.replace("<world>", staff.getWorld().getName())
+				.sendTo(staff);
+			return false;
+		}
+			
+		if (!this.teleport(player, staff)) {
+			EEMessages.TPHERE_ERROR.sendTo(staff);
+			return false;
+		}
+		
+		EEMessages.TPHERE_PLAYER.sender()
+			.replace("<staff>", staff.getName())
+			.replace("<destination>", () -> this.getButtonPosition(staff.getName(), player.getLocation()))
+			.sendTo(player);
+		EEMessages.TPHERE_STAFF.sender()
+			.replace("<player>", player.getName())
+			.replace("<destination>", () -> this.getButtonPosition(staff.getName(), player.getLocation()))
+			.sendTo(staff);
+		return true;
 	}
 	
 	private boolean teleport(EPlayer player, EPlayer destination){
@@ -141,12 +138,12 @@ public class EETeleportationHere extends ECommand<EverEssentials> {
 	}
 	
 	private Text getButtonPosition(final String player, final Location<World> location){
-		return EChat.of(EEMessages.TPHERE_DESTINATION.get().replaceAll("<player>", player)).toBuilder()
-					.onHover(TextActions.showText(EChat.of(EEMessages.TPHERE_DESTINATION_HOVER.get()
-							.replaceAll("<world>", location.getExtent().getName())
-							.replaceAll("<x>", String.valueOf(location.getBlockX()))
-							.replaceAll("<y>", String.valueOf(location.getBlockY()))
-							.replaceAll("<z>", String.valueOf(location.getBlockZ())))))
+		return EEMessages.TPHERE_DESTINATION.getFormat().toText("<player>", player).toBuilder()
+					.onHover(TextActions.showText(EEMessages.TPHERE_DESTINATION_HOVER.getFormat().toText(
+							"<world>", location.getExtent().getName(),
+							"<x>", String.valueOf(location.getBlockX()),
+							"<y>", String.valueOf(location.getBlockY()),
+							"<z>", String.valueOf(location.getBlockZ()))))
 					.build();
 	}
 }

@@ -34,11 +34,11 @@ import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
+import fr.evercraft.everapi.message.replace.EReplace;
 import fr.evercraft.everapi.plugin.command.ECommand;
 import fr.evercraft.everapi.server.player.EPlayer;
 import fr.evercraft.everapi.services.essentials.TeleportRequest;
 import fr.evercraft.everapi.services.essentials.TeleportRequest.Type;
-import fr.evercraft.everapi.text.ETextBuilder;
 
 public class EETeleportationDeny extends ECommand<EverEssentials> {
 	
@@ -58,7 +58,7 @@ public class EETeleportationDeny extends ECommand<EverEssentials> {
 
 	@Override
 	public Text help(final CommandSource source) {
-		return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_PLAYER.get() + "]")
+		return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_PLAYER.getString() + "]")
 					.onClick(TextActions.suggestCommand("/" + this.getName()))
 					.color(TextColors.RED)
 					.build();
@@ -97,7 +97,9 @@ public class EETeleportationDeny extends ECommand<EverEssentials> {
 					resultat = this.commandTeleportationDeny((EPlayer) source, player.get());
 				// Joueur introuvable
 				} else {
-					source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
+					EAMessages.PLAYER_NOT_FOUND.sender()
+						.prefix(EEMessages.PREFIX)
+						.sendTo(source);
 				}
 			// Si la source est une console ou un commande block
 			} else {
@@ -124,17 +126,15 @@ public class EETeleportationDeny extends ECommand<EverEssentials> {
 			if (player_request.isPresent()) {
 				one_player = player_request;
 				if (teleport.getValue().getType().equals(Type.TPA)) {
-					lists.add(ETextBuilder.toBuilder(EEMessages.TPA_PLAYER_LIST_LINE.get()
-							.replaceAll("<player>", player_request.get().getName()))
-						.replace("<accept>", EETeleportationAsk.getButtonAccept(player_request.get().getName()))
-						.replace("<deny>", EETeleportationAsk.getButtonDeny(player_request.get().getName()))
-						.build());
+					lists.add(EEMessages.TPA_PLAYER_LIST_LINE.getFormat().toText(
+						"<player>", EReplace.of(player_request.get().getName()),
+						"<accept>", EReplace.of(() -> EETeleportationAsk.getButtonAccept(player_request.get().getName())),
+						"<deny>", EReplace.of(() -> EETeleportationAsk.getButtonDeny(player_request.get().getName()))));
 				} else if (teleport.getValue().getType().equals(Type.TPAHERE)) {
-					lists.add(ETextBuilder.toBuilder(EEMessages.TPA_PLAYER_LIST_LINE.get()
-							.replaceAll("<player>", player_request.get().getName()))
-						.replace("<accept>", EETeleportationAskHere.getButtonAccept(player_request.get().getName()))
-						.replace("<deny>", EETeleportationAskHere.getButtonDeny(player_request.get().getName()))
-						.build());
+					lists.add(EEMessages.TPA_PLAYER_LIST_LINE.getFormat().toText(
+						"<player>", EReplace.of(player_request.get().getName()),
+						"<accept>", EReplace.of(() -> EETeleportationAskHere.getButtonAccept(player_request.get().getName())),
+						"<deny>", EReplace.of(() -> EETeleportationAskHere.getButtonDeny(player_request.get().getName()))));
 				}
 			}
 		}
@@ -163,30 +163,37 @@ public class EETeleportationDeny extends ECommand<EverEssentials> {
 				player.removeTeleportAsk(player_request.getUniqueId());
 				
 				if (teleports.get().getType().equals(Type.TPA)) {
-					player.sendMessage(EEMessages.PREFIX.get() + EEMessages.TPA_PLAYER_DENY.get()
-							.replaceAll("<player>", player_request.getName()));
-					player_request.sendMessage(EEMessages.PREFIX.get() + EEMessages.TPA_STAFF_DENY.get()
-							.replaceAll("<player>", player.getName()));
+					EEMessages.TPA_PLAYER_DENY.sender()
+						.replace("<player>", player_request.getName())
+						.sendTo(player);
+					EEMessages.TPA_STAFF_DENY.sender()
+						.replace("<player>", player.getName())
+						.sendTo(player_request);
 				} else if (teleports.get().getType().equals(Type.TPAHERE)) {
-					player.sendMessage(EEMessages.PREFIX.get() + EEMessages.TPAHERE_PLAYER_DENY.get()
-							.replaceAll("<player>", player_request.getName()));
-					player_request.sendMessage(EEMessages.PREFIX.get() + EEMessages.TPAHERE_STAFF_DENY.get()
-							.replaceAll("<player>", player.getName()));
+					EEMessages.TPAHERE_PLAYER_DENY.sender()
+						.replace("<player>", player_request.getName())
+						.sendTo(player);
+					EEMessages.TPAHERE_STAFF_DENY.sender()
+						.replace("<player>", player.getName())
+						.sendTo(player_request);
 				}				
 			// La demande a expiré
 			} else {
 				if (teleports.get().getType().equals(Type.TPA)) {
-					player.sendMessage(EEMessages.PREFIX.get() + EEMessages.TPA_PLAYER_EXPIRE.get()
-							.replaceAll("<player>", player_request.getName()));
+					EEMessages.TPA_PLAYER_EXPIRE.sender()
+						.replace("<player>", player_request.getName())
+						.sendTo(player);
 				} else if (teleports.get().getType().equals(Type.TPAHERE)) {
-					player.sendMessage(EEMessages.PREFIX.get() + EEMessages.TPAHERE_PLAYER_EXPIRE.get()
-					.replaceAll("<player>", player_request.getName()));
+					EEMessages.TPAHERE_PLAYER_EXPIRE.sender()
+						.replace("<player>", player_request.getName())
+						.sendTo(player);
 				}
 			}
 		// Aucune demande de téléportation
 		} else {
-			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.TPA_PLAYER_EMPTY.get()
-					.replaceAll("<player>", player_request.getName()));
+			EEMessages.TPA_PLAYER_EMPTY.sender()
+				.replace("<player>", player_request.getName())
+				.sendTo(player);
 		}
 		return false;
 	}

@@ -30,7 +30,6 @@ import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.everapi.EAMessage.EAMessages;
-import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ESubCommand;
 import fr.evercraft.everapi.server.player.EPlayer;
 import fr.evercraft.everapi.server.user.EUser;
@@ -48,7 +47,7 @@ public class EEMailSend extends ESubCommand<EverEssentials> {
 
 	@Override
 	public Text description(final CommandSource source) {
-		return EChat.of(EEMessages.MAIL_SEND_DESCRIPTION.get());
+		return EEMessages.MAIL_SEND_DESCRIPTION.getText();
 	}
 	
 	@Override
@@ -64,7 +63,7 @@ public class EEMailSend extends ESubCommand<EverEssentials> {
 
 	@Override
 	public Text help(final CommandSource source) {
-		return Text.builder("/" + this.getName()+ " <" + EAMessages.ARGS_PLAYER.get() + "> <" + EAMessages.ARGS_MESSAGE.get() + ">")
+		return Text.builder("/" + this.getName()+ " <" + EAMessages.ARGS_PLAYER.getString() + "> <" + EAMessages.ARGS_MESSAGE.getString() + ">")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
 					.build();
@@ -85,7 +84,9 @@ public class EEMailSend extends ESubCommand<EverEssentials> {
 						resultat = this.commandSendAll(source, args.get(1));
 					// Il n'a pas la permission
 					} else {
-						source.sendMessage(EAMessages.NO_PERMISSION.getText());
+						EAMessages.NO_PERMISSION.sender()
+							.prefix(EEMessages.PREFIX)
+							.sendTo(source);
 					}
 					
 				} else {
@@ -96,13 +97,17 @@ public class EEMailSend extends ESubCommand<EverEssentials> {
 						resultat = this.commandSend(source, user.get(), args.get(1));
 					// Le joueur est introuvable
 					} else {
-						source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
+						EAMessages.PLAYER_NOT_FOUND.sender()
+							.prefix(EEMessages.PREFIX)
+							.sendTo(source);
 					}
 					
 				}
 			// Il n'a pas la permission
 			} else {
-				source.sendMessage(EAMessages.NO_PERMISSION.getText());
+				EAMessages.NO_PERMISSION.sender()
+					.prefix(EEMessages.PREFIX)
+					.sendTo(source);
 			}
 		} else {
 			source.sendMessage(this.help(source));
@@ -114,38 +119,43 @@ public class EEMailSend extends ESubCommand<EverEssentials> {
 	private boolean commandSend(CommandSource staff, EUser user, String message) {
 		// Le staff ignore le joueur
 		if (staff instanceof EPlayer && ((EPlayer) staff).ignore(user)) {
-			staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.MAIL_SEND_IGNORE_PLAYER.get()
-					.replaceAll("<player>", user.getName())));
+			EEMessages.MAIL_SEND_IGNORE_PLAYER.sender()
+				.replace("<player>", user.getName())
+				.sendTo(staff);
 			return false;
 		}
 		
 		// Le joueur vous ignore
 		if (staff instanceof EPlayer && user.ignore((EPlayer) staff)) {
-			staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.MAIL_SEND_IGNORE_RECEIVE.get()
-					.replaceAll("<player>", user.getName())));
+			EEMessages.MAIL_SEND_IGNORE_RECEIVE.sender()
+				.replace("<player>", user.getName())
+				.sendTo(staff);
 			return false;
 		}
 		
 		// Event cancel
 		if (!user.addMail(staff, message)) {
-			staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.MAIL_SEND_CANCEL.get()
-					.replaceAll("<player>", user.getName())));
+			EEMessages.MAIL_SEND_CANCEL.sender()
+				.replace("<player>", user.getName())
+				.sendTo(staff);
 			return false;
 		}
 		
 		if (!staff.getIdentifier().equals(user.getIdentifier())) {
-			staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.MAIL_SEND_MESSAGE.get()
-					.replaceAll("<player>", user.getName())));
+			EEMessages.MAIL_SEND_MESSAGE.sender()
+				.replace("<player>", user.getName())
+				.sendTo(staff);
 		} else {
-			staff.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.MAIL_SEND_EQUALS.get()
-					.replaceAll("<player>", user.getName())));
+			EEMessages.MAIL_SEND_EQUALS.sender()
+				.replace("<player>", user.getName())
+				.sendTo(staff);
 		}
 		return true;
 	}
 	
 	private boolean commandSendAll(CommandSource player, String message) {
 		this.plugin.getThreadAsync().execute(() -> this.plugin.getDataBases().sendAllMail(player.getIdentifier(), message));
-		player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.MAIL_SEND_ALL.getText()));
+		EEMessages.MAIL_SEND_ALL.sendTo(player);
 		return true;
 	}
 }

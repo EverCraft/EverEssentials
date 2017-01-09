@@ -33,10 +33,8 @@ import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
-import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ECommand;
 import fr.evercraft.everapi.server.player.EPlayer;
-import fr.evercraft.everapi.text.ETextBuilder;
 
 public class EETeleportationAsk extends ECommand<EverEssentials> {
 	
@@ -56,7 +54,7 @@ public class EETeleportationAsk extends ECommand<EverEssentials> {
 
 	@Override
 	public Text help(final CommandSource source) {
-		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_PLAYER.get() + ">")
+		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_PLAYER.getString() + ">")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
 					.build();
@@ -86,7 +84,9 @@ public class EETeleportationAsk extends ECommand<EverEssentials> {
 					resultat = this.commandTeleportation((EPlayer) source, player.get());
 				// Joueur introuvable
 				} else {
-					source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
+					EAMessages.PLAYER_NOT_FOUND.sender()
+						.prefix(EEMessages.PREFIX)
+						.sendTo(source);
 				}
 				
 			// Si la source est une console ou un commande block
@@ -97,7 +97,7 @@ public class EETeleportationAsk extends ECommand<EverEssentials> {
 			}
 		// Nombre d'argument incorrect
 		} else {
-			source.sendMessage(help(source));
+			source.sendMessage(this.help(source));
 		}
 		
 		return resultat;
@@ -106,28 +106,31 @@ public class EETeleportationAsk extends ECommand<EverEssentials> {
 	private boolean commandTeleportation(EPlayer player, EPlayer destination) {
 		// La source et le joueur sont identique
 		if (player.equals(destination)) {
-			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.TPA_ERROR_EQUALS.get());
+			EEMessages.TPA_ERROR_EQUALS.sendTo(player);
 			return false;
 		}
 		
 		// Le joueur ignore la destination
 		if (player.ignore(destination)) {
-			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.TPA_IGNORE_PLAYER.get()
-					.replaceAll("<player>", destination.getName()));
+			EEMessages.TPA_IGNORE_PLAYER.sender()
+				.replace("<player>", destination.getName())
+				.sendTo(player);
 			return false;
 		}
 		
 		// La destination ignore le joueur
 		if (destination.ignore(player)) {
-			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.TPA_IGNORE_DESTINATION.get()
-					.replaceAll("<player>", destination.getName()));
+			EEMessages.TPA_IGNORE_DESTINATION.sender()
+				.replace("<player>", destination.getName())
+				.sendTo(player);
 			return false;
 		}
 					
 		// La destination n'accepte pas les demandes de téléportation
 		if (!destination.isToggle()) {
-			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.TOGGLE_DISABLED.get()
-					.replaceAll("<player>", destination.getName()));
+			EEMessages.TOGGLE_DISABLED.sender()
+				.replace("<player>", destination.getName())
+				.sendTo(player);
 			return false;
 		}
 		
@@ -136,46 +139,47 @@ public class EETeleportationAsk extends ECommand<EverEssentials> {
 						
 		// Il y a déjà une demande de téléportation en cours
 		if (!destination.addTeleportAsk(player.getUniqueId(), delay)) {
-			player.sendMessage(EEMessages.PREFIX.get() + EEMessages.TPA_ERROR_DELAY.get()
-					.replaceAll("<player>", destination.getName()));
+			EEMessages.TPA_ERROR_DELAY.sender()
+				.replace("<player>", destination.getName())
+				.sendTo(player);
 			return false;
 		}
 		
-		player.sendMessage(EEMessages.PREFIX.get() + EEMessages.TPA_STAFF_QUESTION.get()
-				.replaceAll("<player>", destination.getName())
-				.replaceAll("<delay>", delay_format));
-		destination.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.getText())
-						.append(EEMessages.TPA_PLAYER_QUESTION.get()
-							.replaceAll("<player>", player.getName())
-							.replaceAll("<delay>", delay_format))
-						.replace("<accept>", EETeleportationAsk.getButtonAccept(player.getName()))
-						.replace("<deny>", EETeleportationAsk.getButtonDeny(player.getName()))
-						.build());
+		EEMessages.TPA_STAFF_QUESTION.sender()
+			.replace("<player>", destination.getName())
+			.replace("<delay>", delay_format)
+			.sendTo(player);
+		EEMessages.TPA_PLAYER_QUESTION.sender()
+			.replace("<player>", player.getName())
+			.replace("<delay>", delay_format)
+			.replace("<accept>", EETeleportationAsk.getButtonAccept(player.getName()))
+			.replace("<deny>", EETeleportationAsk.getButtonDeny(player.getName()))
+			.sendTo(destination);
 		return true;
 	}
 	
 	public static Text getButtonPosition(final String player, final Location<World> location){
-		return EChat.of(EEMessages.TPA_DESTINATION.get().replaceAll("<player>", player)).toBuilder()
-					.onHover(TextActions.showText(EChat.of(EEMessages.TPA_DESTINATION_HOVER.get()
-							.replaceAll("<world>", location.getExtent().getName())
-							.replaceAll("<x>", String.valueOf(location.getBlockX()))
-							.replaceAll("<y>", String.valueOf(location.getBlockY()))
-							.replaceAll("<z>", String.valueOf(location.getBlockZ())))))
+		return EEMessages.TPA_DESTINATION.getFormat().toText("<player>", player).toBuilder()
+					.onHover(TextActions.showText(EEMessages.TPA_DESTINATION_HOVER.getFormat().toText(
+							"<world>", location.getExtent().getName(),
+							"<x>", String.valueOf(location.getBlockX()),
+							"<y>", String.valueOf(location.getBlockY()),
+							"<z>", String.valueOf(location.getBlockZ()))))
 					.build();
 	}
 	
 	public static Text getButtonAccept(final String player){
-		return EChat.of(EEMessages.TPA_PLAYER_QUESTION_ACCEPT.get().replaceAll("<player>", player)).toBuilder()
-					.onHover(TextActions.showText(EChat.of(EEMessages.TPA_PLAYER_QUESTION_ACCEPT_HOVER.get()
-							.replaceAll("<player>", player))))
+		return EEMessages.TPA_PLAYER_QUESTION_ACCEPT.getFormat().toText("<player>", player).toBuilder()
+					.onHover(TextActions.showText(EEMessages.TPA_PLAYER_QUESTION_ACCEPT_HOVER.getFormat()
+							.toText("<player>", player)))
 					.onClick(TextActions.runCommand("/tpaccept " + player))
 					.build();
 	}
 	
 	public static Text getButtonDeny(final String player){
-		return EChat.of(EEMessages.TPA_PLAYER_QUESTION_DENY.get().replaceAll("<player>", player)).toBuilder()
-					.onHover(TextActions.showText(EChat.of(EEMessages.TPA_PLAYER_QUESTION_DENY_HOVER.get()
-							.replaceAll("<player>", player))))
+		return EEMessages.TPA_PLAYER_QUESTION_DENY.getFormat().toText("<player>", player).toBuilder()
+					.onHover(TextActions.showText(EEMessages.TPA_PLAYER_QUESTION_DENY_HOVER.getFormat()
+							.toText("<player>", player)))
 					.onClick(TextActions.runCommand("/tpdeny " + player))
 					.build();
 	}

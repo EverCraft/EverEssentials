@@ -20,7 +20,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.hanging.Painting;
@@ -61,11 +60,10 @@ import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.event.AfkEvent;
 import fr.evercraft.everapi.event.MailEvent;
-import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.server.player.EPlayer;
+import fr.evercraft.everapi.services.essentials.Mail;
 import fr.evercraft.everapi.services.essentials.TeleportDelay;
 import fr.evercraft.everapi.sponge.UtilsPainting;
-import fr.evercraft.everapi.text.ETextBuilder;
 
 public class EEPlayerListeners {
 	private EverEssentials plugin;
@@ -126,7 +124,7 @@ public class EEPlayerListeners {
 				if (damagesource.isPresent() && damagesource.get().equals(DamageSources.VOID)) {
 					// L'option de téléportation au spwan est activé
 					if (this.plugin.getConfigs().isGodTeleportToSpawn()) {
-						player.get().sendMessage(EEMessages.PREFIX.get() + EEMessages.GOD_TELEPORT.get());
+						EEMessages.GOD_TELEPORT.sendTo(player.get());
 						player.get().teleportSpawn();
 						player.get().heal();
 						event.setCancelled(true);
@@ -236,7 +234,7 @@ public class EEPlayerListeners {
 					Optional<TeleportDelay> teleport = player.getTeleportDelay();
 					if (teleport.isPresent() && !teleport.get().canMove()) {
 						player.cancelTeleportDelay();
-						player.sendMessage(EEMessages.PREFIX.get() + EEMessages.TELEPORT_ERROR_DELAY.get());
+						EEMessages.TELEPORT_ERROR_DELAY.sendTo(player);
 					}
 					
 					// Freeze
@@ -313,7 +311,7 @@ public class EEPlayerListeners {
 			// Freeze
 			if (!event.getCommand().equalsIgnoreCase("freeze") && player.isFreeze()) {
 				event.setCancelled(true);
-				player.sendMessage(EEMessages.PREFIX.get() + EEMessages.FREEZE_NO_COMMAND.get());
+				EEMessages.FREEZE_NO_COMMAND.sendTo(player);
 			}
 		}
     }
@@ -349,20 +347,20 @@ public class EEPlayerListeners {
 	}
 	
 	@Listener
-	public void onPlayerMail(MailEvent.Add event) {
+	public void onPlayerMail(MailEvent.Receive event) {
 		EPlayer player = event.getPlayer();
-		if(!player.equals(event.getTo())){
-			player.sendMessage(ETextBuilder.toBuilder(EEMessages.PREFIX.get()).append(EEMessages.MAIL_NEW_MESSAGE.get())
-					.replace("<message>", getButtonReadMail(event.getTo()))
-				.build());
+		if(!player.getIdentifier().equals(event.getMail().getTo())){
+			EEMessages.MAIL_NEW_MESSAGE.sender()
+				.replace("<message>", this.getButtonReadMail(event.getMail()))
+				.sendTo(player);
 		}
 	}
 	
-	private Text getButtonReadMail(final CommandSource source){
+	private Text getButtonReadMail(final Mail mail){
 		return EEMessages.MAIL_BUTTON_NEW_MESSAGE.getText().toBuilder()
-					.onHover(TextActions.showText(EChat.of(EEMessages.MAIL_BUTTON_NEW_MESSAGE_HOVER.get()
-							.replaceAll("<player>", source.getName()))))
-					.onClick(TextActions.runCommand("/mail read"))
+					.onHover(TextActions.showText(EEMessages.MAIL_BUTTON_NEW_MESSAGE_HOVER.getFormat()
+							.toText("<player>", mail.getToName())))
+					.onClick(TextActions.runCommand("/mail read " + mail.getID()))
 					.build();
 	}
 	
