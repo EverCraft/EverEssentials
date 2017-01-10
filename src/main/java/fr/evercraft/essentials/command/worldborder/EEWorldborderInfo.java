@@ -17,7 +17,9 @@
 package fr.evercraft.essentials.command.worldborder;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.spongepowered.api.command.CommandException;
@@ -33,9 +35,8 @@ import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.java.UtilsDouble;
-import fr.evercraft.everapi.plugin.EChat;
+import fr.evercraft.everapi.message.replace.EReplace;
 import fr.evercraft.everapi.plugin.command.ESubCommand;
-import fr.evercraft.everapi.text.ETextBuilder;
 
 public class EEWorldborderInfo extends ESubCommand<EverEssentials> {
 	
@@ -50,7 +51,7 @@ public class EEWorldborderInfo extends ESubCommand<EverEssentials> {
 
 	@Override
 	public Text description(final CommandSource source) {
-		return EChat.of(EEMessages.WORLDBORDER_INFO_DESCRIPTION.get());
+		return EEMessages.WORLDBORDER_INFO_DESCRIPTION.getText();
 	}
 	
 	@Override
@@ -68,7 +69,7 @@ public class EEWorldborderInfo extends ESubCommand<EverEssentials> {
 
 	@Override
 	public Text help(final CommandSource source) {
-		return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_WORLD.get() + "]")
+		return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_WORLD.getString() + "]")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
 					.build();
@@ -92,8 +93,10 @@ public class EEWorldborderInfo extends ESubCommand<EverEssentials> {
 			if (world.isPresent()) {
 				resultat = this.commandWorldborder(source, world.get());
 			} else {
-				source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.WORLD_NOT_FOUND.get()
-					.replaceAll("<world>", args.get(0))));
+				EAMessages.WORLD_NOT_FOUND.sender()
+					.prefix(EEMessages.PREFIX)
+					.replace("<world>", args.get(0))
+					.sendTo(source);
 			}
 		} else {
 			source.sendMessage(this.help(source));
@@ -112,59 +115,52 @@ public class EEWorldborderInfo extends ESubCommand<EverEssentials> {
 		lists.add(this.getWarningDistance(world));
 		lists.add(this.getWarningTime(world));
 		
-		this.plugin.getEverAPI().getManagerService().getEPagination().sendTo(EChat.of(EEMessages.WORLDBORDER_INFO_TITLE.get()
-				.replaceAll("<world>", world.getName()))
-					.toBuilder()
+		this.plugin.getEverAPI().getManagerService().getEPagination().sendTo(EEMessages.WORLDBORDER_INFO_TITLE.getFormat()
+				.toText("<world>", world.getName()).toBuilder()
 				.onClick(TextActions.runCommand("/" + this.getName()))
-					.build(), lists, source);
+				.build(), lists, source);
 		return true;
 	}
 	
 	public Text getLocation(final World world){
-		return ETextBuilder.toBuilder(EEMessages.WORLDBORDER_INFO_LOCATION.get())
-				.replace("<position>", this.getButtonLocation(world))
-				.build();
+		return EEMessages.WORLDBORDER_INFO_LOCATION.getFormat()
+				.toText("<position>", this.getButtonLocation(world));
 	}
 	
 	public Text getBorder(final World world){
-		return ETextBuilder.toBuilder(EEMessages.WORLDBORDER_INFO_BORDER.get())
-				.replace("<amount>", UtilsDouble.getString(world.getWorldBorder().getDiameter()))
-				.build();
+		return EEMessages.WORLDBORDER_INFO_BORDER.getFormat()
+				.toText("<amount>", UtilsDouble.getString(world.getWorldBorder().getDiameter()));
 	}
 	
 	public Text getDamageThreshold(final World world){
-		return ETextBuilder.toBuilder(EEMessages.WORLDBORDER_INFO_BUFFER.get())
-				.replace("<amount>", UtilsDouble.getString(world.getWorldBorder().getDamageThreshold()))
-				.build();
+		return EEMessages.WORLDBORDER_INFO_BUFFER.getFormat()
+				.toText("<amount>", UtilsDouble.getString(world.getWorldBorder().getDamageThreshold()));
 	}
 	
 	public Text getDamageAmount(final World world){
-		return ETextBuilder.toBuilder(EEMessages.WORLDBORDER_INFO_DAMAGE.get())
-				.replace("<amount>", UtilsDouble.getString(world.getWorldBorder().getDamageAmount()))
-				.build();
+		return EEMessages.WORLDBORDER_INFO_DAMAGE.getFormat()
+				.toText("<amount>", UtilsDouble.getString(world.getWorldBorder().getDamageAmount()));
 	}
 	
 	public Text getWarningDistance(final World world){
-		return ETextBuilder.toBuilder(EEMessages.WORLDBORDER_INFO_WARNING_DISTANCE.get())
-				.replace("<amount>", UtilsDouble.getString(world.getWorldBorder().getWarningDistance()))
-				.build();
+		return EEMessages.WORLDBORDER_INFO_WARNING_DISTANCE.getFormat()
+				.toText("<amount>", UtilsDouble.getString(world.getWorldBorder().getWarningDistance()));
 	}
 	
 	public Text getWarningTime(final World world){
-		return ETextBuilder.toBuilder(EEMessages.WORLDBORDER_INFO_WARNING_TIME.get())
-				.replace("<amount>", UtilsDouble.getString(world.getWorldBorder().getWarningTime()))
-				.build();
+		return EEMessages.WORLDBORDER_INFO_WARNING_TIME.getFormat()
+				.toText("<amount>", UtilsDouble.getString(world.getWorldBorder().getWarningTime()));
 	}
 	
-	public Text getButtonLocation(final World world){
-		return EChat.of(EEMessages.WORLDBORDER_INFO_LOCATION_POSITION.get()
-					.replaceAll("<x>", String.valueOf(Math.floor(world.getWorldBorder().getCenter().getX())))
-					.replaceAll("<z>", String.valueOf(Math.floor(world.getWorldBorder().getCenter().getZ())))
-					.replaceAll("<world>", world.getName())).toBuilder()
-				.onHover(TextActions.showText(EChat.of(EEMessages.WORLDBORDER_INFO_LOCATION_POSITION_HOVER.get()
-						.replaceAll("<x>", String.valueOf(Math.floor(world.getWorldBorder().getCenter().getX())))
-						.replaceAll("<z>", String.valueOf(Math.floor(world.getWorldBorder().getCenter().getZ())))
-						.replaceAll("<world>", world.getName()))))
+	public Text getButtonLocation(final World world) {
+		Map<String, EReplace<?>> replaces = new HashMap<String, EReplace<?>>();
+		replaces.put("<x>", EReplace.of(String.valueOf(Math.floor(world.getWorldBorder().getCenter().getX()))));
+		replaces.put("<y>", EReplace.of(String.valueOf(Math.floor(world.getWorldBorder().getCenter().getY()))));
+		replaces.put("<z>", EReplace.of(String.valueOf(Math.floor(world.getWorldBorder().getCenter().getZ()))));
+		replaces.put("<world>", EReplace.of(world.getName()));
+		
+		return EEMessages.WORLDBORDER_INFO_LOCATION_POSITION.getFormat().toText(replaces).toBuilder()
+				.onHover(TextActions.showText(EEMessages.WORLDBORDER_INFO_LOCATION_POSITION_HOVER.getFormat().toText(replaces)))
 				.build();
 	}
 }

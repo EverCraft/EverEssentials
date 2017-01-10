@@ -32,7 +32,6 @@ import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.everapi.EAMessage.EAMessages;
-import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ESubCommand;
 
 public class EEWorldborderDamage extends ESubCommand<EverEssentials> {
@@ -48,7 +47,7 @@ public class EEWorldborderDamage extends ESubCommand<EverEssentials> {
 
 	@Override
 	public Text description(final CommandSource source) {
-		return EChat.of(EEMessages.WORLDBORDER_DAMAGE_DESCRIPTION.get());
+		return EEMessages.WORLDBORDER_DAMAGE_DESCRIPTION.getText();
 	}
 	
 	@Override
@@ -73,21 +72,21 @@ public class EEWorldborderDamage extends ESubCommand<EverEssentials> {
 
 	@Override
 	public Text help(final CommandSource source) {
-		return Text.builder("/" + this.getName() + " <buffer|amount> <" + EAMessages.ARGS_VALUE.get() + ">")
+		return Text.builder("/" + this.getName() + " <buffer|amount> <" + EAMessages.ARGS_VALUE.getString() + ">")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
 					.build();
 	}
 	
 	public Text helpAmount(final CommandSource source) {
-		return Text.builder("/" + this.getName() + " amount <" + EAMessages.ARGS_DAMAGE.get() + "> [" + EAMessages.ARGS_WORLD.get() + "]")
+		return Text.builder("/" + this.getName() + " amount <" + EAMessages.ARGS_DAMAGE.getString() + "> [" + EAMessages.ARGS_WORLD.getString() + "]")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " amount "))
 					.color(TextColors.RED)
 					.build();
 	}
 	
 	public Text helpBuffer(final CommandSource source) {
-		return Text.builder("/" + this.getName() + " buffer <" + EAMessages.ARGS_BLOCK.get() + "> [" + EAMessages.ARGS_WORLD.get() + "]")
+		return Text.builder("/" + this.getName() + " buffer <" + EAMessages.ARGS_BLOCK.getString() + "> [" + EAMessages.ARGS_WORLD.getString() + "]")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " buffer "))
 					.color(TextColors.RED)
 					.build();
@@ -133,8 +132,10 @@ public class EEWorldborderDamage extends ESubCommand<EverEssentials> {
 					source.sendMessage(this.help(source));
 				}
 			} else {
-				source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.WORLD_NOT_FOUND.get()
-						.replaceAll("<world>", args.get(2))));
+				EAMessages.WORLD_NOT_FOUND.sender()
+					.prefix(EEMessages.PREFIX)
+					.replace("<world>", args.get(2))
+					.sendTo(source);
 			}
 		} else {
 			source.sendMessage(this.help(source));
@@ -148,14 +149,17 @@ public class EEWorldborderDamage extends ESubCommand<EverEssentials> {
 			double value = Integer.parseInt(value_string);
 			
 			world.getWorldBorder().setDamageAmount(value);
-			source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.WORLDBORDER_DAMAGE_AMOUNT.get()
-					.replaceAll("<amount>", String.valueOf(value))
-					.replaceAll("<world>", world.getName())));
+			EEMessages.WORLDBORDER_DAMAGE_AMOUNT.sender()
+				.replace("<amount>", String.valueOf(value))
+				.replace("<world>", world.getName())
+				.sendTo(source);
 			return true;
 			
 		} catch (NumberFormatException e) {
-			source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.IS_NOT_NUMBER.get()
-					.replaceAll("<number>", value_string)));
+			EAMessages.IS_NOT_NUMBER.sender()
+				.prefix(EEMessages.PREFIX)
+				.replace("<number>", value_string)
+				.sendTo(source);
 			return false;
 		}
 	}
@@ -165,14 +169,17 @@ public class EEWorldborderDamage extends ESubCommand<EverEssentials> {
 			double value = Integer.parseInt(value_string);
 
 			world.getWorldBorder().setDamageThreshold(value);
-			source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.WORLDBORDER_DAMAGE_BUFFER.get()
-					.replaceAll("<amount>", String.valueOf(value))
-					.replaceAll("<world>", world.getName())));
+			EEMessages.WORLDBORDER_DAMAGE_BUFFER.sender()
+				.replace("<amount>", String.valueOf(value))
+				.replace("<world>", world.getName())
+				.sendTo(source);
 			return true;
 			
 		} catch (NumberFormatException e) {
-			source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.IS_NOT_NUMBER.get()
-					.replaceAll("<number>", value_string)));
+			EAMessages.IS_NOT_NUMBER.sender()
+				.prefix(EEMessages.PREFIX)
+				.replace("<number>", value_string)
+				.sendTo(source);
 			return false;
 		}
 	}

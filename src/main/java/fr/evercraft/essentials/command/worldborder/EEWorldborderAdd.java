@@ -32,7 +32,6 @@ import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
-import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ESubCommand;
 
 public class EEWorldborderAdd extends ESubCommand<EverEssentials> {
@@ -48,7 +47,7 @@ public class EEWorldborderAdd extends ESubCommand<EverEssentials> {
 
 	@Override
 	public Text description(final CommandSource source) {
-		return EChat.of(EEMessages.WORLDBORDER_ADD_DESCRIPTION.get());
+		return EEMessages.WORLDBORDER_ADD_DESCRIPTION.getText();
 	}
 	
 	@Override
@@ -77,8 +76,8 @@ public class EEWorldborderAdd extends ESubCommand<EverEssentials> {
 
 	@Override
 	public Text help(final CommandSource source) {
-		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_BLOCK.get() + "> [" + EAMessages.ARGS_SECONDS.get() + "] "
-						+ "[" + EAMessages.ARGS_WORLD.get() + "]")
+		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_BLOCK.getString() + "> [" + EAMessages.ARGS_SECONDS.getString() + "] "
+						+ "[" + EAMessages.ARGS_WORLD.getString() + "]")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
 					.build();
@@ -117,8 +116,10 @@ public class EEWorldborderAdd extends ESubCommand<EverEssentials> {
 			if (world.isPresent()){
 				resultat = this.commandWorldborderAdd(source, world.get(), args.get(0), args.get(1));
 			} else {
-				source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.WORLD_NOT_FOUND.get()
-						.replaceAll("<world>", args.get(2))));
+				EAMessages.WORLD_NOT_FOUND.sender()
+					.prefix(EEMessages.PREFIX)
+					.replace("<world>", args.get(2))
+					.sendTo(source);
 			}
 		} else {
 			source.sendMessage(this.help(source));
@@ -132,20 +133,23 @@ public class EEWorldborderAdd extends ESubCommand<EverEssentials> {
 			double diameter =  world.getWorldBorder().getDiameter() + Integer.parseInt(diameter_string);
 			world.getWorldBorder().setDiameter(diameter);
 			
-			String message;
+			EEMessages message;
 			if (world.getWorldBorder().getDiameter() > diameter){
-				message = EEMessages.WORLDBORDER_ADD_BORDER_DECREASE.get();
+				message = EEMessages.WORLDBORDER_ADD_BORDER_DECREASE;
 			} else {
-				message = EEMessages.WORLDBORDER_ADD_BORDER_INCREASE.get();
+				message = EEMessages.WORLDBORDER_ADD_BORDER_INCREASE;
 			}
 			
-			source.sendMessage(EChat.of(EEMessages.PREFIX.get() + message
-					.replaceAll("<world>", world.getName())
-					.replaceAll("<amount>", String.valueOf(diameter))));
+			message.sender()
+				.replace("<world>", world.getName())
+				.replace("<amount>", String.valueOf(diameter))
+				.sendTo(source);
 			return true;
 		} catch (NumberFormatException e) {
-			source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.IS_NOT_NUMBER.get()
-					.replaceAll("<number>", diameter_string)));
+			EAMessages.IS_NOT_NUMBER.sender()
+				.prefix(EEMessages.PREFIX)
+				.replace("<number>", diameter_string)
+				.sendTo(source);
 			return false;
 		}
 	}
@@ -157,21 +161,24 @@ public class EEWorldborderAdd extends ESubCommand<EverEssentials> {
 
 			world.getWorldBorder().setDiameter(world.getWorldBorder().getDiameter(), diameter, (long) (time * 1000));
 			
-			String message;
+			EEMessages message;
 			if (world.getWorldBorder().getDiameter() > diameter){
-				message = EEMessages.WORLDBORDER_ADD_BORDER_TIME_DECREASE.get();
+				message = EEMessages.WORLDBORDER_ADD_BORDER_TIME_DECREASE;
 			} else {
-				message = EEMessages.WORLDBORDER_ADD_BORDER_TIME_INCREASE.get();
+				message = EEMessages.WORLDBORDER_ADD_BORDER_TIME_INCREASE;
 			}
 			
-			source.sendMessage(EChat.of(EEMessages.PREFIX.get() + message
-					.replaceAll("<world>", world.getName())
-					.replaceAll("<amount>", String.valueOf(diameter))
-					.replaceAll("<time>", String.valueOf(time))));
+			message.sender()
+				.replace("<world>", world.getName())
+				.replace("<amount>", String.valueOf(diameter))
+				.replace("<time>", String.valueOf(time))
+				.sendTo(source);
 			return true;
 		} catch (NumberFormatException e) {
-			source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.IS_NOT_NUMBER.get()
-					.replaceAll("<number>", diameter_string)));
+			EAMessages.IS_NOT_NUMBER.sender()
+				.prefix(EEMessages.PREFIX)
+				.replace("<number>", diameter_string)
+				.sendTo(source);
 			return false;
 		}
 	}

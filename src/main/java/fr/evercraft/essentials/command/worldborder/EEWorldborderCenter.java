@@ -32,7 +32,6 @@ import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.everapi.EAMessage.EAMessages;
-import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ESubCommand;
 
 public class EEWorldborderCenter extends ESubCommand<EverEssentials> {
@@ -48,7 +47,7 @@ public class EEWorldborderCenter extends ESubCommand<EverEssentials> {
 
 	@Override
 	public Text description(final CommandSource source) {
-		return EChat.of(EEMessages.WORLDBORDER_CENTER_DESCRIPTION.get());
+		return EEMessages.WORLDBORDER_CENTER_DESCRIPTION.getText();
 	}
 	
 	@Override
@@ -72,7 +71,7 @@ public class EEWorldborderCenter extends ESubCommand<EverEssentials> {
 
 	@Override
 	public Text help(final CommandSource source) {
-		return Text.builder("/" + this.getName() + " <x> <z> [" + EAMessages.ARGS_WORLD.get() + "]")
+		return Text.builder("/" + this.getName() + " <x> <z> [" + EAMessages.ARGS_WORLD.getString() + "]")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
 					.build();
@@ -98,8 +97,10 @@ public class EEWorldborderCenter extends ESubCommand<EverEssentials> {
 			if (world.isPresent()){
 				resultat = this.commandWorldborderCenter(source, world.get(), args.get(0), args.get(1));
 			} else {
-				source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.WORLD_NOT_FOUND.get()
-						.replaceAll("<world>", args.get(2))));
+				EAMessages.WORLD_NOT_FOUND.sender()
+					.prefix(EEMessages.PREFIX)
+					.replace("<world>", args.get(2))
+					.sendTo(source);
 			}
 		} else {
 			source.sendMessage(this.help(source));
@@ -115,19 +116,24 @@ public class EEWorldborderCenter extends ESubCommand<EverEssentials> {
 				int z = Integer.parseInt(y_string);
 				
 				world.getWorldBorder().setCenter(x, z);
-				source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EEMessages.WORLDBORDER_CENTER_MESSAGE.get()
-						.replaceAll("<world>", world.getName())
-						.replaceAll("<x>", String.valueOf(x))
-						.replaceAll("<z>", String.valueOf(z))));
+				EEMessages.WORLDBORDER_CENTER_MESSAGE.sender()
+					.replace("<world>", world.getName())
+					.replace("<x>", String.valueOf(x))
+					.replace("<z>", String.valueOf(z))
+					.sendTo(source);
 				return true;
 				
 			} catch (NumberFormatException e) {
-				source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.IS_NOT_NUMBER.get()
-						.replaceAll("<number>", y_string)));
+				EAMessages.IS_NOT_NUMBER.sender()
+					.prefix(EEMessages.PREFIX)
+					.replace("<number>", y_string)
+					.sendTo(source);
 			}
 		} catch (NumberFormatException e) {
-			source.sendMessage(EChat.of(EEMessages.PREFIX.get() + EAMessages.IS_NOT_NUMBER.get()
-					.replaceAll("<number>", x_string)));
+			EAMessages.IS_NOT_NUMBER.sender()
+				.prefix(EEMessages.PREFIX)
+				.replace("<number>", x_string)
+				.sendTo(source);
 		}
 		return false;
 	}
