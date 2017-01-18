@@ -48,6 +48,8 @@ import org.spongepowered.api.event.message.MessageChannelEvent;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
+import org.spongepowered.api.profile.GameProfile;
+import org.spongepowered.api.service.whitelist.WhitelistService;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.channel.MessageChannel;
@@ -88,6 +90,23 @@ public class EEPlayerListeners {
 		this.plugin.getManagerServices().getEssentials().registerPlayer(event.getTargetEntity().getUniqueId());
 		this.plugin.getScheduler().start();
 		
+		// WhiteLit
+		Optional<WhitelistService> optWhitelist = this.plugin.getEverAPI().getManagerService().getWhitelist();
+		if (optWhitelist.isPresent()) {
+			WhitelistService whitelist = optWhitelist.get();
+			
+			Optional<GameProfile> optProfile = whitelist.getWhitelistedProfiles().stream()
+				.filter(profile -> 
+					profile.getUniqueId().equals(event.getTargetEntity().getUniqueId()) && 
+					!profile.getName().equals(event.getTargetEntity().getName()))
+				.findFirst();
+			
+			if (optProfile.isPresent()) {
+				this.plugin.getLogger().info("Whitelist : " + optProfile.get() + " renamed in " + event.getTargetEntity().getName());
+				whitelist.removeProfile(optProfile.get());
+				whitelist.addProfile(event.getTargetEntity().getProfile());
+			}
+		}
 
 		// Motd
 		if (this.plugin.getMotd().isEnable()) {
