@@ -40,10 +40,10 @@ import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.essentials.service.subject.EUserSubject;
 import fr.evercraft.essentials.service.subject.EVirtualSubject;
-import fr.evercraft.everapi.java.Chronometer;
 import fr.evercraft.everapi.services.essentials.EssentialsService;
 import fr.evercraft.everapi.services.essentials.SubjectUserEssentials;
 import fr.evercraft.everapi.services.essentials.SubjectVirtualEssentials;
+import fr.evercraft.everapi.util.Chronometer;
 
 public class EEssentialsService implements EssentialsService {
 	private final EverEssentials plugin;

@@ -98,11 +98,12 @@ public class EEPlayerListeners {
 			Optional<GameProfile> optProfile = whitelist.getWhitelistedProfiles().stream()
 				.filter(profile -> 
 					profile.getUniqueId().equals(event.getTargetEntity().getUniqueId()) && 
-					!profile.getName().equals(event.getTargetEntity().getName()))
+					(!profile.getName().isPresent() || profile.getName().get().equals(event.getTargetEntity().getName())))
 				.findFirst();
 			
 			if (optProfile.isPresent()) {
-				this.plugin.getLogger().info("Whitelist : " + optProfile.get() + " renamed in " + event.getTargetEntity().getName());
+				this.plugin.getLogger().info("Whitelist : " + optProfile.get().getName().orElse(optProfile.get().getUniqueId().toString()) 
+						+ " renamed in " + event.getTargetEntity().getName());
 				whitelist.removeProfile(optProfile.get());
 				whitelist.addProfile(event.getTargetEntity().getProfile());
 			}
