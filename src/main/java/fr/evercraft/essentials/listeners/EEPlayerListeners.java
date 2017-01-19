@@ -98,7 +98,7 @@ public class EEPlayerListeners {
 			Optional<GameProfile> optProfile = whitelist.getWhitelistedProfiles().stream()
 				.filter(profile -> 
 					profile.getUniqueId().equals(event.getTargetEntity().getUniqueId()) && 
-					(!profile.getName().isPresent() || profile.getName().get().equals(event.getTargetEntity().getName())))
+					(!profile.getName().isPresent() || !profile.getName().get().equals(event.getTargetEntity().getName())))
 				.findFirst();
 			
 			if (optProfile.isPresent()) {
