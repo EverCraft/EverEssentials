@@ -67,7 +67,7 @@ public class EEButcherType extends ESubCommand<EverEssentials> {
 	}
 	
 	@Override
-	public List<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
+	public Collection<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		List<String> suggests = new ArrayList<String>();
 		if (args.size() == 1) {
 			for (EntityType entity : UtilsEntityType.ANIMALS){

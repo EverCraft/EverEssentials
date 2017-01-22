@@ -17,6 +17,7 @@
 package fr.evercraft.essentials.command.weather;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.spongepowered.api.command.CommandException;
@@ -59,7 +60,7 @@ public class EEWeatherRain extends ECommand<EverEssentials> {
 	}
 
 	@Override
-	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
+	public Collection<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		List<String> suggests = new ArrayList<String>();
 		if (args.size() == 1) {
 			for (World world : this.plugin.getEServer().getWorlds()) {

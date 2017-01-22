@@ -17,6 +17,7 @@
 package fr.evercraft.essentials.command.sub;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.spongepowered.api.command.CommandException;
@@ -49,7 +50,7 @@ public class EEReload extends ESubCommand<EverEssentials> {
 	}
 	
 	@Override
-	public List<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
+	public Collection<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		return new ArrayList<String>();
 	}
 

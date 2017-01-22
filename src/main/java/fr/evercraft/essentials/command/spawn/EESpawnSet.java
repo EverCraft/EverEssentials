@@ -17,6 +17,7 @@
 package fr.evercraft.essentials.command.spawn;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -64,7 +65,7 @@ public class EESpawnSet extends ECommand<EverEssentials> {
 	}
 	
 	@Override
-	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
+	public Collection<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		ArrayList<String> suggest = new ArrayList<String>();
 		if (args.size() == 1 && this.plugin.getEverAPI().getManagerService().getPermission().isPresent()) {
 			for (Subject group : this.plugin.getEverAPI().getManagerService().getPermission().get().getGroupSubjects().getAllSubjects()) {

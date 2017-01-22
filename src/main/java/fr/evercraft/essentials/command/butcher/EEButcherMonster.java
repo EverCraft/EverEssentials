@@ -66,7 +66,7 @@ public class EEButcherMonster extends ESubCommand<EverEssentials> {
 	}
 	
 	@Override
-	public List<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
+	public Collection<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		List<String> suggests = new ArrayList<String>();
 		if (args.size() == 1) {
 			if (source.hasPermission(EEPermissions.BUTCHER_WORLD.get())){

@@ -17,6 +17,7 @@
 package fr.evercraft.essentials.command.spawn;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -80,7 +81,7 @@ public class EESpawn extends EReloadCommand<EverEssentials> {
 	}
 	
 	@Override
-	public List<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
+	public Collection<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		List<String> suggests = new ArrayList<String>();
 		if (args.size() == 1 && source instanceof Player && source.hasPermission(EEPermissions.SPAWNS.get())) {
 			Set<String> homes = new TreeSet<String>();

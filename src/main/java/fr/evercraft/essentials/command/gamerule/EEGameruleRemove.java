@@ -17,6 +17,7 @@
 package fr.evercraft.essentials.command.gamerule;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.spongepowered.api.command.CommandException;
@@ -58,7 +59,7 @@ public class EEGameruleRemove extends ESubCommand<EverEssentials> {
 	}
 	
 	@Override
-	public List<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
+	public Collection<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		List<String> suggests = new ArrayList<String>();
 		if (args.size() == 1) {
 			if(source instanceof Player) {
