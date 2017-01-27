@@ -16,7 +16,7 @@
  */
 package fr.evercraft.essentials.command.spawn;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -64,13 +64,12 @@ public class EESpawnDel extends ECommand<EverEssentials> {
 	
 	@Override
 	public Collection<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
-		List<String> suggests = new ArrayList<String>();
 		if (args.size() == 1 && source instanceof Player){
-			suggests.addAll(this.plugin.getManagerServices().getSpawn().getAll().keySet());
+			return this.plugin.getManagerServices().getSpawn().getAll().keySet();
 		} else if (args.size() == 2){
-			suggests.add("confirmation");
+			return Arrays.asList("confirmation");
 		}
-		return suggests;
+		return Arrays.asList();
 	}
 	
 	@Override

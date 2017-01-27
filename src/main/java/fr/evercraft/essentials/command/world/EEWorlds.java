@@ -17,6 +17,7 @@
 package fr.evercraft.essentials.command.world;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -70,17 +71,18 @@ public class EEWorlds extends ECommand<EverEssentials> {
 	
 	@Override
 	public Collection<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
-		List<String> suggests = new ArrayList<String>();
 		if (args.size() == 1) {
+			List<String> suggests = new ArrayList<String>();
 			for (World world : this.plugin.getEServer().getWorlds()) {
 				if (this.plugin.getManagerServices().getEssentials().hasPermissionWorld(source, world)) {
 					suggests.add(world.getProperties().getWorldName());
 				}
 			}
+			return suggests;
 		} else if (args.size() == 2 && source.hasPermission(EEPermissions.WORLDS_OTHERS.get())) {
-			suggests.addAll(this.getAllPlayers());
+			return this.getAllPlayers(source, true);
 		}
-		return suggests;
+		return Arrays.asList();
 	}
 	
 	@Override

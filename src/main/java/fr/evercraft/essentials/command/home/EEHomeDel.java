@@ -17,6 +17,7 @@
 package fr.evercraft.essentials.command.home;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -64,17 +65,18 @@ public class EEHomeDel extends ECommand<EverEssentials> {
 	
 	@Override
 	public Collection<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
-		List<String> suggests = new ArrayList<String>();
 		if (args.size() == 1 && source instanceof Player){
 			Optional<EPlayer> player = this.plugin.getEServer().getEPlayer((Player) source);
 			// Le joueur existe
 			if (player.isPresent()) {
+				List<String> suggests = new ArrayList<String>();
 				for (String home : player.get().getHomes().keySet()){
 					suggests.add(home);
 				}
+				return suggests;
 			}
 		}
-		return suggests;
+		return Arrays.asList();
 	}
 	
 	@Override

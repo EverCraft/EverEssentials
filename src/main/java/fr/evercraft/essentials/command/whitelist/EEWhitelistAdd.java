@@ -17,6 +17,7 @@
 package fr.evercraft.essentials.command.whitelist;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -53,15 +54,16 @@ public class EEWhitelistAdd extends ESubCommand<EverEssentials> {
 	
 	@Override
 	public Collection<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
-		List<String> suggests = new ArrayList<String>();
 		if (args.size() == 1) {
+			List<String> suggests = new ArrayList<String>();
 			for (GameProfile player : this.plugin.getEServer().getGameProfileManager().getCache().getProfiles()) {
 				if (player.getName().isPresent()) {
 					suggests.add(player.getName().orElse(player.getUniqueId().toString()));
 				}
 			}
+			return suggests;
 		}
-		return suggests;
+		return Arrays.asList();
 	}
 
 	@Override

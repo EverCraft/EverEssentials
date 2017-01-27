@@ -17,6 +17,7 @@
 package fr.evercraft.essentials.command.itemlore;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -24,6 +25,7 @@ import java.util.Optional;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.data.key.Keys;
+import org.spongepowered.api.data.type.HandTypes;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.text.Text;
@@ -56,34 +58,26 @@ public class EEItemLoreSet extends ESubCommand<EverEssentials> {
 	
 	@Override
 	public Collection<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
-		List<String> suggests = new ArrayList<String>();
-		if (args.size() == 1) {
-			if(source instanceof Player){
-				Optional<EPlayer> player = this.plugin.getEServer().getEPlayer(((Player) source).getUniqueId());
-				if(player.isPresent()){
-					Optional<ItemStack> item = player.get().getItemInMainHand();
-					if(item.isPresent()){
-						suggests.add("1");
-						Optional<List<Text>> lore = item.get().get(Keys.ITEM_LORE);
-						if(lore.isPresent()){
-							if(lore.get().size() > 1){
-								suggests.add(String.valueOf(lore.get().size()));
-							}
+		if(source instanceof Player) {
+			if (args.size() == 1) {
+				Optional<ItemStack> item = ((Player) source).getItemInHand(HandTypes.MAIN_HAND);
+				if(item.isPresent()) {
+					Optional<List<Text>> lore = item.get().get(Keys.ITEM_LORE);
+					if(lore.isPresent()) {
+						if(lore.get().size() >= 1) {
+							return Arrays.asList("1", String.valueOf(lore.get().size()));
+						} else {
+							return Arrays.asList("1");
 						}
 					}
 				}
-			}
-		} else if(args.size() == 2) {
-			if(source instanceof Player){
-				Optional<EPlayer> player = this.plugin.getEServer().getEPlayer(((Player) source).getUniqueId());
-				if(player.isPresent()){
-					if(player.get().getItemInMainHand().isPresent()){
-						suggests.add("&bHello world");
-					}
+			} else if(args.size() == 2) {
+				if(((Player) source).getItemInHand(HandTypes.MAIN_HAND).isPresent()){
+					return Arrays.asList("&bHello world");
 				}
 			}
 		}
-		return suggests;
+		return Arrays.asList();
 	}
 
 	@Override
@@ -110,7 +104,7 @@ public class EEItemLoreSet extends ESubCommand<EverEssentials> {
 				return false;
 			}
 		} else {
-			this.help(source);
+			source.sendMessage(this.help(source));
 			return false;
 		}
 	}

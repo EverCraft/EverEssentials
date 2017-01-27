@@ -17,6 +17,7 @@
 package fr.evercraft.essentials.command.worldborder;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -53,21 +54,20 @@ public class EEWorldborderCenter extends ESubCommand<EverEssentials> {
 	
 	@Override
 	public Collection<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
-		List<String> suggests = new ArrayList<String>();
 		if (args.size() == 1){
-			suggests.add("0");
-			suggests.add("100");
+			return Arrays.asList("0", "100");
 		} else if (args.size() == 2){
-			suggests.add("0");
-			suggests.add("100");
+			return Arrays.asList("0", "100");
 		} else if (args.size() == 3){
+			List<String> suggests = new ArrayList<String>();
 			for (World world : this.plugin.getEServer().getWorlds()) {
 				if (this.plugin.getManagerServices().getEssentials().hasPermissionWorld(source, world)) {
 					suggests.add(world.getProperties().getWorldName());
 				}
 			}
+			return suggests;
 		}
-		return suggests;
+		return Arrays.asList();
 	}
 
 	@Override

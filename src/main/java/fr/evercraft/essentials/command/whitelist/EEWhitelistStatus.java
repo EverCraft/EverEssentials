@@ -16,7 +16,7 @@
  */
 package fr.evercraft.essentials.command.whitelist;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -49,7 +49,7 @@ public class EEWhitelistStatus extends ESubCommand<EverEssentials> {
 	
 	@Override
 	public Collection<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
-		return new ArrayList<String>();
+		return Arrays.asList();
 	}
 
 	@Override

@@ -17,6 +17,7 @@
 package fr.evercraft.essentials.command.itemlore;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -24,6 +25,7 @@ import java.util.Optional;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.data.key.Keys;
+import org.spongepowered.api.data.type.HandTypes;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.text.Text;
@@ -56,25 +58,20 @@ public class EEItemLoreRemove extends ESubCommand<EverEssentials> {
 	
 	@Override
 	public Collection<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
-		List<String> suggests = new ArrayList<String>();
-		if (args.size() == 1) {
-			if(source instanceof Player) {
-				Optional<EPlayer> player = this.plugin.getEServer().getEPlayer(((Player) source).getUniqueId());
-				if(player.isPresent()) {
-					Optional<ItemStack> item = player.get().getItemInMainHand();
-					if(item.isPresent()) {
-						Optional<List<Text>> lore = item.get().get(Keys.ITEM_LORE);
-						if(lore.isPresent()) {
-							suggests.add("1");
-							if(lore.get().size() >= 1) {
-								suggests.add(String.valueOf(lore.get().size()));
-							}
-						}
+		if (args.size() == 1 && source instanceof Player) {
+			Optional<ItemStack> item = ((Player) source).getItemInHand(HandTypes.MAIN_HAND);
+			if(item.isPresent()) {
+				Optional<List<Text>> lore = item.get().get(Keys.ITEM_LORE);
+				if(lore.isPresent()) {
+					if(lore.get().size() >= 1) {
+						return Arrays.asList("1", String.valueOf(lore.get().size()));
+					} else {
+						return Arrays.asList("1");
 					}
 				}
 			}
 		}
-		return suggests;
+		return Arrays.asList();
 	}
 
 	@Override
@@ -89,7 +86,7 @@ public class EEItemLoreRemove extends ESubCommand<EverEssentials> {
 	public boolean subExecute(final CommandSource source, final List<String> args) {
 		if(args.size() == 1){
 			if(source instanceof EPlayer){
-				commandItemLoreRemove((EPlayer) source, args.get(0));
+				this.commandItemLoreRemove((EPlayer) source, args.get(0));
 				return true;
 			} else {
 				EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()
@@ -98,7 +95,7 @@ public class EEItemLoreRemove extends ESubCommand<EverEssentials> {
 				return false;
 			}
 		} else {
-			this.help(source);
+			source.sendMessage(this.help(source));
 			return false;
 		}
 	}

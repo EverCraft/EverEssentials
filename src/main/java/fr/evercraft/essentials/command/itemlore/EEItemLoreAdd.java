@@ -17,9 +17,9 @@
 package fr.evercraft.essentials.command.itemlore;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
@@ -56,18 +56,12 @@ public class EEItemLoreAdd extends ESubCommand<EverEssentials> {
 	
 	@Override
 	public Collection<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
-		List<String> suggests = new ArrayList<String>();
-		if (args.size() == 1) {
-			if(source instanceof Player){
-				Optional<EPlayer> player = this.plugin.getEServer().getEPlayer(((Player) source).getUniqueId());
-				if(player.isPresent()){
-					if(player.get().getItemInMainHand().isPresent()){
-						suggests.add("&bHello world");
-					}
-				}
+		if (args.size() == 1 && source instanceof Player){
+			if(((Player) source).getItemInHand(HandTypes.MAIN_HAND).isPresent()){
+				return Arrays.asList("&bHello world");
 			}
 		}
-		return suggests;
+		return Arrays.asList();
 	}
 
 	@Override
@@ -82,7 +76,7 @@ public class EEItemLoreAdd extends ESubCommand<EverEssentials> {
 	public boolean subExecute(final CommandSource source, final List<String> args) {
 		if(args.size() == 1){
 			if(source instanceof EPlayer){
-				commandItemLoreAdd((EPlayer) source, args.get(0));
+				this.commandItemLoreAdd((EPlayer) source, args.get(0));
 				return true;
 			} else {
 				EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()
@@ -91,7 +85,7 @@ public class EEItemLoreAdd extends ESubCommand<EverEssentials> {
 				return false;
 			}
 		} else {
-			this.help(source);
+			source.sendMessage(this.help(source));
 			return false;
 		}
 	}

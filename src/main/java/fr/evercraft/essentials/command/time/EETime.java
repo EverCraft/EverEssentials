@@ -18,6 +18,7 @@ package fr.evercraft.essentials.command.time;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -86,14 +87,10 @@ public class EETime extends ECommand<EverEssentials> {
 
 	@Override
 	public Collection<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
-		List<String> suggests = new ArrayList<String>();
 		if (args.size() == 1) {
-			suggests.add("day");
-			suggests.add("night");
-			suggests.add("dawn");
-			suggests.add("17:30");
-			suggests.add("4000");
+			return Arrays.asList("day", "night", "dawn", "17:30", "4000");
 		} else if (args.size() == 2) {
+			List<String> suggests = new ArrayList<String>();
 			for (World world : this.plugin.getEServer().getWorlds()) {
 				if (this.plugin.getManagerServices().getEssentials().hasPermissionWorld(source, world)) {
 					if (world.getProperties().getDimensionType().equals(DimensionTypes.OVERWORLD)) {
@@ -102,8 +99,9 @@ public class EETime extends ECommand<EverEssentials> {
 				}
 			}
 			suggests.add("*");
+			return suggests;
 		}
-		return suggests;
+		return Arrays.asList();
 	}
 
 	@Override

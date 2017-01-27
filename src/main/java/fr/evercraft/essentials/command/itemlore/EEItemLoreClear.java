@@ -16,7 +16,7 @@
  */
 package fr.evercraft.essentials.command.itemlore;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -54,7 +54,7 @@ public class EEItemLoreClear extends ESubCommand<EverEssentials> {
 	
 	@Override
 	public Collection<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
-		return new ArrayList<String>();
+		return Arrays.asList();
 	}
 
 	@Override
@@ -69,7 +69,7 @@ public class EEItemLoreClear extends ESubCommand<EverEssentials> {
 	public boolean subExecute(final CommandSource source, final List<String> args) {
 		if (args.size() == 0) {
 			if(source instanceof EPlayer){
-				commandItemLoreClear((EPlayer) source);
+				this.commandItemLoreClear((EPlayer) source);
 				return true;
 			} else {
 				EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()
@@ -78,7 +78,7 @@ public class EEItemLoreClear extends ESubCommand<EverEssentials> {
 				return false;
 			}
 		} else {
-			this.help(source);
+			source.sendMessage(this.help(source));
 			return false;
 		}
 	}

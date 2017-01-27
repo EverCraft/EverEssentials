@@ -17,6 +17,7 @@
 package fr.evercraft.essentials.command.whitelist;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -53,29 +54,26 @@ public class EEWhitelistRemove extends ESubCommand<EverEssentials> {
 	
 	@Override
 	public Collection<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
-		List<String> suggests = new ArrayList<String>();
 		if (args.size() == 1) {
 			Optional<WhitelistService> whitelist = this.plugin.getEverAPI().getManagerService().getWhitelist();
 			if (whitelist.isPresent()){
+				List<String> suggests = new ArrayList<String>();
 				for (GameProfile player : whitelist.get().getWhitelistedProfiles()) {
 					if (player.getName().isPresent()) {
 						suggests.add(player.getName().orElse(player.getUniqueId().toString()));
 					}
 				}
+				return suggests;
 			} else {
-				for (GameProfile player : this.plugin.getEServer().getGameProfileManager().getCache().getProfiles()) {
-					if (player.getName().isPresent()) {
-						suggests.add(player.getName().orElse(player.getUniqueId().toString()));
-					}
-				}
+				return this.getAllGameProfile();
 			}
 		}
-		return suggests;
+		return Arrays.asList();
 	}
 
 	@Override
 	public Text help(final CommandSource source) {
-		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_PLAYER .getString()+ ">")
+		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_USER.getString() + ">")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
 					.build();

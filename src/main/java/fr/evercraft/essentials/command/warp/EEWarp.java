@@ -17,6 +17,7 @@
 package fr.evercraft.essentials.command.warp;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map.Entry;
@@ -75,13 +76,12 @@ public class EEWarp extends EReloadCommand<EverEssentials> {
 	
 	@Override
 	public Collection<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
-		List<String> suggests = new ArrayList<String>();
 		if (args.size() == 1){
-			suggests.addAll(this.plugin.getManagerServices().getWarp().getAll().keySet());
+			return this.plugin.getManagerServices().getWarp().getAll().keySet();
 		} else if (args.size() == 2 && source.hasPermission(EEPermissions.WARP_OTHERS.get())) {
-			suggests.addAll(this.getAllPlayers());
+			return this.getAllPlayers(source, true);
 		}
-		return suggests;
+		return Arrays.asList();
 	}
 	
 	@Override

@@ -16,7 +16,7 @@
  */
 package fr.evercraft.essentials.command.itemname;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -24,6 +24,7 @@ import java.util.Optional;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.data.key.Keys;
+import org.spongepowered.api.data.type.HandTypes;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.text.Text;
@@ -62,18 +63,12 @@ public class EEItemNameSet extends ESubCommand<EverEssentials> {
 	
 	@Override
 	public Collection<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
-		List<String> suggests = new ArrayList<String>();
-		if (args.size() == 1) {
-			if(source instanceof Player){
-				Optional<EPlayer> player = this.plugin.getEServer().getEPlayer(((Player) source).getUniqueId());
-				if(player.isPresent()){
-					if(player.get().getItemInMainHand().isPresent()){
-						suggests.add("&bHello world");
-					}
-				}
+		if (args.size() == 1 && source instanceof Player){
+			if(((Player) source).getItemInHand(HandTypes.MAIN_HAND).isPresent()){
+				return Arrays.asList("&bHello world");
 			}
 		}
-		return suggests;
+		return Arrays.asList();
 	}
 
 	@Override
@@ -96,7 +91,7 @@ public class EEItemNameSet extends ESubCommand<EverEssentials> {
 				return false;
 			}
 		} else {
-			this.help(source);
+			source.sendMessage(this.help(source));
 			return false;
 		}
 	}

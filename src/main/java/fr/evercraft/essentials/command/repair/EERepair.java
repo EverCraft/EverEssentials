@@ -16,7 +16,7 @@
  */
 package fr.evercraft.essentials.command.repair;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -64,13 +64,10 @@ public class EERepair extends ECommand<EverEssentials> {
 
 	@Override
 	public Collection<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
-		List<String> suggests = new ArrayList<String>();
-		if (args.size() == 1){
-			suggests.add("all");
-			suggests.add("hand");
-			suggests.add("hotbar");
+		if (args.size() == 1) {
+			return Arrays.asList("all", "hand", "hotbar");
 		}
-		return suggests;
+		return Arrays.asList();
 	}
 
 	@Override

@@ -16,7 +16,7 @@
  */
 package fr.evercraft.essentials.command.teleport;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -69,11 +69,10 @@ public class EETeleportationAll extends ECommand<EverEssentials> {
 	
 	@Override
 	public Collection<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
-		List<String> suggests = new ArrayList<String>();
 		if (args.size() == 1 && source.hasPermission(EEPermissions.TPALL_OTHERS.get())){
-			suggests.addAll(this.getAllPlayers());
+			return this.getAllPlayers(source, true);
 		}
-		return suggests;
+		return Arrays.asList();
 	}
 	
 	@Override

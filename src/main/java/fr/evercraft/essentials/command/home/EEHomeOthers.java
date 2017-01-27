@@ -17,6 +17,7 @@
 package fr.evercraft.essentials.command.home;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -62,7 +63,7 @@ public class EEHomeOthers extends ECommand<EverEssentials> {
 
 	@Override
 	public Text help(final CommandSource source) {
-		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_PLAYER.getString() + "> [" + EAMessages.ARGS_HOME.getString() + " [delete]]")
+		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_USER.getString() + "> [" + EAMessages.ARGS_HOME.getString() + " [delete]]")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
 					.build();
@@ -70,23 +71,24 @@ public class EEHomeOthers extends ECommand<EverEssentials> {
 	
 	@Override
 	public Collection<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
-		List<String> suggests = new ArrayList<String>();
 		if (args.size() == 1 && source instanceof Player){
-			suggests.addAll(this.getAllUsers(source));
+			return this.getAllUsers(args.get(0), source);
 		} else if (args.size() == 2) {
 			Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(args.get(0));
 			// Le joueur existe
 			if (optPlayer.isPresent()) {
+				List<String> suggests = new ArrayList<String>();
 				for (String home : optPlayer.get().getHomes().keySet()){
 					suggests.add(home);
 				}
+				return suggests;
 			}
 		} else if (args.size() == 3) {
 			if (source.hasPermission(EEPermissions.HOME_OTHERS_DELETE.get())) {
-				suggests.add("delete");
+				return Arrays.asList("delete");
 			}
 		}
-		return suggests;
+		return Arrays.asList();
 	}
 	
 	@Override

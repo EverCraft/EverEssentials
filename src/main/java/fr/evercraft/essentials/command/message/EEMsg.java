@@ -17,6 +17,7 @@
 package fr.evercraft.essentials.command.message;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -71,13 +72,12 @@ public class EEMsg extends ECommand<EverEssentials> {
 	
 	@Override
 	public Collection<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
-		List<String> suggests = new ArrayList<String>();
 		if (args.size() == 1) {
-			suggests.addAll(this.getAllPlayers(source));
+			return this.getAllPlayers(source, true);
 		} else if (args.size() == 2) {
-			suggests.add("Hello world");
+			return Arrays.asList("Hello world");
 		}
-		return suggests;
+		return Arrays.asList();
 	}
 	
 	@Override

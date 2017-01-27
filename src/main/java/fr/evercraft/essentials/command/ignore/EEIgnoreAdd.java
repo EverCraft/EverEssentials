@@ -16,7 +16,7 @@
  */
 package fr.evercraft.essentials.command.ignore;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -53,7 +53,7 @@ public class EEIgnoreAdd extends ESubCommand<EverEssentials> {
 	
 	@Override
 	public Text help(final CommandSource source) {
-		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_PLAYER.getString() + ">")
+		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_USER.getString() + ">")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
 					.build();
@@ -61,11 +61,10 @@ public class EEIgnoreAdd extends ESubCommand<EverEssentials> {
 	
 	@Override
 	public Collection<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
-		List<String> suggests = new ArrayList<String>();
 		if (args.size() == 1) {
-			suggests.addAll(this.getAllUsers(source));
+			return this.getAllUsers(args.get(0), source);
 		}
-		return suggests;
+		return Arrays.asList();
 	}
 	
 	@Override

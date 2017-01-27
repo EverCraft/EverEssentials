@@ -17,6 +17,7 @@
 package fr.evercraft.essentials.command.weather;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -73,12 +74,10 @@ public class EEWeather extends ECommand<EverEssentials> {
 
 	@Override
 	public Collection<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
-		List<String> suggests = new ArrayList<String>();
 		if (args.size() == 1) {
-			suggests.add("sun");
-			suggests.add("rain");
-			suggests.add("storm");
+			return Arrays.asList("sun", "rain", "storm");
 		} else if (args.size() == 2) {
+			List<String> suggests = new ArrayList<String>();
 			for (World world : this.plugin.getEServer().getWorlds()) {
 				if (world.getProperties().getDimensionType().equals(DimensionTypes.OVERWORLD)) {
 					if (this.plugin.getManagerServices().getEssentials().hasPermissionWorld(source, world)) {
@@ -86,10 +85,11 @@ public class EEWeather extends ECommand<EverEssentials> {
 					}
 				}
 			}
+			return suggests;
 		} else if (args.size() == 3) {
-			suggests.add("60");
+			return Arrays.asList("60");
 		}
-		return suggests;
+		return Arrays.asList();
 	}
 
 	@Override
