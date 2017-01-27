@@ -17,6 +17,7 @@
 package fr.evercraft.essentials.command;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -70,9 +71,9 @@ public class EEKill  extends ECommand<EverEssentials> {
 	@Override
 	public Collection<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		if (args.size() == 1) {
-			return null;
+			return this.getAllPlayers(source, true);
 		}
-		return new ArrayList<String>();
+		return Arrays.asList();
 	}
 	
 	@Override

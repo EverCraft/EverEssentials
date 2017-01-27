@@ -17,6 +17,7 @@
 package fr.evercraft.essentials.command;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -62,15 +63,16 @@ public class EEKick extends ECommand<EverEssentials> {
 	
 	@Override
 	public Collection<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
-		List<String> suggests = new ArrayList<String>();
 		if (args.size() == 1) {
+			List<String> suggests = new ArrayList<String>();
 			for(EPlayer player : this.plugin.getEServer().getOnlineEPlayers()) {
 				if (!player.equals(source) && !player.hasPermission(EEPermissions.KICK_BYPASS.get())) {
 					suggests.add(player.getName());
 				}
 			}
+			return suggests;
 		}
-		return suggests;
+		return Arrays.asList();
 	}
 	
 	@Override

@@ -74,11 +74,10 @@ public class EEBed extends ECommand<EverEssentials> {
 	
 	@Override
 	public Collection<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
-		List<String> suggest = new ArrayList<String>();
 		if (args.size() == 1 && source.hasPermission(EEPermissions.BED_OTHERS.get())){
-			suggest.addAll(this.getAllPlayers(source));
+			return this.getAllPlayers(source, true);
 		}
-		return suggest;
+		return new ArrayList<String>();
 	}
 	
 	@Override

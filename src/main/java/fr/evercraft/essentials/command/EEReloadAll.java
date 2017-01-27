@@ -16,7 +16,7 @@
  */
 package fr.evercraft.essentials.command;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -59,7 +59,7 @@ public class EEReloadAll extends ECommand<EverEssentials>{
 	
 	@Override
 	public Collection<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
-		return new ArrayList<String>();
+		return Arrays.asList();
 	}
 	
 	@Override
@@ -78,9 +78,11 @@ public class EEReloadAll extends ECommand<EverEssentials>{
 	}
 	
 	private boolean commandReload(final CommandSource player) {
-		this.plugin.getEServer().getBroadcastChannel().send(EEMessages.PREFIX.getText().concat(EEMessages.RELOAD_ALL_START.getText()));
+		EEMessages.RELOAD_ALL_START.sender()
+			.sendAll(this.plugin.getEServer().getOnlineEPlayers());
 		this.plugin.getGame().getEventManager().post(SpongeEventFactory.createGameReloadEvent(Cause.of(NamedCause.source(player))));
-		this.plugin.getEServer().getBroadcastChannel().send(EEMessages.PREFIX.getText().concat(EEMessages.RELOAD_ALL_END.getText()));
+		EEMessages.RELOAD_ALL_END.sender()
+			.sendAll(this.plugin.getEServer().getOnlineEPlayers());
 		return true;
 	}
 }

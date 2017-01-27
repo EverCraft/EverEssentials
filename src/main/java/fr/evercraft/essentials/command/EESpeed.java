@@ -17,6 +17,7 @@
 package fr.evercraft.essentials.command;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -76,7 +77,7 @@ public class EESpeed extends ECommand<EverEssentials> {
 			}
 			
 			if(source.hasPermission(EEPermissions.SPEED_OTHERS.get())) {
-				build.append(Text.of(" [" + EAMessages.ARGS_PLAYER.getString() + "]"));
+				build.append(Text.of(" [" + EAMessages.ARGS_USER.getString() + "]"));
 			}
 		}
 		
@@ -87,21 +88,21 @@ public class EESpeed extends ECommand<EverEssentials> {
 
 	@Override
 	public Collection<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
-		List<String> suggests = new ArrayList<String>();
 		if (args.size() == 1) {
-			suggests.add("1");
-			suggests.add(String.valueOf(EESpeed.MAX_SPEED));
+			return Arrays.asList("1", String.valueOf(EESpeed.MAX_SPEED));
 		} else if (args.size() == 2) {
+			List<String> suggests = new ArrayList<String>();
 			if (source.hasPermission(EEPermissions.SPEED_WALK.get())) {
 				suggests.add("walk");
 			}
 			if (source.hasPermission(EEPermissions.SPEED_FLY.get())) {
 				suggests.add("fly");
 			}
+			return suggests;
 		} else if (args.size() == 3 && source.hasPermission(EEPermissions.SPEED_OTHERS.get())) {
-			suggests.addAll(this.getAllUsers());
+			return this.getAllUsers(args.get(2), source);
 		}
-		return suggests;
+		return Arrays.asList();
 	}
 
 	@Override

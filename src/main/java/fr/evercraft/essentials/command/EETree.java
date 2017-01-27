@@ -17,6 +17,7 @@
 package fr.evercraft.essentials.command;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -77,8 +78,8 @@ public class EETree extends ECommand<EverEssentials> {
 	
 	@Override
 	public Collection<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
-		Set<String> suggests = new TreeSet<String>();
 		if (args.size() == 1) {
+			Set<String> suggests = new TreeSet<String>();
 			if(args.get(0).startsWith("minecraft")) {
 				for (CatalogType type : this.plugin.getGame().getRegistry().getAllOf(PopulatorObject.class)) {
 					suggests.add(type.getId().toUpperCase());
@@ -88,8 +89,9 @@ public class EETree extends ECommand<EverEssentials> {
 					suggests.add(type.getId().replaceAll("minecraft:", "").toUpperCase());
 				}
 			}
+			return suggests;
 		}
-		return new ArrayList<String>(suggests);
+		return Arrays.asList();
 	}
 	
 	@Override

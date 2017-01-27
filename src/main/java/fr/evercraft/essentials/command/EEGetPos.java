@@ -16,7 +16,7 @@
  */
 package fr.evercraft.essentials.command;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -69,9 +69,9 @@ public class EEGetPos extends ECommand<EverEssentials> {
 	@Override
 	public Collection<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		if (args.size() == 1 && source.hasPermission(EEPermissions.GETPOS_OTHERS.get())){
-			return null;
+			return this.getAllPlayers(source, true);
 		}
-		return new ArrayList<String>();
+		return Arrays.asList();
 	}
 	
 	@Override

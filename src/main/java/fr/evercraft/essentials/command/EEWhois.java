@@ -18,6 +18,7 @@ package fr.evercraft.essentials.command;
 
 import java.net.InetAddress;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -42,6 +43,7 @@ import fr.evercraft.everapi.message.replace.EReplace;
 import fr.evercraft.everapi.plugin.command.ECommand;
 import fr.evercraft.everapi.server.player.EPlayer;
 import fr.evercraft.everapi.server.user.EUser;
+import fr.evercraft.everapi.sponge.UtilsGameMode;
 import fr.evercraft.everapi.sponge.UtilsNetwork;
 
 public class EEWhois extends ECommand<EverEssentials> {
@@ -76,11 +78,10 @@ public class EEWhois extends ECommand<EverEssentials> {
 	
 	@Override
 	public Collection<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
-		List<String> suggests = new ArrayList<String>();
 		if (args.size() == 1 && source.hasPermission(EEPermissions.WHOIS_OTHERS.get())){
-			suggests.addAll(this.getAllUsers());
+			return this.getAllUsers(args.get(0), source);
 		}
-		return suggests;
+		return Arrays.asList();
 	}
 	
 	@Override
@@ -329,7 +330,7 @@ public class EEWhois extends ECommand<EverEssentials> {
 	
 	private Text getGameMode(final EUser player){
 		return EEMessages.WHOIS_GAMEMODE.getFormat()
-				.toText("<gamemode>", this.plugin.getEverAPI().getManagerUtils().getGameMode().getName(player.getGameMode()));
+				.toText("<gamemode>", UtilsGameMode.getName(player.getGameMode()));
 	}
 	
 	private Text getGod(final EUser player){

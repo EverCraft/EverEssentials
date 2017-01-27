@@ -16,7 +16,7 @@
  */
 package fr.evercraft.essentials.command;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -64,7 +64,7 @@ public class EEExp extends ECommand<EverEssentials> {
 										.build())
 							.append(Text.of("> <lvl|exp> <" + EAMessages.ARGS_AMOUNT.getString() + ">"));
 		if (source.hasPermission(EEPermissions.EXP_OTHERS.get())) {
-			build = build.append(Text.of(" [" + EAMessages.ARGS_PLAYER.getString() + "]"));
+			build = build.append(Text.of(" [" + EAMessages.ARGS_USER.getString() + "]"));
 		}
 		return build.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 							.color(TextColors.RED)
@@ -73,19 +73,16 @@ public class EEExp extends ECommand<EverEssentials> {
 	
 	@Override
 	public Collection<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
-		List<String> suggests = new ArrayList<String>();
 		if (args.size() == 1) {
-			suggests.add("give");
-			suggests.add("set");
+			return Arrays.asList("give", "set");
 		} else if (args.size() == 2) {
-			suggests.add("lvl");
-			suggests.add("exp");
+			return Arrays.asList("lvl", "exp");
 		} else if (args.size() == 3) {
-			suggests.add("1");
+			return Arrays.asList("1");
 		} else if (args.size() == 4 && source.hasPermission(EEPermissions.EXP_OTHERS.get())) {
-			suggests.addAll(this.getAllUsers());
+			return this.getAllUsers();
 		}
-		return suggests;
+		return Arrays.asList();
 	}
 	
 	@Override

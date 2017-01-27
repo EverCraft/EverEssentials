@@ -16,7 +16,7 @@
  */
 package fr.evercraft.essentials.command;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
@@ -56,7 +56,7 @@ public class EEUuid extends ECommand<EverEssentials> {
 	@Override
 	public Text help(final CommandSource source) {
 		if (source.hasPermission(EEPermissions.UUID_OTHERS.get())){
-			return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_PLAYER.getString() + "]")
+			return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_USER.getString() + "]")
 						.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 						.color(TextColors.RED)
 						.build();
@@ -69,11 +69,10 @@ public class EEUuid extends ECommand<EverEssentials> {
 	
 	@Override
 	public Collection<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
-		List<String> suggests = new ArrayList<String>();
 		if (args.size() == 1 && source.hasPermission(EEPermissions.UUID_OTHERS.get())){
-			suggests.addAll(this.getAllUsers());
+			return this.getAllGameProfile();
 		}
-		return suggests;
+		return Arrays.asList();
 	}
 	
 	@Override
@@ -99,10 +98,7 @@ public class EEUuid extends ECommand<EverEssentials> {
 			
 			// Si il a la permission
 			if (source.hasPermission(EEPermissions.UUID_OTHERS.get())) {
-				this.plugin.getGame().getScheduler().createTaskBuilder()
-					.async()
-					.execute(() -> this.commandUUID(source, args.get(0)))
-					.name("Command : UUID").submit(this.plugin);
+				this.commandUUID(source, args.get(0));
 				resultat = true;
 			// Il n'a pas la permission
 			} else {

@@ -17,6 +17,7 @@
 package fr.evercraft.essentials.command;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -79,29 +80,30 @@ public class EEEffect extends EReloadCommand<EverEssentials> {
 
 	@Override
 	public Collection<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
-		List<String> suggests = new ArrayList<String>();
 		if (source instanceof Player) {
 			
 			// Effet
 			if (args.size() == 1) {
-				suggests = UtilsEffect.getEffects();
+				return UtilsEffect.getEffects();
+				
 			// Amplification
 			} else if (args.size() == 2) {
+				List<String> suggests = new ArrayList<String>();
 				Optional<UtilsEffect> effect = UtilsEffect.getEffect(args.get(0));
 				if (effect.isPresent()) {
 					for (int cpt = 1; cpt <= effect.get().getMaxAmplifier(); cpt++) {
 						suggests.add(String.valueOf(cpt));
 					}
 				}
+				return suggests;
+				
 			// Duration
 			} else if (args.size() == 3) {
-				suggests.add("30");
-				suggests.add("60");
-				suggests.add("600");
+				return Arrays.asList("30", "60", "600");
 			}
 			
 		}
-		return suggests;
+		return Arrays.asList();
 	}
 
 	@Override

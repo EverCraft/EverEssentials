@@ -16,7 +16,7 @@
  */
 package fr.evercraft.essentials.command;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -62,7 +62,7 @@ public class EEMore extends ECommand<EverEssentials> {
 	
 	@Override
 	public Collection<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
-		return new ArrayList<String>();
+		return Arrays.asList();
 	}
 	
 	@Override
@@ -103,11 +103,11 @@ public class EEMore extends ECommand<EverEssentials> {
 			
 		Integer max = item.get().getMaxStackQuantity();
 		
-		/*if (player.hasPermission(EEPermissions.MORE_UNLIMITED"))) {
+		if (player.hasPermission(EEPermissions.MORE_UNLIMITED.get())) {
 			max = 64;
 		} else {
-			max = item.getMaxStackQuantity();
-		}*/
+			max = item.get().getMaxStackQuantity();
+		}
 		
 		// La quantité est invalide
 		if (item.get().getQuantity() > max) {

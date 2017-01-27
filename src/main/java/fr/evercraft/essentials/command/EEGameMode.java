@@ -16,7 +16,7 @@
  */
 package fr.evercraft.essentials.command;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -78,17 +78,12 @@ public class EEGameMode extends ECommand<EverEssentials> {
 	
 	@Override
 	public Collection<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
-		List<String> suggests = new ArrayList<String>();
-		if (args.size() == 1){
-			suggests.add("survival");
-			suggests.add("creative");
-			suggests.add("adventure");
-			suggests.add("spectator");
-			suggests.add("empty");
+		if (args.size() == 1) {
+			Arrays.asList("survival", "creative", "adventure", "spectator","empty");
 		} else if (args.size() == 2 && source.hasPermission(EEPermissions.GAMEMODE_OTHERS.get())){
-			suggests.addAll(this.getAllUsers());
+			return this.getAllUsers();
 		}
-		return suggests;
+		return Arrays.asList();
 	}
 	
 	@Override
@@ -153,14 +148,14 @@ public class EEGameMode extends ECommand<EverEssentials> {
 		// Gamemode identique à celui du joueur
 		if (gamemode.equals(player.getGameMode())) {
 			EEMessages.GAMEMODE_PLAYER_EQUAL.sender()
-				.replace("<gamemode>", this.plugin.getEverAPI().getManagerUtils().getGameMode().getName(gamemode))
+				.replace("<gamemode>", UtilsGameMode.getName(gamemode))
 				.sendTo(player);
 			return false;
 		}
 		
 		player.setGameMode(gamemode);
 		EEMessages.GAMEMODE_PLAYER_CHANGE.sender()
-			.replace("<gamemode>", this.plugin.getEverAPI().getManagerUtils().getGameMode().getName(gamemode))
+			.replace("<gamemode>", UtilsGameMode.getName(gamemode))
 			.sendTo(player);
 		return true;
 	}
@@ -185,7 +180,7 @@ public class EEGameMode extends ECommand<EverEssentials> {
 		// Gamemode identique à celui du joueur
 		if (gamemode_after.equals(gamemode_before)) {
 			EEMessages.GAMEMODE_OTHERS_EQUAL.sender()
-				.replace("<gamemode>", this.plugin.getEverAPI().getManagerUtils().getGameMode().getName(gamemode_after))
+				.replace("<gamemode>", UtilsGameMode.getName(gamemode_after))
 				.replace("<player>", user.getName())
 				.sendTo(staff);
 			return false;
@@ -194,13 +189,13 @@ public class EEGameMode extends ECommand<EverEssentials> {
 		user.setGameMode(gamemode_after);
 		
 		EEMessages.GAMEMODE_OTHERS_STAFF_CHANGE.sender()
-			.replace("<gamemode>", this.plugin.getEverAPI().getManagerUtils().getGameMode().getName(gamemode_after))
+			.replace("<gamemode>", UtilsGameMode.getName(gamemode_after))
 			.replace("<player>", user.getName())
 			.sendTo(staff);
 		
 		if (user instanceof EPlayer) {
 			EEMessages.GAMEMODE_OTHERS_PLAYER_CHANGE.sender()
-				.replace("<gamemode>", this.plugin.getEverAPI().getManagerUtils().getGameMode().getName(gamemode_after))
+				.replace("<gamemode>", UtilsGameMode.getName(gamemode_after))
 				.replace("<player>", user.getName())
 				.sendTo(((EPlayer) user));
 		}

@@ -17,6 +17,7 @@
 package fr.evercraft.essentials.command;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -56,7 +57,7 @@ public class EESeen extends ECommand<EverEssentials> {
 
 	@Override
 	public Text help(final CommandSource source) {
-		return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_PLAYER.getString() + "|"  + EAMessages.ARGS_IP.getString() + "]")
+		return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_USER.getString() + "|"  + EAMessages.ARGS_IP.getString() + "]")
 				.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 				.color(TextColors.RED)
 				.build();
@@ -64,9 +65,10 @@ public class EESeen extends ECommand<EverEssentials> {
 	
 	@Override
 	public Collection<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
-		List<String> suggests = new ArrayList<String>();
-		suggests.addAll(this.getAllUsers());
-		return suggests;
+		if (args.size() == 1) {
+			return this.getAllUsers(args.get(0), source);
+		}
+		return Arrays.asList();
 	}
 	
 	@Override
