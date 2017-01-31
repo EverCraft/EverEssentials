@@ -35,7 +35,7 @@ import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.plugin.command.ECommand;
-import fr.evercraft.everapi.server.location.LocationSQL;
+import fr.evercraft.everapi.server.location.VirtualLocation;
 
 public class EESpawns extends ECommand<EverEssentials> {
 		
@@ -81,12 +81,12 @@ public class EESpawns extends ECommand<EverEssentials> {
 	}
 	
 	private boolean commandSpawns(final CommandSource player) throws CommandException {
-		TreeMap<String, LocationSQL> spawns = new TreeMap<String, LocationSQL>(this.plugin.getManagerServices().getSpawn().getAllSQL());
+		TreeMap<String, VirtualLocation> spawns = new TreeMap<String, VirtualLocation>(this.plugin.getManagerServices().getSpawn().getAllSQL());
 		
 		List<Text> lists = new ArrayList<Text>();
 		if (player.hasPermission(EEPermissions.DELSPAWN.get())) {
 			
-			for (Entry<String, LocationSQL> spawn : spawns.entrySet()) {
+			for (Entry<String, VirtualLocation> spawn : spawns.entrySet()) {
 				Optional<World> world = spawn.getValue().getWorld();
 				if (world.isPresent()){
 					lists.add(EEMessages.SPAWNS_LINE_DELETE.getFormat().toText(
@@ -102,7 +102,7 @@ public class EESpawns extends ECommand<EverEssentials> {
 			
 		} else {
 			
-			for (Entry<String, LocationSQL> spawn : spawns.entrySet()) {
+			for (Entry<String, VirtualLocation> spawn : spawns.entrySet()) {
 				Optional<World> world = spawn.getValue().getWorld();
 				if (world.isPresent()){
 					lists.add(EEMessages.SPAWNS_LINE.getFormat().toText(
@@ -122,7 +122,7 @@ public class EESpawns extends ECommand<EverEssentials> {
 		return false;
 	}
 	
-	private Text getButtonTeleport(final String name, final LocationSQL location){
+	private Text getButtonTeleport(final String name, final VirtualLocation location){
 		return EEMessages.SPAWNS_TELEPORT.getText().toBuilder()
 					.onHover(TextActions.showText(EEMessages.SPAWNS_TELEPORT_HOVER.getFormat()
 							.toText("<name>", name)))
@@ -130,7 +130,7 @@ public class EESpawns extends ECommand<EverEssentials> {
 					.build();
 	}
 	
-	private Text getButtonDelete(final String name, final LocationSQL location){
+	private Text getButtonDelete(final String name, final VirtualLocation location){
 		return EEMessages.SPAWNS_DELETE.getText().toBuilder()
 					.onHover(TextActions.showText(EEMessages.SPAWNS_DELETE_HOVER.getFormat()
 							.toText("<name>", name)))
@@ -138,14 +138,14 @@ public class EESpawns extends ECommand<EverEssentials> {
 					.build();
 	}
 	
-	private Text getButtonSpawn(final String name, final LocationSQL location){
+	private Text getButtonSpawn(final String name, final VirtualLocation location){
 		return EEMessages.SPAWNS_NAME.getFormat().toText("<name>", name).toBuilder()
 					.onHover(TextActions.showText(EEMessages.SPAWNS_NAME_HOVER.getFormat().toText(
 							"<name>", name,
 							"<world>", location.getWorldName(),
-							"<x>", location.getX().toString(),
-							"<y>", location.getY().toString(),
-							"<z>", location.getZ().toString())))
+							"<x>", location.getFloorX().toString(),
+							"<y>", location.getFloorY().toString(),
+							"<z>", location.getFloorZ().toString())))
 					.build();
 	}
 }

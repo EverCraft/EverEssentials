@@ -53,7 +53,7 @@ import fr.evercraft.everapi.event.AfkEvent;
 import fr.evercraft.everapi.event.IgnoreEvent;
 import fr.evercraft.everapi.event.MailEvent;
 import fr.evercraft.everapi.exception.ServerDisableException;
-import fr.evercraft.everapi.server.location.LocationSQL;
+import fr.evercraft.everapi.server.location.VirtualLocation;
 import fr.evercraft.everapi.server.player.EPlayer;
 import fr.evercraft.everapi.services.essentials.SubjectUserEssentials;
 import fr.evercraft.everapi.services.essentials.Mail;
@@ -68,10 +68,10 @@ public class EUserSubject implements SubjectUserEssentials {
 	
 	private final UUID identifier;
 	
-	private final ConcurrentMap<String, LocationSQL> homes;
+	private final ConcurrentMap<String, VirtualLocation> homes;
 	private final CopyOnWriteArraySet<UUID> ignores;
 	private final CopyOnWriteArraySet<Mail> mails;
-	private Optional<LocationSQL> back;
+	private Optional<VirtualLocation> back;
 	
 	private boolean god;
 	private boolean vanish;
@@ -102,7 +102,7 @@ public class EUserSubject implements SubjectUserEssentials {
 		this.plugin = plugin;
 		this.identifier = uuid;
 		
-		this.homes = new ConcurrentHashMap<String, LocationSQL>();
+		this.homes = new ConcurrentHashMap<String, VirtualLocation>();
 		this.ignores = new CopyOnWriteArraySet<UUID>();
 		this.mails = new CopyOnWriteArraySet<Mail>();
 		this.back = Optional.empty();
@@ -233,7 +233,7 @@ public class EUserSubject implements SubjectUserEssentials {
 			preparedStatement.setString(1, this.getIdentifier());;
 			ResultSet list = preparedStatement.executeQuery();
 			while (list.next()) {
-				this.homes.put(list.getString("name"), new LocationSQL(	this.plugin, 
+				this.homes.put(list.getString("name"), new VirtualLocation(	this.plugin, 
 																	list.getString("world"), 
 																	list.getDouble("x"),
 																	list.getDouble("y"),
@@ -259,7 +259,7 @@ public class EUserSubject implements SubjectUserEssentials {
 			preparedStatement.setString(1, this.getIdentifier());
 			ResultSet list = preparedStatement.executeQuery();
 			if (list.next()) {
-				this.back = Optional.of(new LocationSQL(	this.plugin,list.getString("world"), 
+				this.back = Optional.of(new VirtualLocation(	this.plugin,list.getString("world"), 
 															list.getDouble("x"),
 															list.getDouble("y"),
 															list.getDouble("z"),
@@ -589,7 +589,7 @@ public class EUserSubject implements SubjectUserEssentials {
 	@Override
 	public Map<String, Transform<World>> getHomes() {
 		ImmutableMap.Builder<String, Transform<World>> homes = ImmutableMap.builder();
-		for (Entry<String, LocationSQL> home : this.homes.entrySet()) {
+		for (Entry<String, VirtualLocation> home : this.homes.entrySet()) {
 			Optional<Transform<World>> transform = home.getValue().getTransform();
 			if (transform.isPresent()) {
 				homes.put(home.getKey(), transform.get());
@@ -598,7 +598,7 @@ public class EUserSubject implements SubjectUserEssentials {
 		return homes.build();
 	}
 	
-	public Map<String, LocationSQL> getAllHomes() {
+	public Map<String, VirtualLocation> getAllHomes() {
 		return ImmutableMap.copyOf(this.homes);
 	}	
 
@@ -619,7 +619,7 @@ public class EUserSubject implements SubjectUserEssentials {
 		return Optional.empty();
 	}
 	
-	public Optional<LocationSQL> getHomeLocation(final String identifier) {
+	public Optional<VirtualLocation> getHomeLocation(final String identifier) {
 		Preconditions.checkNotNull(identifier, "identifier");
 		
 		if (this.homes.containsKey(identifier)) {
@@ -634,7 +634,7 @@ public class EUserSubject implements SubjectUserEssentials {
 		Preconditions.checkNotNull(location, "location");
 		
 		if (!this.homes.containsKey(identifier)) {
-			final LocationSQL locationSQL = new LocationSQL(this.plugin, location);
+			final VirtualLocation locationSQL = new VirtualLocation(this.plugin, location);
 			this.homes.put(identifier, locationSQL);
 			
 			if (this.plugin.getManagerEvent().homeAdd(this.getUniqueId(), identifier, location)) {
@@ -652,9 +652,9 @@ public class EUserSubject implements SubjectUserEssentials {
 		Preconditions.checkNotNull(identifier, "identifier");
 		Preconditions.checkNotNull(location, "location");
 		
-		LocationSQL before_sql = this.homes.get(identifier);
+		VirtualLocation before_sql = this.homes.get(identifier);
 		if (before_sql != null) {
-			final LocationSQL after_sql = new LocationSQL(this.plugin, location);
+			final VirtualLocation after_sql = new VirtualLocation(this.plugin, location);
 			this.homes.put(identifier, after_sql);
 			
 			if (this.plugin.getManagerEvent().homeMove(this.getUniqueId(), identifier, before_sql.getTransform(), location)) {
@@ -671,7 +671,7 @@ public class EUserSubject implements SubjectUserEssentials {
 	public boolean removeHome(final String identifier) {
 		Preconditions.checkNotNull(identifier, "identifier");
 		
-		LocationSQL location = this.homes.get(identifier);
+		VirtualLocation location = this.homes.get(identifier);
 		if (location != null) {
 			this.homes.remove(identifier);
 
@@ -704,12 +704,12 @@ public class EUserSubject implements SubjectUserEssentials {
 		Optional<EPlayer> player = this.getEPlayer();
 		if (this.plugin.getManagerServices().getEssentials().hasPermissionWorld(player.get(), location.getExtent())) {
 			if (!this.back.isPresent()) {
-				final LocationSQL locationSQL = new LocationSQL(this.plugin, location);
+				final VirtualLocation locationSQL = new VirtualLocation(this.plugin, location);
 				this.back = Optional.of(locationSQL);
 				this.plugin.getThreadAsync().execute(() -> this.plugin.getDataBases().addBack(this.getIdentifier(), locationSQL));
 				return true;
 			} else if (!this.back.get().getTransform().equals(location)) {
-				final LocationSQL locationSQL = new LocationSQL(this.plugin, location);
+				final VirtualLocation locationSQL = new VirtualLocation(this.plugin, location);
 				this.back = Optional.of(locationSQL);
 				this.plugin.getThreadAsync().execute(() -> this.plugin.getDataBases().setBack(this.getIdentifier(), locationSQL));
 				return true;

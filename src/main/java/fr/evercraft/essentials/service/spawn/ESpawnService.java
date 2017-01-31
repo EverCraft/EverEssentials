@@ -35,19 +35,19 @@ import com.google.common.collect.ImmutableMap;
 
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.exception.ServerDisableException;
-import fr.evercraft.everapi.server.location.LocationSQL;
+import fr.evercraft.everapi.server.location.VirtualLocation;
 import fr.evercraft.everapi.services.essentials.SpawnService;
 
 public class ESpawnService implements SpawnService {
 	
 	private final EverEssentials plugin;
 	
-	private final ConcurrentMap<String, LocationSQL> spawns;
+	private final ConcurrentMap<String, VirtualLocation> spawns;
 	
 	public ESpawnService(final EverEssentials plugin){
 		this.plugin = plugin;
 		
-		this.spawns = new ConcurrentHashMap<String, LocationSQL>();
+		this.spawns = new ConcurrentHashMap<String, VirtualLocation>();
 		
 		this.reload();
 	}
@@ -61,7 +61,7 @@ public class ESpawnService implements SpawnService {
 	@Override
 	public Map<String, Transform<World>> getAll() {
 		ImmutableMap.Builder<String, Transform<World>> spawns = ImmutableMap.builder();
-		for (Entry<String, LocationSQL> spawn : this.spawns.entrySet()) {
+		for (Entry<String, VirtualLocation> spawn : this.spawns.entrySet()) {
 			Optional<Transform<World>> transform = spawn.getValue().getTransform();
 			if (transform.isPresent()) {
 				spawns.put(spawn.getKey(), transform.get());
@@ -70,7 +70,7 @@ public class ESpawnService implements SpawnService {
 		return spawns.build();
 	}
 	
-	public Map<String, LocationSQL> getAllSQL() {
+	public Map<String, VirtualLocation> getAllSQL() {
 		return this.spawns;
 	}
 	
@@ -106,7 +106,7 @@ public class ESpawnService implements SpawnService {
 		Preconditions.checkNotNull(location, "location");
 		
 		if (!this.spawns.containsKey(identifier)) {
-			final LocationSQL locationSQL = new LocationSQL(this.plugin, location);
+			final VirtualLocation locationSQL = new VirtualLocation(this.plugin, location);
 			this.spawns.put(identifier, locationSQL);
 			this.plugin.getThreadAsync().execute(() -> this.addAsync(identifier, locationSQL));
 			return true;
@@ -120,7 +120,7 @@ public class ESpawnService implements SpawnService {
 		Preconditions.checkNotNull(location, "location");
 		
 		if (this.spawns.containsKey(identifier)) {
-			final LocationSQL locationSQL = new LocationSQL(this.plugin, location);
+			final VirtualLocation locationSQL = new VirtualLocation(this.plugin, location);
 			this.spawns.put(identifier, locationSQL);
 			this.plugin.getThreadAsync().execute(() -> this.updateAsync(identifier, locationSQL));
 			return true;
@@ -154,8 +154,8 @@ public class ESpawnService implements SpawnService {
 	 * DataBases
 	 */
 	
-	private Map<String, LocationSQL> selectAsync() {
-		Map<String, LocationSQL> spawns = new HashMap<String, LocationSQL>();
+	private Map<String, VirtualLocation> selectAsync() {
+		Map<String, VirtualLocation> spawns = new HashMap<String, VirtualLocation>();
 		Connection connection = null;
 		PreparedStatement preparedStatement = null;
     	try {
@@ -165,7 +165,7 @@ public class ESpawnService implements SpawnService {
 			preparedStatement = connection.prepareStatement(query);
 			ResultSet list = preparedStatement.executeQuery();
 			while (list.next()) {
-				LocationSQL location = new LocationSQL(this.plugin,	list.getString("world"), 
+				VirtualLocation location = new VirtualLocation(this.plugin,	list.getString("world"), 
 														list.getDouble("x"),
 														list.getDouble("y"),
 														list.getDouble("z"),
@@ -187,7 +187,7 @@ public class ESpawnService implements SpawnService {
     	return spawns;
 	}
 	
-	private void addAsync(final String identifier, final LocationSQL location) {
+	private void addAsync(final String identifier, final VirtualLocation location) {
 		Connection connection = null;
 		PreparedStatement preparedStatement = null;
     	try {
@@ -197,9 +197,9 @@ public class ESpawnService implements SpawnService {
 			preparedStatement = connection.prepareStatement(query);
 			preparedStatement.setString(1, identifier);
 			preparedStatement.setString(2, location.getWorldUUID());
-			preparedStatement.setDouble(3, location.getX());
-			preparedStatement.setDouble(4, location.getY());
-			preparedStatement.setDouble(5, location.getZ());
+			preparedStatement.setDouble(3, location.getFloorX());
+			preparedStatement.setDouble(4, location.getFloorY());
+			preparedStatement.setDouble(5, location.getFloorZ());
 			preparedStatement.setDouble(6, location.getYaw());
 			preparedStatement.setDouble(7, location.getPitch());
 			
@@ -217,7 +217,7 @@ public class ESpawnService implements SpawnService {
 	    }
 	}
 	
-	private void updateAsync(final String identifier, final LocationSQL location) {
+	private void updateAsync(final String identifier, final VirtualLocation location) {
 		Connection connection = null;
 		PreparedStatement preparedStatement = null;
     	try {
@@ -232,9 +232,9 @@ public class ESpawnService implements SpawnService {
     						+ "WHERE `identifier` = ? ;";
 			preparedStatement = connection.prepareStatement(query);
 			preparedStatement.setString(1, location.getWorldUUID());
-			preparedStatement.setDouble(2, location.getX());
-			preparedStatement.setDouble(3, location.getY());
-			preparedStatement.setDouble(4, location.getZ());
+			preparedStatement.setDouble(2, location.getFloorX());
+			preparedStatement.setDouble(3, location.getFloorY());
+			preparedStatement.setDouble(4, location.getFloorZ());
 			preparedStatement.setDouble(5, location.getYaw());
 			preparedStatement.setDouble(6, location.getPitch());
 			preparedStatement.setString(7, identifier);

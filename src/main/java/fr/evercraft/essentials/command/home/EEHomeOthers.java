@@ -41,7 +41,7 @@ import fr.evercraft.essentials.service.subject.EUserSubject;
 import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ECommand;
-import fr.evercraft.everapi.server.location.LocationSQL;
+import fr.evercraft.everapi.server.location.VirtualLocation;
 import fr.evercraft.everapi.server.player.EPlayer;
 import fr.evercraft.everapi.server.user.EUser;
 
@@ -246,7 +246,7 @@ public class EEHomeOthers extends ECommand<EverEssentials> {
 			return false;
 		}
 			
-		Optional<LocationSQL> home = subject.get().getHomeLocation(name);
+		Optional<VirtualLocation> home = subject.get().getHomeLocation(name);
 		// Le n'a pas de home qui porte ce nom
 		if (!home.isPresent()) {
 			EEMessages.HOMEOTHERS_INCONNU.sender()
@@ -275,7 +275,7 @@ public class EEHomeOthers extends ECommand<EverEssentials> {
 			return false;
 		}
 		
-		Optional<LocationSQL> home = subject.get().getHomeLocation(name);
+		Optional<VirtualLocation> home = subject.get().getHomeLocation(name);
 		// Le n'a pas de home qui porte ce nom
 		if (!home.isPresent()) {
 			EEMessages.DELHOME_INCONNU.sender()
@@ -310,14 +310,14 @@ public class EEHomeOthers extends ECommand<EverEssentials> {
 					.build();
 	}
 	
-	private Text getButtonHome(final String name, final LocationSQL location) {
+	private Text getButtonHome(final String name, final VirtualLocation location) {
 		return EEMessages.HOME_NAME.getFormat().toText("<name>", name).toBuilder()
 					.onHover(TextActions.showText(EEMessages.HOME_NAME_HOVER.getFormat().toText(
 								"<home>", name,
 								"<world>", location.getWorldName(),
-								"<x>", location.getX().toString(),
-								"<y>", location.getY().toString(),
-								"<z>", location.getZ().toString())))
+								"<x>", location.getFloorX().toString(),
+								"<y>", location.getFloorY().toString(),
+								"<z>", location.getFloorZ().toString())))
 					.build();
 	}
 	

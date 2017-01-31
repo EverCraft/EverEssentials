@@ -41,7 +41,7 @@ import fr.evercraft.essentials.service.subject.EUserSubject;
 import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ECommand;
-import fr.evercraft.everapi.server.location.LocationSQL;
+import fr.evercraft.everapi.server.location.VirtualLocation;
 import fr.evercraft.everapi.server.player.EPlayer;
 
 public class EEHome extends ECommand<EverEssentials> {
@@ -143,7 +143,7 @@ public class EEHome extends ECommand<EverEssentials> {
 		}
 				
 		List<Text> lists = new ArrayList<Text>();
-		for (Entry<String, LocationSQL> home : (new TreeMap<String, LocationSQL>(subject.get().getAllHomes())).entrySet()) {
+		for (Entry<String, VirtualLocation> home : (new TreeMap<String, VirtualLocation>(subject.get().getAllHomes())).entrySet()) {
 			Optional<World> world = home.getValue().getWorld();
 			if (world.isPresent()){
 				lists.add(EEMessages.HOME_LIST_LINE.getFormat().toText(
@@ -181,7 +181,7 @@ public class EEHome extends ECommand<EverEssentials> {
 		return true;
 	}
 	
-	private Text getButtonTeleport(final String name, final LocationSQL location){
+	private Text getButtonTeleport(final String name, final VirtualLocation location){
 		return EEMessages.HOME_LIST_TELEPORT.getText().toBuilder()
 					.onHover(TextActions.showText(EEMessages.HOME_LIST_TELEPORT_HOVER.getFormat()
 							.toText("<home>", name)))
@@ -189,7 +189,7 @@ public class EEHome extends ECommand<EverEssentials> {
 					.build();
 	}
 	
-	private Text getButtonDelete(final String name, final LocationSQL location){
+	private Text getButtonDelete(final String name, final VirtualLocation location){
 		return EEMessages.HOME_LIST_DELETE.getText().toBuilder()
 					.onHover(TextActions.showText(EEMessages.HOME_LIST_DELETE_HOVER.getFormat()
 							.toText("<home>", name)))
@@ -197,14 +197,14 @@ public class EEHome extends ECommand<EverEssentials> {
 					.build();
 	}
 	
-	private Text getButtonHome(final String name, final LocationSQL location){
+	private Text getButtonHome(final String name, final VirtualLocation location){
 		return EEMessages.HOME_NAME.getFormat().toText("<name>", name).toBuilder()
 					.onHover(TextActions.showText(EEMessages.HOME_NAME_HOVER.getFormat().toText(
 							"<home>", name,
 							"<world>", location.getWorldName(),
-							"<x>", location.getX().toString(),
-							"<y>", location.getY().toString(),
-							"<z>", location.getZ().toString())))
+							"<x>", location.getFloorX().toString(),
+							"<y>", location.getFloorY().toString(),
+							"<z>", location.getFloorZ().toString())))
 					.build();
 	}
 	
