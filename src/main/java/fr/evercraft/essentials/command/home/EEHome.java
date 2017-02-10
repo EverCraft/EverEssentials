@@ -174,7 +174,11 @@ public class EEHome extends ECommand<EverEssentials> {
 			return false;
 		}
 		
-		player.teleport(home.get(), true);
+		if (!player.teleport(home.get(), true)) {
+			EAMessages.PLAYER_ERROR_TELEPORT.sendTo(player);
+			return false;
+		}
+		
 		EEMessages.HOME_TELEPORT.sender()
 			.replace("<home>", this.getButtonHome(name, home.get()))
 			.sendTo(player);

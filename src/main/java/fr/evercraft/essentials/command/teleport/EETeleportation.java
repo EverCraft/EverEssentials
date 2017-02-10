@@ -235,9 +235,8 @@ public class EETeleportation extends ECommand<EverEssentials> {
 		if (destination.isFlying()) {
 			return player.teleportSafeZone(destination.getTransform(), true);
 		} else {
-			player.setTransform(destination.getTransform());
+			return player.setTransform(destination.getTransform());
 		}
-		return true;
 	}
 	
 	private Text getButtonPosition(final String player, final Location<World> location){
