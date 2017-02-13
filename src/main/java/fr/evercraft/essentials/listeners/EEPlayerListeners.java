@@ -65,6 +65,7 @@ import fr.evercraft.everapi.event.MailEvent;
 import fr.evercraft.everapi.server.player.EPlayer;
 import fr.evercraft.everapi.services.essentials.Mail;
 import fr.evercraft.everapi.services.essentials.TeleportDelay;
+import fr.evercraft.everapi.sponge.UtilsLocation;
 import fr.evercraft.everapi.sponge.UtilsPainting;
 
 public class EEPlayerListeners {
@@ -111,12 +112,8 @@ public class EEPlayerListeners {
 
 		// Motd
 		if (this.plugin.getMotd().isEnable()) {
-			Optional<EPlayer> optPlayer = this.plugin.getEverAPI().getEServer().getEPlayer(event.getTargetEntity()); 
-			if (optPlayer.isPresent()) {
-				EPlayer player = optPlayer.get();
-				
-				player.sendMessage(this.plugin.getMotd().getMessage().toText(player.getReplacesAll()));
-			}
+			EPlayer player = this.plugin.getEverAPI().getEServer().getEPlayer(event.getTargetEntity()); 
+			player.sendMessage(this.plugin.getMotd().getMessage().toText(player.getReplacesAll()));
 		}
 	}
 
@@ -136,22 +133,21 @@ public class EEPlayerListeners {
 	public void onPlayerDamage(DamageEntityEvent event) {
 		// C'est un joueur
 		if (event.getTargetEntity() instanceof Player) {
-			Optional<EPlayer> player = this.plugin.getEServer().getEPlayer(event.getTargetEntity().getUniqueId());
-			// Le joueur est en god
-			if (player.isPresent() && player.get().isGod()) {
+			EPlayer player = this.plugin.getEServer().getEPlayer((Player) event.getTargetEntity());
+			if (player.isGod()) {
 				Optional<DamageSource> damagesource = event.getCause().first(DamageSource.class);
 				// Le joueur tombe dans le vide
 				if (damagesource.isPresent() && damagesource.get().equals(DamageSources.VOID)) {
 					// L'option de téléportation au spwan est activé
 					if (this.plugin.getConfigs().isGodTeleportToSpawn()) {
-						EEMessages.GOD_TELEPORT.sendTo(player.get());
-						player.get().teleportSpawn();
-						player.get().heal();
+						EEMessages.GOD_TELEPORT.sendTo(player);
+						player.teleportSpawn();
+						player.heal();
 						event.setCancelled(true);
 					}
 					// Domage normal
 				} else {
-					player.get().heal();
+					player.heal();
 					event.setCancelled(true);
 				}
 			}
@@ -173,58 +169,49 @@ public class EEPlayerListeners {
 	@Listener
 	public void onPlayerDeath(DestructEntityEvent.Death event) {
 		if (event.getTargetEntity() instanceof Player) {
-			Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer((Player) event.getTargetEntity());
+			EPlayer player = this.plugin.getEServer().getEPlayer((Player) event.getTargetEntity());
 			
-			if (optPlayer.isPresent()) {
-				EPlayer player = optPlayer.get();
-				
-				player.setBack();
-			}
+			player.setBack();
 		}
 	}
 	
 	
 	@Listener(order=Order.LAST)
 	public void onPlayerInteractEntity(InteractEntityEvent event, @First Player player_sponge) {
-		Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(player_sponge);
-		if (optPlayer.isPresent()) {
-			EPlayer player = optPlayer.get();
+		EPlayer player = this.plugin.getEServer().getEPlayer(player_sponge);
 			
-			// GameMode : Painting
-			if (event instanceof InteractEntityEvent.Secondary && event.getTargetEntity() instanceof Painting) {
-				if (this.plugin.getConfigs().isGameModePaint() && player.isSneaking() && player.isCreative()) {
-					Painting paint = (Painting) event.getTargetEntity();
-					if (paint.get(Keys.ART).isPresent()){
-						Optional<UtilsPainting> painting = UtilsPainting.get(paint.get(Keys.ART).get());
-						if (painting.isPresent()){
-							paint.offer(Keys.ART, painting.get().next().getArt());
-						}
+		// GameMode : Painting
+		if (event instanceof InteractEntityEvent.Secondary && event.getTargetEntity() instanceof Painting) {
+			if (this.plugin.getConfigs().isGameModePaint() && player.isSneaking() && player.isCreative()) {
+				Painting paint = (Painting) event.getTargetEntity();
+				if (paint.get(Keys.ART).isPresent()){
+					Optional<UtilsPainting> painting = UtilsPainting.get(paint.get(Keys.ART).get());
+					if (painting.isPresent()){
+						paint.offer(Keys.ART, painting.get().next().getArt());
 					}
 				}
 			}
-			
-			// AFK
-			player.updateLastActivated();
-			
-			// Freeze
-			if(player.isFreeze()) {
-				event.setCancelled(true);
-			}
+		}
+		
+		// AFK
+		player.updateLastActivated();
+		
+		// Freeze
+		if(player.isFreeze()) {
+			event.setCancelled(true);
 		}
 	}
 	
 	@Listener(order=Order.LAST)
 	public void onPlayerInteract(InteractItemEvent.Secondary event, @First Player player_sponge) {
-		Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(player_sponge);
-		if (optPlayer.isPresent()) {
-			EPlayer player = optPlayer.get();
-			if(player.getItemInMainHand().isPresent()){
-				ItemStack item = player.getItemInMainHand().get();
-				if(item.getItem() ==  ItemTypes.COMPASS && player.isCreative()){
-					Optional<Vector3i> block = player.getViewBlock();
-					if (block.isPresent()) {
-						player.teleport(player.getWorld().getLocation(block.get().add(0, 1, 0)), true);
-					}
+		EPlayer player = this.plugin.getEServer().getEPlayer(player_sponge);
+		
+		if(player.getItemInMainHand().isPresent()){
+			ItemStack item = player.getItemInMainHand().get();
+			if(item.getItem() ==  ItemTypes.COMPASS && player.isCreative()){
+				Optional<Vector3i> block = player.getViewBlock();
+				if (block.isPresent()) {
+					player.teleport(player.getWorld().getLocation(block.get().add(0, 1, 0)), true);
 				}
 			}
 		}
@@ -233,34 +220,25 @@ public class EEPlayerListeners {
 	@Listener
 	public void onPlayerMove(MoveEntityEvent event) {
 		if (event.getTargetEntity() instanceof Player) {
-			Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer((Player) event.getTargetEntity());
-			if (optPlayer.isPresent()) {
-				EPlayer player = optPlayer.get();
+			EPlayer player = this.plugin.getEServer().getEPlayer((Player) event.getTargetEntity());
 				
-				// AFK
-				if (event.getToTransform().getPitch() != event.getFromTransform().getPitch() || 
-						event.getToTransform().getYaw() != event.getFromTransform().getYaw()) {
-					player.updateLastActivated();
+			// AFK
+			if (event.getToTransform().getPitch() != event.getFromTransform().getPitch() || 
+					event.getToTransform().getYaw() != event.getFromTransform().getYaw()) {
+				player.updateLastActivated();
+			}
+			
+			if (UtilsLocation.isDifferentBlock(event.getFromTransform(), event.getToTransform())) {
+				// Teleport
+				Optional<TeleportDelay> teleport = player.getTeleportDelay();
+				if (teleport.isPresent() && !teleport.get().canMove()) {
+					player.cancelTeleportDelay();
+					EEMessages.TELEPORT_ERROR_DELAY.sendTo(player);
 				}
 				
-				
-				// Mouvement des pieds
-				if (!event.getFromTransform().getExtent().equals(event.getToTransform().getExtent()) ||
-						Math.round(event.getFromTransform().getPosition().getX()) != Math.round(event.getToTransform().getPosition().getX()) ||
-						Math.round(event.getFromTransform().getPosition().getY()) != Math.round(event.getToTransform().getPosition().getY()) ||
-						Math.round(event.getFromTransform().getPosition().getZ()) != Math.round(event.getToTransform().getPosition().getZ())) {
-					
-					// Teleport
-					Optional<TeleportDelay> teleport = player.getTeleportDelay();
-					if (teleport.isPresent() && !teleport.get().canMove()) {
-						player.cancelTeleportDelay();
-						EEMessages.TELEPORT_ERROR_DELAY.sendTo(player);
-					}
-					
-					// Freeze
-					if(player.isFreeze()) {
-						event.setCancelled(true);
-					}
+				// Freeze
+				if(player.isFreeze()) {
+					event.setCancelled(true);
 				}
 			}
 		}
@@ -268,86 +246,68 @@ public class EEPlayerListeners {
 	
 	@Listener
 	public void onPlayerInteractInventory(InteractInventoryEvent event, @First Player player_sponge) {
-		Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(player_sponge);
-		if (optPlayer.isPresent()) {
-			EPlayer player = optPlayer.get();
+		EPlayer player = this.plugin.getEServer().getEPlayer(player_sponge);
 			
-			// AFK
-			player.updateLastActivated();
-		}
+		// AFK
+		player.updateLastActivated();
 	}
 	
 	@Listener
 	public void onPlayerChangeInventory(ChangeInventoryEvent event, @First Player player_sponge) {
-		Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(player_sponge);
-		if (optPlayer.isPresent()) {
-			EPlayer player = optPlayer.get();
-			
-			// AFK
-			player.updateLastActivated();
-		}
+		EPlayer player = this.plugin.getEServer().getEPlayer(player_sponge);
+		
+		// AFK
+		player.updateLastActivated();
 	}
 	
 	@Listener
     public void onPlayerWriteChat(MessageChannelEvent.Chat event, @First Player player_sponge) {
-		Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(player_sponge);
-		if (optPlayer.isPresent()) {
-			EPlayer player = optPlayer.get();
+		EPlayer player = this.plugin.getEServer().getEPlayer(player_sponge);
 			
-			// AFK
-			player.updateLastActivated();
-			
-			// Ignore
-			Collection<MessageReceiver> members = event.getChannel().orElse(event.getOriginalChannel()).getMembers();
-			
-			List<MessageReceiver> list = Lists.newArrayList(members);
-	        list.removeIf(others_sponge -> {
-	        	if(others_sponge instanceof Player) {
-	        		Optional<EPlayer> others = this.plugin.getEServer().getEPlayer((Player) others_sponge);
-	        		if(others.isPresent()) {
-	        			return others.get().ignore(player);
-	        		}
-	        	}
-	        	return false;
-	        });
-	        
-	        if (list.size() != members.size()) {
-	            event.setChannel(MessageChannel.fixed(list));
-	        }
-		}
+		// AFK
+		player.updateLastActivated();
+		
+		// Ignore
+		Collection<MessageReceiver> members = event.getChannel().orElse(event.getOriginalChannel()).getMembers();
+		
+		List<MessageReceiver> list = Lists.newArrayList(members);
+        list.removeIf(others_sponge -> {
+        	if(others_sponge instanceof Player) {
+        		EPlayer others = this.plugin.getEServer().getEPlayer((Player) others_sponge);
+        		return others.ignore(player);
+        	}
+        	return false;
+        });
+        
+        if (list.size() != members.size()) {
+            event.setChannel(MessageChannel.fixed(list));
+        }
     }
 	
 	@Listener
     public void onPlayerSendCommand(SendCommandEvent event, @First Player player_sponge) {
-		Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(player_sponge);
-		if (optPlayer.isPresent()) {
-			EPlayer player = optPlayer.get();
+		EPlayer player = this.plugin.getEServer().getEPlayer(player_sponge);
 			
-			// AFK
-			if (!event.getCommand().equalsIgnoreCase("afk")) {
-				player.updateLastActivated();
-			}
-			
-			// Freeze
-			if (!event.getCommand().equalsIgnoreCase("freeze") && player.isFreeze()) {
-				event.setCancelled(true);
-				EEMessages.FREEZE_NO_COMMAND.sendTo(player);
-			}
+		// AFK
+		if (!event.getCommand().equalsIgnoreCase("afk")) {
+			player.updateLastActivated();
+		}
+		
+		// Freeze
+		if (!event.getCommand().equalsIgnoreCase("freeze") && player.isFreeze()) {
+			event.setCancelled(true);
+			EEMessages.FREEZE_NO_COMMAND.sendTo(player);
 		}
     }
 
 	@Listener
 	public void onPlayerHeal(HealEntityEvent event) {
 		if (!event.isCancelled() && event.getTargetEntity() instanceof Player && event.getBaseHealAmount() > event.getFinalHealAmount()) {
-			Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer((Player) event.getTargetEntity());
-			
-			if (optPlayer.isPresent()) {
-				EPlayer player = optPlayer.get();
+			EPlayer player = this.plugin.getEServer().getEPlayer((Player) event.getTargetEntity());
 				
-				if (player.isGod()) {
-					event.setCancelled(true);
-					this.plugin.getEServer().broadcast("EverEssentials : Test HealEntityEvent");
-				}
+			if (player.isGod()) {
+				event.setCancelled(true);
+				this.plugin.getEServer().broadcast("EverEssentials : Test HealEntityEvent");
 			}
 		}
 	}

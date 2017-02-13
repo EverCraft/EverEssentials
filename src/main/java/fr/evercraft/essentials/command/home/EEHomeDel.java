@@ -38,6 +38,7 @@ import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ECommand;
 import fr.evercraft.everapi.server.location.VirtualLocation;
 import fr.evercraft.everapi.server.player.EPlayer;
+import fr.evercraft.everapi.services.essentials.SubjectUserEssentials;
 
 public class EEHomeDel extends ECommand<EverEssentials> {
 	
@@ -65,8 +66,8 @@ public class EEHomeDel extends ECommand<EverEssentials> {
 	
 	@Override
 	public Collection<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
-		if (args.size() == 1 && source instanceof Player){
-			Optional<EPlayer> player = this.plugin.getEServer().getEPlayer((Player) source);
+		if (args.size() == 1 && source instanceof Player) {
+			Optional<SubjectUserEssentials> player = this.plugin.getManagerServices().getEssentials().get(((Player) source).getUniqueId());
 			// Le joueur existe
 			if (player.isPresent()) {
 				List<String> suggests = new ArrayList<String>();

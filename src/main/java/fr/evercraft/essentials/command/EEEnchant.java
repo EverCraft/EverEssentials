@@ -25,6 +25,7 @@ import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.data.manipulator.mutable.item.EnchantmentData;
 import org.spongepowered.api.data.meta.ItemEnchantment;
+import org.spongepowered.api.data.type.HandTypes;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.Enchantment;
 import org.spongepowered.api.item.inventory.ItemStack;
@@ -69,14 +70,14 @@ public class EEEnchant extends ECommand<EverEssentials> {
 	public Collection<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		List<String> suggests = new ArrayList<String>();
 		if (source instanceof Player){
-			Optional<EPlayer> player = this.plugin.getEServer().getEPlayer(((Player) source).getUniqueId());
-			if (player.isPresent() && player.get().getItemInMainHand().isPresent()) {
+			Player player = (Player) source;
+			ItemStack item = player.getItemInHand(HandTypes.MAIN_HAND).orElse(null);
+			if (item != null) {
 				if (args.size() == 1) {
-					ItemStack item = player.get().getItemInMainHand().get();
-					EnchantmentData enchantmentData = item.getOrCreate(EnchantmentData.class).get();
+					EnchantmentData enchantmentData = item.getOrCreate(EnchantmentData.class).orElse(null);
 					
 					// Si il y a plusieurs enchantements
-					if (!enchantmentData.enchantments().isEmpty()) {
+					if (enchantmentData != null && !enchantmentData.enchantments().isEmpty()) {
 						for (Enchantment enchant : UtilsEnchantment.getEnchantments()) {
 							if (enchant.canBeAppliedToStack(item)) {
 								for (ItemEnchantment ench : enchantmentData.enchantments()) {

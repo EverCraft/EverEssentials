@@ -40,6 +40,7 @@ import fr.evercraft.everapi.message.replace.EReplace;
 import fr.evercraft.everapi.plugin.command.ESubCommand;
 import fr.evercraft.everapi.server.player.EPlayer;
 import fr.evercraft.everapi.services.essentials.Mail;
+import fr.evercraft.everapi.services.essentials.SubjectUserEssentials;
 
 public class EEMailDelete extends ESubCommand<EverEssentials> {
 	
@@ -68,7 +69,7 @@ public class EEMailDelete extends ESubCommand<EverEssentials> {
 	@Override
 	public Collection<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		if (args.size() == 1) {
-			Optional<EPlayer> player = this.plugin.getEServer().getEPlayer((Player) source);
+			Optional<SubjectUserEssentials> player = this.plugin.getManagerServices().getEssentials().get(((Player) source).getUniqueId());
 			// Le joueur existe
 			if (player.isPresent()) {
 				List<String> suggests = new ArrayList<String>();
