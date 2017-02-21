@@ -84,10 +84,16 @@ public class EEGameruleAdd extends ESubCommand<EverEssentials> {
 	private boolean commandGameruleAdd(final EPlayer player, final String gamerule, final String value) {
 		WorldProperties properties = player.getWorld().getProperties();
 		if (!properties.getGameRule(gamerule).isPresent()) {
-			player.sendMessage("Set gamerule : " + gamerule + "; value : " + value);
 			properties.setGameRule(gamerule, value);
+			EEMessages.GAMERULE_ADD_GAMERULE.sender()
+				.replace("<gamerule>", gamerule)
+				.replace("<value>", value)
+				.prefix(EEMessages.PREFIX)
+				.sendTo(player);
 		} else {
-			player.sendMessage("Il y a d�j� une gamerule : " + gamerule);
+			EEMessages.GAMERULE_ADD_ERROR.sender()
+			.prefix(EEMessages.PREFIX)
+			.sendTo(player);
 		}
 		return true;
 	}

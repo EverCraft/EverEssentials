@@ -240,6 +240,8 @@ public class EEMessage extends EMessage<EverEssentials> {
 		
 		GAMERULE_DESCRIPTION("gamerule.description", 					"Gère les différentes règles d'un monde"),
 		GAMERULE_ADD_DESCRIPTION("gamerule.add.description", 			"Ajoute une règle personnalisée sur un monde"),
+		GAMERULE_ADD_GAMERULE("gamerule.add.gamerule", 					"&7Vous venez d'ajouter la gamerule &6'<gamerule>' &7avec la valeur &6'<valeur>'&7."),
+		GAMERULE_ADD_ERROR("gamerule.add.error", 						"&cErreur : Cette gamerule existe déjà."),
 		GAMERULE_REMOVE_DESCRIPTION("gamerule.remove.description", 		"Supprime une règle personnalisée sur un monde"),
 		GAMERULE_SET_DESCRIPTION("gamerule.set.description", 			"Modifie une règle sur un monde"),
 		
