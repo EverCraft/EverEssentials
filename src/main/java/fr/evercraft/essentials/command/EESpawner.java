@@ -139,11 +139,11 @@ public class EESpawner extends ECommand<EverEssentials> {
 			} else {
 				player.sendMessage("MobSpawner : no present");
 			}
-			if (spawner.offer(spawner.getMobSpawnerData().nextEntityToSpawn().set(entity.getType(), null)).isSuccessful()) {
+			/*if (spawner.offer(spawner.getMobSpawnerData().nextEntityToSpawn().set(entity.getType(), null)).isSuccessful()) {
 				player.sendMessage("MobSpawner : add");
 			} else {
 				player.sendMessage("MobSpawner : error");
-			}
+			}*/
 			
 			if (spawner.offer(Keys.SPAWNABLE_ENTITY_TYPE, entity.getType()).isSuccessful()) {
 				player.sendMessage("MobSpawner : add");
