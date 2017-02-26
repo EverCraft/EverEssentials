@@ -36,7 +36,7 @@ import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.command.ECommand;
 import fr.evercraft.everapi.services.MojangService;
 import fr.evercraft.everapi.services.mojang.check.MojangServer;
-import fr.evercraft.everapi.services.mojang.check.MojangServer.Color;
+import fr.evercraft.everapi.services.mojang.check.MojangServer.Status;
 
 public class EEMojang extends ECommand<EverEssentials> {
 	
@@ -145,7 +145,7 @@ public class EEMojang extends ECommand<EverEssentials> {
 		return Optional.empty();
 	}
 	
-	private static Optional<EEMessages> getMojangColor(Color color) {
+	private static Optional<EEMessages> getMojangColor(Status color) {
 		try {
 			return Optional.of(EEMessages.valueOf("MOJANG_COLOR_" + color.name()));
 		} catch (IllegalArgumentException e) {}

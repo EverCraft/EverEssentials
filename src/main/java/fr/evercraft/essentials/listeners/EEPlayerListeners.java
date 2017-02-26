@@ -328,12 +328,13 @@ public class EEPlayerListeners {
 	
 	@Listener
 	public void onPlayerMail(MailEvent.Receive event) {
-		EPlayer player = event.getPlayer();
-		if(!player.getIdentifier().equals(event.getMail().getTo())){
-			EEMessages.MAIL_NEW_MESSAGE.sender()
-				.replace("<message>", this.getButtonReadMail(event.getMail()))
-				.sendTo(player);
-		}
+		event.getPlayer().ifPresent(player -> {
+			if (!player.getIdentifier().equals(event.getMail().getTo())) {
+				EEMessages.MAIL_NEW_MESSAGE.sender()
+					.replace("<message>", this.getButtonReadMail(event.getMail()))
+					.sendTo(player);
+			}
+		});
 	}
 	
 	private Text getButtonReadMail(final Mail mail){
