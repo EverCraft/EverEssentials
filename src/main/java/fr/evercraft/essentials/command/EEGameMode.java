@@ -79,7 +79,7 @@ public class EEGameMode extends ECommand<EverEssentials> {
 	@Override
 	public Collection<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		if (args.size() == 1) {
-			Arrays.asList("survival", "creative", "adventure", "spectator","empty");
+			return Arrays.asList("survival", "creative", "adventure", "spectator","empty");
 		} else if (args.size() == 2 && source.hasPermission(EEPermissions.GAMEMODE_OTHERS.get())){
 			return this.getAllUsers();
 		}
