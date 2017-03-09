@@ -32,6 +32,7 @@ import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ECommand;
+import fr.evercraft.everapi.server.player.EPlayer;
 
 public class EEKickall extends ECommand<EverEssentials> {
 	
@@ -89,12 +90,19 @@ public class EEKickall extends ECommand<EverEssentials> {
 		Text raison = EEMessages.KICKALL_MESSAGE.getFormat().toText(
 							"<staff>", staff.getName(),
 							"<reason>", message);
-		
-		this.plugin.getEServer().getOnlineEPlayers().forEach(player -> {
+		boolean kick = false;
+		for (EPlayer player : this.plugin.getEServer().getOnlineEPlayers()) {
 			if (!player.equals(staff) && !player.hasPermission(EEPermissions.KICK_BYPASS.get())) {
 				player.kick(raison);
+				kick = true;
 			}
-		});
+		}
+		
+		if (!kick) {
+			EEMessages.KICKALL_ERROR.sendTo(staff);
+			return false;
+		}
+		
 		return true;
 	}
 }

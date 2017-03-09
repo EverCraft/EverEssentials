@@ -432,6 +432,7 @@ public class EEMessage extends EMessage<EverEssentials> {
 		
 		KICKALL_DESCRIPTION("kickall.description",				 	"Expulse tous les joueurs du serveur"),
 		KICKALL_MESSAGE("kickall.message", 							"&c&lExpulsion du serveur[RT][RT]&cRaison : &7<reason>[RT]"),
+		KICKALL_ERROR("kickall.error", 								"&cErreur : Il n'y a aucun joueur à expulser du serveur."),
 		
 		KILL_DESCRIPTION("kill.description", 						"Tue un joueur"),
 		KILL_PLAYER("kill.player", 									"&7Vous avez été tué par &6<staff>&7."),
