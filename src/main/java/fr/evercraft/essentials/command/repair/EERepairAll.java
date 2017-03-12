@@ -22,6 +22,7 @@ import java.util.List;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
+import org.spongepowered.api.item.inventory.Slot;
 import org.spongepowered.api.item.inventory.entity.Hotbar;
 import org.spongepowered.api.item.inventory.equipment.EquipmentInventory;
 import org.spongepowered.api.item.inventory.type.GridInventory;
@@ -92,6 +93,7 @@ public class EERepairAll extends ECommand<EverEssentials> {
 		UtilsInventory.repair(player.getInventory().query(Hotbar.class));
 		UtilsInventory.repair(player.getInventory().query(GridInventory.class));
 		UtilsInventory.repair(player.getInventory().query(EquipmentInventory.class));
+		UtilsInventory.repair(player.getInventory().query(Slot.class));
 		
 		EEMessages.REPAIR_ALL_PLAYER.sendTo(player);
 		return true;

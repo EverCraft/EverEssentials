@@ -22,6 +22,7 @@ import java.util.List;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
+import org.spongepowered.api.item.inventory.Slot;
 import org.spongepowered.api.item.inventory.entity.Hotbar;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
@@ -88,6 +89,7 @@ public class EERepairHotBar extends ECommand<EverEssentials> {
 
 	private boolean commandRepairHotBar(final EPlayer player) {
 		UtilsInventory.repair(player.getInventory().query(Hotbar.class));
+		UtilsInventory.repair(player.getInventory().query(Slot.class));
 		
 		 EEMessages.REPAIR_HOTBAR_PLAYER.sendTo(player);
 		return true;
