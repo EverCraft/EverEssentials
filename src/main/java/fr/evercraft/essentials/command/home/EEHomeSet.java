@@ -123,7 +123,7 @@ public class EEHomeSet extends EReloadCommand<EverEssentials> {
 			
 			// Si la source est un joueur
 			if (source instanceof EPlayer) {
-				resultat = this.commandSetHome((EPlayer) source, DEFAULT_HOME);
+				resultat = this.commandSetHome((EPlayer) source);
 			// La source n'est pas un joueur
 			} else {
 				EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()
@@ -131,15 +131,13 @@ public class EEHomeSet extends EReloadCommand<EverEssentials> {
 					.sendTo(source);
 			}
 			
-		// Si on ne connait pas le joueur
 		} else if (args.size() == 1) {
 			
 			// Si il a la permission
-			if (source.hasPermission(EEPermissions.SETHOME_MULTIPLE.get()))
-			{
+			if (source.hasPermission(EEPermissions.SETHOME_MULTIPLE.get())) {
 				// Si la source est un joueur
 				if (source instanceof EPlayer) {
-					resultat = this.commandSetHome((EPlayer) source); 
+					resultat = this.commandSetHome((EPlayer) source, args.get(0)); 
 				// La source n'est pas un joueur
 				} else {
 					EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()

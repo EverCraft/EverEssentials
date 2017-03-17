@@ -38,7 +38,7 @@ import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.EReloadCommand;
-import fr.evercraft.everapi.server.location.VirtualLocation;
+import fr.evercraft.everapi.server.location.VirtualTransform;
 import fr.evercraft.everapi.server.player.EPlayer;
 
 public class EEWarp extends EReloadCommand<EverEssentials> {
@@ -127,12 +127,12 @@ public class EEWarp extends EReloadCommand<EverEssentials> {
 	}
 	
 	public boolean commandWarpList(final CommandSource player) throws CommandException {
-		TreeMap<String, VirtualLocation> warps = new TreeMap<String, VirtualLocation>(this.plugin.getManagerServices().getWarp().getAllSQL());
+		TreeMap<String, VirtualTransform> warps = new TreeMap<String, VirtualTransform>(this.plugin.getManagerServices().getWarp().getAllSQL());
 		
 		List<Text> lists = new ArrayList<Text>();
 		if (player.hasPermission(EEPermissions.DELWARP.get())) {
 			
-			for (Entry<String, VirtualLocation> warp : warps.entrySet()) {
+			for (Entry<String, VirtualTransform> warp : warps.entrySet()) {
 				if (this.hasPermission(player, warp.getKey())) {
 					Optional<World> world = warp.getValue().getWorld();
 					if (world.isPresent()){
@@ -150,7 +150,7 @@ public class EEWarp extends EReloadCommand<EverEssentials> {
 			
 		} else {
 			
-			for (Entry<String, VirtualLocation> warp : warps.entrySet()) {
+			for (Entry<String, VirtualTransform> warp : warps.entrySet()) {
 				if (this.hasPermission(player, warp.getKey())) {
 					Optional<World> world = warp.getValue().getWorld();
 					if (world.isPresent()){
@@ -236,28 +236,28 @@ public class EEWarp extends EReloadCommand<EverEssentials> {
 		return true;
 	}
 	
-	private Text getButtonTeleport(final String name, final VirtualLocation location){
+	private Text getButtonTeleport(final String name, final VirtualTransform location){
 		return EEMessages.WARP_LIST_TELEPORT.getText().toBuilder()
 					.onHover(TextActions.showText(EEMessages.WARP_LIST_TELEPORT_HOVER.getFormat().toText("<warp>", name)))
 					.onClick(TextActions.runCommand("/warp \"" + name + "\""))
 					.build();
 	}
 	
-	private Text getButtonDelete(final String name, final VirtualLocation location){
+	private Text getButtonDelete(final String name, final VirtualTransform location){
 		return EEMessages.WARP_LIST_DELETE.getText().toBuilder()
 					.onHover(TextActions.showText(EEMessages.WARP_LIST_DELETE_HOVER.getFormat().toText("<warp>", name)))
 					.onClick(TextActions.runCommand("/delwarp \"" + name + "\""))
 					.build();
 	}
 	
-	private Text getButtonWarp(final String name, final VirtualLocation location){
+	private Text getButtonWarp(final String name, final VirtualTransform location){
 		return EEMessages.WARP_NAME.getFormat().toText("<name>", name).toBuilder()
 					.onHover(TextActions.showText(EEMessages.WARP_NAME_HOVER.getFormat().toText(
 								"<warp>", name,
 							"<world>", location.getWorldName(),
-							"<x>", location.getFloorX().toString(),
-							"<y>", location.getFloorY().toString(),
-							"<z>", location.getFloorZ().toString())))
+							"<x>", String.valueOf(location.getPosition().getFloorX()),
+							"<y>", String.valueOf(location.getPosition().getFloorY()),
+							"<z>", String.valueOf(location.getPosition().getFloorZ()))))
 					.build();
 	}
 	

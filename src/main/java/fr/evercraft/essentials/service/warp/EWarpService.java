@@ -35,18 +35,19 @@ import com.google.common.collect.ImmutableMap;
 
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.exception.ServerDisableException;
-import fr.evercraft.everapi.server.location.VirtualLocation;
+import fr.evercraft.everapi.server.location.EVirtualTransform;
+import fr.evercraft.everapi.server.location.VirtualTransform;
 import fr.evercraft.everapi.services.essentials.WarpService;
 
 public class EWarpService implements WarpService {
 	private final EverEssentials plugin;
 	
-	private final ConcurrentMap<String, VirtualLocation> warps;
+	private final ConcurrentMap<String, VirtualTransform> warps;
 	
 	public EWarpService(final EverEssentials plugin){
 		this.plugin = plugin;
 		
-		this.warps = new ConcurrentHashMap<String, VirtualLocation>();
+		this.warps = new ConcurrentHashMap<String, VirtualTransform>();
 		
 		reload();
 	}
@@ -60,7 +61,7 @@ public class EWarpService implements WarpService {
 	@Override
 	public Map<String, Transform<World>> getAll() {
 		ImmutableMap.Builder<String, Transform<World>> warps = ImmutableMap.builder();
-		for (Entry<String, VirtualLocation> warp : this.warps.entrySet()) {
+		for (Entry<String, VirtualTransform> warp : this.warps.entrySet()) {
 			Optional<Transform<World>> transform = warp.getValue().getTransform();
 			if (transform.isPresent()) {
 				warps.put(warp.getKey(), transform.get());
@@ -69,7 +70,7 @@ public class EWarpService implements WarpService {
 		return warps.build();
 	}
 	
-	public Map<String, VirtualLocation> getAllSQL() {
+	public Map<String, VirtualTransform> getAllSQL() {
 		return this.warps;
 	}
 	
@@ -96,7 +97,7 @@ public class EWarpService implements WarpService {
 		Preconditions.checkNotNull(location, "location");
 		
 		if (!this.warps.containsKey(identifier)) {
-			final VirtualLocation locationSQL = new VirtualLocation(this.plugin, location);
+			final VirtualTransform locationSQL = new EVirtualTransform(this.plugin, location);
 			this.warps.put(identifier, locationSQL);
 			this.plugin.getThreadAsync().execute(() -> this.addAsync(identifier, locationSQL));
 			return true;
@@ -110,7 +111,7 @@ public class EWarpService implements WarpService {
 		Preconditions.checkNotNull(location, "location");
 		
 		if (this.warps.containsKey(identifier)) {
-			final VirtualLocation locationSQL = new VirtualLocation(this.plugin, location);
+			final VirtualTransform locationSQL = new EVirtualTransform(this.plugin, location);
 			this.warps.put(identifier, locationSQL);
 			this.plugin.getThreadAsync().execute(() -> this.updateAsync(identifier, locationSQL));
 			return true;
@@ -144,8 +145,8 @@ public class EWarpService implements WarpService {
 	 * DataBases
 	 */
 	
-	private Map<String, VirtualLocation> selectAsync() {
-		Map<String, VirtualLocation> warps = new HashMap<String, VirtualLocation>();
+	private Map<String, VirtualTransform> selectAsync() {
+		Map<String, VirtualTransform> warps = new HashMap<String, VirtualTransform>();
 		Connection connection = null;
 		PreparedStatement preparedStatement = null;
     	try {
@@ -155,7 +156,7 @@ public class EWarpService implements WarpService {
 			preparedStatement = connection.prepareStatement(query);
 			ResultSet list = preparedStatement.executeQuery();
 			while (list.next()) {
-				VirtualLocation location = new VirtualLocation(this.plugin,	list.getString("world"), 
+				VirtualTransform location = new EVirtualTransform(this.plugin,	list.getString("world"), 
 														list.getDouble("x"),
 														list.getDouble("y"),
 														list.getDouble("z"),
@@ -177,7 +178,7 @@ public class EWarpService implements WarpService {
     	return warps;
 	}
 	
-	private void addAsync(final String identifier, final VirtualLocation location) {
+	private void addAsync(final String identifier, final VirtualTransform location) {
 		Connection connection = null;
 		PreparedStatement preparedStatement = null;
     	try {
@@ -186,10 +187,10 @@ public class EWarpService implements WarpService {
     						+ "VALUES (?, ?, ?, ?, ?, ?, ?);";
 			preparedStatement = connection.prepareStatement(query);
 			preparedStatement.setString(1, identifier);
-			preparedStatement.setString(2, location.getWorldUUID());
-			preparedStatement.setDouble(3, location.getFloorX());
-			preparedStatement.setDouble(4, location.getFloorY());
-			preparedStatement.setDouble(5, location.getFloorZ());
+			preparedStatement.setString(2, location.getWorldIdentifier());
+			preparedStatement.setDouble(3, location.getPosition().getX());
+			preparedStatement.setDouble(4, location.getPosition().getY());
+			preparedStatement.setDouble(5, location.getPosition().getZ());
 			preparedStatement.setDouble(6, location.getYaw());
 			preparedStatement.setDouble(7, location.getPitch());
 			
@@ -207,7 +208,7 @@ public class EWarpService implements WarpService {
 	    }
 	}
 	
-	private void updateAsync(final String identifier, final VirtualLocation location) {
+	private void updateAsync(final String identifier, final VirtualTransform location) {
 		Connection connection = null;
 		PreparedStatement preparedStatement = null;
     	try {
@@ -221,10 +222,10 @@ public class EWarpService implements WarpService {
 	    						+ "`pitch` = ? "
     						+ "WHERE `identifier` = ? ;";
 			preparedStatement = connection.prepareStatement(query);
-			preparedStatement.setString(1, location.getWorldUUID());
-			preparedStatement.setDouble(2, location.getFloorX());
-			preparedStatement.setDouble(3, location.getFloorY());
-			preparedStatement.setDouble(4, location.getFloorZ());
+			preparedStatement.setString(1, location.getWorldIdentifier());
+			preparedStatement.setDouble(2, location.getPosition().getX());
+			preparedStatement.setDouble(3, location.getPosition().getY());
+			preparedStatement.setDouble(4, location.getPosition().getZ());
 			preparedStatement.setDouble(5, location.getYaw());
 			preparedStatement.setDouble(6, location.getPitch());
 			preparedStatement.setString(7, identifier);

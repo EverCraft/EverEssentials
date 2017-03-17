@@ -33,7 +33,7 @@ import fr.evercraft.essentials.service.subject.EUserSubject;
 import fr.evercraft.everapi.exception.PluginDisableException;
 import fr.evercraft.everapi.exception.ServerDisableException;
 import fr.evercraft.everapi.plugin.EDataBase;
-import fr.evercraft.everapi.server.location.VirtualLocation;
+import fr.evercraft.everapi.server.location.VirtualTransform;
 import fr.evercraft.everapi.services.essentials.Mail;
 import fr.evercraft.everapi.sponge.UtilsNetwork;
 
@@ -405,7 +405,7 @@ public class EEDataBase extends EDataBase<EverEssentials> {
 	 * Home
 	 */
 	
-	public void addHome(final String identifier, final String name, final VirtualLocation location) {
+	public void addHome(final String identifier, final String name, final VirtualTransform location) {
 		Connection connection = null;
 		PreparedStatement preparedStatement = null;
     	try {
@@ -415,10 +415,10 @@ public class EEDataBase extends EDataBase<EverEssentials> {
 			preparedStatement = connection.prepareStatement(query);
 			preparedStatement.setString(1, identifier);
 			preparedStatement.setString(2, name);
-			preparedStatement.setString(3, location.getWorldUUID());
-			preparedStatement.setDouble(4, location.getFloorX());
-			preparedStatement.setDouble(5, location.getFloorY());
-			preparedStatement.setDouble(6, location.getFloorZ());
+			preparedStatement.setString(3, location.getWorldIdentifier());
+			preparedStatement.setDouble(4, location.getPosition().getX());
+			preparedStatement.setDouble(5, location.getPosition().getY());
+			preparedStatement.setDouble(6, location.getPosition().getZ());
 			preparedStatement.setDouble(7, location.getYaw());
 			preparedStatement.setDouble(8, location.getPitch());
 			
@@ -436,7 +436,7 @@ public class EEDataBase extends EDataBase<EverEssentials> {
 	    }
 	}
 	
-	public void moveHome(final String identifier, final String name, final VirtualLocation location) {
+	public void moveHome(final String identifier, final String name, final VirtualTransform location) {
 		Connection connection = null;
 		PreparedStatement preparedStatement = null;
     	try {
@@ -451,10 +451,10 @@ public class EEDataBase extends EDataBase<EverEssentials> {
 							+ "WHERE `uuid` = ? "
 							+ "AND `name` = ? ;";
 			preparedStatement = connection.prepareStatement(query);
-			preparedStatement.setString(1, location.getWorldUUID());
-			preparedStatement.setDouble(2, location.getFloorX());
-			preparedStatement.setDouble(3, location.getFloorY());
-			preparedStatement.setDouble(4, location.getFloorZ());
+			preparedStatement.setString(1, location.getWorldIdentifier());
+			preparedStatement.setDouble(2, location.getPosition().getX());
+			preparedStatement.setDouble(3, location.getPosition().getY());
+			preparedStatement.setDouble(4, location.getPosition().getZ());
 			preparedStatement.setDouble(5, location.getYaw());
 			preparedStatement.setDouble(6, location.getPitch());
 			preparedStatement.setString(7, identifier);
@@ -529,7 +529,7 @@ public class EEDataBase extends EDataBase<EverEssentials> {
 	 * Back
 	 */
 	
-	public void addBack(final String identifier, final VirtualLocation location) {
+	public void addBack(final String identifier, final VirtualTransform location) {
 		Connection connection = null;
 		PreparedStatement preparedStatement = null;
     	try {
@@ -538,10 +538,10 @@ public class EEDataBase extends EDataBase<EverEssentials> {
     						+ "VALUES (?, ?, ?, ?, ?, ?, ?);";
 			preparedStatement = connection.prepareStatement(query);
 			preparedStatement.setString(1, identifier);
-			preparedStatement.setString(2, location.getWorldUUID());
-			preparedStatement.setDouble(3, location.getFloorX());
-			preparedStatement.setDouble(4, location.getFloorY());
-			preparedStatement.setDouble(5, location.getFloorZ());
+			preparedStatement.setString(2, location.getWorldIdentifier());
+			preparedStatement.setDouble(3, location.getPosition().getX());
+			preparedStatement.setDouble(4, location.getPosition().getY());
+			preparedStatement.setDouble(5, location.getPosition().getZ());
 			preparedStatement.setDouble(6, location.getYaw());
 			preparedStatement.setDouble(7, location.getPitch());
 			
@@ -559,7 +559,7 @@ public class EEDataBase extends EDataBase<EverEssentials> {
 	    }
 	}
 	
-	public void setBack(final String identifier, final VirtualLocation location) {
+	public void setBack(final String identifier, final VirtualTransform location) {
 		Connection connection = null;
 		PreparedStatement preparedStatement = null;
     	try {
@@ -568,10 +568,10 @@ public class EEDataBase extends EDataBase<EverEssentials> {
     						+ "SET `world` = ? , `x` = ? , `y` = ? , `z` = ? , `yaw` = ? , `pitch` = ? "
     						+ "WHERE `uuid` = ? ;";
 			preparedStatement = connection.prepareStatement(query);
-			preparedStatement.setString(1, location.getWorldUUID());
-			preparedStatement.setDouble(2, location.getFloorX());
-			preparedStatement.setDouble(3, location.getFloorY());
-			preparedStatement.setDouble(4, location.getFloorZ());
+			preparedStatement.setString(1, location.getWorldIdentifier());
+			preparedStatement.setDouble(2, location.getPosition().getX());
+			preparedStatement.setDouble(3, location.getPosition().getY());
+			preparedStatement.setDouble(4, location.getPosition().getZ());
 			preparedStatement.setDouble(5, location.getYaw());
 			preparedStatement.setDouble(6, location.getPitch());
 			preparedStatement.setString(7, identifier);
