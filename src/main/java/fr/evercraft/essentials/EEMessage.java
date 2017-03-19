@@ -461,7 +461,7 @@ public class EEMessage extends EMessage<EverEssentials> {
 		LIST_TITLE_VANISH("list.titleVanish", 						"&aListe des joueurs connectés : &6" + EReplacesServer.ONLINE_PLAYERS.getName() + " &a(+&6<vanish>&a) / &6" + EReplacesServer.MAX_PLAYERS.getName()),
 		LIST_GROUP("list.group", 									"&6<group>&f : <players>"),
 		LIST_SEPARATOR("list.separator", ", "),
-		LIST_PLAYER("list.player", 									"<afk>&r<vanish>&r<DISPLAYNAME_FORMAT>"),
+		LIST_PLAYER("list.player", 									"<afk>&r<vanish>&r" + EReplacesPlayer.DISPLAYNAME.getName()),
 		LIST_TAG_AFK("list.tagAFK", 								"&7[AFK] "),
 		LIST_TAG_VANISH("list.tagVanish", 							"&7[VANISH] "),
 		LIST_EMPTY("list.empty", 									"&7Aucun joueur"),
