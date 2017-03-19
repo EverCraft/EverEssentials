@@ -179,14 +179,14 @@ public class EEMsg extends ECommand<EverEssentials> {
 		Map<String, EReplace<?>> replaces = new HashMap<String, EReplace<?>>();
 		replaces.put("<message>", EReplace.of(message));
 		
-		replaces.putAll(player.getReplacesAll());
+		replaces.putAll(player.getReplaces());
 		receive.sendMessage(EEMessages.MSG_PLAYER_RECEIVE.getFormat().toText(replaces)
 					.toBuilder()
 					.onHover(TextActions.showText(EEMessages.MSG_PLAYER_RECEIVE_HOVER.getFormat().toText(replaces)))
 					.onClick(TextActions.suggestCommand("/msg " + player.getName() + " "))
 					.build());
 		
-		replaces.putAll(receive.getReplacesAll());
+		replaces.putAll(receive.getReplaces());
 		player.sendMessage(EEMessages.MSG_PLAYER_SEND.getFormat().toText(replaces)
 					.toBuilder()
 					.onHover(TextActions.showText(EEMessages.MSG_PLAYER_SEND_HOVER.getFormat().toText(replaces)))
@@ -215,7 +215,7 @@ public class EEMsg extends ECommand<EverEssentials> {
 				.onClick(TextActions.suggestCommand("/msg " + EEMsg.CONSOLE + " "))
 				.build());
 		
-		replaces.putAll(receive.getReplacesAll());
+		replaces.putAll(receive.getReplaces());
 		player.sendMessage(EEMessages.MSG_PLAYER_RECEIVE.getFormat().toText(replaces)
 					.toBuilder()
 					.onHover(TextActions.showText(EEMessages.MSG_PLAYER_RECEIVE_HOVER.getFormat().toText(replaces)))
@@ -240,7 +240,7 @@ public class EEMsg extends ECommand<EverEssentials> {
 					.onClick(TextActions.suggestCommand("/msg " + EEMsg.CONSOLE + " "))
 					.build());
 		
-		replaces.putAll(player.getReplacesAll());
+		replaces.putAll(player.getReplaces());
 		receive.sendMessage(EEMessages.MSG_PLAYER_RECEIVE.getFormat().toText(replaces)
 					.toBuilder()
 					.onHover(TextActions.showText(EEMessages.MSG_PLAYER_RECEIVE_HOVER.getFormat().toText(replaces)))

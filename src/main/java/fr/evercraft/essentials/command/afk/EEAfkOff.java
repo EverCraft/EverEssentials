@@ -119,7 +119,7 @@ public class EEAfkOff extends ESubCommand<EverEssentials> {
 			if (player.setAfk(false)) {
 				EEMessages.AFK_OFF_PLAYER.sendTo(player);
 				EEMessages.AFK_OFF_ALL.sender()
-					.replace(player.getReplacesAll())
+					.replace(player.getReplaces())
 					.sendAll(this.plugin.getEServer().getOnlineEPlayers(), other -> !other.equals(player));
 				return true;
 			} else {
@@ -146,7 +146,7 @@ public class EEAfkOff extends ESubCommand<EverEssentials> {
 						.replace("<player>", player.getName())
 						.sendTo(player);
 					EEMessages.AFK_OFF_ALL.sender()
-						.replace(player.getReplacesAll())
+						.replace(player.getReplaces())
 						.sendAll(this.plugin.getEServer().getOnlineEPlayers(), other -> !other.equals(player) && other.equals(staff));
 					return true;
 				} else {

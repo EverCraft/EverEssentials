@@ -173,10 +173,10 @@ public class ESpawnService implements SpawnService {
 														list.getDouble("yaw"),
 														list.getDouble("pitch"));
 				spawns.put(list.getString("identifier"), location);
-				this.plugin.getLogger().debug("Loading : (spawn='" + list.getString("identifier") + "';location='" + location + "')");
+				this.plugin.getELogger().debug("Loading : (spawn='" + list.getString("identifier") + "';location='" + location + "')");
 			}
     	} catch (SQLException e) {
-    		this.plugin.getLogger().warn("spawns error when loading : " + e.getMessage());
+    		this.plugin.getELogger().warn("spawns error when loading : " + e.getMessage());
 		} catch (ServerDisableException e) {
 			e.execute();
 		} finally {
@@ -205,9 +205,9 @@ public class ESpawnService implements SpawnService {
 			preparedStatement.setDouble(7, location.getPitch());
 			
 			preparedStatement.execute();
-			this.plugin.getLogger().debug("Adding to the database : (spawn='" + identifier + "';location='" + location + "')");
+			this.plugin.getELogger().debug("Adding to the database : (spawn='" + identifier + "';location='" + location + "')");
     	} catch (SQLException e) {
-        	this.plugin.getLogger().warn("Error during a change of spawn : " + e.getMessage());
+        	this.plugin.getELogger().warn("Error during a change of spawn : " + e.getMessage());
 		} catch (ServerDisableException e) {
 			e.execute();
 		} finally {
@@ -241,9 +241,9 @@ public class ESpawnService implements SpawnService {
 			preparedStatement.setString(7, identifier);
 			
 			preparedStatement.execute();
-			this.plugin.getLogger().debug("Updating the database : (spawn='" + identifier + "';location='" + location + "')");
+			this.plugin.getELogger().debug("Updating the database : (spawn='" + identifier + "';location='" + location + "')");
     	} catch (SQLException e) {
-        	this.plugin.getLogger().warn("Error during a change of spawn : " + e.getMessage());
+        	this.plugin.getELogger().warn("Error during a change of spawn : " + e.getMessage());
 		} catch (ServerDisableException e) {
 			e.execute();
 		} finally {
@@ -266,9 +266,9 @@ public class ESpawnService implements SpawnService {
 			preparedStatement.setString(1, identifier);
 			
 			preparedStatement.execute();
-			this.plugin.getLogger().debug("Remove from database : (spawn='" + identifier + "')");
+			this.plugin.getELogger().debug("Remove from database : (spawn='" + identifier + "')");
     	} catch (SQLException e) {
-        	this.plugin.getLogger().warn("Error during a change of spawn : " + e.getMessage());
+        	this.plugin.getELogger().warn("Error during a change of spawn : " + e.getMessage());
 		} catch (ServerDisableException e) {
 			e.execute();
 		} finally {
@@ -288,9 +288,9 @@ public class ESpawnService implements SpawnService {
 			preparedStatement = connection.prepareStatement(query);
 			
 			preparedStatement.execute();
-			this.plugin.getLogger().debug("Removes the database spawns");
+			this.plugin.getELogger().debug("Removes the database spawns");
     	} catch (SQLException e) {
-    		this.plugin.getLogger().warn("Error spawns deletions : " + e.getMessage());
+    		this.plugin.getELogger().warn("Error spawns deletions : " + e.getMessage());
 		} catch (ServerDisableException e) {
 			e.execute();
 		} finally {

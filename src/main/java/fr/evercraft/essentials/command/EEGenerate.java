@@ -149,7 +149,7 @@ public class EEGenerate extends EReloadCommand<EverEssentials> {
 	private boolean commandGenerateConfirmation(final CommandSource player, World world) {
 		world.getWorldBorder()
 			.newChunkPreGenerate(world)
-			.logger(this.plugin.getLogger().getLogger())
+			.logger(this.plugin.getELogger().getLogger())
 			.owner(this.plugin)
 			.tickPercentLimit(this.tickPercentLimit)
 			.tickInterval(this.tickInterval)

@@ -20,30 +20,17 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
-
-import org.spongepowered.api.block.BlockTypes;
-import org.spongepowered.api.block.tileentity.MobSpawner;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
-import org.spongepowered.api.data.key.Keys;
-import org.spongepowered.api.data.manipulator.mutable.MobSpawnerData;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
-import org.spongepowered.api.world.Location;
-import org.spongepowered.api.world.World;
-
-import com.flowpowered.math.vector.Vector3i;
-
 import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
-import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ECommand;
 import fr.evercraft.everapi.server.player.EPlayer;
-import fr.evercraft.everapi.sponge.UtilsEntity;
 
 /*
  * Pas encore implémentée
@@ -77,9 +64,6 @@ public class EESpawner extends ECommand<EverEssentials> {
 	public Collection<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		if (args.size() == 1) {
 			List<String> suggests = new ArrayList<String>();
-			for (UtilsEntity type : UtilsEntity.values()){
-				suggests.add(type.getName());
-			}
 			return suggests;
 		} else if (args.size() == 2){
 			return Arrays.asList("60");
@@ -95,12 +79,6 @@ public class EESpawner extends ECommand<EverEssentials> {
 		if (args.size() == 1) {
 			// Si la source est un joueur
 			if (source instanceof EPlayer) {
-				Optional<UtilsEntity> optEntity = UtilsEntity.get(args.get(0));
-				if (optEntity.isPresent()){
-					resultat = this.commandSpawner((EPlayer) source, optEntity.get());
-				} else {
-					source.sendMessage(EChat.of("Inconnu"));
-				}
 			// La source n'est pas un joueur
 			} else {
 				EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()
@@ -112,48 +90,5 @@ public class EESpawner extends ECommand<EverEssentials> {
 			source.sendMessage(this.help(source));
 		}
 		return resultat;
-	}
-	
-	private boolean commandSpawner(final EPlayer player, UtilsEntity entity) {
-		Optional<Vector3i> block = player.getViewBlock();
-		
-		// Aucun block
-		if (!block.isPresent()) {
-			 EAMessages.PLAYER_NO_LOOK_BLOCK.sender()
-			 	.prefix(EEMessages.PREFIX)
-			 	.sendTo(player);
-			return false;
-		}
-		
-		Location<World> location = player.getWorld().getLocation(block.get());
-		
-		if (!location.getBlock().getType().equals(BlockTypes.MOB_SPAWNER)) {
-			player.sendMessage("is not mobspawner");
-			return false;
-		}
-
-		if (location.getTileEntity().isPresent()) {
-			MobSpawner spawner = (MobSpawner) location.getTileEntity().get();
-			if (spawner.getOrCreate(MobSpawnerData.class).isPresent()) {
-				player.sendMessage("MobSpawner : present");
-			} else {
-				player.sendMessage("MobSpawner : no present");
-			}
-			/*if (spawner.offer(spawner.getMobSpawnerData().nextEntityToSpawn().set(entity.getType(), null)).isSuccessful()) {
-				player.sendMessage("MobSpawner : add");
-			} else {
-				player.sendMessage("MobSpawner : error");
-			}*/
-			
-			if (spawner.offer(Keys.SPAWNABLE_ENTITY_TYPE, entity.getType()).isSuccessful()) {
-				player.sendMessage("MobSpawner : add");
-			} else {
-				player.sendMessage("MobSpawner : error");
-			}
-		} else {
-			player.sendMessage("MobSpawner : no");
-		}
-
-		return false;
 	}
 }

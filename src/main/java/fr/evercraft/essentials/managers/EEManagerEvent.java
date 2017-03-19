@@ -57,10 +57,10 @@ public class EEManagerEvent {
 	
 	public boolean afk(final EPlayer player, final boolean value, final AfkEvent.Action action) {
 		if (value) {
-			this.plugin.getLogger().debug("Event AfkEvent.Enable : (UUID='" + player.getIdentifier() + "';value='" + value + "';Action='" + action.name() +"')");
+			this.plugin.getELogger().debug("Event AfkEvent.Enable : (UUID='" + player.getIdentifier() + "';value='" + value + "';Action='" + action.name() +"')");
 			return this.plugin.getGame().getEventManager().post(ESpongeEventFactory.createAfkEventEnable(player, action, this.getCause()));
 		} else {
-			this.plugin.getLogger().debug("Event AfkEvent.Disable : (UUID='" + player.getIdentifier() + "';value='" + value + "';Action='" + action.name() +"')");
+			this.plugin.getELogger().debug("Event AfkEvent.Disable : (UUID='" + player.getIdentifier() + "';value='" + value + "';Action='" + action.name() +"')");
 			return this.plugin.getGame().getEventManager().post(ESpongeEventFactory.createAfkEventDisable(player, action, this.getCause()));
 		}
 	}
@@ -79,10 +79,10 @@ public class EEManagerEvent {
 	
 	public boolean toggle(final EPlayer player, final boolean value) {
 		if (value) {
-			this.plugin.getLogger().debug("Event ToogleEvent.Enable : (UUID='" + player.getIdentifier() + "';value='" + value + "')");
+			this.plugin.getELogger().debug("Event ToogleEvent.Enable : (UUID='" + player.getIdentifier() + "';value='" + value + "')");
 			return this.plugin.getGame().getEventManager().post(ESpongeEventFactory.createToggleEventEnable(player, this.getCause()));
 		} else {
-			this.plugin.getLogger().debug("Event ToogleEvent.Disable : (UUID='" + player.getIdentifier() + "';value='" + value + "')");
+			this.plugin.getELogger().debug("Event ToogleEvent.Disable : (UUID='" + player.getIdentifier() + "';value='" + value + "')");
 			return this.plugin.getGame().getEventManager().post(ESpongeEventFactory.createToggleEventDisable(player, this.getCause()));
 		}
 	}
@@ -101,10 +101,10 @@ public class EEManagerEvent {
 	
 	public boolean freeze(final EPlayer player, final boolean value) {
 		if (value) {
-			this.plugin.getLogger().debug("Event FreezeEvent.Enable : (UUID='" + player.getIdentifier() + "';value='" + value + "')");
+			this.plugin.getELogger().debug("Event FreezeEvent.Enable : (UUID='" + player.getIdentifier() + "';value='" + value + "')");
 			return this.plugin.getGame().getEventManager().post(ESpongeEventFactory.createFreezeEventEnable(player, this.getCause()));
 		} else {
-			this.plugin.getLogger().debug("Event FreezeEvent.Disable : (UUID='" + player.getIdentifier() + "';value='" + value + "')");
+			this.plugin.getELogger().debug("Event FreezeEvent.Disable : (UUID='" + player.getIdentifier() + "';value='" + value + "')");
 			return this.plugin.getGame().getEventManager().post(ESpongeEventFactory.createFreezeEventDisable(player, this.getCause()));
 		}
 	}
@@ -123,10 +123,10 @@ public class EEManagerEvent {
 	
 	public boolean god(final EPlayer player, final boolean value) {
 		if (value) {
-			this.plugin.getLogger().debug("Event GodEvent.Enable : (UUID='" + player.getIdentifier() + "';value='" + value + "')");
+			this.plugin.getELogger().debug("Event GodEvent.Enable : (UUID='" + player.getIdentifier() + "';value='" + value + "')");
 			return this.plugin.getGame().getEventManager().post(ESpongeEventFactory.createGodEventEnable(player, this.getCause()));
 		} else {
-			this.plugin.getLogger().debug("Event GodEvent.Disable : (UUID='" + player.getIdentifier() + "';value='" + value + "')");
+			this.plugin.getELogger().debug("Event GodEvent.Disable : (UUID='" + player.getIdentifier() + "';value='" + value + "')");
 			return this.plugin.getGame().getEventManager().post(ESpongeEventFactory.createGodEventDisable(player, this.getCause()));
 		}
 	}
@@ -145,10 +145,10 @@ public class EEManagerEvent {
 	
 	public boolean vanish(final EPlayer player, final boolean value) {
 		if (value) {
-			this.plugin.getLogger().debug("Event VanishEvent.Enable : (UUID='" + player.getIdentifier() + "';value='" + value + "')");
+			this.plugin.getELogger().debug("Event VanishEvent.Enable : (UUID='" + player.getIdentifier() + "';value='" + value + "')");
 			return this.plugin.getGame().getEventManager().post(ESpongeEventFactory.createVanishEventEnable(player, this.getCause()));
 		} else {
-			this.plugin.getLogger().debug("Event VanishEvent.Disable : (UUID='" + player.getIdentifier() + "';value='" + value + "')");
+			this.plugin.getELogger().debug("Event VanishEvent.Disable : (UUID='" + player.getIdentifier() + "';value='" + value + "')");
 			return this.plugin.getGame().getEventManager().post(ESpongeEventFactory.createVanishEventDisable(player, this.getCause()));
 		}
 	}
@@ -166,7 +166,7 @@ public class EEManagerEvent {
 	}
 	
 	public boolean mail(final EPlayer player, final CommandSource source, final String message) {
-		this.plugin.getLogger().debug("Event MailEvent.Add : (UUID='" + player.getIdentifier() + "';to='" + source.getIdentifier() + "';message='" + message + "')");
+		this.plugin.getELogger().debug("Event MailEvent.Add : (UUID='" + player.getIdentifier() + "';to='" + source.getIdentifier() + "';message='" + message + "')");
 		return this.plugin.getGame().getEventManager().post(ESpongeEventFactory.createMailEventSend(player, source, message, this.getCause()));
 	}
 	
@@ -180,13 +180,13 @@ public class EEManagerEvent {
 	
 	public boolean mail(final EPlayer player, final Mail mail, final MailEvent.Action action) {
 		if (action.equals(MailEvent.Action.REMOVE)) {
-			this.plugin.getLogger().debug("Event MailEvent.Remove : (UUID='" + player.getIdentifier() + "';mail='" + mail + "')");
+			this.plugin.getELogger().debug("Event MailEvent.Remove : (UUID='" + player.getIdentifier() + "';mail='" + mail + "')");
 			return this.plugin.getGame().getEventManager().post(ESpongeEventFactory.createMailEventRemove(player, mail, this.getCause()));
 		} else if (action.equals(MailEvent.Action.READ)) {
-			this.plugin.getLogger().debug("Event MailEvent.Read : (UUID='" + player.getIdentifier() + "';mail='" + mail + "')");
+			this.plugin.getELogger().debug("Event MailEvent.Read : (UUID='" + player.getIdentifier() + "';mail='" + mail + "')");
 			return this.plugin.getGame().getEventManager().post(ESpongeEventFactory.createMailEventRead(player, mail, this.getCause()));
 		} else if (action.equals(MailEvent.Action.RECEIVE)) {
-			this.plugin.getLogger().debug("Event MailEvent.Receive : (UUID='" + player.getIdentifier() + "';mail='" + mail + "')");
+			this.plugin.getELogger().debug("Event MailEvent.Receive : (UUID='" + player.getIdentifier() + "';mail='" + mail + "')");
 			return this.plugin.getGame().getEventManager().post(ESpongeEventFactory.createMailEventReceive(player, mail, this.getCause()));
 		}
 		return false;
@@ -205,7 +205,7 @@ public class EEManagerEvent {
 	}
 	
 	public boolean back(final EPlayer player, final Optional<Transform<World>> before, final Optional<Transform<World>> after) {
-		this.plugin.getLogger().debug("Event BackEvent : (UUID='" + player.getIdentifier() + "';before='" + before + "';after='" + after + "')");
+		this.plugin.getELogger().debug("Event BackEvent : (UUID='" + player.getIdentifier() + "';before='" + before + "';after='" + after + "')");
 		return this.plugin.getGame().getEventManager().post(ESpongeEventFactory.createBackEvent(player, before, after, this.getCause()));
 	}
 	
@@ -222,7 +222,7 @@ public class EEManagerEvent {
 	}
 	
 	public boolean homeAdd(final EPlayer player, final String name, final Transform<World> location) {
-		this.plugin.getLogger().debug("Event HomeEvent.Add : (UUID='" + player.getIdentifier() + "';name='" + name + "';location='" + location + "')");
+		this.plugin.getELogger().debug("Event HomeEvent.Add : (UUID='" + player.getIdentifier() + "';name='" + name + "';location='" + location + "')");
 		return this.plugin.getGame().getEventManager().post(ESpongeEventFactory.createHomeEventAdd(player, name, location, this.getCause()));
 	}
 	
@@ -235,7 +235,7 @@ public class EEManagerEvent {
 	}
 	
 	public boolean homeRemove(final EPlayer player, final String name, final Optional<Transform<World>> location) {
-		this.plugin.getLogger().debug("Event HomeEvent.Remove : (UUID='" + player.getIdentifier() + "';name='" + name + "';location='" + location + "')");
+		this.plugin.getELogger().debug("Event HomeEvent.Remove : (UUID='" + player.getIdentifier() + "';name='" + name + "';location='" + location + "')");
 		return this.plugin.getGame().getEventManager().post(ESpongeEventFactory.createHomeEventRemove(player, name, location, this.getCause()));
 	}
 	
@@ -248,7 +248,7 @@ public class EEManagerEvent {
 	}
 	
 	public boolean homeMove(final EPlayer player, final String name, final Optional<Transform<World>> before, final Transform<World> after) {
-		this.plugin.getLogger().debug("Event HomeEvent.Move : (UUID='" + player.getIdentifier() + "';name='" + name + "';before='" + before + "';after='" + after + "')");
+		this.plugin.getELogger().debug("Event HomeEvent.Move : (UUID='" + player.getIdentifier() + "';name='" + name + "';before='" + before + "';after='" + after + "')");
 		return this.plugin.getGame().getEventManager().post(ESpongeEventFactory.createHomeEventMove(player, name, before, after, this.getCause()));
 	}
 	
@@ -266,10 +266,10 @@ public class EEManagerEvent {
 	
 	public boolean ignore(final EPlayer player, final UUID ignore, final IgnoreEvent.Action action) {
 		if (action.equals(IgnoreEvent.Action.ADD)) {
-			this.plugin.getLogger().debug("Event IgnoreEvent.Add : (UUID='" + player.getIdentifier() + "';ignore='" + ignore + "')");
+			this.plugin.getELogger().debug("Event IgnoreEvent.Add : (UUID='" + player.getIdentifier() + "';ignore='" + ignore + "')");
 			return this.plugin.getGame().getEventManager().post(ESpongeEventFactory.createIgnoreEventAdd(player, ignore, this.getCause()));
 		} else if (action.equals(IgnoreEvent.Action.REMOVE)) {
-			this.plugin.getLogger().debug("Event IgnoreEvent.Remove : (UUID='" + player.getIdentifier() + "';ignore='" + ignore + "')");
+			this.plugin.getELogger().debug("Event IgnoreEvent.Remove : (UUID='" + player.getIdentifier() + "';ignore='" + ignore + "')");
 			return this.plugin.getGame().getEventManager().post(ESpongeEventFactory.createIgnoreEventRemove(player, ignore, this.getCause()));
 		}
 		return false;

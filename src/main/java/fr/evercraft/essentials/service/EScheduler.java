@@ -164,7 +164,7 @@ public class EScheduler {
 							if (subject.get().setAfkAuto(true)) {
 								EEMessages.AFK_ON_PLAYER.sendTo(player);
 								EEMessages.AFK_ON_ALL.sender()
-									.replace(player.getReplacesAll())
+									.replace(player.getReplaces())
 									.sendAll(this.plugin.getEServer().getOnlineEPlayers(), others -> !others.equals(player));
 							} else {
 								player.setAfkAutoFake(true);

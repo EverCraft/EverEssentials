@@ -126,7 +126,7 @@ public class EEKill  extends ECommand<EverEssentials> {
         channel = player.getMessageChannel();
 
         Map<String, EReplace<?>> replaces = new HashMap<String, EReplace<?>>();
-        replaces.putAll(player.getReplacesAll());
+        replaces.putAll(player.getReplaces());
         replaces.put("<staff>", EReplace.of(staff.getName()));
         replaces.put("<player>", EReplace.of(player.getName()));
         

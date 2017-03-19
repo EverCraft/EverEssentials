@@ -290,7 +290,7 @@ public class EEItem extends EReloadCommand<EverEssentials> {
 			if (type.isPresent()){
 				blacklist.add(type.get());
 			} else {
-				this.plugin.getLogger().warn("BlackList error : '" + item + "' is not a name of an object minecraft.");
+				this.plugin.getELogger().warn("BlackList error : '" + item + "' is not a name of an object minecraft.");
 			}
 		});
 		return blacklist;

@@ -34,9 +34,9 @@ public class EEConfigMotd extends EConfig<EverEssentials> {
 	public void loadDefault() {
 		List<String> list = Arrays.asList(
 				"&6&m                                                                                &r",	
-				"   &7Bienvenue &6" + EReplacesPlayer.DISPLAYNAME_FORMAT.getName() + "&7 sur le serveur &6&lPVP/Faction&7",
+				"   &7Bienvenue &6" + EReplacesPlayer.DISPLAYNAME.getName() + "&7 sur le serveur &6&lPVP/Faction&7",
 				"   &7Adresse du Teamspeak : &6evercraft.fr",
-				"   &7Vous avez &6" + EReplacesPlayer.BALANCE_FORMAT.getName(),
+				"   &7Vous avez &6" + EReplacesPlayer.BALANCE.getName(),
 				"   &7Nous sommes le &6" + EReplacesServer.DATE.getName() + "&7 et il est &6" + EReplacesServer.TIME.getName() + "&7",
 				"&6&m                                                                                &r");
 		addDefault("motd", list);

@@ -114,7 +114,7 @@ public class EESuicide extends ECommand<EverEssentials> {
 
         messageCancelled = !EEMessages.SUICIDE_DEATH_MESSAGE.getMessage().getChat().isPresent();
         
-        formatter.getBody().add(new MessageEvent.DefaultBodyApplier(EEMessages.SUICIDE_DEATH_MESSAGE.getFormat().toText(player.getReplacesAll())));
+        formatter.getBody().add(new MessageEvent.DefaultBodyApplier(EEMessages.SUICIDE_DEATH_MESSAGE.getFormat().toText(player.getReplaces())));
         
         List<NamedCause> causes = new ArrayList<NamedCause>();
         causes.add(NamedCause.of("Command", "kill"));

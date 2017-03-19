@@ -73,12 +73,12 @@ public class EEAfk extends EParentCommand<EverEssentials> {
 			if (afk) {
 				EEMessages.AFK_ON_PLAYER.sendTo(player);
 				EEMessages.AFK_ON_ALL.sender()
-					.replace(player.getReplacesAll())
+					.replace(player.getReplaces())
 					.sendAll(this.plugin.getEServer().getOnlineEPlayers(), other -> !other.equals(player));
 			} else {
 				EEMessages.AFK_OFF_PLAYER.sendTo(player);
 				EEMessages.AFK_OFF_ALL.sender()
-					.replace(player.getReplacesAll())
+					.replace(player.getReplaces())
 					.sendAll(this.plugin.getEServer().getOnlineEPlayers(), other -> !other.equals(player));
 			}
 			return true;

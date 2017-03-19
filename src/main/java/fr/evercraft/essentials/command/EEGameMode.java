@@ -197,6 +197,7 @@ public class EEGameMode extends ECommand<EverEssentials> {
 			EEMessages.GAMEMODE_OTHERS_PLAYER_CHANGE.sender()
 				.replace("<gamemode>", UtilsGameMode.getName(gamemode_after))
 				.replace("<player>", user.getName())
+				.replace("<staff>", staff.getName())
 				.sendTo(((EPlayer) user));
 		}
 		return true;

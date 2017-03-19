@@ -44,7 +44,7 @@ public class EEMessage extends EMessage<EverEssentials> {
 		AFK_ON_PLAYER("afk.on.player", 											"&7Vous êtes désormais AFK."),
 		AFK_ON_PLAYER_ERROR("afk.on.playerError", 								"&cVous êtes déjà AFK."),
 		AFK_ON_PLAYER_CANCEL("afk.on.playerCancel", 							"&cImpossible de vous mettre AFK."),
-		AFK_ON_ALL("afk.on.all", 												"&6" + EReplacesPlayer.DISPLAYNAME_FORMAT.getName() + " &7est désormais AFK.", "The message may be empty"),
+		AFK_ON_ALL("afk.on.all", 												"&6" + EReplacesPlayer.DISPLAYNAME.getName() + " &7est désormais AFK.", "The message may be empty"),
 		AFK_ON_OTHERS_PLAYER("afk.on.othersPlayer", 							"&7Vous êtes désormais AFK à cause de &6<staff>&7."),
 		AFK_ON_OTHERS_STAFF("afk.on.othersStaff", 								"&6<player> &7est désormais AFK à cause de &6<staff>&7."),
 		AFK_ON_OTHERS_ERROR("afk.on.othersError", 								"&6<player> &cest déjà signalé AFK."),
@@ -55,7 +55,7 @@ public class EEMessage extends EMessage<EverEssentials> {
 		AFK_OFF_PLAYER("afk.off.player", 										"&7Vous n'êtes plus AFK."),
 		AFK_OFF_PLAYER_ERROR("afk.off.playerError", 							"&cVous n'êtes pas AFK."),
 		AFK_OFF_PLAYER_CANCEL("afk.off.playerCancel", 							"&cImpossible de vous rendre vulnérable."),
-		AFK_OFF_ALL("afk.off.all", 												"&6" + EReplacesPlayer.DISPLAYNAME_FORMAT.getName() + " &7n'est plus AFK.", "The message may be empty"),
+		AFK_OFF_ALL("afk.off.all", 												"&6" + EReplacesPlayer.DISPLAYNAME.getName() + " &7n'est plus AFK.", "The message may be empty"),
 		AFK_OFF_OTHERS_PLAYER("afk.off.othersPlayer", 							"&7Vous n'êtes plus AFK à cause de &6<staff>&7."),
 		AFK_OFF_OTHERS_STAFF("afk.off.othersStaff", 							"&6<player> &7n'est plus AFK à cause de &6<staff>&7."),
 		AFK_OFF_OTHERS_ERROR("afk.off.othersError", 							"&6<player> &cn'est pas AFK."),
@@ -436,12 +436,12 @@ public class EEMessage extends EMessage<EverEssentials> {
 		
 		KILL_DESCRIPTION("kill.description", 						"Tue un joueur"),
 		KILL_PLAYER("kill.player", 									"&7Vous avez été tué par &6<staff>&7."),
-		KILL_PLAYER_DEATH_MESSAGE("kill.playerDeathMessage", 		"&f<" + EReplacesPlayer.DISPLAYNAME_FORMAT.getName() + "> s'est tué par <staff>."),
+		KILL_PLAYER_DEATH_MESSAGE("kill.playerDeathMessage", 		"&f<" + EReplacesPlayer.DISPLAYNAME.getName() + "> s'est tué par <staff>."),
 		KILL_PLAYER_CANCEL("kill.playerCancel", 					"&cImpossible de tuer &6<player>&c."),
 		KILL_STAFF("kill.staff", 									"&7Vous avez tué &6<player>&7."),
 		KILL_EQUALS("kill.equals", 									"&7Vous vous êtes suicidé."),
 		
-		KILL_EQUALS_DEATH_MESSAGE("kill.equalsDeathMessage", 		"&f<" + EReplacesPlayer.DISPLAYNAME_FORMAT.getName() + "> s'est suicidé."),
+		KILL_EQUALS_DEATH_MESSAGE("kill.equalsDeathMessage", 		"&f<" + EReplacesPlayer.DISPLAYNAME.getName() + "> s'est suicidé."),
 		KILL_EQUALS_CANCEL("kill.equalsCancel", 					"&cImpossible de vous suicider."),
 		
 		LAG_DESCRIPTION("lag.description", 							"Connaître l'état du serveur"),
@@ -703,7 +703,7 @@ public class EEMessage extends EMessage<EverEssentials> {
 		SUICIDE_DESCRIPTION("suicide.description", 									"Permet de vous suicider"),
 		SUICIDE_PLAYER("suicide.player", 											"&7Vous vous êtes suicidé."),
 		
-		SUICIDE_DEATH_MESSAGE("suicide.equalsDeathMessage", 						"&f" + EReplacesPlayer.DISPLAYNAME_FORMAT.getName() + " s'est suicidé."),
+		SUICIDE_DEATH_MESSAGE("suicide.equalsDeathMessage", 						"&f" + EReplacesPlayer.DISPLAYNAME.getName() + " s'est suicidé."),
 		SUICIDE_CANCEL("suicide.equalsCancel", 										"&cImpossible de vous suicider."),
 		
 		// TP

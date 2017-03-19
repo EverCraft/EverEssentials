@@ -151,7 +151,7 @@ public class EUserSubject implements SubjectUserEssentials {
 			this.setLastIp(player.getConnection().getAddress().getAddress());
 			
 		} else {
-			this.plugin.getLogger().warn("Player empty : connect");
+			this.plugin.getELogger().warn("Player empty : connect");
 		}
 		this.afk = false;
 	}
@@ -167,7 +167,7 @@ public class EUserSubject implements SubjectUserEssentials {
 			}
 			this.stopTotalTimePlayed();
 		} else {
-			this.plugin.getLogger().warn("Player empty : disconnect");
+			this.plugin.getELogger().warn("Player empty : disconnect");
 		}
 	}
 	
@@ -204,7 +204,7 @@ public class EUserSubject implements SubjectUserEssentials {
 				this.total_played = list.getLong("total_time_played");
 				this.last_ip = UtilsNetwork.getHost(list.getString("last_ip"));
 				
-				this.plugin.getLogger().debug("Loading : (identifier='" + this.identifier + "';"
+				this.plugin.getELogger().debug("Loading : (identifier='" + this.identifier + "';"
 														+ "vanish='" + this.vanish + "';"
 														+ "god='" + this.god + "';"
 														+ "toggle='" + this.toggle + "';"
@@ -216,7 +216,7 @@ public class EUserSubject implements SubjectUserEssentials {
 				this.insertPlayer(connection);
 			}
     	} catch (SQLException e) {
-    		this.plugin.getLogger().warn("Player error when loading : " + e.getMessage());
+    		this.plugin.getELogger().warn("Player error when loading : " + e.getMessage());
 		} finally {
 			try {if (preparedStatement != null) preparedStatement.close();} catch (SQLException e) {}
 	    }
@@ -241,10 +241,10 @@ public class EUserSubject implements SubjectUserEssentials {
 																	list.getDouble("z"),
 																	list.getDouble("yaw"),
 																	list.getDouble("pitch")));
-				this.plugin.getLogger().debug("Loading : (identifier='" + this.identifier + "';home='" + list.getString("name") + "';location='" + homes.get(list.getString("name")) + "')");
+				this.plugin.getELogger().debug("Loading : (identifier='" + this.identifier + "';home='" + list.getString("name") + "';location='" + homes.get(list.getString("name")) + "')");
 			}
     	} catch (SQLException e) {
-    		this.plugin.getLogger().warn("Homes error when loading : " + e.getMessage());
+    		this.plugin.getELogger().warn("Homes error when loading : " + e.getMessage());
 		} finally {
 			try {if (preparedStatement != null) preparedStatement.close();} catch (SQLException e) {}
 	    }
@@ -266,10 +266,10 @@ public class EUserSubject implements SubjectUserEssentials {
 															list.getDouble("z"),
 															list.getDouble("yaw"),
 															list.getDouble("pitch")));
-				this.plugin.getLogger().debug("Loading : (identifier='" + this.identifier + "';back='" + back.get() + "')");
+				this.plugin.getELogger().debug("Loading : (identifier='" + this.identifier + "';back='" + back.get() + "')");
 			}
     	} catch (SQLException e) {
-    		this.plugin.getLogger().warn("Back error when loading : " + e.getMessage());
+    		this.plugin.getELogger().warn("Back error when loading : " + e.getMessage());
 		} finally {
 			try {if (preparedStatement != null) preparedStatement.close();} catch (SQLException e) {}
 	    }
@@ -287,10 +287,10 @@ public class EUserSubject implements SubjectUserEssentials {
 			ResultSet list = preparedStatement.executeQuery();
 			while (list.next()) {
 				this.ignores.add(UUID.fromString(list.getString("ignore")));
-				this.plugin.getLogger().debug("Loading : (identifier='" + this.identifier + "';ignore='" + list.getString("ignore") + "')");
+				this.plugin.getELogger().debug("Loading : (identifier='" + this.identifier + "';ignore='" + list.getString("ignore") + "')");
 			}
     	} catch (SQLException e) {
-    		this.plugin.getLogger().warn("Ignores error when loading : " + e.getMessage());
+    		this.plugin.getELogger().warn("Ignores error when loading : " + e.getMessage());
 		} finally {
 			try {if (preparedStatement != null) preparedStatement.close();} catch (SQLException e) {}
 	    }
@@ -309,10 +309,10 @@ public class EUserSubject implements SubjectUserEssentials {
 			while (list.next()) {
 				Mail mail = new EMail(this.plugin, list.getInt("id"), list.getTimestamp("datetime").getTime(), list.getString("to"), list.getBoolean("read"), list.getString("message"));
 				this.mails.add(mail);
-				this.plugin.getLogger().debug("Loading : (identifier='" + this.identifier + "';mail='" + mail + "')");
+				this.plugin.getELogger().debug("Loading : (identifier='" + this.identifier + "';mail='" + mail + "')");
 			}
     	} catch (SQLException e) {
-    		this.plugin.getLogger().warn("Mails error when loading : " + e.getMessage());
+    		this.plugin.getELogger().warn("Mails error when loading : " + e.getMessage());
 		} finally {
 			try {if (preparedStatement != null) preparedStatement.close();} catch (SQLException e) {}
 	    }
@@ -337,7 +337,7 @@ public class EUserSubject implements SubjectUserEssentials {
 			}
 			
 			preparedStatement.execute();
-			this.plugin.getLogger().debug("Insert : (identifier='" + this.identifier + "';"
+			this.plugin.getELogger().debug("Insert : (identifier='" + this.identifier + "';"
 													+ "vanish='" + this.vanish + "';"
 													+ "god='" + this.god + "';"
 													+ "toggle='" + this.toggle + "';"
@@ -346,7 +346,7 @@ public class EUserSubject implements SubjectUserEssentials {
 													+ "last_ip='" + this.last_ip.orElse(null) + "';"
 													+ ")");
 		} catch (SQLException e) {
-	    	this.plugin.getLogger().warn("Error during a change of player : " + e.getMessage());
+	    	this.plugin.getELogger().warn("Error during a change of player : " + e.getMessage());
 		} finally {
 			try {if (preparedStatement != null) preparedStatement.close();} catch (SQLException e) {}
 	    }
@@ -449,7 +449,7 @@ public class EUserSubject implements SubjectUserEssentials {
 			if (player.isPresent()) {
 				EEMessages.AFK_OFF_PLAYER.sendTo(player.get());
 				EEMessages.AFK_OFF_ALL.sender()
-					.replace(player.get().getReplacesAll())
+					.replace(player.get().getReplaces())
 					.sendAll(this.plugin.getEServer().getOnlineEPlayers(), other -> !other.equals(player));
 			}
 		}

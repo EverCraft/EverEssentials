@@ -25,12 +25,14 @@ import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
+import org.spongepowered.api.entity.Entity;
+import org.spongepowered.api.entity.EntityType;
+import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
-import org.spongepowered.api.world.Location;
-import org.spongepowered.api.world.World;
 
+import com.flowpowered.math.vector.Vector3d;
 import com.flowpowered.math.vector.Vector3i;
 
 import fr.evercraft.essentials.EEMessage.EEMessages;
@@ -39,7 +41,8 @@ import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.command.EReloadCommand;
 import fr.evercraft.everapi.server.player.EPlayer;
-import fr.evercraft.everapi.sponge.UtilsEntity;
+import fr.evercraft.everapi.services.EntityService;
+import fr.evercraft.everapi.services.entity.EntityFormat;
 
 public class EESpawnMob extends EReloadCommand<EverEssentials> {
 	
@@ -77,9 +80,16 @@ public class EESpawnMob extends EReloadCommand<EverEssentials> {
 	public Collection<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		if (args.size() == 1){
 			List<String> suggests = new ArrayList<String>();
-			for (UtilsEntity type : UtilsEntity.values()){
-				suggests.add(type.getName());
-			}
+			this.plugin.getGame().getRegistry().getAllForMinecraft(EntityType.class)
+				.forEach(entity -> suggests.add(entity.getId().replaceAll("minecraft:", "")));
+			this.plugin.getGame().getRegistry().getAllOf(EntityType.class)
+				.forEach(entity -> suggests.add(entity.getId()));
+			this.plugin.getEverAPI().getManagerService().getEntity()
+				.ifPresent(service -> service.getAll().forEach(entity -> {
+					suggests.add(entity.getId());
+					suggests.add("evercraft:" + entity.getId());
+				}));
+			
 			return suggests;
 		} else if (args.size() == 2){
 			Arrays.asList("1", String.valueOf(this.limit));
@@ -97,14 +107,7 @@ public class EESpawnMob extends EReloadCommand<EverEssentials> {
 			
 			// Si la source est un joueur
 			if (source instanceof EPlayer) {
-				Optional<UtilsEntity> optEntity = UtilsEntity.get(args.get(0));
-				if (optEntity.isPresent()){
-					resultat = this.commandSpawnMob((EPlayer) source, optEntity.get(), 1);
-				} else {
-					EEMessages.SPAWNMOB_ERROR_MOB.sender()
-						.replace("<entity>", args.get(0))
-						.sendTo(source);
-				}
+				resultat = this.commandSpawnMob((EPlayer) source, args.get(0), 1);
 			// La source n'est pas un joueur
 			} else {
 				EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()
@@ -115,20 +118,13 @@ public class EESpawnMob extends EReloadCommand<EverEssentials> {
 		} else if (args.size() == 2) {
 			
 			if (source instanceof EPlayer) {
-				Optional<UtilsEntity> optEntity = UtilsEntity.get(args.get(0));
-				if (optEntity.isPresent()) {
-					try {
-						int amount = Math.max(Math.min(Integer.parseInt(args.get(1)), this.limit), 1);
-						resultat = this.commandSpawnMob((EPlayer) source, optEntity.get(), amount);						
-					} catch (NumberFormatException e) {
-						EAMessages.IS_NOT_NUMBER.sender()
-							.prefix(EEMessages.PREFIX)
-							.replace("<number>", args.get(1))
-							.sendTo(source);
-					}
-				} else {
-					EEMessages.SPAWNMOB_ERROR_MOB.sender()
-						.replace("<entity>", args.get(0))
+				try {
+					int amount = Math.max(Math.min(Integer.parseInt(args.get(1)), this.limit), 1);
+					resultat = this.commandSpawnMob((EPlayer) source, args.get(0), amount);						
+				} catch (NumberFormatException e) {
+					EAMessages.IS_NOT_NUMBER.sender()
+						.prefix(EEMessages.PREFIX)
+						.replace("<number>", args.get(1))
 						.sendTo(source);
 				}
 			// La source n'est pas un joueur
@@ -144,9 +140,8 @@ public class EESpawnMob extends EReloadCommand<EverEssentials> {
 		return resultat;
 	}
 	
-	private boolean commandSpawnMob(final EPlayer player, UtilsEntity entity, int amount) {
+	private boolean commandSpawnMob(final EPlayer player, String entityString, int amount) {
 		Optional<Vector3i> block = player.getViewBlock();
-		
 		// Aucun block
 		if (!block.isPresent()) {
 			EAMessages.PLAYER_NO_LOOK_BLOCK.sender()
@@ -154,13 +149,66 @@ public class EESpawnMob extends EReloadCommand<EverEssentials> {
 				.sendTo(player);
 			return false;
 		}
+		Vector3d location = block.get().toDouble().add(0.5, 1, 0.5);
 		
-		Location<World> spawnLocation = player.getWorld().getLocation(block.get().add(0, 1, 0));
-		entity.spawnEntity(spawnLocation, amount);
+		// EntityService
+		Optional<EntityService> service = this.plugin.getEverAPI().getManagerService().getEntity();
+		if (service.isPresent()) {
+			Optional<EntityFormat> format = service.get().get(entityString);
+			if (format.isPresent()) {
+				return this.commandSpawnMob(player, format.get(), amount, location);
+			}
+		}
+		
+		// EntityType
+		if (!entityString.contains(":")) {
+			entityString = "minecraft:" + entityString;
+		}
+		Optional<EntityType> entity = this.plugin.getGame().getRegistry().getType(EntityType.class, entityString);
+		if (entity.isPresent()) {
+			return this.commandSpawnMob(player, entity.get(), amount, location);
+		}
+		
+		// Erreur
+		EEMessages.SPAWNMOB_ERROR_MOB.sender()
+			.replace("<entity>", entityString)
+			.sendTo(player);
+		return false;
+	}
+	
+	private boolean commandSpawnMob(final EPlayer player, EntityType type, int amount, Vector3d location) {		
+		for(int cpt=0; cpt < amount; cpt++) {
+			player.getWorld().spawnEntity(
+					player.getWorld().createEntityNaturally(type, location),
+					Cause.source(this.plugin)
+						.owner(player.get())
+						.notifier(player.get())
+						.build());
+		}
 		
 		EEMessages.SPAWNMOB_MOB.sender()
 			.replace("<amount>", String.valueOf(amount))
-			.replace("<entity>", StringUtils.capitalize(entity.getName()))
+			.replace("<entity>", StringUtils.capitalize(type.getName()))
+			.sendTo(player);
+		return true;
+	}
+	
+	private boolean commandSpawnMob(final EPlayer player, EntityFormat format, int amount, Vector3d location) {
+		for(int cpt=0; cpt < amount; cpt++) {
+			Entity entity = player.getWorld().createEntityNaturally(format.getType(), location);
+			format.apply(entity);
+			
+			player.getWorld().spawnEntity(
+					entity,
+					Cause.source(this.plugin)
+						.owner(player.get())
+						.notifier(player.get())
+						.build());
+		}
+		
+		EEMessages.SPAWNMOB_MOB.sender()
+			.replace("<amount>", String.valueOf(amount))
+			.replace("<entity>", StringUtils.capitalize(format.getName()))
 			.sendTo(player);
 		return true;
 	}

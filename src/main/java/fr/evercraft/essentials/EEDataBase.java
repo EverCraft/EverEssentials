@@ -182,9 +182,9 @@ public class EEDataBase extends EDataBase<EverEssentials> {
 			preparedStatement.setString(2, identifier);
 			
 			preparedStatement.execute();
-			this.plugin.getLogger().debug("Updating the database : (identifier='" + identifier + "';last_ip='" + address + "')");
+			this.plugin.getELogger().debug("Updating the database : (identifier='" + identifier + "';last_ip='" + address + "')");
     	} catch (SQLException e) {
-        	this.plugin.getLogger().warn("Error during a change of vanish : " + e.getMessage());
+        	this.plugin.getELogger().warn("Error during a change of vanish : " + e.getMessage());
 		} catch (ServerDisableException e) {
 			e.execute();
 		} finally {
@@ -208,9 +208,9 @@ public class EEDataBase extends EDataBase<EverEssentials> {
 			preparedStatement.setString(2, identifier);
 			
 			preparedStatement.execute();
-			this.plugin.getLogger().debug("Updating the database : (identifier='" + identifier + "';vanish='" + vanish + "')");
+			this.plugin.getELogger().debug("Updating the database : (identifier='" + identifier + "';vanish='" + vanish + "')");
     	} catch (SQLException e) {
-        	this.plugin.getLogger().warn("Error during a change of vanish : " + e.getMessage());
+        	this.plugin.getELogger().warn("Error during a change of vanish : " + e.getMessage());
 		} catch (ServerDisableException e) {
 			e.execute();
 		} finally {
@@ -234,9 +234,9 @@ public class EEDataBase extends EDataBase<EverEssentials> {
 			preparedStatement.setString(2, identifier);
 			
 			preparedStatement.execute();
-			this.plugin.getLogger().debug("Updating the database : (identifier='" + identifier + "';god='" + god + "')");
+			this.plugin.getELogger().debug("Updating the database : (identifier='" + identifier + "';god='" + god + "')");
     	} catch (SQLException e) {
-        	this.plugin.getLogger().warn("Error during a change of god : " + e.getMessage());
+        	this.plugin.getELogger().warn("Error during a change of god : " + e.getMessage());
 		} catch (ServerDisableException e) {
 			e.execute();
 		} finally {
@@ -260,9 +260,9 @@ public class EEDataBase extends EDataBase<EverEssentials> {
 			preparedStatement.setString(2, identifier);
 			
 			preparedStatement.execute();
-			this.plugin.getLogger().debug("Updating the database : (identifier='" + identifier + "';toggle='" + toggle + "')");
+			this.plugin.getELogger().debug("Updating the database : (identifier='" + identifier + "';toggle='" + toggle + "')");
     	} catch (SQLException e) {
-        	this.plugin.getLogger().warn("Error during a change of toggle : " + e.getMessage());
+        	this.plugin.getELogger().warn("Error during a change of toggle : " + e.getMessage());
 		} catch (ServerDisableException e) {
 			e.execute();
 		} finally {
@@ -286,9 +286,9 @@ public class EEDataBase extends EDataBase<EverEssentials> {
 			preparedStatement.setString(2, identifier);
 			
 			preparedStatement.execute();
-			this.plugin.getLogger().debug("Updating the database : (identifier='" + identifier + "';freeze='" + freeze + "')");
+			this.plugin.getELogger().debug("Updating the database : (identifier='" + identifier + "';freeze='" + freeze + "')");
     	} catch (SQLException e) {
-        	this.plugin.getLogger().warn("Error during a change of freeze : " + e.getMessage());
+        	this.plugin.getELogger().warn("Error during a change of freeze : " + e.getMessage());
 		} catch (ServerDisableException e) {
 			e.execute();
 		} finally {
@@ -312,9 +312,9 @@ public class EEDataBase extends EDataBase<EverEssentials> {
 			preparedStatement.setString(2, identifier);
 			
 			preparedStatement.execute();
-			this.plugin.getLogger().debug("Updating the database : (identifier='" + identifier + "';total_time_played='" + time + "')");
+			this.plugin.getELogger().debug("Updating the database : (identifier='" + identifier + "';total_time_played='" + time + "')");
     	} catch (SQLException e) {
-        	this.plugin.getLogger().warn("Error during a change of setTotalTimePlayed : " + e.getMessage());
+        	this.plugin.getELogger().warn("Error during a change of setTotalTimePlayed : " + e.getMessage());
 		} catch (ServerDisableException e) {
 			e.execute();
 		} finally {
@@ -337,9 +337,9 @@ public class EEDataBase extends EDataBase<EverEssentials> {
 			preparedStatement.setString(2, ignore);
 			
 			preparedStatement.execute();
-			this.plugin.getLogger().debug("Adding to the database : (identifier='" + identifier + "';ignore='" + ignore + "')");
+			this.plugin.getELogger().debug("Adding to the database : (identifier='" + identifier + "';ignore='" + ignore + "')");
     	} catch (SQLException e) {
-        	this.plugin.getLogger().warn("Error during a change of ignore : " + e.getMessage());
+        	this.plugin.getELogger().warn("Error during a change of ignore : " + e.getMessage());
 		} catch (ServerDisableException e) {
 			e.execute();
 		} finally {
@@ -363,9 +363,9 @@ public class EEDataBase extends EDataBase<EverEssentials> {
 			preparedStatement.setString(2, ignore);
 			
 			preparedStatement.execute();
-			this.plugin.getLogger().debug("Remove from database : (identifier='" + identifier + "';ignore='" + ignore + "')");
+			this.plugin.getELogger().debug("Remove from database : (identifier='" + identifier + "';ignore='" + ignore + "')");
     	} catch (SQLException e) {
-        	this.plugin.getLogger().warn("Error during a change of ignore : " + e.getMessage());
+        	this.plugin.getELogger().warn("Error during a change of ignore : " + e.getMessage());
 		} catch (ServerDisableException e) {
 			e.execute();
 		} finally {
@@ -388,9 +388,9 @@ public class EEDataBase extends EDataBase<EverEssentials> {
 			preparedStatement.setString(1, identifier);
 			
 			preparedStatement.execute();
-			this.plugin.getLogger().debug("Removes the database ignores : (identifier='" + identifier + "';)");
+			this.plugin.getELogger().debug("Removes the database ignores : (identifier='" + identifier + "';)");
     	} catch (SQLException e) {
-    		this.plugin.getLogger().warn("Error ignores deletions : " + e.getMessage());
+    		this.plugin.getELogger().warn("Error ignores deletions : " + e.getMessage());
 		} catch (ServerDisableException e) {
 			e.execute();
 		} finally {
@@ -423,9 +423,9 @@ public class EEDataBase extends EDataBase<EverEssentials> {
 			preparedStatement.setDouble(8, location.getPitch());
 			
 			preparedStatement.execute();
-			this.plugin.getLogger().debug("Adding to the database : (identifier='" + identifier + "';home='" + name + "';location='" + location + "')");
+			this.plugin.getELogger().debug("Adding to the database : (identifier='" + identifier + "';home='" + name + "';location='" + location + "')");
     	} catch (SQLException e) {
-        	this.plugin.getLogger().warn("Error during a change of home : " + e.getMessage());
+        	this.plugin.getELogger().warn("Error during a change of home : " + e.getMessage());
 		} catch (ServerDisableException e) {
 			e.execute();
 		} finally {
@@ -461,9 +461,9 @@ public class EEDataBase extends EDataBase<EverEssentials> {
 			preparedStatement.setString(8, name);
 			
 			preparedStatement.execute();
-			this.plugin.getLogger().debug("Updating to the database : (identifier='" + identifier + "';home='" + name + "';location='" + location + "')");
+			this.plugin.getELogger().debug("Updating to the database : (identifier='" + identifier + "';home='" + name + "';location='" + location + "')");
     	} catch (SQLException e) {
-        	this.plugin.getLogger().warn("Error during a change of home : " + e.getMessage());
+        	this.plugin.getELogger().warn("Error during a change of home : " + e.getMessage());
 		} catch (ServerDisableException e) {
 			e.execute();
 		} finally {
@@ -487,9 +487,9 @@ public class EEDataBase extends EDataBase<EverEssentials> {
 			preparedStatement.setString(2, name);
 			
 			preparedStatement.execute();
-			this.plugin.getLogger().debug("Remove from database : (identifier='" + identifier + "';name='" + name + "')");
+			this.plugin.getELogger().debug("Remove from database : (identifier='" + identifier + "';name='" + name + "')");
     	} catch (SQLException e) {
-        	this.plugin.getLogger().warn("Error during a change of home : " + e.getMessage());
+        	this.plugin.getELogger().warn("Error during a change of home : " + e.getMessage());
 		} catch (ServerDisableException e) {
 			e.execute();
 		} finally {
@@ -512,9 +512,9 @@ public class EEDataBase extends EDataBase<EverEssentials> {
 			preparedStatement.setString(1, identifier);
 			
 			preparedStatement.execute();
-			this.plugin.getLogger().debug("Removes the database homes : (identifier='" + identifier + "';)");
+			this.plugin.getELogger().debug("Removes the database homes : (identifier='" + identifier + "';)");
     	} catch (SQLException e) {
-    		this.plugin.getLogger().warn("Error homes deletions : " + e.getMessage());
+    		this.plugin.getELogger().warn("Error homes deletions : " + e.getMessage());
 		} catch (ServerDisableException e) {
 			e.execute();
 		} finally {
@@ -546,9 +546,9 @@ public class EEDataBase extends EDataBase<EverEssentials> {
 			preparedStatement.setDouble(7, location.getPitch());
 			
 			preparedStatement.execute();
-			this.plugin.getLogger().debug("Adding to the database : (identifier='" + identifier + "';location='" + location + "')");
+			this.plugin.getELogger().debug("Adding to the database : (identifier='" + identifier + "';location='" + location + "')");
     	} catch (SQLException e) {
-        	this.plugin.getLogger().warn("Error during a change of back : " + e.getMessage());
+        	this.plugin.getELogger().warn("Error during a change of back : " + e.getMessage());
 		} catch (ServerDisableException e) {
 			e.execute();
 		} finally {
@@ -577,9 +577,9 @@ public class EEDataBase extends EDataBase<EverEssentials> {
 			preparedStatement.setString(7, identifier);
 			
 			preparedStatement.execute();
-			this.plugin.getLogger().debug("Updating the database : (identifier='" + identifier + "';location='" + location + "')");
+			this.plugin.getELogger().debug("Updating the database : (identifier='" + identifier + "';location='" + location + "')");
     	} catch (SQLException e) {
-        	this.plugin.getLogger().warn("Error during a change of back : " + e.getMessage());
+        	this.plugin.getELogger().warn("Error during a change of back : " + e.getMessage());
 		} catch (ServerDisableException e) {
 			e.execute();
 		} finally {
@@ -602,9 +602,9 @@ public class EEDataBase extends EDataBase<EverEssentials> {
 			preparedStatement.setString(1, identifier);
 			
 			preparedStatement.execute();
-			this.plugin.getLogger().debug("Remove from database : (identifier='" + identifier + "')");
+			this.plugin.getELogger().debug("Remove from database : (identifier='" + identifier + "')");
     	} catch (SQLException e) {
-        	this.plugin.getLogger().warn("Error during a change of back : " + e.getMessage());
+        	this.plugin.getELogger().warn("Error during a change of back : " + e.getMessage());
 		} catch (ServerDisableException e) {
 			e.execute();
 		} finally {
@@ -640,7 +640,7 @@ public class EEDataBase extends EDataBase<EverEssentials> {
 			if (tableKeys.next()) {
 				EMail mail = new EMail(this.plugin, tableKeys.getInt(1), datetime.getTime(), to, false, message);
 				subject.addMail(mail);
-				this.plugin.getLogger().debug("Adding to the database : ("
+				this.plugin.getELogger().debug("Adding to the database : ("
 								+ "id='" + tableKeys.getInt(1) + "';"
 								+ "time='" + datetime.getTime() + "';"
 								+ "player='" + subject.getIdentifier() + "';"
@@ -648,14 +648,14 @@ public class EEDataBase extends EDataBase<EverEssentials> {
 								+ "message='" + message + "';)");
 				return Optional.of(mail);
 			} else {
-				this.plugin.getLogger().debug("Error while adding an email in the database : ("
+				this.plugin.getELogger().debug("Error while adding an email in the database : ("
 						+ "time='" + datetime.getTime() + "';"
 						+ "player='" + subject.getIdentifier() + "';"
 						+ "to='" + to + "';"
 						+ "message='" + message + "';)");
 			}
     	} catch (SQLException e) {
-    		this.plugin.getLogger().debug("Error while adding an email in the database : ("
+    		this.plugin.getELogger().debug("Error while adding an email in the database : ("
 						+ "player='" + subject.getIdentifier() + "';"
 						+ "to='" + to + "';"
 						+ "message='" + message + "';) : " + e.getMessage());
@@ -684,11 +684,11 @@ public class EEDataBase extends EDataBase<EverEssentials> {
 			preparedStatement.setInt(2, mail.getID());
 			preparedStatement.execute();
 			
-			this.plugin.getLogger().debug("Update an email in the database : ("
+			this.plugin.getELogger().debug("Update an email in the database : ("
 					+ "id='" + mail.getID() + "';"
 					+ "read='" + mail.isRead() + "';)");
     	} catch (SQLException e) {
-    		this.plugin.getLogger().debug("Error while updating an email in the database ("
+    		this.plugin.getELogger().debug("Error while updating an email in the database ("
 						+ "id='" + mail.getID() + "';"
 						+ "read='" + mail.isRead() + "') : " + e.getMessage());
 		} catch (ServerDisableException e) {
@@ -714,9 +714,9 @@ public class EEDataBase extends EDataBase<EverEssentials> {
 			preparedStatement.setInt(2, id);
 			
 			preparedStatement.execute();
-			this.plugin.getLogger().debug("Deleting an email from the database : (id='" + id + "';player='" + identifier + "')");
+			this.plugin.getELogger().debug("Deleting an email from the database : (id='" + id + "';player='" + identifier + "')");
     	} catch (SQLException e) {
-        	this.plugin.getLogger().warn("Error while deleting an email (id='" + id + "';player='" + identifier + "') : " + e.getMessage());
+        	this.plugin.getELogger().warn("Error while deleting an email (id='" + id + "';player='" + identifier + "') : " + e.getMessage());
 		} catch (ServerDisableException e) {
 			e.execute();
 		} finally {
@@ -746,7 +746,7 @@ public class EEDataBase extends EDataBase<EverEssentials> {
 				subject.loadMails(connection);
 			}
     	} catch (SQLException e) {
-    		this.plugin.getLogger().warn("Error while adding an email in the database : " + e.getMessage());
+    		this.plugin.getELogger().warn("Error while adding an email in the database : " + e.getMessage());
     	} catch (ServerDisableException e) {
 			e.execute();
 		} finally {
@@ -769,7 +769,7 @@ public class EEDataBase extends EDataBase<EverEssentials> {
 			preparedStatement.setString(4, message);
 			preparedStatement.execute();
     	} catch (SQLException e) {
-    		this.plugin.getLogger().warn(": " + e.getMessage());
+    		this.plugin.getELogger().warn(": " + e.getMessage());
 		} finally {
 			try {
 				if (preparedStatement != null) preparedStatement.close();
@@ -794,7 +794,7 @@ public class EEDataBase extends EDataBase<EverEssentials> {
 			}
 			return Optional.ofNullable(uuids);
     	} catch (SQLException e) {
-    		this.plugin.getLogger().warn(": " + e.getMessage());
+    		this.plugin.getELogger().warn(": " + e.getMessage());
     	} catch (ServerDisableException e) {
 			e.execute();
 		} finally {

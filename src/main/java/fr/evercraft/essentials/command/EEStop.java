@@ -92,7 +92,7 @@ public class EEStop extends ECommand<EverEssentials> {
 		replaces.putAll(this.plugin.getChat().getReplaceServer());
 		replaces.put("<staff>", EReplace.of(player.getName()));
 		
-		this.plugin.getLogger().info("Server shutdown by '" + player.getName() + "'");
+		this.plugin.getELogger().info("Server shutdown by '" + player.getName() + "'");
 		if (player instanceof ConsoleSource) {
 			this.plugin.getGame().getServer().shutdown(EEMessages.STOP_CONSOLE_MESSAGE.getFormat().toText(replaces));
 		} else {
@@ -107,7 +107,7 @@ public class EEStop extends ECommand<EverEssentials> {
 		replaces.put("<staff>", EReplace.of(player.getName()));
 		replaces.put("<reason>", EReplace.of(this.plugin.getChat().replace(message)));
 		
-		this.plugin.getLogger().info("Server shutdown by '" + player.getName() + "' (reason='" + message + "')");
+		this.plugin.getELogger().info("Server shutdown by '" + player.getName() + "' (reason='" + message + "')");
 		if (player instanceof ConsoleSource) {
 			this.plugin.getGame().getServer().shutdown(EEMessages.STOP_CONSOLE_MESSAGE_REASON.getFormat().toText(replaces));
 		} else {

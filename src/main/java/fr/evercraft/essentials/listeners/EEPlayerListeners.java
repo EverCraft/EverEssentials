@@ -103,7 +103,7 @@ public class EEPlayerListeners {
 				.findFirst();
 			
 			if (optProfile.isPresent()) {
-				this.plugin.getLogger().info("Whitelist : " + optProfile.get().getName().orElse(optProfile.get().getUniqueId().toString()) 
+				this.plugin.getELogger().info("Whitelist : " + optProfile.get().getName().orElse(optProfile.get().getUniqueId().toString()) 
 						+ " renamed in " + event.getTargetEntity().getName());
 				whitelist.removeProfile(optProfile.get());
 				whitelist.addProfile(event.getTargetEntity().getProfile());
@@ -113,7 +113,7 @@ public class EEPlayerListeners {
 		// Motd
 		if (this.plugin.getMotd().isEnable()) {
 			EPlayer player = this.plugin.getEverAPI().getEServer().getEPlayer(event.getTargetEntity()); 
-			player.sendMessage(this.plugin.getMotd().getMessage().toText(player.getReplacesAll()));
+			player.sendMessage(this.plugin.getMotd().getMessage().toText(player.getReplaces()));
 		}
 	}
 

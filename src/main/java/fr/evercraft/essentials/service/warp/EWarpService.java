@@ -163,10 +163,10 @@ public class EWarpService implements WarpService {
 														list.getDouble("yaw"),
 														list.getDouble("pitch"));
 				warps.put(list.getString("identifier"), location);
-				this.plugin.getLogger().debug("Loading : (warp='" + list.getString("identifier") + "';location='" + location + "')");
+				this.plugin.getELogger().debug("Loading : (warp='" + list.getString("identifier") + "';location='" + location + "')");
 			}
     	} catch (SQLException e) {
-    		this.plugin.getLogger().warn("Warps error when loading : " + e.getMessage());
+    		this.plugin.getELogger().warn("Warps error when loading : " + e.getMessage());
 		} catch (ServerDisableException e) {
 			e.execute();
 		} finally {
@@ -195,9 +195,9 @@ public class EWarpService implements WarpService {
 			preparedStatement.setDouble(7, location.getPitch());
 			
 			preparedStatement.execute();
-			this.plugin.getLogger().debug("Adding to the database : (warp='" + identifier + "';location='" + location + "')");
+			this.plugin.getELogger().debug("Adding to the database : (warp='" + identifier + "';location='" + location + "')");
     	} catch (SQLException e) {
-        	this.plugin.getLogger().warn("Error during a change of warp : " + e.getMessage());
+        	this.plugin.getELogger().warn("Error during a change of warp : " + e.getMessage());
 		} catch (ServerDisableException e) {
 			e.execute();
 		} finally {
@@ -231,9 +231,9 @@ public class EWarpService implements WarpService {
 			preparedStatement.setString(7, identifier);
 			
 			preparedStatement.execute();
-			this.plugin.getLogger().debug("Updating the database : (warp='" + identifier + "';location='" + location + "')");
+			this.plugin.getELogger().debug("Updating the database : (warp='" + identifier + "';location='" + location + "')");
     	} catch (SQLException e) {
-        	this.plugin.getLogger().warn("Error during a change of warp : " + e.getMessage());
+        	this.plugin.getELogger().warn("Error during a change of warp : " + e.getMessage());
 		} catch (ServerDisableException e) {
 			e.execute();
 		} finally {
@@ -256,9 +256,9 @@ public class EWarpService implements WarpService {
 			preparedStatement.setString(1, identifier);
 			
 			preparedStatement.execute();
-			this.plugin.getLogger().debug("Remove from database : (warp='" + identifier + "')");
+			this.plugin.getELogger().debug("Remove from database : (warp='" + identifier + "')");
     	} catch (SQLException e) {
-        	this.plugin.getLogger().warn("Error during a change of warp : " + e.getMessage());
+        	this.plugin.getELogger().warn("Error during a change of warp : " + e.getMessage());
 		} catch (ServerDisableException e) {
 			e.execute();
 		} finally {
@@ -278,9 +278,9 @@ public class EWarpService implements WarpService {
 			preparedStatement = connection.prepareStatement(query);
 			
 			preparedStatement.execute();
-			this.plugin.getLogger().debug("Removes the database warps");
+			this.plugin.getELogger().debug("Removes the database warps");
     	} catch (SQLException e) {
-    		this.plugin.getLogger().warn("Error warps deletions : " + e.getMessage());
+    		this.plugin.getELogger().warn("Error warps deletions : " + e.getMessage());
 		} catch (ServerDisableException e) {
 			e.execute();
 		} finally {

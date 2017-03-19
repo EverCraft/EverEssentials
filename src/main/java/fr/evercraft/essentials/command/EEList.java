@@ -184,7 +184,7 @@ public class EEList extends ECommand<EverEssentials> {
 					replaces.put("<vanish>", EReplace.of(""));
 				}
 				
-				replaces.putAll(player.getReplacesPlayer());
+				replaces.putAll(player.getReplaces());
 				player_texts.add(EEMessages.LIST_PLAYER.getFormat().toText(replaces));
 			}
 			group_texts.add(EEMessages.LIST_GROUP.getFormat().toText(
