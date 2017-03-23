@@ -42,7 +42,7 @@ import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.command.EReloadCommand;
 import fr.evercraft.everapi.server.player.EPlayer;
 import fr.evercraft.everapi.services.EntityService;
-import fr.evercraft.everapi.services.entity.EntityFormat;
+import fr.evercraft.everapi.services.entity.EntityTemplate;
 
 public class EESpawnMob extends EReloadCommand<EverEssentials> {
 	
@@ -154,7 +154,7 @@ public class EESpawnMob extends EReloadCommand<EverEssentials> {
 		// EntityService
 		Optional<EntityService> service = this.plugin.getEverAPI().getManagerService().getEntity();
 		if (service.isPresent()) {
-			Optional<EntityFormat> format = service.get().get(entityString);
+			Optional<EntityTemplate> format = service.get().get(entityString);
 			if (format.isPresent()) {
 				return this.commandSpawnMob(player, format.get(), amount, location);
 			}
@@ -193,7 +193,7 @@ public class EESpawnMob extends EReloadCommand<EverEssentials> {
 		return true;
 	}
 	
-	private boolean commandSpawnMob(final EPlayer player, EntityFormat format, int amount, Vector3d location) {
+	private boolean commandSpawnMob(final EPlayer player, EntityTemplate format, int amount, Vector3d location) {
 		for(int cpt=0; cpt < amount; cpt++) {
 			Entity entity = player.getWorld().createEntityNaturally(format.getType(), location);
 			format.apply(entity);
