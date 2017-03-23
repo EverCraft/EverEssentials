@@ -85,10 +85,8 @@ public class EESpawnMob extends EReloadCommand<EverEssentials> {
 			this.plugin.getGame().getRegistry().getAllOf(EntityType.class)
 				.forEach(entity -> suggests.add(entity.getId()));
 			this.plugin.getEverAPI().getManagerService().getEntity()
-				.ifPresent(service -> service.getAll().forEach(entity -> {
-					suggests.add(entity.getId());
-					suggests.add("evercraft:" + entity.getId());
-				}));
+				.ifPresent(service -> service.getAll()
+						.forEach(entity -> suggests.add(entity.getId())));
 			
 			return suggests;
 		} else if (args.size() == 2){
@@ -196,7 +194,7 @@ public class EESpawnMob extends EReloadCommand<EverEssentials> {
 	private boolean commandSpawnMob(final EPlayer player, EntityTemplate format, int amount, Vector3d location) {
 		for(int cpt=0; cpt < amount; cpt++) {
 			Entity entity = player.getWorld().createEntityNaturally(format.getType(), location);
-			format.apply(entity);
+			format.apply(entity, player.get());
 			
 			player.getWorld().spawnEntity(
 					entity,
