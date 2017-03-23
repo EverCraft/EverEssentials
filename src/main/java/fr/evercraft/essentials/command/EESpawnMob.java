@@ -27,6 +27,8 @@ import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.EntityType;
+import org.spongepowered.api.entity.EntityTypes;
+import org.spongepowered.api.entity.living.Creature;
 import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
@@ -80,9 +82,11 @@ public class EESpawnMob extends EReloadCommand<EverEssentials> {
 	public Collection<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		if (args.size() == 1){
 			List<String> suggests = new ArrayList<String>();
-			this.plugin.getGame().getRegistry().getAllForMinecraft(EntityType.class)
+			this.plugin.getGame().getRegistry().getAllForMinecraft(EntityType.class).stream()
+				.filter(entity -> !entity.equals(EntityTypes.UNKNOWN) && (Creature.class.isAssignableFrom(entity.getEntityClass())))
 				.forEach(entity -> suggests.add(entity.getId().replaceAll("minecraft:", "")));
-			this.plugin.getGame().getRegistry().getAllOf(EntityType.class)
+			this.plugin.getGame().getRegistry().getAllOf(EntityType.class).stream()
+				.filter(entity -> !entity.equals(EntityTypes.UNKNOWN) && (Creature.class.isAssignableFrom(entity.getEntityClass())))
 				.forEach(entity -> suggests.add(entity.getId()));
 			this.plugin.getEverAPI().getManagerService().getEntity()
 				.ifPresent(service -> service.getAll()
@@ -163,7 +167,7 @@ public class EESpawnMob extends EReloadCommand<EverEssentials> {
 			entityString = "minecraft:" + entityString;
 		}
 		Optional<EntityType> entity = this.plugin.getGame().getRegistry().getType(EntityType.class, entityString);
-		if (entity.isPresent()) {
+		if (entity.isPresent() && !entity.get().equals(EntityTypes.UNKNOWN) && (Creature.class.isAssignableFrom(entity.get().getEntityClass()))) {
 			return this.commandSpawnMob(player, entity.get(), amount, location);
 		}
 		
