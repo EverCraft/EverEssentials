@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
@@ -156,11 +157,11 @@ public class EEWorldborderInfo extends ESubCommand<EverEssentials> {
 	}
 	
 	public Text getButtonLocation(final World world) {
-		Map<String, EReplace<?>> replaces = new HashMap<String, EReplace<?>>();
-		replaces.put("<x>", EReplace.of(String.valueOf(Math.floor(world.getWorldBorder().getCenter().getX()))));
-		replaces.put("<y>", EReplace.of(String.valueOf(Math.floor(world.getWorldBorder().getCenter().getY()))));
-		replaces.put("<z>", EReplace.of(String.valueOf(Math.floor(world.getWorldBorder().getCenter().getZ()))));
-		replaces.put("<world>", EReplace.of(world.getName()));
+		Map<Pattern, EReplace<?>> replaces = new HashMap<Pattern, EReplace<?>>();
+		replaces.put(Pattern.compile("<x>"), EReplace.of(String.valueOf(Math.floor(world.getWorldBorder().getCenter().getX()))));
+		replaces.put(Pattern.compile("<y>"), EReplace.of(String.valueOf(Math.floor(world.getWorldBorder().getCenter().getY()))));
+		replaces.put(Pattern.compile("<z>"), EReplace.of(String.valueOf(Math.floor(world.getWorldBorder().getCenter().getZ()))));
+		replaces.put(Pattern.compile("<world>"), EReplace.of(world.getName()));
 		
 		return EEMessages.WORLDBORDER_INFO_LOCATION_POSITION.getFormat().toText(replaces).toBuilder()
 				.onHover(TextActions.showText(EEMessages.WORLDBORDER_INFO_LOCATION_POSITION_HOVER.getFormat().toText(replaces)))

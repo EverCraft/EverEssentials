@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.TreeMap;
+import java.util.regex.Pattern;
 
 import ninja.leaping.configurate.ConfigurationNode;
 
@@ -166,22 +167,22 @@ public class EEList extends ECommand<EverEssentials> {
 		
 		Text style_separator = EEMessages.LIST_SEPARATOR.getText();
 		
-		Map<String, EReplace<?>> replaces = new HashMap<String, EReplace<?>>();
+		Map<Pattern, EReplace<?>> replaces = new HashMap<Pattern, EReplace<?>>();
 		List<Text> group_texts = new ArrayList<Text>();
 		for (Entry<String, TreeMap<String, EPlayer>> group : groups_format.entrySet()) {
 			List<Text> player_texts = new ArrayList<Text>();
 			for (EPlayer player : group.getValue().values()) {
 				
 				if (player.isAfk()) {
-					replaces.put("<afk>", EReplace.of(EEMessages.LIST_TAG_AFK));
+					replaces.put(Pattern.compile("<afk>"), EReplace.of(EEMessages.LIST_TAG_AFK));
 				} else {
-					replaces.put("<afk>", EReplace.of(""));
+					replaces.put(Pattern.compile("<afk>"), EReplace.of(""));
 				}
 				
 				if (player.isVanish()) {
-					replaces.put("<vanish>", EReplace.of(EEMessages.LIST_TAG_VANISH));
+					replaces.put(Pattern.compile("<vanish>"), EReplace.of(EEMessages.LIST_TAG_VANISH));
 				} else {
-					replaces.put("<vanish>", EReplace.of(""));
+					replaces.put(Pattern.compile("<vanish>"), EReplace.of(""));
 				}
 				
 				replaces.putAll(player.getReplaces());
@@ -206,7 +207,7 @@ public class EEList extends ECommand<EverEssentials> {
 			title = EEMessages.LIST_TITLE;
 		} else {
 			title = EEMessages.LIST_TITLE_VANISH;
-			replaces.put("<vanish>", EReplace.of(vanish.toString()));
+			replaces.put(Pattern.compile("<vanish>"), EReplace.of(vanish.toString()));
 		}
 		
 		this.plugin.getEverAPI().getManagerService().getEPagination().sendTo(

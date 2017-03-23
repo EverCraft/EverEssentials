@@ -195,10 +195,10 @@ public class EETeleportation extends ECommand<EverEssentials> {
 				EEMessages.TP_PLAYER_EQUALS.sendTo(player);
 			} else {
 				EEMessages.TP_OTHERS_PLAYER_REPOSITION.sender()
-					.replace(replaces)
+					.replaceString(replaces)
 					.sendTo(player);
 				EEMessages.TP_OTHERS_STAFF_REPOSITION.sender()
-					.replace(replaces)
+					.replaceString(replaces)
 					.sendTo(staff);
 			}
 		// Teleport
@@ -210,21 +210,21 @@ public class EETeleportation extends ECommand<EverEssentials> {
 			
 			if (player.equals(staff)) {
 				EEMessages.TP_PLAYER.sender()
-					.replace(replaces)
+					.replaceString(replaces)
 					.sendTo(player);
 			} else if (destination.equals(staff)) {
 				EEMessages.TP_OTHERS_STAFF_EQUALS_DESTINATION_PLAYER.sender()
-					.replace(replaces)
+					.replaceString(replaces)
 					.sendTo(player);
 				EEMessages.TP_OTHERS_STAFF_EQUALS_DESTINATION_STAFF.sender()
-					.replace(replaces)
+					.replaceString(replaces)
 					.sendTo(staff);
 			} else {
 				EEMessages.TP_OTHERS_PLAYER.sender()
-					.replace(replaces)
+					.replaceString(replaces)
 					.sendTo(player);
 				EEMessages.TP_OTHERS_STAFF.sender()
-					.replace(replaces)
+					.replaceString(replaces)
 					.sendTo(staff);
 			}
 		}

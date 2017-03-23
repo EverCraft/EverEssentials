@@ -153,7 +153,7 @@ public class EEMailRead extends ESubCommand<EverEssentials> {
 			replaces.put("<read>", EReplace.of(() -> this.getButtonRead(mail)));
 			replaces.put("<delete>", EReplace.of(() -> this.getButtonDelete(mail)));
 			
-			lists.add(EEMessages.MAIL_READ_LINE_NO_READ.getFormat().toText(replaces));
+			lists.add(EEMessages.MAIL_READ_LINE_NO_READ.getFormat().toText2(replaces));
 		}
 		
 		// Mail lu
@@ -166,7 +166,7 @@ public class EEMailRead extends ESubCommand<EverEssentials> {
 			replaces.put("<read>", EReplace.of(() -> this.getButtonRead(mail)));
 			replaces.put("<delete>", EReplace.of(() -> this.getButtonDelete(mail)));
 			
-			lists.add(EEMessages.MAIL_READ_LINE_READ.getFormat().toText(replaces));
+			lists.add(EEMessages.MAIL_READ_LINE_READ.getFormat().toText2(replaces));
 		}
 		
 		this.plugin.getEverAPI().getManagerService().getEPagination().sendTo(EEMessages.MAIL_READ_TITLE.getText().toBuilder()
@@ -202,7 +202,7 @@ public class EEMailRead extends ESubCommand<EverEssentials> {
 		
 		if (!player.readMail(mail.get())) {
 			EEMessages.MAIL_READ_CANCEL.sender()
-				.replace(replaces)
+				.replaceString(replaces)
 				.sendTo(player);
 			return false;
 		}
@@ -237,7 +237,7 @@ public class EEMailRead extends ESubCommand<EverEssentials> {
 		replaces.put("<datetime>", EReplace.of(() -> this.plugin.getEverAPI().getManagerUtils().getDate().parseDateTime(mail.getDateTime())));
 		
 		return EEMessages.MAIL_READ_MAIL.getText().toBuilder()
-					.onHover(TextActions.showText(EEMessages.MAIL_READ_MAIL_HOVER.getFormat().toText(replaces)))
+					.onHover(TextActions.showText(EEMessages.MAIL_READ_MAIL_HOVER.getFormat().toText2(replaces)))
 					.build();
 	}
 }

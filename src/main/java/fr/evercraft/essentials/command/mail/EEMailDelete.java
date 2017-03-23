@@ -149,7 +149,7 @@ public class EEMailDelete extends ESubCommand<EverEssentials> {
 		replaces.put("<confirmation>", EReplace.of(() -> this.getButtonDeleteConfirmation(mail.get())));
 		
 		EEMessages.MAIL_DELETE_MESSAGE.sender()
-			.replace(replaces)
+			.replaceString(replaces)
 			.sendTo(player);
 		return true;
 	}
@@ -182,13 +182,13 @@ public class EEMailDelete extends ESubCommand<EverEssentials> {
 		
 		if (!player.removeMail(mail.get())) {
 			EEMessages.MAIL_DELETE_CONFIRMATION.sender()
-				.replace(replaces)
+				.replaceString(replaces)
 				.sendTo(player);
 			return false;
 		}
 		
 		EEMessages.MAIL_DELETE_CANCEL.sender()
-			.replace(replaces)
+			.replaceString(replaces)
 			.sendTo(player);
 		return true;
 	}
@@ -209,7 +209,7 @@ public class EEMailDelete extends ESubCommand<EverEssentials> {
 		replaces.put("<datetime>", EReplace.of(() -> this.plugin.getEverAPI().getManagerUtils().getDate().parseDateTime(mail.getDateTime())));
 		
 		return EEMessages.MAIL_DELETE_MAIL.getText().toBuilder()
-					.onHover(TextActions.showText(EEMessages.MAIL_DELETE_MAIL_HOVER.getFormat().toText(replaces)))
+					.onHover(TextActions.showText(EEMessages.MAIL_DELETE_MAIL_HOVER.getFormat().toText2(replaces)))
 					.build();
 	}
 }

@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
@@ -125,10 +126,10 @@ public class EEKill  extends ECommand<EverEssentials> {
         originalChannel = player.getMessageChannel();
         channel = player.getMessageChannel();
 
-        Map<String, EReplace<?>> replaces = new HashMap<String, EReplace<?>>();
+        Map<Pattern, EReplace<?>> replaces = new HashMap<Pattern, EReplace<?>>();
         replaces.putAll(player.getReplaces());
-        replaces.put("<staff>", EReplace.of(staff.getName()));
-        replaces.put("<player>", EReplace.of(player.getName()));
+        replaces.put(Pattern.compile("<staff>"), EReplace.of(staff.getName()));
+        replaces.put(Pattern.compile("<player>"), EReplace.of(player.getName()));
         
         if (!player.equals(staff)) {
         	messageCancelled = !EEMessages.KILL_PLAYER_DEATH_MESSAGE.getMessage().getChat().isPresent();

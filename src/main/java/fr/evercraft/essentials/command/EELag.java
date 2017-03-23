@@ -135,10 +135,10 @@ public class EELag extends EReloadCommand<EverEssentials> {
 			replaces.put("<tiles>", EReplace.of(String.valueOf(world.getTileEntities().size())));
 			replaces.put("<chunks>", EReplace.of(String.valueOf(Iterables.size(world.getLoadedChunks()))));
 			
-			Text text = EEMessages.LAG_WORLDS_WORLD.getFormat().toText(replaces);
+			Text text = EEMessages.LAG_WORLDS_WORLD.getFormat().toText2(replaces);
 			if (!text.getHoverAction().isPresent() && EEMessages.LAG_WORLDS_WORLD_HOVER.getMessage().getChat().isPresent()) {
 				text = text.toBuilder()
-						.onHover(TextActions.showText(EEMessages.LAG_WORLDS_WORLD_HOVER.getFormat().toText(replaces)))
+						.onHover(TextActions.showText(EEMessages.LAG_WORLDS_WORLD_HOVER.getFormat().toText2(replaces)))
 						.build();
 			}
 			worlds.add(text);

@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.regex.Pattern;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
@@ -174,8 +175,8 @@ public class EEReply extends ECommand<EverEssentials> {
 			return false;
 		}
 		
-		Map<String, EReplace<?>> replaces = new HashMap<String, EReplace<?>>();
-		replaces.put("<message>", EReplace.of(message));
+		Map<Pattern, EReplace<?>> replaces = new HashMap<Pattern, EReplace<?>>();
+		replaces.put(Pattern.compile("<message>"), EReplace.of(message));
 		
 		replaces.putAll(player.getReplaces());
 		receive.sendMessage(EEMessages.REPLY_PLAYER_RECEIVE.getFormat().toText(replaces)
@@ -197,8 +198,8 @@ public class EEReply extends ECommand<EverEssentials> {
 	 * La console envoye un message à joueur
 	 */
 	private boolean commandMsgConsole(final CommandSource player, final EPlayer receive, final String message) {
-		Map<String, EReplace<?>> replaces = new HashMap<String, EReplace<?>>();
-		replaces.put("<message>", EReplace.of(message));
+		Map<Pattern, EReplace<?>> replaces = new HashMap<Pattern, EReplace<?>>();
+		replaces.put(Pattern.compile("<message>"), EReplace.of(message));
 		
 		receive.sendMessage(EEMessages.REPLY_CONSOLE_SEND.getFormat().toText(replaces)
 					.toBuilder()
@@ -219,8 +220,8 @@ public class EEReply extends ECommand<EverEssentials> {
 	 * Un joueur envoye un message à la console
 	 */
 	private boolean commandMsgConsole(final EPlayer player, final CommandSource receive, final String message) {
-		Map<String, EReplace<?>> replaces = new HashMap<String, EReplace<?>>();
-		replaces.put("<message>", EReplace.of(message));
+		Map<Pattern, EReplace<?>> replaces = new HashMap<Pattern, EReplace<?>>();
+		replaces.put(Pattern.compile("<message>"), EReplace.of(message));
 		
 		player.sendMessage(EEMessages.REPLY_CONSOLE_SEND.getFormat().toText(replaces)
 					.toBuilder()

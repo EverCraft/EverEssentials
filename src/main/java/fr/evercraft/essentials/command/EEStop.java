@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
@@ -88,9 +89,9 @@ public class EEStop extends ECommand<EverEssentials> {
 	}
 
 	private boolean commandStop(final CommandSource player) {
-		Map<String, EReplace<?>> replaces = new HashMap<String, EReplace<?>>();
+		Map<Pattern, EReplace<?>> replaces = new HashMap<Pattern, EReplace<?>>();
 		replaces.putAll(this.plugin.getChat().getReplaceServer());
-		replaces.put("<staff>", EReplace.of(player.getName()));
+		replaces.put(Pattern.compile("<staff>"), EReplace.of(player.getName()));
 		
 		this.plugin.getELogger().info("Server shutdown by '" + player.getName() + "'");
 		if (player instanceof ConsoleSource) {
@@ -102,10 +103,10 @@ public class EEStop extends ECommand<EverEssentials> {
 	}
 	
 	private boolean commandStop(final CommandSource player, String message) {
-		Map<String, EReplace<?>> replaces = new HashMap<String, EReplace<?>>();
+		Map<Pattern, EReplace<?>> replaces = new HashMap<Pattern, EReplace<?>>();
 		replaces.putAll(this.plugin.getChat().getReplaceServer());
-		replaces.put("<staff>", EReplace.of(player.getName()));
-		replaces.put("<reason>", EReplace.of(this.plugin.getChat().replace(message)));
+		replaces.put(Pattern.compile("<staff>"), EReplace.of(player.getName()));
+		replaces.put(Pattern.compile("<reason>"), EReplace.of(this.plugin.getChat().replace(message)));
 		
 		this.plugin.getELogger().info("Server shutdown by '" + player.getName() + "' (reason='" + message + "')");
 		if (player instanceof ConsoleSource) {

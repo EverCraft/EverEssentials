@@ -318,8 +318,8 @@ public class EEWhois extends ECommand<EverEssentials> {
 		replaces.put("<z>", EReplace.of(String.valueOf(player.getLocation().getBlockZ())));
 		replaces.put("<world>", EReplace.of(player.getLocation().getExtent().getName()));
 		
-		return EEMessages.WHOIS_LOCATION_POSITION.getFormat().toText(replaces).toBuilder()
-				.onHover(TextActions.showText(EEMessages.WHOIS_LOCATION_POSITION_HOVER.getFormat().toText(replaces)))
+		return EEMessages.WHOIS_LOCATION_POSITION.getFormat().toText2(replaces).toBuilder()
+				.onHover(TextActions.showText(EEMessages.WHOIS_LOCATION_POSITION_HOVER.getFormat().toText2(replaces)))
 				.build();
 	}
 	
