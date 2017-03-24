@@ -151,19 +151,14 @@ public class EESpawnMob extends EReloadCommand<EverEssentials> {
 		}
 		Vector3d location = block.get().toDouble().add(0.5, 1, 0.5);
 		
-		// EntityService
-		Optional<EntityTemplate> format = this.plugin.getEverAPI().getManagerService().getEntity().get(entityString);
-		if (format.isPresent()) {
-			return this.commandSpawnMob(player, format.get(), amount, location);
-		}
-		
-		// EntityType
 		if (!entityString.contains(":")) {
 			entityString = "minecraft:" + entityString;
 		}
-		Optional<EntityType> entity = this.plugin.getGame().getRegistry().getType(EntityType.class, entityString);
-		if (entity.isPresent() && !entity.get().equals(EntityTypes.UNKNOWN) && (Creature.class.isAssignableFrom(entity.get().getEntityClass()))) {
-			return this.commandSpawnMob(player, entity.get(), amount, location);
+		
+		// EntityService
+		Optional<EntityTemplate> format = this.plugin.getEverAPI().getManagerService().getEntity().getForAll(entityString);
+		if (format.isPresent()) {
+			return this.commandSpawnMob(player, format.get(), amount, location);
 		}
 		
 		// Erreur
@@ -171,23 +166,6 @@ public class EESpawnMob extends EReloadCommand<EverEssentials> {
 			.replace("<entity>", entityString)
 			.sendTo(player);
 		return false;
-	}
-	
-	private boolean commandSpawnMob(final EPlayer player, EntityType type, int amount, Vector3d location) {		
-		for(int cpt=0; cpt < amount; cpt++) {
-			player.getWorld().spawnEntity(
-					player.getWorld().createEntityNaturally(type, location),
-					Cause.source(this.plugin)
-						.owner(player.get())
-						.notifier(player.get())
-						.build());
-		}
-		
-		EEMessages.SPAWNMOB_MOB.sender()
-			.replace("<amount>", String.valueOf(amount))
-			.replace("<entity>", StringUtils.capitalize(type.getName()))
-			.sendTo(player);
-		return true;
 	}
 	
 	private boolean commandSpawnMob(final EPlayer player, EntityTemplate format, int amount, Vector3d location) {
