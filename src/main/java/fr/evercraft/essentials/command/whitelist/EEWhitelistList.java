@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 import org.spongepowered.api.command.CommandException;
@@ -34,7 +33,6 @@ import org.spongepowered.api.text.format.TextColors;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.essentials.EEMessage.EEMessages;
-import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.message.replace.EReplace;
 import fr.evercraft.everapi.plugin.command.ESubCommand;
 
@@ -81,16 +79,8 @@ public class EEWhitelistList extends ESubCommand<EverEssentials> {
 	}
 
 	private boolean commandWhitelistList(final CommandSource player) {
-		Optional<WhitelistService> optWhitelist = this.plugin.getEverAPI().getManagerService().getWhitelist();
-		if (!optWhitelist.isPresent()) {	
-			EAMessages.COMMAND_ERROR.sender()
-				.prefix(EEMessages.PREFIX)
-				.sendTo(player);
-			return false;
-		}
-			
 		List<Text> lists = new ArrayList<Text>();
-		WhitelistService whitelist = optWhitelist.get();
+		WhitelistService whitelist = this.plugin.getEverAPI().getManagerService().getWhitelist();
 		if (!whitelist.getWhitelistedProfiles().isEmpty()){
 			if (player.hasPermission(EEPermissions.WHITELIST_MANAGE.get())) {
 				

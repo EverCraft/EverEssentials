@@ -25,7 +25,6 @@ import java.util.Optional;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.profile.GameProfile;
-import org.spongepowered.api.service.whitelist.WhitelistService;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
@@ -97,16 +96,8 @@ public class EEWhitelistAdd extends ESubCommand<EverEssentials> {
 				.sendTo(player);
 			return false;
 		}
-		
-		Optional<WhitelistService> whitelist = this.plugin.getEverAPI().getManagerService().getWhitelist();
-		if (!whitelist.isPresent()) {	
-			EAMessages.COMMAND_ERROR.sender()
-				.prefix(EEMessages.PREFIX)
-				.sendTo(player);
-			return false;
-		}
 				
-		if (whitelist.get().addProfile(gameprofile.get())) {
+		if (this.plugin.getEverAPI().getManagerService().getWhitelist().addProfile(gameprofile.get())) {
 			EEMessages.WHITELIST_ADD_ERROR.sender()
 				.replace("<player>", gameprofile.get().getName().orElse(identifier))
 				.sendTo(player);

@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
@@ -123,20 +122,12 @@ public class EEName extends ECommand<EverEssentials> {
 	}
 
 	private boolean commandNames(final EPlayer player) {
-		Optional<MojangService> service = this.plugin.getEverAPI().getManagerService().getMojangService();
-		
-		// Le service n'est pas disponible
-		if (!service.isPresent()) {
-			EAMessages.COMMAND_ERROR.sender()
-				.prefix(EEMessages.PREFIX)
-				.sendTo(player);
-			return false;
-		}
+		MojangService service = this.plugin.getEverAPI().getManagerService().getMojangService();
 		
 		try {
 			List<Text> lists = new ArrayList<Text>();
 	
-			for (NameHistory name : service.get().getNameHistory().get(player.getUniqueId())) {
+			for (NameHistory name : service.getNameHistory().get(player.getUniqueId())) {
 				if (!name.getDate().isPresent()) {
 					lists.add(EEMessages.NAMES_PLAYER_LINE_ORIGINAL.getFormat()
 							.toText("<name>", name.getName()));
@@ -195,18 +186,12 @@ public class EEName extends ECommand<EverEssentials> {
 	}
 	
 	private boolean commandNames(CommandSource staff, GameProfile gameprofile) {
-		Optional<MojangService> service = this.plugin.getEverAPI().getManagerService().getMojangService();
-		
-		// Le service n'est pas disponible
-		if (!service.isPresent()) {
-			staff.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.COMMAND_ERROR.getText()));
-			return false;
-		}
+		MojangService service = this.plugin.getEverAPI().getManagerService().getMojangService();
 		
 		try {
 			List<Text> lists = new ArrayList<Text>();
 	
-			for (NameHistory name : service.get().getNameHistory().get(gameprofile.getUniqueId())) {
+			for (NameHistory name : service.getNameHistory().get(gameprofile.getUniqueId())) {
 				if (!name.getDate().isPresent()) {
 					lists.add(EEMessages.NAMES_OTHERS_LINE_ORIGINAL.getFormat()
 							.toText("<name>", name.getName()));

@@ -88,18 +88,10 @@ public class EEMojang extends ECommand<EverEssentials> {
 	}
 	
 	private boolean commandMojang(final CommandSource player) {
-		Optional<MojangService> service = this.plugin.getEverAPI().getManagerService().getMojangService();
-		
-		// Le service n'est pas présent
-		if (!service.isPresent()) {
-			EAMessages.COMMAND_ERROR.sender()
-				.prefix(EEMessages.PREFIX)
-				.sendTo(player);
-			return false;
-		}
+		MojangService service = this.plugin.getEverAPI().getManagerService().getMojangService();
 		
 		try {
-			service.get().getCheck().update();
+			service.getCheck().update();
 		} catch (IOException e) {
 			EAMessages.COMMAND_ERROR.sender()
 				.prefix(EEMessages.PREFIX)

@@ -25,7 +25,6 @@ import java.util.Optional;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.profile.GameProfile;
-import org.spongepowered.api.service.whitelist.WhitelistService;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
@@ -55,18 +54,13 @@ public class EEWhitelistRemove extends ESubCommand<EverEssentials> {
 	@Override
 	public Collection<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		if (args.size() == 1) {
-			Optional<WhitelistService> whitelist = this.plugin.getEverAPI().getManagerService().getWhitelist();
-			if (whitelist.isPresent()){
-				List<String> suggests = new ArrayList<String>();
-				for (GameProfile player : whitelist.get().getWhitelistedProfiles()) {
-					if (player.getName().isPresent()) {
-						suggests.add(player.getName().orElse(player.getUniqueId().toString()));
-					}
+			List<String> suggests = new ArrayList<String>();
+			for (GameProfile player :this.plugin.getEverAPI().getManagerService().getWhitelist().getWhitelistedProfiles()) {
+				if (player.getName().isPresent()) {
+					suggests.add(player.getName().orElse(player.getUniqueId().toString()));
 				}
-				return suggests;
-			} else {
-				return this.getAllGameProfile();
 			}
+			return suggests;
 		}
 		return Arrays.asList();
 	}
@@ -106,15 +100,7 @@ public class EEWhitelistRemove extends ESubCommand<EverEssentials> {
 			return false;
 		}
 		
-		Optional<WhitelistService> whitelist = this.plugin.getEverAPI().getManagerService().getWhitelist();
-		if (!whitelist.isPresent()) {	
-			EAMessages.COMMAND_ERROR.sender()
-				.prefix(EEMessages.PREFIX)
-				.sendTo(player);
-			return false;
-		}
-				
-		if (!whitelist.get().removeProfile(gameprofile.get())) {
+		if (!this.plugin.getEverAPI().getManagerService().getWhitelist().removeProfile(gameprofile.get())) {
 			EEMessages.WHITELIST_REMOVE_ERROR.sender()
 				.replace("<player>", gameprofile.get().getName().orElse(identifier))
 				.sendTo(player);

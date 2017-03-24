@@ -67,9 +67,9 @@ public class EESpawnSet extends ECommand<EverEssentials> {
 	
 	@Override
 	public Collection<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
-		if (args.size() == 1 && this.plugin.getEverAPI().getManagerService().getPermission().isPresent()) {
+		if (args.size() == 1) {
 			ArrayList<String> suggests = new ArrayList<String>();
-			for (Subject group : this.plugin.getEverAPI().getManagerService().getPermission().get().getGroupSubjects().getAllSubjects()) {
+			for (Subject group : this.plugin.getEverAPI().getManagerService().getPermission().getGroupSubjects().getAllSubjects()) {
 				suggests.add(group.getIdentifier());
 			}
 			return suggests;
@@ -99,20 +99,14 @@ public class EESpawnSet extends ECommand<EverEssentials> {
 			
 			// Si la source est un joueur
 			if (source instanceof EPlayer) {
-				
-				if (this.plugin.getEverAPI().getManagerService().getPermission().isPresent()) {
-					Subject group = this.plugin.getEverAPI().getManagerService().getPermission().get().getGroupSubjects().get(args.get(0));
-					if (group != null) {
-						resultat = this.commandSetSpawn((EPlayer) source, group.getIdentifier());
-					} else {
-						EEMessages.SETSPAWN_ERROR_GROUP.sender()
-							.replace("<name>", args.get(0))
-							.sendTo(source);
-					}
+				Subject group = this.plugin.getEverAPI().getManagerService().getPermission().getGroupSubjects().get(args.get(0));
+				if (group != null) {
+					resultat = this.commandSetSpawn((EPlayer) source, group.getIdentifier());
 				} else {
-					resultat = this.commandSetSpawn((EPlayer) source, SpawnService.DEFAULT);
-				}
-				
+					EEMessages.SETSPAWN_ERROR_GROUP.sender()
+						.replace("<name>", args.get(0))
+						.sendTo(source);
+				}				
 			// La source n'est pas un joueur
 			} else {
 				EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()

@@ -43,7 +43,6 @@ import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.command.EReloadCommand;
 import fr.evercraft.everapi.server.player.EPlayer;
-import fr.evercraft.everapi.services.EntityService;
 import fr.evercraft.everapi.services.entity.EntityTemplate;
 
 public class EESpawnMob extends EReloadCommand<EverEssentials> {
@@ -88,9 +87,8 @@ public class EESpawnMob extends EReloadCommand<EverEssentials> {
 			this.plugin.getGame().getRegistry().getAllOf(EntityType.class).stream()
 				.filter(entity -> !entity.equals(EntityTypes.UNKNOWN) && (Creature.class.isAssignableFrom(entity.getEntityClass())))
 				.forEach(entity -> suggests.add(entity.getId()));
-			this.plugin.getEverAPI().getManagerService().getEntity()
-				.ifPresent(service -> service.getAll()
-						.forEach(entity -> suggests.add(entity.getId())));
+			this.plugin.getEverAPI().getManagerService().getEntity().getAll()
+					.forEach(entity -> suggests.add(entity.getId()));
 			
 			return suggests;
 		} else if (args.size() == 2){
@@ -154,12 +152,9 @@ public class EESpawnMob extends EReloadCommand<EverEssentials> {
 		Vector3d location = block.get().toDouble().add(0.5, 1, 0.5);
 		
 		// EntityService
-		Optional<EntityService> service = this.plugin.getEverAPI().getManagerService().getEntity();
-		if (service.isPresent()) {
-			Optional<EntityTemplate> format = service.get().get(entityString);
-			if (format.isPresent()) {
-				return this.commandSpawnMob(player, format.get(), amount, location);
-			}
+		Optional<EntityTemplate> format = this.plugin.getEverAPI().getManagerService().getEntity().get(entityString);
+		if (format.isPresent()) {
+			return this.commandSpawnMob(player, format.get(), amount, location);
 		}
 		
 		// EntityType

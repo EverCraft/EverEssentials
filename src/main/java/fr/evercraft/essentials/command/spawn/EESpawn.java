@@ -128,17 +128,11 @@ public class EESpawn extends EReloadCommand<EverEssentials> {
 						resultat = this.commandSpawn((EPlayer) source, this.newbies);
 					// Pas le spawn par défaut
 					} else {
-						if (this.plugin.getEverAPI().getManagerService().getPermission().isPresent()) {
-							Subject group = this.plugin.getEverAPI().getManagerService().getPermission().get().getGroupSubjects().get(args.get(0));
-							// Groupe existant
-							if (group != null) {
-								resultat = this.commandSpawn((EPlayer) source, group.getIdentifier());
-							// Groupe inexistant
-							} else {
-								EEMessages.SPAWN_ERROR_GROUP.sender()
-									.replace("<name>", args.get(0))
-									.sendTo(source);
-							}
+						Subject group = this.plugin.getEverAPI().getManagerService().getPermission().getGroupSubjects().get(args.get(0));
+						// Groupe existant
+						if (group != null) {
+							resultat = this.commandSpawn((EPlayer) source, group.getIdentifier());
+						// Groupe inexistant
 						} else {
 							EEMessages.SPAWN_ERROR_GROUP.sender()
 								.replace("<name>", args.get(0))

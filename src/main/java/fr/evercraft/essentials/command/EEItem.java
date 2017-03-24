@@ -268,16 +268,18 @@ public class EEItem extends EReloadCommand<EverEssentials> {
 	
 	private boolean commandGive(final EPlayer player, ItemStack item, Integer quantity) {
 		item.setQuantity(quantity);
+		Text itemText = EChat.getButtomItem(item, EEMessages.ITEM_GIVE_COLOR.getColor());
 		
 		if(player.giveItem(item).isPresent()) {
 			EAMessages.PLAYER_INVENTORY_FULL_AND_DROP.sender()
 				.prefix(EEMessages.PREFIX)
+				.replace("<item>", itemText)
 				.sendTo(player);
 		}
 		
 		EEMessages.ITEM_GIVE.sender()
 			.replace("<quantity>", quantity.toString())
-			.replace("<item>", EChat.getButtomItem(item, EEMessages.ITEM_GIVE_COLOR.getColor()))
+			.replace("<item>", itemText)
 			.sendTo(player);
 		return true;
 	}

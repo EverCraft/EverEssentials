@@ -92,24 +92,21 @@ public class EEPlayerListeners {
 		this.plugin.getScheduler().start();
 		
 		// WhiteLit
-		Optional<WhitelistService> optWhitelist = this.plugin.getEverAPI().getManagerService().getWhitelist();
-		if (optWhitelist.isPresent()) {
-			WhitelistService whitelist = optWhitelist.get();
-			
-			Optional<GameProfile> optProfile = whitelist.getWhitelistedProfiles().stream()
-				.filter(profile -> 
-					profile.getUniqueId().equals(event.getTargetEntity().getUniqueId()) && 
-					(!profile.getName().isPresent() || !profile.getName().get().equals(event.getTargetEntity().getName())))
-				.findFirst();
-			
-			if (optProfile.isPresent()) {
-				this.plugin.getELogger().info("Whitelist : " + optProfile.get().getName().orElse(optProfile.get().getUniqueId().toString()) 
-						+ " renamed in " + event.getTargetEntity().getName());
-				whitelist.removeProfile(optProfile.get());
-				whitelist.addProfile(event.getTargetEntity().getProfile());
-			}
+		WhitelistService whitelist = this.plugin.getEverAPI().getManagerService().getWhitelist();
+		
+		Optional<GameProfile> optProfile = whitelist.getWhitelistedProfiles().stream()
+			.filter(profile -> 
+				profile.getUniqueId().equals(event.getTargetEntity().getUniqueId()) && 
+				(!profile.getName().isPresent() || !profile.getName().get().equals(event.getTargetEntity().getName())))
+			.findFirst();
+		
+		if (optProfile.isPresent()) {
+			this.plugin.getELogger().info("Whitelist : " + optProfile.get().getName().orElse(optProfile.get().getUniqueId().toString()) 
+					+ " renamed in " + event.getTargetEntity().getName());
+			whitelist.removeProfile(optProfile.get());
+			whitelist.addProfile(event.getTargetEntity().getProfile());
 		}
-
+		
 		// Motd
 		if (this.plugin.getMotd().isEnable()) {
 			EPlayer player = this.plugin.getEverAPI().getEServer().getEPlayer(event.getTargetEntity()); 
