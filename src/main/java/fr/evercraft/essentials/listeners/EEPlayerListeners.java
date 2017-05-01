@@ -182,10 +182,7 @@ public class EEPlayerListeners {
 			if (this.plugin.getConfigs().isGameModePaint() && player.isSneaking() && player.isCreative()) {
 				Painting paint = (Painting) event.getTargetEntity();
 				if (paint.get(Keys.ART).isPresent()){
-					Optional<UtilsPainting> painting = UtilsPainting.get(paint.get(Keys.ART).get());
-					if (painting.isPresent()){
-						paint.offer(Keys.ART, painting.get().next().getArt());
-					}
+					paint.offer(Keys.ART, UtilsPainting.next(paint.get(Keys.ART).get()));
 				}
 			}
 		}
