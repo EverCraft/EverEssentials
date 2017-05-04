@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.spongepowered.api.data.key.Keys;
+import org.spongepowered.api.data.type.Art;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.hanging.Painting;
 import org.spongepowered.api.entity.living.Creature;
@@ -181,8 +182,12 @@ public class EEPlayerListeners {
 		if (event instanceof InteractEntityEvent.Secondary && event.getTargetEntity() instanceof Painting) {
 			if (this.plugin.getConfigs().isGameModePaint() && player.isSneaking() && player.isCreative()) {
 				Painting paint = (Painting) event.getTargetEntity();
-				if (paint.get(Keys.ART).isPresent()){
-					paint.offer(Keys.ART, UtilsPainting.next(paint.get(Keys.ART).get()));
+				if (paint.get(Keys.ART).isPresent()) {
+					Art art = paint.get(Keys.ART).get();
+					Art next = UtilsPainting.next(art);
+					while (!paint.offer(Keys.ART, next).isSuccessful() && !art.equals(next)){
+						next = UtilsPainting.next(next);
+					}
 				}
 			}
 		}
