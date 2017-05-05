@@ -511,7 +511,7 @@ public class EEMessage extends EMessage<EverEssentials> {
 		MAIL_BUTTON_NEW_MESSAGE_HOVER("mail.button.newMessageHover", 	"&7Cliquez ici pour afficher la liste des messages."),
 		
 		ME_DESCRIPTION("me.description", 							"Envoie un texte d'action dans le tchat"),
-		ME_PLAYER("me.player", 										"&f* " + EReplacesPlayer.NAME + " &r<message>"),
+		ME_PLAYER("me.player", 										"&f* " + EReplacesPlayer.NAME.getName() + " &r<message>"),
 		
 		MOJANG_DESCRIPTION("mojang.description", 					"Affiche les informations sur les serveurs de mojang"),
 		MOJANG_TITLE("mojang.title", 								"&aLes serveurs de Mojang"),

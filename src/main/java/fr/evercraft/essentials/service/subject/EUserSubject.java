@@ -450,7 +450,7 @@ public class EUserSubject implements SubjectUserEssentials {
 				EEMessages.AFK_OFF_PLAYER.sendTo(player.get());
 				EEMessages.AFK_OFF_ALL.sender()
 					.replace(player.get().getReplaces())
-					.sendAll(this.plugin.getEServer().getOnlineEPlayers(), other -> !other.equals(player));
+					.sendAll(this.plugin.getEServer().getOnlineEPlayers(), other -> !other.equals(player.get()));
 			}
 		}
 		this.afk_auto_fake = false;
