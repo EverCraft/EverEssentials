@@ -346,14 +346,15 @@ public class EEPlayerListeners {
 	
 	@Listener
 	public void onPlayerRideEntity(RideEntityEvent.Mount event, @First Player player) {
-		if(event.getTargetEntity() instanceof Horse){
+		if(event.getTargetEntity() instanceof Horse && player.get(Keys.GAME_MODE).orElse(GameModes.SURVIVAL).equals(GameModes.CREATIVE)) {
 			Entity entity = event.getTargetEntity();
-			if(entity.get(Keys.TAMED_OWNER).isPresent()){
-				if((!entity.get(Keys.TAMED_OWNER).get().isPresent()) &&	
-						player.get(Keys.GAME_MODE).orElse(GameModes.SURVIVAL).equals(GameModes.CREATIVE)){
+			if(entity.get(Keys.TAMED_OWNER).isPresent()) {
+				if(!entity.get(Keys.TAMED_OWNER).get().isPresent()) {
 					entity.offer(Keys.TAMED_OWNER, Optional.ofNullable(player.getUniqueId()));
 					
 				}
+			} else {
+				entity.offer(Keys.TAMED_OWNER, Optional.ofNullable(player.getUniqueId()));
 			}
 		}
 	}
