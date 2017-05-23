@@ -78,19 +78,15 @@ public class EEEnchant extends ECommand<EverEssentials> {
 					
 					// Si il y a plusieurs enchantements
 					if (enchantmentData != null && !enchantmentData.enchantments().isEmpty()) {
-						for (Enchantment enchant : UtilsEnchantment.getEnchantments()) {
-							if (enchant.canBeAppliedToStack(item)) {
-								for (ItemEnchantment ench : enchantmentData.enchantments()) {
-									if (enchant.isCompatibleWith(ench.getEnchantment())){
-										suggests.add(enchant.getId().toLowerCase().replace("minecraft:", ""));
-									}
-								}
+						for (Enchantment enchant : UtilsEnchantment.getAll()) {
+							if(UtilsEnchantment.canBeAppliedToItemStack(item, enchant)){
+								suggests.add(enchant.getId().toLowerCase().replace("minecraft:", ""));
 							}
 						}
 					// Il y a un seul enchantements
 					} else {
-						for (Enchantment enchant : UtilsEnchantment.getEnchantments()) {
-							if (enchant.canBeAppliedByTable(item)) {
+						for (Enchantment enchant : UtilsEnchantment.getAll()) {
+							if(UtilsEnchantment.canBeAppliedToItemStack(item, enchant)){
 								suggests.add(enchant.getId().toLowerCase().replace("minecraft:", ""));
 							}
 						}
