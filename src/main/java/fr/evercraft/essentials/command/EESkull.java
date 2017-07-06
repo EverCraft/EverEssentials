@@ -117,28 +117,32 @@ public class EESkull extends ECommand<EverEssentials> {
 
 	private boolean commandSkullOthers(final EPlayer player, final String name) {
 		CompletableFuture<GameProfile> future = this.plugin.getEServer().getGameProfileFuture(name);
-		future.exceptionally(e -> null).thenApplyAsync((profile) -> {
-			if (player.isOnline()) {
-				if (profile!= null && profile.getName().isPresent()) {
-					try {
-						GameProfile profile_skin = this.plugin.getEServer().getGameProfileManager().fill(profile, true, false).get();
+		future.exceptionally(e -> null)
+			.thenAccept((profile) -> {
+				if (!player.isOnline()) return;
+				if (profile == null || !profile.getName().isPresent()) {
+					EAMessages.PLAYER_NOT_FOUND.sender()
+						.prefix(EEMessages.PREFIX)
+						.sendTo(player);
+					return;
+				}
+				
+				this.plugin.getEServer().getGameProfileManager().fill(profile, true, true)
+					.exceptionally(e -> null)
+					.thenAcceptAsync(profile_skin -> {
+						if (profile_skin == null) {
+							EAMessages.PLAYER_NOT_FOUND.sender()
+								.prefix(EEMessages.PREFIX)
+								.sendTo(player);
+							return;
+						}
+						
 						player.giveItemAndDrop(UtilsItemStack.createPlayerHead(profile_skin));
 						EEMessages.SKULL_OTHERS.sender()
 							.replace("<player>", profile_skin.getName().get())
 							.sendTo(player);
-					} catch (Exception e) {
-						EAMessages.PLAYER_NOT_FOUND.sender()
-							.prefix(EEMessages.PREFIX)
-							.sendTo(player);
-					}
-				} else {
-					EAMessages.PLAYER_NOT_FOUND.sender()
-						.prefix(EEMessages.PREFIX)
-						.sendTo(player);
-				}
-			}
-			return profile;
-		}, this.plugin.getGame().getScheduler().createAsyncExecutor(this.plugin));
+					}, this.plugin.getGame().getScheduler().createSyncExecutor(this.plugin));
+			});
 		return true;
 	}
 }
