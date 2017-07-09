@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
@@ -52,7 +53,7 @@ public class EEWhitelistList extends ESubCommand<EverEssentials> {
 	}
 	
 	@Override
-	public Collection<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
+	public Collection<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		return Arrays.asList();
 	}
 
@@ -65,20 +66,17 @@ public class EEWhitelistList extends ESubCommand<EverEssentials> {
 	}
 	
 	@Override
-	public boolean subExecute(final CommandSource source, final List<String> args) {
-		// Résultat de la commande :
-		boolean resultat = false;
-		
+	public CompletableFuture<Boolean> execute(final CommandSource source, final List<String> args) {
 		if (args.size() == 0) {
-			resultat = this.commandWhitelistList(source);
+			return this.commandWhitelistList(source);
 		} else {
 			source.sendMessage(this.help(source));
 		}
 		
-		return resultat;
+		return CompletableFuture.completedFuture(false);
 	}
 
-	private boolean commandWhitelistList(final CommandSource player) {
+	private CompletableFuture<Boolean> commandWhitelistList(final CommandSource player) {
 		List<Text> lists = new ArrayList<Text>();
 		WhitelistService whitelist = this.plugin.getEverAPI().getManagerService().getWhitelist();
 		if (!whitelist.getWhitelistedProfiles().isEmpty()){
@@ -104,7 +102,7 @@ public class EEWhitelistList extends ESubCommand<EverEssentials> {
 		}
 		this.plugin.getEverAPI().getManagerService().getEPagination().sendTo(EEMessages.WHITELIST_LIST_TITLE.getText().toBuilder()
 				.onClick(TextActions.runCommand("/" + this.getName())).build(), lists, player);
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 	
 	private Text getButtonDelete(final String name, final UUID uuid){

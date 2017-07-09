@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
@@ -60,7 +61,7 @@ public class EEIgnoreAdd extends ESubCommand<EverEssentials> {
 	}
 	
 	@Override
-	public Collection<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
+	public Collection<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		if (args.size() == 1) {
 			return this.getAllUsers(args.get(0), source);
 		}
@@ -68,17 +69,14 @@ public class EEIgnoreAdd extends ESubCommand<EverEssentials> {
 	}
 	
 	@Override
-	public boolean subExecute(final CommandSource source, final List<String> args) {
-		// Résultat de la commande :
-		boolean resultat = false;
-		
+	public CompletableFuture<Boolean> execute(final CommandSource source, final List<String> args) {
 		if (args.size() == 1) {
 			// Si la source est un joueur
 			if (source instanceof EPlayer) {
 				Optional<EUser> user = this.plugin.getEServer().getEUser(args.get(0));
 				// Le joueur existe
 				if (user.isPresent()){
-					resultat = this.commandIgnoreAdd((EPlayer) source, user.get());
+					return this.commandIgnoreAdd((EPlayer) source, user.get());
 				// Le joueur est introuvable
 				} else {
 					EAMessages.PLAYER_NOT_FOUND.sender()
@@ -94,34 +92,34 @@ public class EEIgnoreAdd extends ESubCommand<EverEssentials> {
 		} else {
 			source.sendMessage(this.help(source));
 		}
-		return resultat;
+		return CompletableFuture.completedFuture(false);
 	}
 
-	private boolean commandIgnoreAdd(final EPlayer player, final EUser user) {
+	private CompletableFuture<Boolean> commandIgnoreAdd(final EPlayer player, final EUser user) {
 		if(player.ignore(user.getUniqueId())) {
 			EEMessages.IGNORE_ADD_ERROR.sender()
 				.replace("<player>", user.getName())
 				.sendTo(player);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		if (user.hasPermission(EEPermissions.IGNORE_BYPASS.get())) {
 			EEMessages.IGNORE_ADD_BYPASS.sender()
 				.replace("<player>", user.getName())
 				.sendTo(player);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		if (!player.addIgnore(user.getUniqueId())) {
 			EEMessages.IGNORE_ADD_CANCEL.sender()
 				.replace("<player>", user.getName())
 				.sendTo(player);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		EEMessages.IGNORE_ADD_PLAYER.sender()
 			.replace("<player>", user.getName())
 			.sendTo(player);
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 }

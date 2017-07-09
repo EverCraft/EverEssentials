@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
@@ -73,16 +74,13 @@ public class EEPing extends ECommand<EverEssentials> {
 	}
 	
 	@Override
-	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
-		// Résultat de la commande :
-		boolean resultat = false;
-		
+	public CompletableFuture<Boolean> execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Si on ne connait pas le joueur
 		if (args.size() == 0) {
 			
 			// Si la source est un joueur
 			if (source instanceof EPlayer) {
-				resultat = this.commandPing((EPlayer) source);
+				return this.commandPing((EPlayer) source);
 			// La source n'est pas un joueur
 			} else {
 				EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()
@@ -98,7 +96,7 @@ public class EEPing extends ECommand<EverEssentials> {
 				Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(args.get(0));
 				// Le joueur existe
 				if (optPlayer.isPresent()){
-					resultat = this.commandPingOthers(source, optPlayer.get());
+					return this.commandPingOthers(source, optPlayer.get());
 				// Le joueur est introuvable
 				} else {
 					EAMessages.PLAYER_NOT_FOUND.sender()
@@ -117,17 +115,17 @@ public class EEPing extends ECommand<EverEssentials> {
 			source.sendMessage(this.help(source));
 		}
 		
-		return resultat;
+		return CompletableFuture.completedFuture(false);
 	}
 	
-	private boolean commandPing(final EPlayer player) {
+	private CompletableFuture<Boolean> commandPing(final EPlayer player) {
 		EEMessages.PING_PLAYER.sender()
 			.replace("<ping>", String.valueOf(player.getConnection().getLatency()))
 			.sendTo(player);
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 	
-	private boolean commandPingOthers(final CommandSource staff, final EPlayer player) throws CommandException {
+	private CompletableFuture<Boolean> commandPingOthers(final CommandSource staff, final EPlayer player) throws CommandException {
 		// La source et le joueur sont identique
 		if (player.equals(staff)) {
 			return this.commandPing(player);
@@ -137,6 +135,6 @@ public class EEPing extends ECommand<EverEssentials> {
 			.replace("<player>", player.getName())
 			.replace("<ping>", String.valueOf(player.getConnection().getLatency()))
 			.sendTo(staff);
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 }

@@ -22,6 +22,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
@@ -67,7 +68,7 @@ public class EEIgnoreList extends ESubCommand<EverEssentials> {
 	}
 	
 	@Override
-	public Collection<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
+	public Collection<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		if (args.size() == 1 && source.hasPermission(EEPermissions.IGNORE_OTHERS.get())){
 			return this.getAllUsers(args.get(0), source);
 		}
@@ -75,14 +76,11 @@ public class EEIgnoreList extends ESubCommand<EverEssentials> {
 	}
 	
 	@Override
-	public boolean subExecute(final CommandSource source, final List<String> args) {
-		// Résultat de la commande :
-		boolean resultat = false;
-		
+	public CompletableFuture<Boolean> execute(final CommandSource source, final List<String> args) {
 		if (args.size() == 0) {
 			// Si la source est un joueur
 			if (source instanceof EPlayer) {
-				resultat = this.commandIgnoreList((EPlayer) source);
+				return this.commandIgnoreList((EPlayer) source);
 			// La source n'est pas un joueur
 			} else {
 				EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()
@@ -95,7 +93,7 @@ public class EEIgnoreList extends ESubCommand<EverEssentials> {
 				Optional<EUser> user = this.plugin.getEServer().getEUser(args.get(0));
 				// Le joueur existe
 				if (user.isPresent()){
-					resultat = this.commandIgnoreList(source, user.get());
+					return this.commandIgnoreList(source, user.get());
 				// Le joueur est introuvable
 				} else {
 					EAMessages.PLAYER_NOT_FOUND.sender()
@@ -112,10 +110,10 @@ public class EEIgnoreList extends ESubCommand<EverEssentials> {
 			source.sendMessage(this.help(source));
 		}
 		
-		return resultat;
+		return CompletableFuture.completedFuture(false);
 	}
 
-	private boolean commandIgnoreList(final EPlayer player) {
+	private CompletableFuture<Boolean> commandIgnoreList(final EPlayer player) {
 		List<Text> lists = new ArrayList<Text>();
 		
 		for (UUID uuid : player.getIgnores()) {
@@ -135,10 +133,10 @@ public class EEIgnoreList extends ESubCommand<EverEssentials> {
 				EEMessages.IGNORE_LIST_PLAYER_TITLE.getFormat().toText("<player>", player.getName()).toBuilder()
 					.onClick(TextActions.runCommand("/" + this.getName())).build(), 
 				lists, player);
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 	
-	private boolean commandIgnoreList(final CommandSource staff, final EUser player) {
+	private CompletableFuture<Boolean> commandIgnoreList(final CommandSource staff, final EUser player) {
 		if (staff instanceof EPlayer && player.getIdentifier().equals(staff.getIdentifier())) {
 			return this.commandIgnoreList((EPlayer) staff);
 		}
@@ -161,7 +159,7 @@ public class EEIgnoreList extends ESubCommand<EverEssentials> {
 				EEMessages.IGNORE_LIST_OTHERS_TITLE.getFormat().toText("<player>", player.getName()).toBuilder()
 					.onClick(TextActions.runCommand("/" + this.getName() + " \"" + player.getUniqueId() + "\"")).build(), 
 				lists, staff);
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 	
 	private Text getButtonDelete(final String name, final UUID uuid){

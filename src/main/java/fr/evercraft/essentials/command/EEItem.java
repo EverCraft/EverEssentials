@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 import org.spongepowered.api.CatalogType;
 import org.spongepowered.api.command.CommandException;
@@ -35,12 +36,13 @@ import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.EChat;
-import fr.evercraft.everapi.plugin.command.EReloadCommand;
+import fr.evercraft.everapi.plugin.command.ECommand;
+import fr.evercraft.everapi.plugin.command.ReloadCommand;
 import fr.evercraft.everapi.server.player.EPlayer;
 import fr.evercraft.everapi.sponge.UtilsItemStack;
 import fr.evercraft.everapi.sponge.UtilsItemType;
 
-public class EEItem extends EReloadCommand<EverEssentials> {
+public class EEItem extends ECommand<EverEssentials> implements ReloadCommand {
 	
 	private Collection<ItemType> items;
 	private Collection<ItemType> blacklist; 
@@ -120,18 +122,15 @@ public class EEItem extends EReloadCommand<EverEssentials> {
 	}
 	
 	@Override
-	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
-		// Résultat de la commande :
-		boolean resultat = false;
-		
+	public CompletableFuture<Boolean> execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Si la source est un joueur
 		if (source instanceof EPlayer) {
 			if (args.size() == 1) {
-				resultat = this.commandItem((EPlayer) source, args.get(0));
+				return this.commandItem((EPlayer) source, args.get(0));
 			} else if (args.size() == 2) {
-				resultat = this.commandItem((EPlayer) source, args.get(0), args.get(1));
+				return this.commandItem((EPlayer) source, args.get(0), args.get(1));
 			} else if (args.size() == 3) {
-				resultat = this.commandItem((EPlayer) source, args.get(0), args.get(1), args.get(2));
+				return this.commandItem((EPlayer) source, args.get(0), args.get(1), args.get(2));
 			// Nombre d'argument incorrect
 			} else {
 				source.sendMessage(this.help(source));
@@ -143,10 +142,10 @@ public class EEItem extends EReloadCommand<EverEssentials> {
 				.sendTo(source);
 		}
 		
-		return resultat;
+		return CompletableFuture.completedFuture(false);
 	}
 	
-	private boolean commandItem(final EPlayer player, String type_string) {
+	private CompletableFuture<Boolean> commandItem(final EPlayer player, String type_string) {
 		Optional<ItemType> type = UtilsItemType.getItemType(type_string);
 		
 		// Le type n'existe pas
@@ -154,20 +153,20 @@ public class EEItem extends EReloadCommand<EverEssentials> {
 			EEMessages.ITEM_ERROR_ITEM_NOT_FOUND.sender()
 				.replace("<item>", type_string)
 				.sendTo(player);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		// L'item est dans la BlackList
 		if (this.blacklist.contains(type.get())) {
 			EEMessages.ITEM_ERROR_ITEM_BLACKLIST.sendTo(player);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		this.commandGive(player, ItemStack.of(type.get(), 1), type.get().getMaxStackQuantity());
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 
-	private boolean commandItem(final EPlayer player, String type_string, String value) {
+	private CompletableFuture<Boolean> commandItem(final EPlayer player, String type_string, String value) {
 		Optional<ItemType> type = UtilsItemType.getItemType(type_string);
 		
 		// Le type n'existe pas
@@ -175,13 +174,13 @@ public class EEItem extends EReloadCommand<EverEssentials> {
 			EEMessages.ITEM_ERROR_ITEM_NOT_FOUND.sender()
 				.replace("<item>", type_string)
 				.sendTo(player);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		// L'item est dans la BlackList
 		if (this.blacklist.contains(type.get())) {
 			EEMessages.ITEM_ERROR_ITEM_BLACKLIST.sendTo(player);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		ItemStack item = ItemStack.of(type.get(), 1);
@@ -201,7 +200,7 @@ public class EEItem extends EReloadCommand<EverEssentials> {
 				.prefix(EEMessages.PREFIX)
 				.replace("<number>", value)
 				.sendTo(player);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 			
 		// La valeur n'est pas correcte
@@ -209,13 +208,13 @@ public class EEItem extends EReloadCommand<EverEssentials> {
 			EEMessages.ITEM_ERROR_QUANTITY.sender()
 				.replace("<amount>", String.valueOf(type.get().getMaxStackQuantity()))
 				.sendTo(player);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		return this.commandGive(player, item, quantity);
 	}
 
-	private boolean commandItem(final EPlayer player, String type_string, String data_string, String quantity_string) {
+	private CompletableFuture<Boolean> commandItem(final EPlayer player, String type_string, String data_string, String quantity_string) {
 		Optional<ItemType> type = UtilsItemType.getItemType(type_string);
 		
 		// Le type n'existe pas
@@ -223,13 +222,13 @@ public class EEItem extends EReloadCommand<EverEssentials> {
 			EEMessages.ITEM_ERROR_ITEM_NOT_FOUND.sender()
 				.replace("<item>", type_string)
 				.sendTo(player);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		// L'item est dans la BlackList
 		if (this.blacklist.contains(type.get())) {
 			EEMessages.ITEM_ERROR_ITEM_BLACKLIST.sendTo(player);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		ItemStack item = ItemStack.of(type.get(), 1);
@@ -241,7 +240,7 @@ public class EEItem extends EReloadCommand<EverEssentials> {
 			EEMessages.ITEM_ERROR_DATA.sender()
 				.replace("<item>", data_string)
 				.sendTo(player);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		// La quantité n'est pas un nombre
@@ -252,7 +251,7 @@ public class EEItem extends EReloadCommand<EverEssentials> {
 				.prefix(EEMessages.PREFIX)
 				.replace("<number>", quantity_string)
 				.sendTo(player);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 			
 		// La valeur n'est pas correcte
@@ -260,13 +259,13 @@ public class EEItem extends EReloadCommand<EverEssentials> {
 			EEMessages.ITEM_ERROR_DATA.sender()
 				.replace("<amount>", String.valueOf(type.get().getMaxStackQuantity()))
 				.sendTo(player);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		return this.commandGive(player, item_data.get(), quantity);
 	}
 	
-	private boolean commandGive(final EPlayer player, ItemStack item, Integer quantity) {
+	private CompletableFuture<Boolean> commandGive(final EPlayer player, ItemStack item, Integer quantity) {
 		item.setQuantity(quantity);
 		Text itemText = EChat.getButtomItem(item, EEMessages.ITEM_GIVE_COLOR.getColor());
 		
@@ -281,7 +280,7 @@ public class EEItem extends EReloadCommand<EverEssentials> {
 			.replace("<quantity>", quantity.toString())
 			.replace("<item>", itemText)
 			.sendTo(player);
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 	
 	private Collection<ItemType> getBlacklist(){

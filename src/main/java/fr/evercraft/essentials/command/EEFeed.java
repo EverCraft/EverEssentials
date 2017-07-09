@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
@@ -73,16 +74,13 @@ public class EEFeed extends ECommand<EverEssentials> {
 	}
 	
 	@Override
-	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
-		// Résultat de la commande :
-		boolean resultat = false;
-		
+	public CompletableFuture<Boolean> execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Si on ne connait pas le joueur
 		if (args.size() == 0) {
 			
 			// Si la source est un joueur
 			if (source instanceof EPlayer) {
-				resultat = this.commandFeed((EPlayer) source);
+				return this.commandFeed((EPlayer) source);
 			// La source n'est pas un joueur
 			} else {
 				EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()
@@ -97,13 +95,13 @@ public class EEFeed extends ECommand<EverEssentials> {
 			if (source.hasPermission(EEPermissions.FEED_OTHERS.get())){
 				// Pour tous les joueurs
 				if (args.get(0).equals("*")) {
-					resultat = this.commandFeedAll(source);
+					return this.commandFeedAll(source);
 				// Pour un joueur
 				} else {
 					Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(args.get(0));
 					// Le joueur existe
 					if (optPlayer.isPresent()){
-						resultat = this.commandFeedOthers(source, optPlayer.get());
+						return this.commandFeedOthers(source, optPlayer.get());
 					} else {
 						EAMessages.PLAYER_NOT_FOUND.sender()
 							.prefix(EEMessages.PREFIX)
@@ -122,18 +120,18 @@ public class EEFeed extends ECommand<EverEssentials> {
 			source.sendMessage(this.help(source));
 		}
 		
-		return resultat;
+		return CompletableFuture.completedFuture(false);
 	}
 	
-	private boolean commandFeed(final EPlayer player) {
+	private CompletableFuture<Boolean> commandFeed(final EPlayer player) {
 		player.setFood(20);
 		player.setSaturation(20);
 		
 		EEMessages.FEED_PLAYER.sendTo(player);
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 	
-	private boolean commandFeedOthers(final CommandSource staff, final EPlayer player) throws CommandException {
+	private CompletableFuture<Boolean> commandFeedOthers(final CommandSource staff, final EPlayer player) throws CommandException {
 		// La source et le joueur sont identique
 		if (player.equals(staff)) {
 			return this.commandFeed(player);
@@ -148,10 +146,10 @@ public class EEFeed extends ECommand<EverEssentials> {
 		EEMessages.FEED_OTHERS_PLAYER.sender()
 			.replace("<staff>", staff.getName())
 			.sendTo(player);
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 	
-	private boolean commandFeedAll(final CommandSource staff) {
+	private CompletableFuture<Boolean> commandFeedAll(final CommandSource staff) {
 		// Pour tous les joueurs connecté
 		this.plugin.getEServer().getOnlineEPlayers().forEach(player -> {
 			player.setFood(20);
@@ -166,6 +164,6 @@ public class EEFeed extends ECommand<EverEssentials> {
 		});
 		
 		EEMessages.FEED_ALL_STAFF.sendTo(staff);
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 }

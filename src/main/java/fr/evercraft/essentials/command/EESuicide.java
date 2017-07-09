@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
@@ -71,16 +72,13 @@ public class EESuicide extends ECommand<EverEssentials> {
 	}
 	
 	@Override
-	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
-		// Résultat de la commande :
-		boolean resultat = false;
-		
+	public CompletableFuture<Boolean> execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Si on ne connait pas le joueur
 		if (args.size() == 0) {
 			
 			// Si la source est un joueur
 			if (source instanceof EPlayer) {
-				resultat = this.commandSuicide((EPlayer) source);
+				return this.commandSuicide((EPlayer) source);
 			// La source n'est pas un joueur
 			} else {
 				EAMessages.PLAYER_NOT_FOUND.sender()
@@ -92,16 +90,16 @@ public class EESuicide extends ECommand<EverEssentials> {
 			source.sendMessage(this.help(source));
 		}
 		
-		return resultat;
+		return CompletableFuture.completedFuture(false);
 	}
 	
-	private boolean commandSuicide(final EPlayer player) {
+	private CompletableFuture<Boolean> commandSuicide(final EPlayer player) {
 		// Event cancel
 		if(!player.setHealth(0)) {
 			EEMessages.SUICIDE_CANCEL.sender()
 				.replace("<player>", player.getName())
 				.sendTo(player);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		final MessageEvent.MessageFormatter formatter = new MessageEvent.MessageFormatter();
@@ -131,6 +129,6 @@ public class EESuicide extends ECommand<EverEssentials> {
     			.replace("<player>", player.getName())
     			.sendTo(player);
     	}
-		return true;
+    	return CompletableFuture.completedFuture(true);
 	}
 }

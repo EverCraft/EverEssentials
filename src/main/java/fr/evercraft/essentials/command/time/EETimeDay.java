@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
@@ -76,30 +77,27 @@ public class EETimeDay extends ECommand<EverEssentials> {
 	}
 
 	@Override
-	public boolean execute(CommandSource source, final List<String> args) throws CommandException {
+	public CompletableFuture<Boolean> execute(CommandSource source, final List<String> args) throws CommandException {
 		// Erreur : Context 
 		if(source instanceof EPlayer) {
 			source = ((EPlayer) source).get();
 		}
 		
-		// Résultat de la commande :
-		boolean resultat = false;
-		
 		// Si on ne connait pas le joueur
 		if (args.size() == 0) {
-			resultat = this.commandTimeDay(source, "");
+			return this.commandTimeDay(source, "");
 		} else if (args.size() == 1) {
-			resultat = this.commandTimeDay(source, "\"" + args.get(0) + "\"");
+			return this.commandTimeDay(source, "\"" + args.get(0) + "\"");
 		// Nombre d'argument incorrect
 		} else {
 			source.sendMessage(this.help(source));
 		}
 		
-		return resultat;
+		return CompletableFuture.completedFuture(false);
 	}
 	
-	public boolean commandTimeDay(final CommandSource player, final String world) throws CommandException {
+	public CompletableFuture<Boolean> commandTimeDay(final CommandSource player, final String world) throws CommandException {
 		this.plugin.getGame().getCommandManager().process(player, "time day " + world);
-		return false;
+		return CompletableFuture.completedFuture(false);
 	}
 }

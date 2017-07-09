@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
@@ -35,11 +36,12 @@ import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
-import fr.evercraft.everapi.plugin.command.EReloadCommand;
+import fr.evercraft.everapi.plugin.command.ECommand;
+import fr.evercraft.everapi.plugin.command.ReloadCommand;
 import fr.evercraft.everapi.server.player.EPlayer;
 import fr.evercraft.everapi.sponge.UtilsEffect;
 
-public class EEEffect extends EReloadCommand<EverEssentials> {
+public class EEEffect extends ECommand<EverEssentials> implements ReloadCommand {
 	
 	private int default_duration;
 	private int max_duration;
@@ -107,10 +109,7 @@ public class EEEffect extends EReloadCommand<EverEssentials> {
 	}
 
 	@Override
-	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
-		// Résultat de la commande :
-		boolean resultat = false;
-		
+	public CompletableFuture<Boolean> execute(final CommandSource source, final List<String> args) throws CommandException {
 		if (source instanceof EPlayer) {
 			EPlayer player = (EPlayer) source;
 			// Affichage de l'aide
@@ -121,13 +120,13 @@ public class EEEffect extends EReloadCommand<EverEssentials> {
 			// Ajout de l'effect avec amplifier et durée par défaut
 			} else if (args.size() == 1) {
 				
-				resultat = this.commandEffect(player, args.get(0));
+				return this.commandEffect(player, args.get(0));
 				
 			// Ajout de l'effect avec durée par défaut et amplifier personnalisé
 			} else if (args.size() == 2) {
 				
 				try {
-					resultat = this.commandEffect(player, args.get(0), Integer.valueOf(args.get(1)));
+					return this.commandEffect(player, args.get(0), Integer.valueOf(args.get(1)));
 					// Nombre invalide
 				} catch (NumberFormatException e) {
 					EAMessages.IS_NOT_NUMBER.sender()
@@ -143,7 +142,7 @@ public class EEEffect extends EReloadCommand<EverEssentials> {
 					int amplification = Integer.valueOf(args.get(1));
 					try {
 						int duration = Integer.valueOf(args.get(2)) * 20;
-						resultat = this.commandEffect(player, args.get(0), amplification, duration);
+						return this.commandEffect(player, args.get(0), amplification, duration);
 					} catch (NumberFormatException e) {
 						EAMessages.IS_NOT_NUMBER.sender()
 							.prefix(EEMessages.PREFIX)
@@ -166,10 +165,10 @@ public class EEEffect extends EReloadCommand<EverEssentials> {
 				.sendTo(source);
 		}
 		
-		return resultat;
+		return CompletableFuture.completedFuture(false);
 	}
 
-	private boolean commandEffect(final EPlayer player, final String name_effect) {
+	private CompletableFuture<Boolean> commandEffect(final EPlayer player, final String name_effect) {
 		Optional<UtilsEffect> effect = UtilsEffect.getEffect(name_effect);
 		
 		// L'effet n'existe pas
@@ -177,14 +176,14 @@ public class EEEffect extends EReloadCommand<EverEssentials> {
 			EEMessages.EFFECT_ERROR_NAME.sender()
 				.replace("<effect>", name_effect)
 				.sendTo(player);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		player.addPotion(this.createPotionEffect(effect.get().getType(), this.default_amplifier, this.default_duration));
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 
-	private boolean commandEffect(final EPlayer player, final String name_effect, final int amplifier) {
+	private CompletableFuture<Boolean> commandEffect(final EPlayer player, final String name_effect, final int amplifier) {
 		Optional<UtilsEffect> effect = UtilsEffect.getEffect(name_effect);
 		
 		// L'effet n'existe pas
@@ -192,7 +191,7 @@ public class EEEffect extends EReloadCommand<EverEssentials> {
 			EEMessages.EFFECT_ERROR_NAME.sender()
 				.replace("<effect>", name_effect)
 				.sendTo(player);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		// La valeur de l'amplifieur n'est pas correcte
@@ -201,14 +200,14 @@ public class EEEffect extends EReloadCommand<EverEssentials> {
 				.replace("<min>", "1")
 				.replace("<max>", String.valueOf(effect.get().getMaxAmplifier()))
 				.sendTo(player);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		player.addPotion(this.createPotionEffect(effect.get().getType(), amplifier - 1, this.default_duration));
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 
-	private boolean commandEffect(final EPlayer player, final String name_effect, final int amplifier, final int duration) {
+	private CompletableFuture<Boolean> commandEffect(final EPlayer player, final String name_effect, final int amplifier, final int duration) {
 		Optional<UtilsEffect> effect = UtilsEffect.getEffect(name_effect);
 		
 		// L'effet n'existe pas
@@ -216,7 +215,7 @@ public class EEEffect extends EReloadCommand<EverEssentials> {
 			EEMessages.EFFECT_ERROR_NAME.sender()
 				.replace("<effect>", name_effect)
 				.sendTo(player);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		// La valeur de l'amplifieur n'est pas correcte
@@ -225,7 +224,7 @@ public class EEEffect extends EReloadCommand<EverEssentials> {
 				.replace("<min>", "1")
 				.replace("<max>", String.valueOf(effect.get().getMaxAmplifier()))
 				.sendTo(player);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		// La durée n'est pas correcte
@@ -234,11 +233,11 @@ public class EEEffect extends EReloadCommand<EverEssentials> {
 				.replace("<min>", "1")
 				.replace("<max>", String.valueOf(this.max_duration))
 				.sendTo(player);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		player.addPotion(createPotionEffect(effect.get().getType(), amplifier - 1, duration));
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 
 	private PotionEffect createPotionEffect(PotionEffectType type, int amplifier, int duration) {

@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.TreeSet;
+import java.util.concurrent.CompletableFuture;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandMapping;
@@ -73,29 +74,26 @@ public class EEHelp extends ECommand<EverEssentials> {
 	}
 	
 	@Override
-	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
-		// Résultat de la commande :
-		boolean resultat = false;
-		
+	public CompletableFuture<Boolean> execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Si on ne connait pas le joueur
 		if (args.size() == 0) {
 			
-			resultat = this.commandHelp(source);
+			return this.commandHelp(source);
 			
 		// On connais le joueur
 		} else if (args.size() == 1) {
 			
-			resultat = this.commandHelp(source, args.get(0));
+			return this.commandHelp(source, args.get(0));
 			
 		// Nombre d'argument incorrect
 		} else {
 			source.sendMessage(this.help(source));
 		}
 		
-		return resultat;
+		return CompletableFuture.completedFuture(false);
 	}
 	
-	private boolean commandHelp(final CommandSource source) {
+	private CompletableFuture<Boolean> commandHelp(final CommandSource source) {
 		Text title = EEMessages.HELP_TITLE.getText().toBuilder()
 						.onClick(TextActions.runCommand("/help"))
 						.color(TextColors.RED)
@@ -105,15 +103,15 @@ public class EEHelp extends ECommand<EverEssentials> {
         commands.addAll(this.plugin.getGame().getCommandManager().getAll().values());
 		
 		this.plugin.getEverAPI().getManagerService().getEPagination().helpCommands(commands, title, source);
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 	
-	private boolean commandHelp(final CommandSource source, final String alias) {
+	private CompletableFuture<Boolean> commandHelp(final CommandSource source, final String alias) {
 		Optional<? extends CommandMapping> command = this.plugin.getGame().getCommandManager().get(alias);
 		if (command.isPresent()) {
 			if (command.get().getCallable().testPermission(source)) {
 				source.sendMessage(command.get().getCallable().getHelp(source).orElse(Text.of("/" + command.get().getPrimaryAlias())));
-				return true;
+				return CompletableFuture.completedFuture(true);
 			} else {
 				source.sendMessage(EAMessages.NO_PERMISSION.getText());
 			}
@@ -132,6 +130,6 @@ public class EEHelp extends ECommand<EverEssentials> {
 	
 			this.plugin.getEverAPI().getManagerService().getEPagination().helpCommands(commands, title, source);
 		}
-		return false;
+		return CompletableFuture.completedFuture(false);
 	}
 }

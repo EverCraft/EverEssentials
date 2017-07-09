@@ -19,6 +19,7 @@ package fr.evercraft.essentials.command;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
@@ -71,15 +72,12 @@ public class EEMe extends ECommand<EverEssentials> {
 	}
 	
 	@Override
-	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
-		// Résultat de la commande :
-		boolean resultat = false;
-		
+	public CompletableFuture<Boolean> execute(final CommandSource source, final List<String> args) throws CommandException {
 		if (args.size() == 1) {
 			
 			// Si la source est un joueur
 			if (source instanceof EPlayer) {
-				resultat = this.commandMe((EPlayer) source, args.get(0));
+				return this.commandMe((EPlayer) source, args.get(0));
 			// La source n'est pas un joueur
 			} else {
 				EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()
@@ -91,13 +89,13 @@ public class EEMe extends ECommand<EverEssentials> {
 			source.sendMessage(this.help(source));
 		}
 		
-		return resultat;
+		return CompletableFuture.completedFuture(false);
 	}
 	
-	private boolean commandMe(final EPlayer player, String message) {
+	private CompletableFuture<Boolean> commandMe(final EPlayer player, String message) {
 		player.broadcastMessage(EEMessages.ME_PLAYER.getFormat().toText(
 				"<player>", player.getName(),
 				"<message>", message));
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 }

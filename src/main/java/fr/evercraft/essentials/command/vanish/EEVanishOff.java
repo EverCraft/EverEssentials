@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
@@ -67,7 +68,7 @@ public class EEVanishOff extends ESubCommand<EverEssentials> {
 	}
 	
 	@Override
-	public Collection<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
+	public Collection<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		if (args.size() == 1 && source.hasPermission(EEPermissions.FLY_OTHERS.get())){
 			return this.getAllUsers(args.get(0), source);
 		}
@@ -75,13 +76,10 @@ public class EEVanishOff extends ESubCommand<EverEssentials> {
 	}
 	
 	@Override
-	public boolean subExecute(final CommandSource source, final List<String> args) throws CommandException {
-		// Résultat de la commande :
-		boolean resultat = false;
-		
+	public CompletableFuture<Boolean> execute(final CommandSource source, final List<String> args) throws CommandException {
 		if (args.size() == 0) {
 			if (source instanceof EPlayer) {
-				resultat = this.commandVanishOff((EPlayer) source);
+				return this.commandVanishOff((EPlayer) source);
 			} else {
 				EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()
 					.prefix(EEMessages.PREFIX)
@@ -93,7 +91,7 @@ public class EEVanishOff extends ESubCommand<EverEssentials> {
 				Optional<EUser> user = this.plugin.getEServer().getEUser(args.get(0));
 				// Le joueur existe
 				if (user.isPresent()){
-					resultat = this.commandVanishOffOthers(source, user.get());
+					return this.commandVanishOffOthers(source, user.get());
 				// Le joueur est introuvable
 				} else {
 					EAMessages.PLAYER_NOT_FOUND.sender()
@@ -110,25 +108,26 @@ public class EEVanishOff extends ESubCommand<EverEssentials> {
 			source.sendMessage(this.help(source));
 		}
 		
-		return resultat;
+		return CompletableFuture.completedFuture(false);
 	}
 
-	private boolean commandVanishOff(final EPlayer player) {
+	private CompletableFuture<Boolean> commandVanishOff(final EPlayer player) {
 		// Vanish désactivé
 		if (!player.isVanish()) {
 			EEMessages.VANISH_OFF_PLAYER_ERROR.sendTo(player);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		if (!player.setVanish(false)) {
 			EEMessages.VANISH_OFF_PLAYER_CANCEL.sendTo(player);
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.VANISH_OFF_PLAYER.getText()));
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 	
-	private boolean commandVanishOffOthers(final CommandSource staff, final EUser user) throws CommandException {
+	private CompletableFuture<Boolean> commandVanishOffOthers(final CommandSource staff, final EUser user) throws CommandException {
 		// La source et le joueur sont identique
 		if (staff instanceof EPlayer && user.getIdentifier().equals(staff.getIdentifier())) {
 			return this.commandVanishOff((EPlayer) staff);
@@ -139,14 +138,14 @@ public class EEVanishOff extends ESubCommand<EverEssentials> {
 			EEMessages.VANISH_OFF_OTHERS_ERROR.sender()
 				.replace("<player>", user.getName())
 				.sendTo(staff);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		if (!user.setVanish(false)) {
 			EEMessages.VANISH_OFF_OTHERS_CANCEL.sender()
 				.replace("<player>", user.getName())
 				.sendTo(staff);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		EEMessages.VANISH_OFF_OTHERS_STAFF.sender()
@@ -158,6 +157,6 @@ public class EEVanishOff extends ESubCommand<EverEssentials> {
 				.replace("<staff>", staff.getName())
 				.sendTo((EPlayer) user);
 		}
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 }

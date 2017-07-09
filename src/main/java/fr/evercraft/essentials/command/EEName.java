@@ -21,7 +21,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
@@ -37,7 +36,6 @@ import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.message.replace.EReplace;
 import fr.evercraft.everapi.plugin.command.ECommand;
 import fr.evercraft.everapi.server.player.EPlayer;
-import fr.evercraft.everapi.services.MojangService;
 import fr.evercraft.everapi.services.mojang.namehistory.NameHistory;
 
 public class EEName extends ECommand<EverEssentials> {
@@ -79,10 +77,7 @@ public class EEName extends ECommand<EverEssentials> {
 	}
 	
 	@Override
-	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
-		// Résultat de la commande :
-		boolean resultat = false;
-		
+	public CompletableFuture<Boolean> execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Si on ne connait pas le joueur
 		if (args.size() == 0) {
 			// Si la source est un joueur
@@ -91,7 +86,7 @@ public class EEName extends ECommand<EverEssentials> {
 						.async()
 						.execute(() -> this.commandNames((EPlayer) source))
 						.name("Command : Names").submit(this.plugin);
-				resultat = true;
+				return CompletableFuture.completedFuture(true);
 			// La source n'est pas un joueur
 			} else {
 				EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()
@@ -106,7 +101,7 @@ public class EEName extends ECommand<EverEssentials> {
 							.async()
 							.execute(() -> this.commandNames(source, args.get(0)))
 							.name("Command : Names").submit(this.plugin);
-				resultat = true;
+				return CompletableFuture.completedFuture(true);
 			// Il n'a pas la permission
 			} else {
 				EAMessages.NO_PERMISSION.sender()
@@ -118,16 +113,21 @@ public class EEName extends ECommand<EverEssentials> {
 			source.sendMessage(this.help(source));
 		}
 		
-		return resultat;
+		return CompletableFuture.completedFuture(false);
 	}
 
-	private boolean commandNames(final EPlayer player) {
-		MojangService service = this.plugin.getEverAPI().getManagerService().getMojangService();
-		
-		try {
+	private CompletableFuture<Boolean> commandNames(final EPlayer player) {
+		return this.plugin.getEverAPI().getManagerService().getMojangService().getNameHistory().get(player.getUniqueId()).thenApply(names -> {
+			if (names == null) {
+				EAMessages.COMMAND_ERROR.sender()
+					.prefix(EEMessages.PREFIX)
+					.sendTo(player);
+				return false;
+			}
+			
 			List<Text> lists = new ArrayList<Text>();
-	
-			for (NameHistory name : service.getNameHistory().get(player.getUniqueId())) {
+			
+			for (NameHistory name : names) {
 				if (!name.getDate().isPresent()) {
 					lists.add(EEMessages.NAMES_PLAYER_LINE_ORIGINAL.getFormat()
 							.toText("<name>", name.getName()));
@@ -151,47 +151,39 @@ public class EEName extends ECommand<EverEssentials> {
 						.onClick(TextActions.runCommand("/names ")).build(), 
 					lists, player);
 			return true;
-		} catch (ExecutionException e) {
-			EAMessages.COMMAND_ERROR.sender()
-				.prefix(EEMessages.PREFIX)
-				.sendTo(player);
-			return false;
-		}
+			
+		});
 	}
 	
-	private boolean commandNames(final CommandSource player, String name) {
-		try {
-			CompletableFuture<GameProfile> future = this.plugin.getEServer().getGameProfileFuture(name);
-			future.exceptionally(e -> null).thenApplyAsync(profile -> {
-				if (profile != null && profile.isFilled() && profile.getName().isPresent()) {
-					if (player instanceof EPlayer && ((EPlayer) player).getProfile().equals(profile)) {
-						this.commandNames((EPlayer) player);
-					} else {
-						this.commandNames(player, profile);
-					}
+	private CompletableFuture<Boolean> commandNames(final CommandSource player, String name) {
+		return this.plugin.getEServer().getGameProfileFuture(name).thenCompose(profile -> {
+			if (profile != null && profile.isFilled() && profile.getName().isPresent()) {
+				if (player instanceof EPlayer && ((EPlayer) player).getProfile().equals(profile)) {
+					return this.commandNames((EPlayer) player);
 				} else {
-					EAMessages.PLAYER_NOT_FOUND.sender()
-						.prefix(EEMessages.PREFIX)
-						.sendTo(player);
+					return this.commandNames(player, profile);
 				}
-				return profile;
-			}, this.plugin.getGame().getScheduler().createAsyncExecutor(this.plugin));
-			return true;
-		} catch (IllegalArgumentException e) {
-			EAMessages.PLAYER_NOT_FOUND.sender()
-				.prefix(EEMessages.PREFIX)
-				.sendTo(player);
-			return false;
-		}
+			} else {
+				EAMessages.PLAYER_NOT_FOUND.sender()
+					.prefix(EEMessages.PREFIX)
+					.sendTo(player);
+			}
+			return CompletableFuture.completedFuture(false);
+		});
 	}
 	
-	private boolean commandNames(CommandSource staff, GameProfile gameprofile) {
-		MojangService service = this.plugin.getEverAPI().getManagerService().getMojangService();
-		
-		try {
+	private CompletableFuture<Boolean> commandNames(CommandSource staff, GameProfile gameprofile) {
+		return this.plugin.getEverAPI().getManagerService().getMojangService().getNameHistory().get(gameprofile.getUniqueId()).thenApply(names -> {
+			if (names == null) {
+				EAMessages.COMMAND_ERROR.sender()
+					.prefix(EEMessages.PREFIX)
+					.sendTo(staff);
+				return false;
+			}
+			
 			List<Text> lists = new ArrayList<Text>();
-	
-			for (NameHistory name : service.getNameHistory().get(gameprofile.getUniqueId())) {
+			
+			for (NameHistory name : names) {
 				if (!name.getDate().isPresent()) {
 					lists.add(EEMessages.NAMES_OTHERS_LINE_ORIGINAL.getFormat()
 							.toText("<name>", name.getName()));
@@ -211,16 +203,11 @@ public class EEName extends ECommand<EverEssentials> {
 			}
 			
 			this.plugin.getEverAPI().getManagerService().getEPagination().sendTo(
-					EEMessages.NAMES_OTHERS_TITLE.getFormat()
-						.toText("<player>", gameprofile.getName().get()).toBuilder()
+					EEMessages.NAMES_PLAYER_TITLE.getFormat().toText("<player>", gameprofile.getName().get()).toBuilder()
 						.onClick(TextActions.runCommand("/names " + gameprofile.getUniqueId().toString())).build(), 
 					lists, staff);
 			return true;
-		} catch (ExecutionException e) {
-			EAMessages.COMMAND_ERROR.sender()
-				.prefix(EEMessages.PREFIX)
-				.sendTo(staff);
-			return false;
-		}
+			
+		});
 	}
 }

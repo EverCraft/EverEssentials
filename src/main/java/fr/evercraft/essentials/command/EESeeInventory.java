@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
@@ -69,9 +70,7 @@ public class EESeeInventory extends ECommand<EverEssentials> {
 	}
 	
 	@Override
-	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
-		// Résultat de la commande :
-		boolean resultat = false;
+	public CompletableFuture<Boolean> execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Si on ne connait pas le joueur
 		if (args.size() == 1) {
 			// Si la source est un joueur
@@ -79,7 +78,7 @@ public class EESeeInventory extends ECommand<EverEssentials> {
 				Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(args.get(0));
 				// Le joueur existe
 				if (optPlayer.isPresent()){
-					resultat = commandSeeInventory((EPlayer) source, optPlayer.get());
+					return commandSeeInventory((EPlayer) source, optPlayer.get());
 				// Joueur introuvable
 				} else {
 					EAMessages.PLAYER_NOT_FOUND.sender()
@@ -96,11 +95,11 @@ public class EESeeInventory extends ECommand<EverEssentials> {
 		} else {
 			source.sendMessage(this.help(source));
 		}
-		return resultat;
+		return CompletableFuture.completedFuture(false);
 	}
 	
-	public boolean commandSeeInventory(final EPlayer staff, final EPlayer player){
+	public CompletableFuture<Boolean> commandSeeInventory(final EPlayer staff, final EPlayer player){
 		staff.openInventory(player.getInventory(), Cause.source(this.plugin).build());
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 }

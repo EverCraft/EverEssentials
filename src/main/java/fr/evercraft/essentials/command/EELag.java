@@ -23,6 +23,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
 import org.spongepowered.api.command.CommandException;
@@ -43,9 +44,10 @@ import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.java.UtilsDouble;
 import fr.evercraft.everapi.message.replace.EReplace;
-import fr.evercraft.everapi.plugin.command.EReloadCommand;
+import fr.evercraft.everapi.plugin.command.ECommand;
+import fr.evercraft.everapi.plugin.command.ReloadCommand;
 
-public class EELag extends EReloadCommand<EverEssentials> {
+public class EELag extends ECommand<EverEssentials> implements ReloadCommand {
 	
 	private static final double HISTORY_LENGTH = 15;
 	private static final int TPS_LENGTH = 2;
@@ -99,21 +101,18 @@ public class EELag extends EReloadCommand<EverEssentials> {
 	}
 	
 	@Override
-	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
-		ManagementFactory.getRuntimeMXBean().getStartTime();
-		// Résultat de la commande :
-		boolean resultat = false;
-		
+	public CompletableFuture<Boolean> execute(final CommandSource source, final List<String> args) throws CommandException {
+		//ManagementFactory.getRuntimeMXBean().getStartTime();
 		if (args.size() == 0) {
-			resultat = this.commandLag(source);
+			return this.commandLag(source);
 		} else {
 			source.sendMessage(help(source));
 		}
 		
-		return resultat;
+		return CompletableFuture.completedFuture(false);
 	}
 	
-	private boolean commandLag(final CommandSource player) {
+	private CompletableFuture<Boolean> commandLag(final CommandSource player) {
 		Double tps = this.getTPS();
 		List<Text> list = new ArrayList<Text>();
 		
@@ -152,7 +151,7 @@ public class EELag extends EReloadCommand<EverEssentials> {
 					.build(), 
 				list, 
 				player);
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 	
 	private Text getHistoryTPS() {

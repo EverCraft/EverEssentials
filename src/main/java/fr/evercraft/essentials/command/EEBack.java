@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
@@ -67,16 +68,13 @@ public class EEBack extends ECommand<EverEssentials> {
 	}
 	
 	@Override
-	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
-		// Résultat de la commande :
-		boolean resultat = false;
-		
+	public CompletableFuture<Boolean> execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Nombre d'argument correct
 		if (args.size() == 0) {
 			
 			// Si la source est un joueur
 			if (source instanceof EPlayer) {
-				resultat = this.commandBack((EPlayer) source);
+				return this.commandBack((EPlayer) source);
 			// La source n'est pas un joueur
 			} else {
 				EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()
@@ -88,16 +86,17 @@ public class EEBack extends ECommand<EverEssentials> {
 		} else {
 			source.sendMessage(this.help(source));
 		}
-		return resultat;
+		
+		return CompletableFuture.completedFuture(false);
 	}
 	
-	private boolean commandBack(final EPlayer player){
+	private CompletableFuture<Boolean> commandBack(final EPlayer player){
 		final Optional<Transform<World>> back = player.getBack();
 		
 		// Le joueur a une position de retour
 		if (!back.isPresent()) {
 			EEMessages.BACK_INCONNU.sendTo(player);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		// Le joueur n'a pas la permission d'aller dans le monde
@@ -105,13 +104,13 @@ public class EEBack extends ECommand<EverEssentials> {
 			EAMessages.NO_PERMISSION_WORLD_OTHERS.sender()
 				.prefix(EEMessages.PREFIX)
 				.sendTo(player);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 			
 		// La position n'est pas Safe
 		if (!(this.plugin.getEverAPI().getManagerUtils().getLocation().isPositionSafe(back.get()) || player.isGod() || player.isCreative())) {
 			EEMessages.BACK_ERROR_LOCATION.sendTo(player);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		// Delais de téléportation
@@ -124,7 +123,7 @@ public class EEBack extends ECommand<EverEssentials> {
 		
 		// Téléportation
 		player.setTeleport(delay, () -> this.teleport(player, back.get()), player.hasPermission(EEPermissions.TELEPORT_BYPASS_MOVE.get()));
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 	
 	private void teleport(final EPlayer player, final Transform<World> teleport) {

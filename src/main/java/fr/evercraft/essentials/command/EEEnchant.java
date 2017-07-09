@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
@@ -105,10 +106,7 @@ public class EEEnchant extends ECommand<EverEssentials> {
 	}
 	
 	@Override
-	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
-		// Résultat de la commande :
-		boolean resultat = false;
-		
+	public CompletableFuture<Boolean> execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Si la source est un joueur
 		if (source instanceof EPlayer) {
 			EPlayer player = (EPlayer) source;
@@ -118,7 +116,7 @@ public class EEEnchant extends ECommand<EverEssentials> {
 				
 				// Si l'enchantement existe
 				if (enchantment.isPresent()) {
-					resultat = this.commandEnchant(player, enchantment.get(), enchantment.get().getMaximumLevel());
+					return this.commandEnchant(player, enchantment.get(), enchantment.get().getMaximumLevel());
 				} else {
 					EEMessages.ENCHANT_NOT_FOUND.sendTo(player);
 				}
@@ -129,14 +127,13 @@ public class EEEnchant extends ECommand<EverEssentials> {
 				if (enchantment.isPresent()) {
 					try {
 						int level = Integer.parseInt(args.get(1));
-						resultat = this.commandEnchant(player, enchantment.get(), level);
+						return this.commandEnchant(player, enchantment.get(), level);
 						
 					} catch (NumberFormatException e) {
 						EAMessages.IS_NOT_NUMBER.sender()
 							.prefix(EEMessages.PREFIX)
 							.replace("<number>", args.get(1))
 							.sendTo(source);
-						return false;
 					}
 				// L'enchantement n'existe pas
 				} else {
@@ -152,16 +149,16 @@ public class EEEnchant extends ECommand<EverEssentials> {
 				.prefix(EEMessages.PREFIX)
 				.sendTo(source);
 		}
-		return resultat;
+		return CompletableFuture.completedFuture(false);
 	}
 	
-	private boolean commandEnchant(final EPlayer player, Enchantment enchantment, int level) {
+	private CompletableFuture<Boolean> commandEnchant(final EPlayer player, Enchantment enchantment, int level) {
 		// Le joueur n'a pas d'item dans la main
 		if (!player.getItemInMainHand().isPresent()) {
 			EAMessages.EMPTY_ITEM_IN_HAND.sender()
 				.prefix(EEMessages.PREFIX)
 				.sendTo(player);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		ItemStack item = player.getItemInMainHand().get();
@@ -171,14 +168,14 @@ public class EEEnchant extends ECommand<EverEssentials> {
 			EEMessages.ENCHANT_LEVEL_TOO_LOW.sender()
 				.replace("<number>", String.valueOf(level))
 				.sendTo(player);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		if (level > enchantment.getMaximumLevel()) {
 			EEMessages.ENCHANT_LEVEL_TOO_HIGHT.sender()
 				.replace("<number>", String.valueOf(level))
 				.sendTo(player);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 
 		EnchantmentData enchantment_data = item.getOrCreate(EnchantmentData.class).get();
@@ -190,7 +187,7 @@ public class EEEnchant extends ECommand<EverEssentials> {
 				.replace("<level>", String.valueOf(level))
 				.replace("<item>", () -> EChat.getButtomItem(item, EEMessages.ENCHANT_ITEM_COLOR.getColor()))
 				.sendTo(player);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		enchantment_data.set(enchantment_data.enchantments().add(new ItemEnchantment(enchantment, level)));
@@ -202,7 +199,7 @@ public class EEEnchant extends ECommand<EverEssentials> {
 			.replace("<level>", String.valueOf(level))
 			.replace("<item>", () -> EChat.getButtomItem(item, EEMessages.ENCHANT_ITEM_COLOR.getColor()))
 			.sendTo(player);
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 	
 	private Optional<Enchantment> getEnchantment(String enchant) {

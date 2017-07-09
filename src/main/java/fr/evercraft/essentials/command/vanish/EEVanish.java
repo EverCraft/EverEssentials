@@ -17,6 +17,7 @@
 package fr.evercraft.essentials.command.vanish;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.text.Text;
@@ -50,13 +51,10 @@ public class EEVanish extends EParentCommand<EverEssentials> {
 	}
 	
 	@Override
-	protected boolean commandDefault(final CommandSource source, final List<String> args) {
-		// Résultat de la commande :
-		boolean resultat = false;
-				
+	protected CompletableFuture<Boolean> commandDefault(final CommandSource source, final List<String> args) {
 		// Si la source est un joueur
 		if (source instanceof EPlayer) {
-			resultat = this.commandVanish((EPlayer) source);
+			return this.commandVanish((EPlayer) source);
 		// La source n'est pas un joueur
 		} else {
 			EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()
@@ -64,10 +62,10 @@ public class EEVanish extends EParentCommand<EverEssentials> {
 				.sendTo(source);
 		}
 		
-		return resultat;
+		return CompletableFuture.completedFuture(false);
 	}
 	
-	private boolean commandVanish(final EPlayer player) {
+	private CompletableFuture<Boolean> commandVanish(final EPlayer player) {
 		boolean vanish = !player.isVanish();
 		
 		if (player.setVanish(vanish)) {
@@ -76,7 +74,7 @@ public class EEVanish extends EParentCommand<EverEssentials> {
 			} else {
 				EEMessages.VANISH_OFF_PLAYER.sendTo(player);
 			}
-			return true;
+			return CompletableFuture.completedFuture(true);
 		} else {
 			if (vanish) {
 				EEMessages.VANISH_ON_PLAYER_CANCEL.sendTo(player);
@@ -84,6 +82,6 @@ public class EEVanish extends EParentCommand<EverEssentials> {
 				EEMessages.VANISH_OFF_PLAYER_CANCEL.sendTo(player);
 			}
 		}
-		return false;
+		return CompletableFuture.completedFuture(false);
 	}
 }

@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
@@ -73,15 +74,12 @@ public class EEClearEffect extends ECommand<EverEssentials> {
 	}
 	
 	@Override
-	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
-		// Résultat de la commande :
-		boolean resultat = false;
-		
+	public CompletableFuture<Boolean> execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Si on ne connait pas le joueur
 		if (args.size() == 0) {
 			// Si la source est un joueur
 			if (source instanceof EPlayer) {
-				resultat = this.commandClearEffect((EPlayer) source);
+				return this.commandClearEffect((EPlayer) source);
 			// La source n'est pas un joueur
 			} else {
 				EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()
@@ -95,7 +93,7 @@ public class EEClearEffect extends ECommand<EverEssentials> {
 				Optional<EPlayer> player = this.plugin.getEServer().getEPlayer(args.get(0));
 				// Le joueur existe
 				if (player.isPresent()){
-					resultat = this.commandClearEffectOthers(source, player.get());
+					return this.commandClearEffectOthers(source, player.get());
 				// Le joueur est introuvable
 				} else {
 					EAMessages.PLAYER_NOT_FOUND.sender()
@@ -113,22 +111,22 @@ public class EEClearEffect extends ECommand<EverEssentials> {
 			source.sendMessage(this.help(source));
 		}
 		
-		return resultat;
+		return CompletableFuture.completedFuture(false);
 	}
 	
-	private boolean commandClearEffect(final EPlayer player) {
+	private CompletableFuture<Boolean> commandClearEffect(final EPlayer player) {
 		// Il n'y a pas d'effect de potion
 		if (player.getPotionEffects().isEmpty()) {
 			EEMessages.CLEAREFFECT_NOEFFECT.sendTo(player);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		player.clearPotions();
 		EEMessages.CLEAREFFECT_PLAYER.sendTo(player);
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 	
-	private boolean commandClearEffectOthers(final CommandSource staff, final EPlayer player) {
+	private CompletableFuture<Boolean> commandClearEffectOthers(final CommandSource staff, final EPlayer player) {
 		// La source et le joueur sont identique
 		if (player.equals(staff)) {
 			return this.commandClearEffect(player);
@@ -138,7 +136,7 @@ public class EEClearEffect extends ECommand<EverEssentials> {
 		// Il n'y a pas d'effect de potion
 		if (player.getPotionEffects().isEmpty()) {
 			EEMessages.CLEAREFFECT_NOEFFECT.sendTo(staff);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		player.clearPotions();
@@ -149,6 +147,6 @@ public class EEClearEffect extends ECommand<EverEssentials> {
 		EEMessages.CLEAREFFECT_OTHERS_PLAYER.sender()
 			.replace("<staff>", staff.getName())
 			.sendTo(player);
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 }

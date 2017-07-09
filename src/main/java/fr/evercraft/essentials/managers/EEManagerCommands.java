@@ -50,7 +50,7 @@ import fr.evercraft.essentials.command.whitelist.*;
 import fr.evercraft.essentials.command.world.*;
 import fr.evercraft.essentials.command.worldborder.*;
 import fr.evercraft.everapi.plugin.command.ECommand;
-import fr.evercraft.everapi.plugin.command.EReloadCommand;
+import fr.evercraft.everapi.plugin.command.ReloadCommand;
 
 public class EEManagerCommands extends HashSet<ECommand<EverEssentials>> {
 	
@@ -263,8 +263,8 @@ public class EEManagerCommands extends HashSet<ECommand<EverEssentials>> {
 	
 	public void reload(){
 		for (ECommand<EverEssentials> command : this) {
-			if (command instanceof EReloadCommand) {
-				((EReloadCommand<EverEssentials>) command).reload();
+			if (command instanceof ReloadCommand) {
+				((ReloadCommand) command).reload();
 			}
 		}
 	}

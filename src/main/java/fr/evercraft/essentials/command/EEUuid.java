@@ -76,16 +76,13 @@ public class EEUuid extends ECommand<EverEssentials> {
 	}
 	
 	@Override
-	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
-		// Résultat de la commande :
-		boolean resultat = false;
-		
+	public CompletableFuture<Boolean> execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Si on ne connait pas le joueur
 		if (args.size() == 0) {
 			
 			// Si la source est un joueur
 			if (source instanceof EPlayer) {
-				resultat = this.commandUUIDPlayerUUID((EPlayer) source);
+				return this.commandUUIDPlayerUUID((EPlayer) source);
 			// La source n'est pas un joueur
 			} else {
 				EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()
@@ -98,8 +95,7 @@ public class EEUuid extends ECommand<EverEssentials> {
 			
 			// Si il a la permission
 			if (source.hasPermission(EEPermissions.UUID_OTHERS.get())) {
-				this.commandUUID(source, args.get(0));
-				resultat = true;
+				return this.commandUUID(source, args.get(0));
 			// Il n'a pas la permission
 			} else {
 				EAMessages.NO_PERMISSION.sender()
@@ -112,18 +108,18 @@ public class EEUuid extends ECommand<EverEssentials> {
 			source.sendMessage(this.help(source));
 		}
 		
-		return resultat;
+		return CompletableFuture.completedFuture(false);
 	}
 	
-	private boolean commandUUIDPlayerName(final EPlayer player) {
+	private CompletableFuture<Boolean> commandUUIDPlayerName(final EPlayer player) {
 		EEMessages.UUID_PLAYER_NAME.sender()
 			.replace("<uuid>", this.getButtonUUID(player.getUniqueId()))
 			.replace("<name>", this.getButtonName(player.getName()))
 			.sendTo(player);
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 	
-	private boolean commandUUID(final CommandSource source, String name) {
+	private CompletableFuture<Boolean> commandUUID(final CommandSource source, String name) {
 		try {
 			CompletableFuture<GameProfile> future = this.plugin.getEServer().getGameProfileFuture(name);
 			future.exceptionally(e -> null).thenApplyAsync(profile -> {
@@ -140,24 +136,24 @@ public class EEUuid extends ECommand<EverEssentials> {
 				}
 				return profile;
 			}, this.plugin.getGame().getScheduler().createAsyncExecutor(this.plugin));
-			return true;
+			return CompletableFuture.completedFuture(true);
 		} catch (IllegalArgumentException e) {
 			EAMessages.PLAYER_NOT_FOUND.sender()
 				.prefix(EEMessages.PREFIX)
 				.sendTo(source);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 	}
 	
-	private boolean commandUUIDPlayerUUID(final EPlayer player) {
+	private CompletableFuture<Boolean> commandUUIDPlayerUUID(final EPlayer player) {
 		EEMessages.UUID_PLAYER_UUID.sender()
 			.replace("<uuid>", this.getButtonUUID(player.getUniqueId()))
 			.replace("<name>", this.getButtonName(player.getName()))
 			.sendTo(player);
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 	
-	private boolean commandUUIDOthersName(final CommandSource staff, final GameProfile profile) {
+	private CompletableFuture<Boolean> commandUUIDOthersName(final CommandSource staff, final GameProfile profile) {
 		// La source et le joueur sont identique
 		if (staff instanceof EPlayer && profile.getUniqueId().equals(((EPlayer) staff).getUniqueId())) {
 			return this.commandUUIDPlayerName((EPlayer) staff);
@@ -168,17 +164,17 @@ public class EEUuid extends ECommand<EverEssentials> {
 			EAMessages.PLAYER_NOT_FOUND.sender()
 				.prefix(EEMessages.PREFIX)
 				.sendTo(staff);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		EEMessages.UUID_OTHERS_PLAYER_NAME.sender()
 			.replace("<uuid>", this.getButtonUUID(profile.getUniqueId()))
 			.replace("<name>", this.getButtonName(profile.getName().get()))
 			.sendTo(staff);				
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 	
-	private boolean commandUUIDOthersUUID(final CommandSource staff, final GameProfile profile) {
+	private CompletableFuture<Boolean> commandUUIDOthersUUID(final CommandSource staff, final GameProfile profile) {
 		// La source et le joueur sont identique
 		if (staff instanceof EPlayer && profile.getUniqueId().equals(((EPlayer) staff).getUniqueId())) {
 			return this.commandUUIDPlayerUUID((EPlayer) staff);
@@ -189,7 +185,7 @@ public class EEUuid extends ECommand<EverEssentials> {
 			.replace("<uuid>", this.getButtonUUID(profile.getUniqueId()))
 			.replace("<name>", this.getButtonName(profile.getName().get()))
 			.sendTo(staff);				
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 	
 	private Text getButtonUUID(final UUID uuid){

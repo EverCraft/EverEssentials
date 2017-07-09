@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
@@ -52,7 +53,7 @@ public class EEWhitelistRemove extends ESubCommand<EverEssentials> {
 	}
 	
 	@Override
-	public Collection<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
+	public Collection<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		if (args.size() == 1) {
 			List<String> suggests = new ArrayList<String>();
 			for (GameProfile player :this.plugin.getEverAPI().getManagerService().getWhitelist().getWhitelistedProfiles()) {
@@ -74,10 +75,7 @@ public class EEWhitelistRemove extends ESubCommand<EverEssentials> {
 	}
 	
 	@Override
-	public boolean subExecute(final CommandSource source, final List<String> args) {
-		// Résultat de la commande :
-		boolean resultat = false;
-		
+	public CompletableFuture<Boolean> execute(final CommandSource source, final List<String> args) {
 		if (args.size() == 1) {
 			this.plugin.getGame().getScheduler().createTaskBuilder()
 												.async()
@@ -87,29 +85,29 @@ public class EEWhitelistRemove extends ESubCommand<EverEssentials> {
 			source.sendMessage(this.help(source));
 		}
 		
-		return resultat;
+		return CompletableFuture.completedFuture(false);
 	}
 	
-	private boolean commandWhitelistRemove(final CommandSource player, final String identifier) {
+	private CompletableFuture<Boolean> commandWhitelistRemove(final CommandSource player, final String identifier) {
 		Optional<GameProfile> gameprofile = this.plugin.getEServer().getGameProfile(identifier);
 		// Le joueur existe
 		if (!gameprofile.isPresent()) {
 			EAMessages.PLAYER_NOT_FOUND.sender()
 				.prefix(EEMessages.PREFIX)
 				.sendTo(player);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		if (!this.plugin.getEverAPI().getManagerService().getWhitelist().removeProfile(gameprofile.get())) {
 			EEMessages.WHITELIST_REMOVE_ERROR.sender()
 				.replace("<player>", gameprofile.get().getName().orElse(identifier))
 				.sendTo(player);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		EEMessages.WHITELIST_REMOVE_PLAYER.sender()
 			.replace("<player>", gameprofile.get().getName().orElse(identifier))
 			.sendTo(player);
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 }

@@ -22,6 +22,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import java.util.Map.Entry;
 
 import org.spongepowered.api.command.CommandException;
@@ -61,19 +62,16 @@ public class EEGameruleList extends ESubCommand<EverEssentials> {
 	}
 	
 	@Override
-	public Collection<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
+	public Collection<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		return Arrays.asList();
 	}
 	
 	@Override
-	public boolean subExecute(final CommandSource source, final List<String> args) throws CommandException {
-		// Résultat de la commande :
-		boolean resultat = false;
-		
+	public CompletableFuture<Boolean> execute(final CommandSource source, final List<String> args) throws CommandException {
 		if(args.size() == 0) {
 			if(source instanceof EPlayer) {
 				EPlayer player = (EPlayer) source;
-				resultat = this.commandGameruleList(player, player.getWorld());
+				return this.commandGameruleList(player, player.getWorld());
 			} else {
 				EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()
 					.prefix(EEMessages.PREFIX)
@@ -84,7 +82,7 @@ public class EEGameruleList extends ESubCommand<EverEssentials> {
 				EPlayer player = (EPlayer) source;
 				Optional<World> optWorld = this.plugin.getEServer().getEWorld(args.get(0));
 				if(optWorld.isPresent()){
-					resultat = this.commandGameruleList(player, player.getWorld());
+					return this.commandGameruleList(player, player.getWorld());
 				} else {
 					EAMessages.WORLD_NOT_FOUND.sender()
 						.prefix(EEMessages.PREFIX)
@@ -100,10 +98,10 @@ public class EEGameruleList extends ESubCommand<EverEssentials> {
 			source.sendMessage(this.help(source));
 		}
 		
-		return resultat;
+		return CompletableFuture.completedFuture(false);
 	}
 
-	private boolean commandGameruleList(final EPlayer player, final World world) {
+	private CompletableFuture<Boolean> commandGameruleList(final EPlayer player, final World world) {
 		Map<String, String> gamerules = world.getProperties().getGameRules();
 		List<Text> lists = new ArrayList<Text>();
 		for(Entry<String, String> gamerule : gamerules.entrySet()){
@@ -115,6 +113,6 @@ public class EEGameruleList extends ESubCommand<EverEssentials> {
 		this.plugin.getEverAPI().getManagerService().getEPagination().sendTo(EEMessages.GAMERULE_LIST_TITLE.getFormat()
 			.toText("<world>", player.getWorld().getName()).toBuilder()
 				.onClick(TextActions.runCommand("/" + this.getName())).build(), lists, player);
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 }

@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
@@ -53,7 +54,7 @@ public class EEWorldborderCenter extends ESubCommand<EverEssentials> {
 	}
 	
 	@Override
-	public Collection<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
+	public Collection<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		if (args.size() == 1){
 			return Arrays.asList("0", "100");
 		} else if (args.size() == 2){
@@ -79,15 +80,10 @@ public class EEWorldborderCenter extends ESubCommand<EverEssentials> {
 	}
 	
 	@Override
-	public boolean subExecute(final CommandSource source, final List<String> args) {
-		// Résultat de la commande :
-		boolean resultat = false;
-		
-		if (args.size() == 0){
-			source.sendMessage(this.help(source));
-		} else if (args.size() == 2){
+	public CompletableFuture<Boolean> execute(final CommandSource source, final List<String> args) {
+		if (args.size() == 2){
 			if (source instanceof Locatable){
-				resultat = this.commandWorldborderCenter(source, ((Locatable) source).getWorld(), args.get(0), args.get(1));
+				return this.commandWorldborderCenter(source, ((Locatable) source).getWorld(), args.get(0), args.get(1));
 			} else {
 				EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()
 					.prefix(EEMessages.PREFIX)
@@ -96,7 +92,7 @@ public class EEWorldborderCenter extends ESubCommand<EverEssentials> {
 		} else if (args.size() == 3){
 			Optional<World> world = this.plugin.getEServer().getWorld(args.get(2));
 			if (world.isPresent()){
-				resultat = this.commandWorldborderCenter(source, world.get(), args.get(0), args.get(1));
+				return this.commandWorldborderCenter(source, world.get(), args.get(0), args.get(1));
 			} else {
 				EAMessages.WORLD_NOT_FOUND.sender()
 					.prefix(EEMessages.PREFIX)
@@ -107,10 +103,10 @@ public class EEWorldborderCenter extends ESubCommand<EverEssentials> {
 			source.sendMessage(this.help(source));
 		}
 		
-		return resultat;
+		return CompletableFuture.completedFuture(false);
 	}
 
-	private boolean commandWorldborderCenter(CommandSource source, World world, String x_string, String y_string) {
+	private CompletableFuture<Boolean> commandWorldborderCenter(CommandSource source, World world, String x_string, String y_string) {
 		try {
 			int x = Integer.parseInt(x_string);
 			try {
@@ -122,7 +118,7 @@ public class EEWorldborderCenter extends ESubCommand<EverEssentials> {
 					.replace("<x>", String.valueOf(x))
 					.replace("<z>", String.valueOf(z))
 					.sendTo(source);
-				return true;
+				return CompletableFuture.completedFuture(true);
 				
 			} catch (NumberFormatException e) {
 				EAMessages.IS_NOT_NUMBER.sender()
@@ -136,6 +132,6 @@ public class EEWorldborderCenter extends ESubCommand<EverEssentials> {
 				.replace("<number>", x_string)
 				.sendTo(source);
 		}
-		return false;
+		return CompletableFuture.completedFuture(false);
 	}
 }

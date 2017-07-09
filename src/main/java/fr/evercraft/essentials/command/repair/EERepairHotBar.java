@@ -19,6 +19,7 @@ package fr.evercraft.essentials.command.repair;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
@@ -66,14 +67,11 @@ public class EERepairHotBar extends ECommand<EverEssentials> {
 	}
 
 	@Override
-	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
-		// Résultat de la commande :
-		boolean resultat = false;
-		
+	public CompletableFuture<Boolean> execute(final CommandSource source, final List<String> args) throws CommandException {
 		if (args.size() == 0) {
 			// Si la source est un joueur
 			if (source instanceof EPlayer) {
-				resultat = commandRepairHotBar((EPlayer) source);
+				return this.commandRepairHotBar((EPlayer) source);
 			// La source n'est pas un joueur
 			} else {
 				EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()
@@ -81,17 +79,17 @@ public class EERepairHotBar extends ECommand<EverEssentials> {
 					.sendTo(source);
 			}
 		} else {
-			source.sendMessage(help(source));
+			source.sendMessage(this.help(source));
 		}
 		
-		return resultat;
+		return CompletableFuture.completedFuture(false);
 	}
 
-	private boolean commandRepairHotBar(final EPlayer player) {
+	private CompletableFuture<Boolean> commandRepairHotBar(final EPlayer player) {
 		UtilsInventory.repair(player.getInventory().query(Hotbar.class));
 		UtilsInventory.repair(player.getInventory().query(Slot.class));
 		
-		 EEMessages.REPAIR_HOTBAR_PLAYER.sendTo(player);
-		return true;
+		EEMessages.REPAIR_HOTBAR_PLAYER.sendTo(player);
+		return CompletableFuture.completedFuture(true);
 	}
 }

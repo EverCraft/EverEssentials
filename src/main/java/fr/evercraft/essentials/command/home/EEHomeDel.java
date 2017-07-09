@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
@@ -81,15 +82,12 @@ public class EEHomeDel extends ECommand<EverEssentials> {
 	}
 	
 	@Override
-	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
-		// Résultat de la commande :
-		boolean resultat = false;
-		
+	public CompletableFuture<Boolean> execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Si on ne connait pas le joueur
 		if (args.size() == 1) {
 			// Si la source est un joueur
 			if (source instanceof EPlayer) {
-				resultat = this.commandDeleteHome((EPlayer) source, args.get(0));
+				return this.commandDeleteHome((EPlayer) source, args.get(0));
 			// La source n'est pas un joueur
 			} else {
 				EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()
@@ -99,7 +97,7 @@ public class EEHomeDel extends ECommand<EverEssentials> {
 		} else if (args.size() == 2 && args.get(1).equalsIgnoreCase("confirmation")) {
 			// Si la source est un joueur
 			if (source instanceof EPlayer) {
-				resultat = this.commandDeleteHomeConfirmation((EPlayer) source, args.get(0));
+				return this.commandDeleteHomeConfirmation((EPlayer) source, args.get(0));
 			// La source n'est pas un joueur
 			} else {
 				EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()
@@ -111,10 +109,10 @@ public class EEHomeDel extends ECommand<EverEssentials> {
 			source.sendMessage(this.help(source));
 		}
 		
-		return resultat;
+		return CompletableFuture.completedFuture(false);
 	}
 	
-	private boolean commandDeleteHome(final EPlayer player, final String home_name) {
+	private CompletableFuture<Boolean> commandDeleteHome(final EPlayer player, final String home_name) {
 		String name = EChat.fixLength(home_name, this.plugin.getEverAPI().getConfigs().getMaxCaractere());
 		
 		Optional<EUserSubject> subject = this.plugin.getManagerServices().getEssentials().getSubject(player.getUniqueId());
@@ -122,7 +120,7 @@ public class EEHomeDel extends ECommand<EverEssentials> {
 			EAMessages.PLAYER_NOT_FOUND.sender()
 				.prefix(EEMessages.PREFIX)
 				.sendTo(player);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 			
 		Optional<VirtualTransform> home = subject.get().getHomeLocation(name);
@@ -131,18 +129,18 @@ public class EEHomeDel extends ECommand<EverEssentials> {
 			EEMessages.DELHOME_INCONNU.sender()
 				.replace("<home>", name)
 				.sendTo(player);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		EEMessages.DELHOME_CONFIRMATION.sender()
 			.replace("<home>", this.getButtonHome(name, home.get()))
 			.replace("<confirmation>", this.getButtonConfirmation(name))
 			.sendTo(player);
-		return true;
+		return CompletableFuture.completedFuture(false);
 	}
 	
 	
-	private boolean commandDeleteHomeConfirmation(final EPlayer player, final String home_name) {
+	private CompletableFuture<Boolean> commandDeleteHomeConfirmation(final EPlayer player, final String home_name) {
 		String name = EChat.fixLength(home_name, this.plugin.getEverAPI().getConfigs().getMaxCaractere());
 		
 		Optional<EUserSubject> subject = this.plugin.getManagerServices().getEssentials().getSubject(player.getUniqueId());
@@ -150,7 +148,7 @@ public class EEHomeDel extends ECommand<EverEssentials> {
 			EAMessages.PLAYER_NOT_FOUND.sender()
 				.prefix(EEMessages.PREFIX)
 				.sendTo(player);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 			
 		Optional<VirtualTransform> home = subject.get().getHomeLocation(name);
@@ -159,7 +157,7 @@ public class EEHomeDel extends ECommand<EverEssentials> {
 			EEMessages.DELHOME_INCONNU.sender()
 				.replace("<home>", name)
 				.sendTo(player);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		// Le home n'a pas été supprimer
@@ -167,13 +165,13 @@ public class EEHomeDel extends ECommand<EverEssentials> {
 			EAMessages.COMMAND_ERROR.sender()
 				.prefix(EEMessages.PREFIX)
 				.sendTo(player);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		EEMessages.DELHOME_DELETE.sender()
 			.replace("<home>", this.getButtonHome(name, home.get()))
 			.sendTo(player);
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 	
 	private Text getButtonHome(final String name, final VirtualTransform location){

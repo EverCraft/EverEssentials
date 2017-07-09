@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.concurrent.CompletableFuture;
 
 import org.spongepowered.api.CatalogType;
 import org.spongepowered.api.command.CommandException;
@@ -95,16 +96,13 @@ public class EETree extends ECommand<EverEssentials> {
 	}
 	
 	@Override
-	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
-		// Résultat de la commande :
-		boolean resultat = false;
-		
+	public CompletableFuture<Boolean> execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Si on ne connait pas le joueur
 		if (args.size() == 0) {
 			
 			// Si la source est un joueur
 			if (source instanceof EPlayer) {
-				resultat = this.commandTree((EPlayer) source, PopulatorObjects.OAK);
+				return this.commandTree((EPlayer) source, PopulatorObjects.OAK);
 			// La source n'est pas un joueur
 			} else {
 				EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()
@@ -119,7 +117,7 @@ public class EETree extends ECommand<EverEssentials> {
 			if (source instanceof EPlayer) {
 				Optional<PopulatorObject> generator = this.plugin.getGame().getRegistry().getType(PopulatorObject.class, args.get(0));
 				if (generator.isPresent()){
-					resultat = this.commandTree((EPlayer) source, generator.get());
+					return this.commandTree((EPlayer) source, generator.get());
 				} else {
 					EEMessages.TREE_INCONNU.sender()
 						.replace("<type>", args.get(0))
@@ -137,10 +135,10 @@ public class EETree extends ECommand<EverEssentials> {
 			source.sendMessage(this.help(source));
 		}
 		
-		return resultat;
+		return CompletableFuture.completedFuture(false);
 	}
 	
-	private boolean commandTree(final EPlayer player, PopulatorObject generator) throws CommandException {
+	private CompletableFuture<Boolean> commandTree(final EPlayer player, PopulatorObject generator) throws CommandException {
 		Optional<Vector3i> block = player.getViewBlock();
 		
 		// Aucun block
@@ -148,7 +146,7 @@ public class EETree extends ECommand<EverEssentials> {
 			EAMessages.PLAYER_NO_LOOK_BLOCK.sender()
 				.prefix(EEMessages.PREFIX)
 				.sendTo(player);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		Vector3i location = block.get().add(0, 1, 0);
@@ -163,6 +161,6 @@ public class EETree extends ECommand<EverEssentials> {
 		}
 			
 		generator.placeObject(player.getWorld(), player.getRandom(), location.getX(), location.getY(), location.getZ());
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 }

@@ -19,6 +19,7 @@ package fr.evercraft.essentials.command;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
@@ -72,37 +73,30 @@ public class EEKickall extends ECommand<EverEssentials> {
 	}
 	
 	@Override
-	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
-		// Résultat de la commande :
-		boolean resultat = false;
-		
+	public CompletableFuture<Boolean> execute(final CommandSource source, final List<String> args) throws CommandException {
 		if (args.size() == 1) {
-			resultat = this.commandKick(source, EChat.of(args.get(0)));
+			return this.commandKick(source, EChat.of(args.get(0)));
 		// Nombre d'argument incorrect
 		} else {
 			source.sendMessage(this.help(source));
 		}
 		
-		return resultat;
+		return CompletableFuture.completedFuture(false);
 	}
 	
-	private boolean commandKick(final CommandSource staff, final Text message) throws CommandException {
+	private CompletableFuture<Boolean> commandKick(final CommandSource staff, final Text message) throws CommandException {
 		Text raison = EEMessages.KICKALL_MESSAGE.getFormat().toText(
 							"<staff>", staff.getName(),
 							"<reason>", message);
-		boolean kick = false;
+
 		for (EPlayer player : this.plugin.getEServer().getOnlineEPlayers()) {
 			if (!player.equals(staff) && !player.hasPermission(EEPermissions.KICK_BYPASS.get())) {
 				player.kick(raison);
-				kick = true;
+				return CompletableFuture.completedFuture(true);
 			}
 		}
 		
-		if (!kick) {
-			EEMessages.KICKALL_ERROR.sendTo(staff);
-			return false;
-		}
-		
-		return true;
+		EEMessages.KICKALL_ERROR.sendTo(staff);
+		return CompletableFuture.completedFuture(false);
 	}
 }

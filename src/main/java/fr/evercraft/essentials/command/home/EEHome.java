@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.TreeMap;
+import java.util.concurrent.CompletableFuture;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
@@ -86,15 +87,12 @@ public class EEHome extends ECommand<EverEssentials> {
 	}
 	
 	@Override
-	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
-		// Résultat de la commande :
-		boolean resultat = false;
-		
+	public CompletableFuture<Boolean> execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Nom du home inconnu
 		if (args.size() == 0) {
 			// Si la source est un joueur
 			if (source instanceof EPlayer) {
-				resultat = this.commandHomeList((EPlayer) source);
+				return this.commandHomeList((EPlayer) source);
 			// La source n'est pas un joueur
 			} else {
 				EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()
@@ -105,7 +103,7 @@ public class EEHome extends ECommand<EverEssentials> {
 		} else if (args.size() == 1) {
 			// Si la source est un joueur
 			if (source instanceof EPlayer) {
-				resultat = this.commandHomeTeleport((EPlayer) source, args.get(0));
+				return this.commandHomeTeleport((EPlayer) source, args.get(0));
 			// La source n'est pas un joueur
 			} else {
 				EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()
@@ -117,16 +115,16 @@ public class EEHome extends ECommand<EverEssentials> {
 			source.sendMessage(this.help(source));
 		}
 		
-		return resultat;
+		return CompletableFuture.completedFuture(false);
 	}
 	
-	private boolean commandHomeList(final EPlayer player) throws CommandException {
+	private CompletableFuture<Boolean> commandHomeList(final EPlayer player) throws CommandException {
 		Map<String, Transform<World>> homes = player.getHomes();
 		
 		// Le joueur n'as pas de home
 		if (homes.size() == 0) {
 			player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.HOME_EMPTY.getText()));
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		// Le joueur a un home
@@ -140,7 +138,7 @@ public class EEHome extends ECommand<EverEssentials> {
 			EAMessages.PLAYER_NOT_FOUND.sender()
 				.prefix(EEMessages.PREFIX)
 				.sendTo(player);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 				
 		List<Text> lists = new ArrayList<Text>();
@@ -160,10 +158,10 @@ public class EEHome extends ECommand<EverEssentials> {
 		
 		this.plugin.getEverAPI().getManagerService().getEPagination().sendTo(EEMessages.HOME_LIST_TITLE.getText().toBuilder()
 				.onClick(TextActions.runCommand("/home")).build(), lists, player);
-		return false;
+		return CompletableFuture.completedFuture(false);
 	}
 	
-	private boolean commandHomeTeleport(final EPlayer player, final String home_name) {
+	private CompletableFuture<Boolean> commandHomeTeleport(final EPlayer player, final String home_name) {
 		String name = EChat.fixLength(home_name, this.plugin.getEverAPI().getConfigs().getMaxCaractere());
 		
 		Optional<Transform<World>> home = player.getHome(home_name);
@@ -172,18 +170,18 @@ public class EEHome extends ECommand<EverEssentials> {
 			EEMessages.HOME_INCONNU.sender()
 				.replace("<home>", name)
 				.sendTo(player);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		if (!player.teleport(home.get(), true)) {
 			EAMessages.PLAYER_ERROR_TELEPORT.sendTo(player);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		EEMessages.HOME_TELEPORT.sender()
 			.replace("<home>", this.getButtonHome(name, home.get()))
 			.sendTo(player);
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 	
 	private Text getButtonTeleport(final String name, final VirtualTransform location){

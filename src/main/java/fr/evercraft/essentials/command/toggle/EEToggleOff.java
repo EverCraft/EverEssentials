@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
@@ -67,7 +68,7 @@ public class EEToggleOff extends ESubCommand<EverEssentials> {
 	}
 	
 	@Override
-	public Collection<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
+	public Collection<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		if (args.size() == 1 && source.hasPermission(EEPermissions.TOGGLE_OTHERS.get())){
 			return this.getAllUsers(args.get(0), source);
 		}
@@ -75,13 +76,10 @@ public class EEToggleOff extends ESubCommand<EverEssentials> {
 	}
 	
 	@Override
-	public boolean subExecute(final CommandSource source, final List<String> args) throws CommandException {
-		// Résultat de la commande :
-		boolean resultat = false;
-		
+	public CompletableFuture<Boolean> execute(final CommandSource source, final List<String> args) throws CommandException {
 		if (args.size() == 0) {
 			if (source instanceof EPlayer) {
-				resultat = this.commandToggleOff((EPlayer) source);
+				return this.commandToggleOff((EPlayer) source);
 			} else {
 				EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()
 					.prefix(EEMessages.PREFIX)
@@ -93,7 +91,7 @@ public class EEToggleOff extends ESubCommand<EverEssentials> {
 				Optional<EUser> user = this.plugin.getEServer().getEUser(args.get(0));
 				// Le joueur existe
 				if (user.isPresent()){
-					resultat = this.commandToggleOffOthers(source, user.get());
+					return this.commandToggleOffOthers(source, user.get());
 				// Le joueur est introuvable
 				} else {
 					EAMessages.PLAYER_NOT_FOUND.sender()
@@ -110,26 +108,26 @@ public class EEToggleOff extends ESubCommand<EverEssentials> {
 			source.sendMessage(this.help(source));
 		}
 		
-		return resultat;
+		return CompletableFuture.completedFuture(false);
 	}
 
-	private boolean commandToggleOff(final EPlayer player) {
+	private CompletableFuture<Boolean> commandToggleOff(final EPlayer player) {
 		// Toggle désactivé
 		if (!player.isToggle()) {
 			EEMessages.TOGGLE_OFF_PLAYER_ERROR.sendTo(player);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		if (!player.setToggle(false)) {
 			EEMessages.TOGGLE_OFF_PLAYER_CANCEL.sendTo(player);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		EEMessages.TOGGLE_OFF_PLAYER.sendTo(player);
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 	
-	private boolean commandToggleOffOthers(final CommandSource staff, final EUser user) throws CommandException {
+	private CompletableFuture<Boolean> commandToggleOffOthers(final CommandSource staff, final EUser user) throws CommandException {
 		// La source et le joueur sont identique
 		if (staff instanceof EPlayer && user.getIdentifier().equals(staff.getIdentifier())) {
 			return this.commandToggleOff((EPlayer) staff);
@@ -140,14 +138,14 @@ public class EEToggleOff extends ESubCommand<EverEssentials> {
 			EEMessages.TOGGLE_OFF_OTHERS_ERROR.sender()
 				.replace("<player>", user.getName())
 				.sendTo(staff);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		if (!user.setToggle(false)) {
 			EEMessages.TOGGLE_OFF_OTHERS_CANCEL.sender()
 				.replace("<player>", user.getName())
 				.sendTo(staff);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		EEMessages.TOGGLE_OFF_OTHERS_STAFF.sender()
@@ -159,6 +157,6 @@ public class EEToggleOff extends ESubCommand<EverEssentials> {
 				.replace("<staff>", staff.getName())
 				.sendTo((EPlayer) user);
 		}
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 }

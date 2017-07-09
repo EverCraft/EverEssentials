@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.concurrent.CompletableFuture;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
@@ -70,7 +71,7 @@ public class EEMailRead extends ESubCommand<EverEssentials> {
 	}
 	
 	@Override
-	public Collection<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
+	public Collection<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		if (args.size() == 1) {
 			Optional<SubjectUserEssentials> player = this.plugin.getManagerServices().getEssentials().get(((Player) source).getUniqueId());
 			// Le joueur existe
@@ -86,15 +87,12 @@ public class EEMailRead extends ESubCommand<EverEssentials> {
 	}
 	
 	@Override
-	public boolean subExecute(final CommandSource source, final List<String> args) {
-		// Résultat de la commande :
-		boolean resultat = false;
-		
+	public CompletableFuture<Boolean> execute(final CommandSource source, final List<String> args) {
 		if (args.size() == 0) {
 			
 			// Si la source est un joueur
 			if (source instanceof EPlayer) {
-				resultat = this.commandRead((EPlayer) source);
+				return this.commandRead((EPlayer) source);
 			// La source n'est pas un joueur
 			} else {
 				EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()
@@ -106,7 +104,7 @@ public class EEMailRead extends ESubCommand<EverEssentials> {
 			
 			// Si la source est un joueur
 			if (source instanceof EPlayer) {
-				resultat = this.commandRead((EPlayer) source, args.get(0));
+				return this.commandRead((EPlayer) source, args.get(0));
 			// La source n'est pas un joueur
 			} else {
 				EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()
@@ -118,15 +116,15 @@ public class EEMailRead extends ESubCommand<EverEssentials> {
 			source.sendMessage(this.help(source));
 		}
 		
-		return resultat;
+		return CompletableFuture.completedFuture(false);
 	}
 
-	private boolean commandRead(EPlayer player) {
+	private CompletableFuture<Boolean> commandRead(EPlayer player) {
 		Set<Mail> mails = player.getMails();
 		
 		if (mails.size() == 0) {
 			EEMessages.MAIL_READ_EMPTY.sendTo(player);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		List<Text> lists = new ArrayList<Text>();
@@ -171,17 +169,17 @@ public class EEMailRead extends ESubCommand<EverEssentials> {
 		
 		this.plugin.getEverAPI().getManagerService().getEPagination().sendTo(EEMessages.MAIL_READ_TITLE.getText().toBuilder()
 				.onClick(TextActions.runCommand("/mail read")).build(), lists, player);
-		return true;
+		return CompletableFuture.completedFuture(false);
 	}
 	
-	private boolean commandRead(EPlayer player, String id_string) {
+	private CompletableFuture<Boolean> commandRead(EPlayer player, String id_string) {
 		Optional<Integer> id = UtilsInteger.parseInt(id_string);
 		if (!id.isPresent()) {
 			EAMessages.IS_NOT_NUMBER.sender()
 				.prefix(EEMessages.PREFIX)
 				.replace("<number>", id_string)
 				.sendTo(player);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		Optional<Mail> mail = player.getMail(id.get());
@@ -189,7 +187,7 @@ public class EEMailRead extends ESubCommand<EverEssentials> {
 			EEMessages.MAIL_DELETE_ERROR.sender()
 				.replace("<number>", id_string)
 				.sendTo(player);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		Map<String, EReplace<?>> replaces = new HashMap<String, EReplace<?>>();
@@ -204,14 +202,14 @@ public class EEMailRead extends ESubCommand<EverEssentials> {
 			EEMessages.MAIL_READ_CANCEL.sender()
 				.replaceString(replaces)
 				.sendTo(player);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 					
 		player.sendBookView(BookView.builder()
 									.addPage(mail.get().getText())
 									.build());
 		
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 	
 	private Text getButtonRead(final Mail mail){

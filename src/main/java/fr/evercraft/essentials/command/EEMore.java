@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
@@ -66,16 +67,13 @@ public class EEMore extends ECommand<EverEssentials> {
 	}
 	
 	@Override
-	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
-		// Résultat de la commande :
-		boolean resultat = false;
-		
+	public CompletableFuture<Boolean> execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Si on ne connait pas le joueur
 		if (args.size() == 0) {
 			
 			// Si la source est un joueur
 			if (source instanceof EPlayer) {
-				resultat = this.commandMore((EPlayer) source);
+				return this.commandMore((EPlayer) source);
 			// La source n'est pas un joueur
 			} else {
 				EAMessages.COMMAND_ERROR.sender()
@@ -87,10 +85,10 @@ public class EEMore extends ECommand<EverEssentials> {
 		} else {
 			source.sendMessage(this.help(source));
 		}
-		return resultat;
+		return CompletableFuture.completedFuture(false);
 	}
 	
-	private boolean commandMore(final EPlayer player) {
+	private CompletableFuture<Boolean> commandMore(final EPlayer player) {
 		Optional<ItemStack> item = player.getItemInMainHand();
 		
 		// Le joueur a aucun item dans la main
@@ -98,7 +96,7 @@ public class EEMore extends ECommand<EverEssentials> {
 			EAMessages.EMPTY_ITEM_IN_HAND.sender()
 				.prefix(EEMessages.PREFIX)
 				.sendTo(player);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 			
 		Integer max = item.get().getMaxStackQuantity();
@@ -115,7 +113,7 @@ public class EEMore extends ECommand<EverEssentials> {
 				.replace("<quantity>", max.toString())
 				.replace("<item>", EChat.getButtomItem(item.get(), EEMessages.MORE_ITEM_COLOR.getColor()))
 				.sendTo(player);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		item.get().setQuantity(max);
@@ -125,6 +123,6 @@ public class EEMore extends ECommand<EverEssentials> {
 			.replace("<quantity>", max.toString())
 			.replace("<item>", EChat.getButtomItem(item.get(), EEMessages.MORE_ITEM_COLOR.getColor()))
 			.sendTo(player);
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 }

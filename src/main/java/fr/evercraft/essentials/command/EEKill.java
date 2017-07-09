@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import java.util.regex.Pattern;
 
 import org.spongepowered.api.command.CommandException;
@@ -78,16 +79,13 @@ public class EEKill  extends ECommand<EverEssentials> {
 	}
 	
 	@Override
-	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
-		// Résultat de la commande :
-		boolean resultat = false;
-		
+	public CompletableFuture<Boolean> execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Si on ne connait pas le joueur
 		if (args.size() == 1) {
 			
 			Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(args.get(0));
 			if (optPlayer.isPresent()){
-				resultat = this.commandKill(source, optPlayer.get());
+				return this.commandKill(source, optPlayer.get());
 			} else {
 				EAMessages.PLAYER_NOT_FOUND.sender()
 					.prefix(EEMessages.PREFIX)
@@ -98,10 +96,10 @@ public class EEKill  extends ECommand<EverEssentials> {
 			source.sendMessage(this.help(source));
 		}
 		
-		return resultat;
+		return CompletableFuture.completedFuture(false);
 	}
 	
-	private boolean commandKill(final CommandSource staff, final EPlayer player) { 
+	private CompletableFuture<Boolean> commandKill(final CommandSource staff, final EPlayer player) { 
 		// Event cancel
         if(!player.setHealth(0)) {
         	if (!player.equals(staff)) {
@@ -113,7 +111,7 @@ public class EEKill  extends ECommand<EverEssentials> {
 					.replace("<player>", player.getName())
 					.sendTo(staff);
     		}
-        	return false;
+        	return CompletableFuture.completedFuture(false);
         }
         
         
@@ -165,6 +163,6 @@ public class EEKill  extends ECommand<EverEssentials> {
     				.sendTo(player);
     		}
     	}
-		return true;
+    	return CompletableFuture.completedFuture(true);
 	}
 }

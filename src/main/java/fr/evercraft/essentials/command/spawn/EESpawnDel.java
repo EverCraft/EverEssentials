@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
@@ -73,24 +74,21 @@ public class EESpawnDel extends ECommand<EverEssentials> {
 	}
 	
 	@Override
-	public boolean execute(final CommandSource source, final List<String> args) throws CommandException, ServerDisableException {
-		// Résultat de la commande :
-		boolean resultat = false;
-		
+	public CompletableFuture<Boolean> execute(final CommandSource source, final List<String> args) throws CommandException, ServerDisableException {
 		// Si on ne connait pas le joueur
 		if (args.size() == 1) {
-			resultat = this.commandDeleteSpawn((EPlayer) source, args.get(0));
+			return this.commandDeleteSpawn((EPlayer) source, args.get(0));
 		} else if (args.size() == 2 && args.get(1).equalsIgnoreCase("confirmation")) {
-			resultat = this.commandDeleteSpawnConfirmation((EPlayer) source, args.get(0));
+			return this.commandDeleteSpawnConfirmation((EPlayer) source, args.get(0));
 		// Nombre d'argument incorrect
 		} else {
 			source.sendMessage(this.help(source));
 		}
 		
-		return resultat;
+		return CompletableFuture.completedFuture(false);
 	}
 	
-	private boolean commandDeleteSpawn(final EPlayer player, final String spawn_name) {
+	private CompletableFuture<Boolean> commandDeleteSpawn(final EPlayer player, final String spawn_name) {
 		Optional<Transform<World>> spawn = this.plugin.getManagerServices().getSpawn().get(spawn_name);
 		
 		// Le serveur a un spawn qui porte ce nom
@@ -105,10 +103,10 @@ public class EESpawnDel extends ECommand<EverEssentials> {
 				.replace("<name>", spawn_name)
 				.sendTo(player);
 		}
-		return false;
+		return CompletableFuture.completedFuture(false);
 	}
 	
-	private boolean commandDeleteSpawnConfirmation(final EPlayer player, final String spawn_name) throws ServerDisableException {
+	private CompletableFuture<Boolean> commandDeleteSpawnConfirmation(final EPlayer player, final String spawn_name) throws ServerDisableException {
 		Optional<Transform<World>> spawn = this.plugin.getManagerServices().getSpawn().get(spawn_name);
 		
 		// Le serveur n'a pas de spawn qui porte ce nom
@@ -116,7 +114,7 @@ public class EESpawnDel extends ECommand<EverEssentials> {
 			EEMessages.DELSPAWN_INCONNU.sender()
 				.replace("<name>", spawn_name)
 				.sendTo(player);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 
 		// Le spawn n'a pas été supprimer
@@ -124,12 +122,13 @@ public class EESpawnDel extends ECommand<EverEssentials> {
 			EAMessages.COMMAND_ERROR.sender()
 				.prefix(EEMessages.PREFIX)
 				.sendTo(player);
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		EEMessages.DELSPAWN_DELETE.sender()
 			.replace("<spawn>", this.getButtonSpawn(spawn_name, spawn.get()))
 			.sendTo(player);
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 	
 	private Text getButtonSpawn(final String name, final Transform<World> location){

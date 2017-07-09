@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
@@ -68,16 +69,13 @@ public class EETop extends ECommand<EverEssentials> {
 	}
 	
 	@Override
-	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
-		// Résultat de la commande :
-		boolean resultat = false;
-		
+	public CompletableFuture<Boolean> execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Si connait que la location ou aussi peut être le monde
 		if (args.size() == 0) {
 			
 			// Si la source est bien un joueur
 			if (source instanceof EPlayer) {
-				resultat = this.commandTop((EPlayer) source);
+				return this.commandTop((EPlayer) source);
 			// Si la source est une console ou un commande block
 			} else {
 				EAMessages.PLAYER_NOT_FOUND.sender()
@@ -89,17 +87,17 @@ public class EETop extends ECommand<EverEssentials> {
 			source.sendMessage(this.help(source));
 		}
 		
-		return resultat;
+		return CompletableFuture.completedFuture(false);
 	}
 	
-	private boolean commandTop(final EPlayer player) {
+	private CompletableFuture<Boolean> commandTop(final EPlayer player) {
 		final Optional<Transform<World>> transform = this.plugin.getEverAPI().getManagerUtils().getLocation().getMaxBlock(
 															player.getTransform(), 
 															!(player.isGod() || player.getGameMode().equals(GameModes.CREATIVE)));
 		
 		if (!transform.isPresent()) {
 			EEMessages.TOP_TELEPORT_ERROR.sendTo(player);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		long delay = this.plugin.getConfigs().getTeleportDelay(player);
@@ -111,7 +109,7 @@ public class EETop extends ECommand<EverEssentials> {
 		}
 		
 		player.setTeleport(delay, () -> this.teleport(player, transform.get()), player.hasPermission(EEPermissions.TELEPORT_BYPASS_MOVE.get()));
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 	
 	private void teleport(final EPlayer player, final Transform<World> location) {

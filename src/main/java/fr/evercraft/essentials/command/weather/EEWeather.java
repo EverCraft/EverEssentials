@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
@@ -93,15 +94,12 @@ public class EEWeather extends ECommand<EverEssentials> {
 	}
 
 	@Override
-	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
-		// Résultat de la commande :
-		boolean resultat = false;
-		
+	public CompletableFuture<Boolean> execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Si on ne connait pas le joueur
 		if (args.size() == 1) {
 			// Si la source a un monde
 			if (source instanceof Locatable) {
-				resultat = this.commandWeather(source, getWeather(args.get(0)), ((Locatable) source).getWorld());
+				return this.commandWeather(source, getWeather(args.get(0)), ((Locatable) source).getWorld());
 			// La source n'est pas un joueur
 			} else {
 				EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()
@@ -113,13 +111,13 @@ public class EEWeather extends ECommand<EverEssentials> {
 			Optional<World> world = this.plugin.getEServer().getWorld(args.get(1));
 			// Si le monde existe
 			if (world.isPresent()) {
-				resultat = this.commandWeather(source, getWeather(args.get(0)), world.get());
+				return this.commandWeather(source, getWeather(args.get(0)), world.get());
 			} else {
 				try {
 					int time = Integer.parseInt(args.get(1));
 					// Si la source a un monde
 					if (source instanceof Locatable) {
-						resultat = this.commandWeather(source, getWeather(args.get(0)), ((Locatable) source).getWorld(), time);
+						return this.commandWeather(source, getWeather(args.get(0)), ((Locatable) source).getWorld(), time);
 					// La source n'est pas un joueur
 					} else {
 						EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()
@@ -139,7 +137,7 @@ public class EEWeather extends ECommand<EverEssentials> {
 			// Si le monde existe
 			if (world.isPresent()) {
 				try {
-					resultat = this.commandWeather(source, getWeather(args.get(0)), world.get(), Integer.parseInt(args.get(2)));
+					return this.commandWeather(source, getWeather(args.get(0)), world.get(), Integer.parseInt(args.get(2)));
 				} catch (NumberFormatException e) {
 					EAMessages.IS_NOT_NUMBER.sender()
 						.prefix(EEMessages.PREFIX)
@@ -154,29 +152,29 @@ public class EEWeather extends ECommand<EverEssentials> {
 			}
 		// Nombre d'argument incorrect
 		} else {
-			source.sendMessage(help(source));
+			source.sendMessage(this.help(source));
 		}
 		
-		return resultat;
+		return CompletableFuture.completedFuture(false);
 	}
 
-	private boolean commandWeather(final CommandSource player, final Optional<Weather> weather, final World world) {
+	private CompletableFuture<Boolean> commandWeather(final CommandSource player, final Optional<Weather> weather, final World world) {
 		if (!this.plugin.getManagerServices().getEssentials().hasPermissionWorld(player, world)) {
 			EAMessages.NO_PERMISSION_WORLD.sender()
 				.prefix(EEMessages.PREFIX)
 				.replace("<world>", world.getName())
 				.sendTo(player);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		if (!world.getProperties().getDimensionType().equals(DimensionTypes.OVERWORLD)) {
 			EEMessages.WEATHER_ERROR.sendTo(player);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		if (!weather.isPresent()) {
 			player.sendMessage(this.help(player));
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		world.setWeather(weather.get());
@@ -184,26 +182,26 @@ public class EEWeather extends ECommand<EverEssentials> {
 			.replace("<world>", world.getName())
 			.replace("<weather>", weather.get().getName())
 			.sendTo(player);
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 	
-	private boolean commandWeather(final CommandSource player, final Optional<Weather> weather, final World world, final int duration) {
+	private CompletableFuture<Boolean> commandWeather(final CommandSource player, final Optional<Weather> weather, final World world, final int duration) {
 		if (!this.plugin.getManagerServices().getEssentials().hasPermissionWorld(player, world)) {
 			EAMessages.NO_PERMISSION_WORLD.sender()
 				.prefix(EEMessages.PREFIX)
 				.replace("<world>", world.getName())
 				.sendTo(player);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		if (!world.getProperties().getDimensionType().equals(DimensionTypes.OVERWORLD)) {
 			EEMessages.WEATHER_ERROR.sendTo(player);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		if (!weather.isPresent()) {
 			player.sendMessage(this.help(player));
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		world.setWeather(weather.get(), UtilsTick.parseMinutes(duration));
@@ -212,7 +210,7 @@ public class EEWeather extends ECommand<EverEssentials> {
 			.replace("<duration>", String.valueOf(duration))
 			.replace("<weather>", weather.get().getName())
 			.sendTo(player);
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 	
 	private Optional<Weather> getWeather(final String weather_name) {

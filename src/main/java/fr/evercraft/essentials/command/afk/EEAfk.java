@@ -17,6 +17,7 @@
 package fr.evercraft.essentials.command.afk;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.text.Text;
@@ -50,13 +51,10 @@ public class EEAfk extends EParentCommand<EverEssentials> {
 	}
 	
 	@Override
-	protected boolean commandDefault(final CommandSource source, final List<String> args) {
-		// Résultat de la commande :
-		boolean resultat = false;
-				
+	protected CompletableFuture<Boolean> commandDefault(final CommandSource source, final List<String> args) {
 		// Si la source est un joueur
 		if (source instanceof EPlayer) {
-			resultat = this.commandAfk((EPlayer) source);
+			return this.commandAfk((EPlayer) source);
 		// La source n'est pas un joueur
 		} else {
 			EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()
@@ -64,10 +62,10 @@ public class EEAfk extends EParentCommand<EverEssentials> {
 				.sendTo(source);
 		}
 		
-		return resultat;
+		return CompletableFuture.completedFuture(false);
 	}
 	
-	private boolean commandAfk(final EPlayer player) {
+	private CompletableFuture<Boolean> commandAfk(final EPlayer player) {
 		boolean afk = !player.isAfk();
 		if (player.setAfk(afk)) {
 			if (afk) {
@@ -81,7 +79,7 @@ public class EEAfk extends EParentCommand<EverEssentials> {
 					.replace(player.getReplaces())
 					.sendAll(this.plugin.getEServer().getOnlineEPlayers(), other -> !other.equals(player));
 			}
-			return true;
+			return CompletableFuture.completedFuture(true);
 		} else {
 			if (afk) {
 				EEMessages.AFK_ON_PLAYER_CANCEL.sendTo(player);
@@ -89,6 +87,6 @@ public class EEAfk extends EParentCommand<EverEssentials> {
 				EEMessages.AFK_OFF_PLAYER_CANCEL.sendTo(player);
 			}
 		}
-		return false;
+		return CompletableFuture.completedFuture(false);
 	}
 }

@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
@@ -57,7 +58,7 @@ public class EEItemLoreRemove extends ESubCommand<EverEssentials> {
 	}
 	
 	@Override
-	public Collection<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
+	public Collection<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		if (args.size() == 1 && source instanceof Player) {
 			Optional<ItemStack> item = ((Player) source).getItemInHand(HandTypes.MAIN_HAND);
 			if(item.isPresent()) {
@@ -83,31 +84,29 @@ public class EEItemLoreRemove extends ESubCommand<EverEssentials> {
 	}
 	
 	@Override
-	public boolean subExecute(final CommandSource source, final List<String> args) {
+	public CompletableFuture<Boolean> execute(final CommandSource source, final List<String> args) {
 		if(args.size() == 1){
 			if(source instanceof EPlayer){
-				this.commandItemLoreRemove((EPlayer) source, args.get(0));
-				return true;
+				return this.commandItemLoreRemove((EPlayer) source, args.get(0));
 			} else {
 				EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()
 					.prefix(EEMessages.PREFIX)
 					.sendTo(source);
-				return false;
 			}
 		} else {
 			source.sendMessage(this.help(source));
-			return false;
 		}
+		return CompletableFuture.completedFuture(false);
 	}
 
-	private boolean commandItemLoreRemove(final EPlayer player, final String line_name) {
+	private CompletableFuture<Boolean> commandItemLoreRemove(final EPlayer player, final String line_name) {
 		Optional<Integer> line = UtilsInteger.parseInt(line_name);
 		if (line.isPresent()) {
 			EAMessages.IS_NOT_NUMBER.sender()
 				.prefix(EEMessages.PREFIX)
 				.replace("<number>", line_name)
 				.sendTo(player);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		Optional<ItemStack> item = player.getItemInMainHand();
@@ -115,7 +114,7 @@ public class EEItemLoreRemove extends ESubCommand<EverEssentials> {
 			EAMessages.EMPTY_ITEM_IN_HAND.sender()
 				.prefix(EEMessages.PREFIX)
 				.sendTo(player);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		List<Text> lore = new ArrayList<Text>();
@@ -137,7 +136,6 @@ public class EEItemLoreRemove extends ESubCommand<EverEssentials> {
 			.sendTo(player);
 		item.get().offer(Keys.ITEM_LORE, lore);
 		player.setItemInMainHand(item.get());
-		return true;
-
+		return CompletableFuture.completedFuture(true);
 	}
 }

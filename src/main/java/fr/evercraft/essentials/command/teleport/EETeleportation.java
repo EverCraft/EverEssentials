@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
@@ -80,10 +81,7 @@ public class EETeleportation extends ECommand<EverEssentials> {
 	}
 	
 	@Override
-	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
-		// Résultat de la commande :
-		boolean resultat = false;
-		
+	public CompletableFuture<Boolean> execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Si connait que la location ou aussi peut être le monde
 		if (args.size() == 1) {
 			
@@ -92,7 +90,7 @@ public class EETeleportation extends ECommand<EverEssentials> {
 				Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(args.get(0));
 				// Le joueur existe
 				if (optPlayer.isPresent()){
-					resultat = this.commandTeleportation((EPlayer) source, optPlayer.get());
+					return this.commandTeleportation((EPlayer) source, optPlayer.get());
 				// Joueur introuvable
 				} else {
 					EAMessages.PLAYER_NOT_FOUND.sender()
@@ -117,7 +115,7 @@ public class EETeleportation extends ECommand<EverEssentials> {
 					Optional<EPlayer> destination = this.plugin.getEServer().getEPlayer(args.get(1));
 					// Le joueur existe
 					if (destination.isPresent()){
-						resultat = this.commandTeleportation(source, player.get(), destination.get());
+						return this.commandTeleportation(source, player.get(), destination.get());
 					// Joueur introuvable
 					} else {
 						EAMessages.PLAYER_NOT_FOUND.sender()
@@ -142,14 +140,14 @@ public class EETeleportation extends ECommand<EverEssentials> {
 		} else {
 			source.sendMessage(this.help(source));
 		}
-		return resultat;
+		return CompletableFuture.completedFuture(false);
 	}
 	
-	private boolean commandTeleportation(EPlayer player, EPlayer destination) {
+	private CompletableFuture<Boolean> commandTeleportation(EPlayer player, EPlayer destination) {
 		if (player.equals(destination)) {
 			player.reposition();
 			EEMessages.TP_PLAYER_EQUALS.sendTo(player);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 			
 		if (!player.getWorld().equals(destination.getWorld()) && 
@@ -159,28 +157,28 @@ public class EETeleportation extends ECommand<EverEssentials> {
 				.prefix(EEMessages.PREFIX)
 				.replace("<world>", destination.getWorld().getName())
 				.sendTo(player);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		if (!this.teleport(player, destination)) {
 			EEMessages.TP_ERROR_LOCATION.sendTo(player);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		EEMessages.TP_PLAYER.sender()
 			.replace("<destination>", this.getButtonPosition(destination.getName(), player.getLocation()))
 			.sendTo(player);
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 	
-	private boolean commandTeleportation(CommandSource staff, EPlayer player, EPlayer destination) {
+	private CompletableFuture<Boolean> commandTeleportation(CommandSource staff, EPlayer player, EPlayer destination) {
 		if (!player.getWorld().equals(destination.getWorld()) && 
 			!this.plugin.getManagerServices().getEssentials().hasPermissionWorld(player, destination.getWorld())) {
 			
 			EAMessages.NO_PERMISSION_WORLD_OTHERS.sender()
 				.replace("<world>", destination.getWorld().getName())
 				.sendTo(staff);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		Map<String, EReplace<?>> replaces = new HashMap<String, EReplace<?>>();
@@ -205,7 +203,7 @@ public class EETeleportation extends ECommand<EverEssentials> {
 		} else {
 			if (this.teleport(player, destination)) {
 				EEMessages.TP_ERROR_LOCATION.sendTo(staff);
-				return false;
+				return CompletableFuture.completedFuture(false);
 			}
 			
 			if (player.equals(staff)) {
@@ -228,7 +226,7 @@ public class EETeleportation extends ECommand<EverEssentials> {
 					.sendTo(staff);
 			}
 		}
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 	
 	private boolean teleport(final EPlayer player, final EPlayer destination) {

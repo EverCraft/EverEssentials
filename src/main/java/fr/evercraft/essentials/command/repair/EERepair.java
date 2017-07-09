@@ -19,6 +19,7 @@ package fr.evercraft.essentials.command.repair;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
@@ -71,43 +72,40 @@ public class EERepair extends ECommand<EverEssentials> {
 	}
 
 	@Override
-	public boolean execute(CommandSource source, final List<String> args) throws CommandException {
+	public CompletableFuture<Boolean> execute(CommandSource source, final List<String> args) throws CommandException {
 		// Erreur : Context 
 		if(source instanceof EPlayer) {
 			source = ((EPlayer) source).get();
 		}
 		
-		// Résultat de la commande :
-		boolean resultat = false;
-		
 		if (args.size() == 1) {
 			if (args.get(0).equalsIgnoreCase("all")) {
-				resultat = this.commandRepairAll(source);
+				return this.commandRepairAll(source);
 			} else if (args.get(0).equalsIgnoreCase("hand")) {
-				resultat = this.commandRepairHand(source);
+				return this.commandRepairHand(source);
 			} else if (args.get(0).equalsIgnoreCase("hotbar")) {
-				resultat = this.commandRepairHotbar(source);
+				return this.commandRepairHotbar(source);
 			} else {
 				source.sendMessage(this.help(source));
 			}
 		} else {
 			source.sendMessage(this.help(source));
 		}
-		return resultat;
+		return CompletableFuture.completedFuture(false);
 	}
 
-	private boolean commandRepairAll(final CommandSource player) {
+	private CompletableFuture<Boolean> commandRepairAll(final CommandSource player) {
 		this.plugin.getGame().getCommandManager().process(player, "repairall");
-		return false;
+		return CompletableFuture.completedFuture(false);
 	}
 	
-	private boolean commandRepairHand(final CommandSource player) {
+	private CompletableFuture<Boolean> commandRepairHand(final CommandSource player) {
 		this.plugin.getGame().getCommandManager().process(player, "repairhand");
-		return false;
+		return CompletableFuture.completedFuture(false);
 	}
 	
-	private boolean commandRepairHotbar(final CommandSource player) {
+	private CompletableFuture<Boolean> commandRepairHotbar(final CommandSource player) {
 		this.plugin.getGame().getCommandManager().process(player, "repairhotbar");
-		return false;
+		return CompletableFuture.completedFuture(false);
 	}
 }

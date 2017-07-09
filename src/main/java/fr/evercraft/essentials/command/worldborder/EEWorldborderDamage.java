@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
@@ -53,7 +54,7 @@ public class EEWorldborderDamage extends ESubCommand<EverEssentials> {
 	}
 	
 	@Override
-	public Collection<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
+	public Collection<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		if (args.size() == 1){
 			return Arrays.asList("buffer", "amount");
 		} else if (args.size() == 2){
@@ -93,13 +94,8 @@ public class EEWorldborderDamage extends ESubCommand<EverEssentials> {
 	}
 	
 	@Override
-	public boolean subExecute(final CommandSource source, final List<String> args) {
-		// Résultat de la commande :
-		boolean resultat = false;
-		
-		if (args.size() == 0){
-			source.sendMessage(this.help(source));
-		} else if (args.size() == 1){
+	public CompletableFuture<Boolean> execute(final CommandSource source, final List<String> args) {
+		if (args.size() == 1){
 			if (args.get(0).equalsIgnoreCase("amount")){
 				source.sendMessage(this.helpAmount(source));
 			} else if (args.get(0).equalsIgnoreCase("buffer")){
@@ -110,9 +106,9 @@ public class EEWorldborderDamage extends ESubCommand<EverEssentials> {
 		} else if (args.size() == 2){
 			if (source instanceof Locatable) {
 				if (args.get(0).equalsIgnoreCase("amount")){
-					resultat = this.commandWorldborderDamageAmount(source, ((Locatable) source).getWorld(), args.get(0));
+					return this.commandWorldborderDamageAmount(source, ((Locatable) source).getWorld(), args.get(0));
 				} else if (args.get(0).equalsIgnoreCase("buffer")){
-					resultat = this.commandWorldborderDamageBuffer(source, ((Locatable) source).getWorld(), args.get(0));
+					return this.commandWorldborderDamageBuffer(source, ((Locatable) source).getWorld(), args.get(0));
 				} else {
 					source.sendMessage(this.help(source));
 				}
@@ -125,9 +121,9 @@ public class EEWorldborderDamage extends ESubCommand<EverEssentials> {
 			Optional<World> world = this.plugin.getEServer().getWorld(args.get(2));
 			if (world.isPresent()){
 				if (args.get(0).equalsIgnoreCase("amount")){
-					resultat = this.commandWorldborderDamageAmount(source, world.get(), args.get(0));
+					return this.commandWorldborderDamageAmount(source, world.get(), args.get(0));
 				} else if (args.get(0).equalsIgnoreCase("buffer")){
-					resultat = this.commandWorldborderDamageBuffer(source, world.get(), args.get(0));
+					return this.commandWorldborderDamageBuffer(source, world.get(), args.get(0));
 				} else {
 					source.sendMessage(this.help(source));
 				}
@@ -141,10 +137,10 @@ public class EEWorldborderDamage extends ESubCommand<EverEssentials> {
 			source.sendMessage(this.help(source));
 		}
 		
-		return resultat;
+		return CompletableFuture.completedFuture(false);
 	}
 
-	private boolean commandWorldborderDamageAmount(CommandSource source, World world, String value_string) {
+	private CompletableFuture<Boolean> commandWorldborderDamageAmount(CommandSource source, World world, String value_string) {
 		try {
 			double value = Integer.parseInt(value_string);
 			
@@ -153,18 +149,18 @@ public class EEWorldborderDamage extends ESubCommand<EverEssentials> {
 				.replace("<amount>", String.valueOf(value))
 				.replace("<world>", world.getName())
 				.sendTo(source);
-			return true;
+			return CompletableFuture.completedFuture(true);
 			
 		} catch (NumberFormatException e) {
 			EAMessages.IS_NOT_NUMBER.sender()
 				.prefix(EEMessages.PREFIX)
 				.replace("<number>", value_string)
 				.sendTo(source);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 	}
 	
-	private boolean commandWorldborderDamageBuffer(CommandSource source, World world, String value_string) {
+	private CompletableFuture<Boolean> commandWorldborderDamageBuffer(CommandSource source, World world, String value_string) {
 		try {
 			double value = Integer.parseInt(value_string);
 
@@ -173,14 +169,14 @@ public class EEWorldborderDamage extends ESubCommand<EverEssentials> {
 				.replace("<amount>", String.valueOf(value))
 				.replace("<world>", world.getName())
 				.sendTo(source);
-			return true;
+			return CompletableFuture.completedFuture(true);
 			
 		} catch (NumberFormatException e) {
 			EAMessages.IS_NOT_NUMBER.sender()
 				.prefix(EEMessages.PREFIX)
 				.replace("<number>", value_string)
 				.sendTo(source);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 	}
 }

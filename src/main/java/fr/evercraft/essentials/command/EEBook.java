@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
@@ -77,14 +78,12 @@ public class EEBook extends ECommand<EverEssentials> {
 	}
 	
 	@Override
-	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
-		// Résultat de la commande :
-		boolean resultat = false;
+	public CompletableFuture<Boolean> execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Si on ne connait pas le joueur
 		if (args.size() == 0) {
 			// Si la source est un joueur
 			if (source instanceof EPlayer) {
-				resultat = this.commandBook((EPlayer) source);
+				return this.commandBook((EPlayer) source);
 			// La source n'est pas un joueur
 			} else {
 				EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()
@@ -98,10 +97,10 @@ public class EEBook extends ECommand<EverEssentials> {
 			if (optPlayer.isPresent()) {
 				if (args.get(0).equalsIgnoreCase("title")) {
 					args.remove(0);
-					resultat = this.commandBookTitle((EPlayer) source, "");
+					return this.commandBookTitle((EPlayer) source, "");
 				} else if (args.get(0).equalsIgnoreCase("author")) {
 					args.remove(0);
-					resultat = this.commandBookAuthor((EPlayer) source, "");
+					return this.commandBookAuthor((EPlayer) source, "");
 				} else {
 					source.sendMessage(this.help(source));
 				}
@@ -113,12 +112,12 @@ public class EEBook extends ECommand<EverEssentials> {
 			}
 		// Nombre d'argument incorrect
 		} else {
-			source.sendMessage(help(source));
+			source.sendMessage(this.help(source));
 		}
-		return resultat;
+		return CompletableFuture.completedFuture(false);
 	}
 	
-	private boolean commandBook(EPlayer player) {
+	private CompletableFuture<Boolean> commandBook(EPlayer player) {
 		// Si le joueur a bien un item dans la main
 		if (player.getItemInMainHand().isPresent()) {
 			ItemStack item = player.getItemInMainHand().get();
@@ -142,10 +141,10 @@ public class EEBook extends ECommand<EverEssentials> {
 				.prefix(EEMessages.PREFIX)
 				.sendTo(player);
 		}
-		return false;
+		return CompletableFuture.completedFuture(true);
 	}
 
-	private boolean commandBookTitle(EPlayer player, String message) {
+	private CompletableFuture<Boolean> commandBookTitle(EPlayer player, String message) {
 		// Si le joueur a bien un item dans la main
 		if (player.getItemInMainHand().isPresent()) {
 			//ItemStack item = player.getItemInHand().get();
@@ -155,10 +154,10 @@ public class EEBook extends ECommand<EverEssentials> {
 				.prefix(EEMessages.PREFIX)
 				.sendTo(player);
 		}
-		return false;
+		return CompletableFuture.completedFuture(true);
 	}
 
-	private boolean commandBookAuthor(EPlayer player, String message) {
+	private CompletableFuture<Boolean> commandBookAuthor(EPlayer player, String message) {
 		// Si le joueur a bien un item dans la main
 		if (player.getItemInMainHand().isPresent()) {
 			//ItemStack item = player.getItemInHand().get();
@@ -168,6 +167,6 @@ public class EEBook extends ECommand<EverEssentials> {
 				.prefix(EEMessages.PREFIX)
 				.sendTo(player);
 		}
-		return false;
+		return CompletableFuture.completedFuture(true);
 	}
 }

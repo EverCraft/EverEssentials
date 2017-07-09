@@ -17,6 +17,7 @@
 package fr.evercraft.essentials.command.freeze;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.text.Text;
@@ -50,13 +51,10 @@ public class EEFreeze extends EParentCommand<EverEssentials> {
 	}
 	
 	@Override
-	protected boolean commandDefault(final CommandSource source, final List<String> args) {
-		// Résultat de la commande :
-		boolean resultat = false;
-				
+	protected CompletableFuture<Boolean> commandDefault(final CommandSource source, final List<String> args) {
 		// Si la source est un joueur
 		if (source instanceof EPlayer) {
-			resultat = this.commandFreeze((EPlayer) source);
+			return this.commandFreeze((EPlayer) source);
 		// La source n'est pas un joueur
 		} else {
 			EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()
@@ -64,10 +62,10 @@ public class EEFreeze extends EParentCommand<EverEssentials> {
 				.sendTo(source);
 		}
 		
-		return resultat;
+		return CompletableFuture.completedFuture(false);
 	}
 	
-	private boolean commandFreeze(final EPlayer player) {
+	private CompletableFuture<Boolean> commandFreeze(final EPlayer player) {
 		boolean freeze = !player.isFreeze();
 		if (player.setFreeze(freeze)) {
 			if (freeze) {
@@ -75,7 +73,7 @@ public class EEFreeze extends EParentCommand<EverEssentials> {
 			} else {
 				EEMessages.FREEZE_OFF_PLAYER.sendTo(player);
 			}
-			return true;
+			return CompletableFuture.completedFuture(true);
 		} else {
 			if (freeze) {
 				EEMessages.FREEZE_ON_PLAYER_CANCEL.sendTo(player);
@@ -83,6 +81,6 @@ public class EEFreeze extends EParentCommand<EverEssentials> {
 				EEMessages.FREEZE_OFF_PLAYER_CANCEL.sendTo(player);
 			}
 		}
-		return false;
+		return CompletableFuture.completedFuture(false);
 	}
 }

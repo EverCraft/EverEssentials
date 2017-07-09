@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
@@ -67,20 +68,17 @@ public class EEFreezeStatus extends ESubCommand<EverEssentials> {
 	}
 	
 	@Override
-	public Collection<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
+	public Collection<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		if (args.size() == 1 && source.hasPermission(EEPermissions.FREEZE_OTHERS.get())){
 			return this.getAllUsers(args.get(0), source);
 		}
 		return Arrays.asList();
 	}
 	
-	public boolean subExecute(final CommandSource source, final List<String> args) throws CommandException {
-		// Résultat de la commande :
-		boolean resultat = false;
-		
+	public CompletableFuture<Boolean> execute(final CommandSource source, final List<String> args) throws CommandException {
 		if (args.size() == 0) {
 			if (source instanceof EPlayer) {
-				resultat = this.commandFreezeStatus((EPlayer) source);
+				return this.commandFreezeStatus((EPlayer) source);
 			} else {
 				EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()
 					.prefix(EEMessages.PREFIX)
@@ -92,7 +90,7 @@ public class EEFreezeStatus extends ESubCommand<EverEssentials> {
 				Optional<EUser> user = this.plugin.getEServer().getEUser(args.get(0));
 				// Le joueur existe
 				if (user.isPresent()){
-					resultat = this.commandFreezeStatusOthers(source, user.get());
+					return this.commandFreezeStatusOthers(source, user.get());
 				// Le joueur est introuvable
 				} else {
 					EAMessages.PLAYER_NOT_FOUND.sender()
@@ -109,10 +107,10 @@ public class EEFreezeStatus extends ESubCommand<EverEssentials> {
 			source.sendMessage(this.help(source));
 		}
 		
-		return resultat;
+		return CompletableFuture.completedFuture(false);
 	}
 
-	private boolean commandFreezeStatus(final EPlayer player) {
+	private CompletableFuture<Boolean> commandFreezeStatus(final EPlayer player) {
 		// Si le freeze est déjà activé
 		if (player.isFreeze()){
 			EEMessages.FREEZE_STATUS_PLAYER_ON.sender()
@@ -124,10 +122,10 @@ public class EEFreezeStatus extends ESubCommand<EverEssentials> {
 				.replace("<player>", player.getDisplayName())
 				.sendTo(player);
 		}
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 	
-	private boolean commandFreezeStatusOthers(final CommandSource staff, final EUser user) {
+	private CompletableFuture<Boolean> commandFreezeStatusOthers(final CommandSource staff, final EUser user) {
 		// La source et le joueur sont identique
 		if (staff instanceof EPlayer && user.getIdentifier().equals(staff.getIdentifier())) {
 			return this.commandFreezeStatus((EPlayer) staff);
@@ -144,6 +142,6 @@ public class EEFreezeStatus extends ESubCommand<EverEssentials> {
 				.replace("<player>", user.getDisplayName())
 				.sendTo(staff);
 		}
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 }

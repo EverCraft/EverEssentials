@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
@@ -67,14 +68,11 @@ public class EERepairHand extends ECommand<EverEssentials> {
 	}
 
 	@Override
-	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
-		// Résultat de la commande :
-		boolean resultat = false;
-		
+	public CompletableFuture<Boolean> execute(final CommandSource source, final List<String> args) throws CommandException {
 		if (args.size() == 0) {
 			// Si la source est un joueur
 			if (source instanceof EPlayer) {
-				resultat = this.commandRepair((EPlayer) source);
+				return this.commandRepair((EPlayer) source);
 			// La source n'est pas un joueur
 			} else {
 				EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()
@@ -85,14 +83,14 @@ public class EERepairHand extends ECommand<EverEssentials> {
 			source.sendMessage(this.help(source));
 		}
 		
-		return resultat;
+		return CompletableFuture.completedFuture(false);
 	}
 
-	private boolean commandRepair(final EPlayer player) {
+	private CompletableFuture<Boolean> commandRepair(final EPlayer player) {
 		Optional<ItemStack> optItem = player.getItemInMainHand();
 		if (!optItem.isPresent()) {
 			EAMessages.EMPTY_ITEM_IN_HAND.sendTo(player);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		ItemStack item = optItem.get();
@@ -101,7 +99,7 @@ public class EERepairHand extends ECommand<EverEssentials> {
 			EEMessages.REPAIR_HAND_ERROR.sender()
 	        	.replace("<item>", EChat.getButtomItem(item, EEMessages.REPAIR_HAND_ITEM_COLOR.getColor()))
 	        	.sendTo(player);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		item.offer(Keys.ITEM_DURABILITY, Integer.MAX_VALUE);
@@ -109,13 +107,13 @@ public class EERepairHand extends ECommand<EverEssentials> {
 			EEMessages.REPAIR_HAND_MAX_DURABILITY.sender()
 	        	.replace("<item>", EChat.getButtomItem(item, EEMessages.REPAIR_HAND_ITEM_COLOR.getColor()))
 	        	.sendTo(player);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
         player.setItemInMainHand(item);
         EEMessages.REPAIR_HAND_PLAYER.sender()
         	.replace("<item>", EChat.getButtomItem(item, EEMessages.REPAIR_HAND_ITEM_COLOR.getColor()))
         	.sendTo(player);
-        return true;
+        return CompletableFuture.completedFuture(true);
 	}
 }

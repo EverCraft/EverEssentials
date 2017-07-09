@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.CompletableFuture;
 
 import ninja.leaping.configurate.ConfigurationNode;
 
@@ -37,10 +38,11 @@ import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.java.UtilsMap;
-import fr.evercraft.everapi.plugin.command.EReloadCommand;
+import fr.evercraft.everapi.plugin.command.ECommand;
+import fr.evercraft.everapi.plugin.command.ReloadCommand;
 import fr.evercraft.everapi.server.player.EPlayer;
 
-public class EENear extends EReloadCommand<EverEssentials> {
+public class EENear extends ECommand<EverEssentials> implements ReloadCommand {
 	
 	private List<Entry<String, Integer>> permissions;
 	private int permission_default;
@@ -98,15 +100,12 @@ public class EENear extends EReloadCommand<EverEssentials> {
 		return Arrays.asList();
 	}
 	
-	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
-		// Résultat de la commande :
-		boolean resultat = false;
-		
+	public CompletableFuture<Boolean> execute(final CommandSource source, final List<String> args) throws CommandException {
 		if (args.size() == 0) {
 			
 			// Si la source est un joueur
 			if (source instanceof EPlayer) {
-				resultat = this.commandNear((EPlayer) source);
+				return this.commandNear((EPlayer) source);
 			// La source n'est pas un joueur
 			} else {
 				EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()
@@ -119,16 +118,16 @@ public class EENear extends EReloadCommand<EverEssentials> {
 			source.sendMessage(this.help(source));
 		}
 		
-		return resultat;
+		return CompletableFuture.completedFuture(false);
 	}
 	
-	public boolean commandNear(final EPlayer player) {
+	public CompletableFuture<Boolean> commandNear(final EPlayer player) {
 		Map <EPlayer, Integer> list = player.getEPlayers(this.getValue(player));		
 		
 		// Aucun joueur
 		if (list.isEmpty()) {
 			EEMessages.NEAR_NOPLAYER.sendTo(player);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		List<Text> lists = new ArrayList<Text>();
@@ -139,6 +138,6 @@ public class EENear extends EReloadCommand<EverEssentials> {
 		}
 		this.plugin.getEverAPI().getManagerService().getEPagination().sendTo(EEMessages.NEAR_LIST_TITLE.getText().toBuilder()
 				.onClick(TextActions.runCommand("/near")).build(), lists, player);
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 }

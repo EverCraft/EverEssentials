@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
@@ -53,7 +54,7 @@ public class EEWorldborderSet extends ESubCommand<EverEssentials> {
 	}
 	
 	@Override
-	public Collection<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
+	public Collection<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		if (args.size() == 1){
 			return Arrays.asList("100", "1000");
 		} else if (args.size() == 2){
@@ -88,15 +89,10 @@ public class EEWorldborderSet extends ESubCommand<EverEssentials> {
 	}
 	
 	@Override
-	public boolean subExecute(final CommandSource source, final List<String> args) {
-		// Résultat de la commande :
-		boolean resultat = false;
-		
-		if (args.size() == 0){
-			source.sendMessage(this.help(source));
-		} else if (args.size() == 1){
+	public CompletableFuture<Boolean> execute(final CommandSource source, final List<String> args) {
+		if (args.size() == 1){
 			if (source instanceof Locatable) {
-				resultat = this.commandWorldborderSet(source, ((Locatable) source).getWorld(), args.get(0));
+				return this.commandWorldborderSet(source, ((Locatable) source).getWorld(), args.get(0));
 			} else {
 				EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()
 					.prefix(EEMessages.PREFIX)
@@ -105,10 +101,10 @@ public class EEWorldborderSet extends ESubCommand<EverEssentials> {
 		} else if (args.size() == 2){
 			Optional<World> world = this.plugin.getEServer().getWorld(args.get(1));
 			if (world.isPresent()){
-				resultat = this.commandWorldborderSet(source, world.get(), args.get(0));
+				return this.commandWorldborderSet(source, world.get(), args.get(0));
 			} else {
 				if (source instanceof Locatable) {
-					resultat = this.commandWorldborderSet(source, ((Locatable) source).getWorld(), args.get(0), args.get(1));
+					return this.commandWorldborderSet(source, ((Locatable) source).getWorld(), args.get(0), args.get(1));
 				} else {
 					EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()
 						.prefix(EEMessages.PREFIX)
@@ -118,7 +114,7 @@ public class EEWorldborderSet extends ESubCommand<EverEssentials> {
 		} else if (args.size() == 3){
 			Optional<World> world = this.plugin.getEServer().getWorld(args.get(2));
 			if (world.isPresent()){
-				resultat = this.commandWorldborderSet(source, world.get(), args.get(0), args.get(1));
+				return this.commandWorldborderSet(source, world.get(), args.get(0), args.get(1));
 			} else {
 				EAMessages.WORLD_NOT_FOUND.sender()
 					.prefix(EEMessages.PREFIX)
@@ -129,10 +125,10 @@ public class EEWorldborderSet extends ESubCommand<EverEssentials> {
 			source.sendMessage(this.help(source));
 		}
 		
-		return resultat;
+		return CompletableFuture.completedFuture(false);
 	}
 
-	private boolean commandWorldborderSet(CommandSource source, World world, String diameter_string) {
+	private CompletableFuture<Boolean> commandWorldborderSet(CommandSource source, World world, String diameter_string) {
 		try {
 			double diameter = Integer.parseInt(diameter_string);
 			
@@ -142,17 +138,17 @@ public class EEWorldborderSet extends ESubCommand<EverEssentials> {
 				.replace("<amount>", String.valueOf(diameter))
 				.sendTo(source);
 			
-			return true;
+			return CompletableFuture.completedFuture(true);
 		} catch (NumberFormatException e) {
 			EAMessages.IS_NOT_NUMBER.sender()
 				.prefix(EEMessages.PREFIX)
 				.replace("<number>", diameter_string)
 				.sendTo(source);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 	}
 	
-	private boolean commandWorldborderSet(CommandSource source, World world, String diameter_string, String time_string) {
+	private CompletableFuture<Boolean> commandWorldborderSet(CommandSource source, World world, String diameter_string, String time_string) {
 		try {
 			double diameter = Integer.parseInt(diameter_string);
 			try {
@@ -173,7 +169,7 @@ public class EEWorldborderSet extends ESubCommand<EverEssentials> {
 					.replace("<time>", String.valueOf(time))
 					.sendTo(source);
 				
-				return true;
+				return CompletableFuture.completedFuture(true);
 			} catch (NumberFormatException e) {
 				EAMessages.IS_NOT_NUMBER.sender()
 					.prefix(EEMessages.PREFIX)
@@ -186,6 +182,6 @@ public class EEWorldborderSet extends ESubCommand<EverEssentials> {
 				.replace("<number>", diameter_string)
 				.sendTo(source);
 		}
-		return false;
+		return CompletableFuture.completedFuture(false);
 	}
 }

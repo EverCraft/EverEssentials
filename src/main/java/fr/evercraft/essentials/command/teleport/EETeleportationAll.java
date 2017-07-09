@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
@@ -76,15 +77,11 @@ public class EETeleportationAll extends ECommand<EverEssentials> {
 	}
 	
 	@Override
-	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
-		// Résultat de la commande :
-		boolean resultat = false;
-
-
+	public CompletableFuture<Boolean> execute(final CommandSource source, final List<String> args) throws CommandException {
 		if (args.size() == 0) {
 			// Si la source est bien un joueur
 			if (source instanceof EPlayer) {
-				resultat = this.commandTeleportationAll((EPlayer) source);
+				return this.commandTeleportationAll((EPlayer) source);
 			// Si la source est une console ou un commande block
 			} else {
 				EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()
@@ -97,7 +94,7 @@ public class EETeleportationAll extends ECommand<EverEssentials> {
 				Optional<EPlayer> player = this.plugin.getEServer().getEPlayer(args.get(0));
 				// Le joueur existe
 				if (player.isPresent()){
-					resultat = this.commandTeleportationAllOthers(source, player.get());
+					return this.commandTeleportationAllOthers(source, player.get());
 				// Joueur introuvable
 				} else {
 					EAMessages.PLAYER_NOT_FOUND.sender()
@@ -115,14 +112,14 @@ public class EETeleportationAll extends ECommand<EverEssentials> {
 			source.sendMessage(this.help(source));
 		}
 		
-		return resultat;
+		return CompletableFuture.completedFuture(false);
 	}
 	
-	private boolean commandTeleportationAll(EPlayer staff) {
+	private CompletableFuture<Boolean> commandTeleportationAll(EPlayer staff) {
 		Optional<Transform<World>> transform = this.teleport(staff);
 		if (!transform.isPresent()) {
 			EEMessages.TPALL_ERROR.sendTo(staff);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		for (EPlayer player : this.plugin.getEServer().getOnlineEPlayers()) {
@@ -143,10 +140,10 @@ public class EETeleportationAll extends ECommand<EverEssentials> {
 		EEMessages.TPALL_STAFF.sender()
 			.replace("<destination>", () -> this.getButtonPosition(staff.getName(), transform.get().getLocation()))
 			.sendTo(staff);
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 
-	private boolean commandTeleportationAllOthers(CommandSource staff, EPlayer destination) {
+	private CompletableFuture<Boolean> commandTeleportationAllOthers(CommandSource staff, EPlayer destination) {
 		if (destination.equals(staff)) {
 			return this.commandTeleportationAll(destination);
 		}
@@ -154,7 +151,7 @@ public class EETeleportationAll extends ECommand<EverEssentials> {
 		Optional<Transform<World>> transform = teleport(destination);
 		if (!transform.isPresent()) {
 			EEMessages.TPALL_ERROR.sendTo(staff);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		for (EPlayer player : this.plugin.getEServer().getOnlineEPlayers()) {
@@ -178,7 +175,7 @@ public class EETeleportationAll extends ECommand<EverEssentials> {
 			.replace("<staff>", staff.getName())
 			.replace("<destination>", () -> this.getButtonPosition(destination.getName(), transform.get().getLocation()))
 			.sendTo(staff);
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 	
 	private Optional<Transform<World>> teleport(EPlayer destination) {

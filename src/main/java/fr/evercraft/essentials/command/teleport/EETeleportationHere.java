@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
@@ -69,17 +70,14 @@ public class EETeleportationHere extends ECommand<EverEssentials> {
 	}
 	
 	@Override
-	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
-		// Résultat de la commande :
-		boolean resultat = false;
-		
+	public CompletableFuture<Boolean> execute(final CommandSource source, final List<String> args) throws CommandException {
 		if (args.size() == 1) {
 			// Si la source est bien un joueur
 			if (source instanceof EPlayer) {
 				Optional<EPlayer> player = this.plugin.getEServer().getEPlayer(args.get(0));
 				// Le joueur existe
 				if (player.isPresent()){
-					resultat = this.commandTeleportationHere((EPlayer) source, player.get());
+					return this.commandTeleportationHere((EPlayer) source, player.get());
 				// Joueur introuvable
 				} else {
 					source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
@@ -95,26 +93,26 @@ public class EETeleportationHere extends ECommand<EverEssentials> {
 			source.sendMessage(this.help(source));
 		}
 		
-		return resultat;
+		return CompletableFuture.completedFuture(false);
 	}
 	
-	private boolean commandTeleportationHere(EPlayer staff, EPlayer player) {
+	private CompletableFuture<Boolean> commandTeleportationHere(EPlayer staff, EPlayer player) {
 		if (player.equals(staff)) {
 			player.reposition();
 			EEMessages.TPHERE_EQUALS.sendTo(player);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		if (!player.getWorld().equals(staff.getWorld()) && !this.plugin.getManagerServices().getEssentials().hasPermissionWorld(player, staff.getWorld())) {
 			EAMessages.NO_PERMISSION_WORLD_OTHERS.sender()
 				.replace("<world>", staff.getWorld().getName())
 				.sendTo(staff);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 			
 		if (!this.teleport(player, staff)) {
 			EEMessages.TPHERE_ERROR.sendTo(staff);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		EEMessages.TPHERE_PLAYER.sender()
@@ -125,7 +123,7 @@ public class EETeleportationHere extends ECommand<EverEssentials> {
 			.replace("<player>", player.getName())
 			.replace("<destination>", () -> this.getButtonPosition(staff.getName(), player.getLocation()))
 			.sendTo(staff);
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 	
 	private boolean teleport(EPlayer player, EPlayer destination){

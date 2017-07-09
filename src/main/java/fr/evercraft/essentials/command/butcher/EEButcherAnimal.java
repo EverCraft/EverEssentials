@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Predicate;
 
 import org.spongepowered.api.command.CommandException;
@@ -66,7 +67,7 @@ public class EEButcherAnimal extends ESubCommand<EverEssentials> {
 	}
 	
 	@Override
-	public Collection<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
+	public Collection<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		if (args.size() == 1) {
 			List<String> suggests = new ArrayList<String>();
 			if (source.hasPermission(EEPermissions.BUTCHER_WORLD.get())){
@@ -80,16 +81,13 @@ public class EEButcherAnimal extends ESubCommand<EverEssentials> {
 	}
 	
 	@Override
-	public boolean subExecute(final CommandSource source, final List<String> args) {
-		// Résultat de la commande :
-		boolean resultat = false;
-		
+	public CompletableFuture<Boolean> execute(final CommandSource source, final List<String> args) {
 		if (source instanceof EPlayer){
 			EPlayer player = (EPlayer) source;
 			if (args.size() == 1) {
 				if (args.get(0).equals("all")){
 					if (player.hasPermission(EEPermissions.BUTCHER_WORLD.get())){
-						resultat = this.commandButcherAnimal(player);
+						return this.commandButcherAnimal(player);
 					// Il n'a pas la permission
 					} else {
 						EAMessages.NO_PERMISSION.sender()
@@ -100,7 +98,7 @@ public class EEButcherAnimal extends ESubCommand<EverEssentials> {
 					try {
 						int radius = Integer.parseInt(args.get(0));
 						if (radius > 0  && radius <= this.plugin.getConfigs().getButcherMaxRadius()) {
-							resultat = commandButcherAnimal(player, radius);
+							return this.commandButcherAnimal(player, radius);
 						} else {
 							EAMessages.NUMBER_INVALID.sender()
 								.prefix(EEMessages.PREFIX)
@@ -118,10 +116,10 @@ public class EEButcherAnimal extends ESubCommand<EverEssentials> {
 			}
 		}
 		
-		return resultat;
+		return CompletableFuture.completedFuture(false);
 	}
 
-	private boolean commandButcherAnimal(final EPlayer player) {
+	private CompletableFuture<Boolean> commandButcherAnimal(final EPlayer player) {
 		Predicate<Entity> predicate = new Predicate<Entity>() {
 		    @Override
 		    public boolean test(Entity entity) {
@@ -137,14 +135,14 @@ public class EEButcherAnimal extends ESubCommand<EverEssentials> {
 			EEMessages.BUTCHER_ANIMAL.sender()
 				.replace("<count>", String.valueOf(list.size()))
 				.sendTo(player);
-			return true;
+			return CompletableFuture.completedFuture(true);
 		} else {
 			EEMessages.BUTCHER_NOENTITY.sendTo(player);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 	}
 	
-	private boolean commandButcherAnimal(final EPlayer player, final int radius) {
+	private CompletableFuture<Boolean> commandButcherAnimal(final EPlayer player, final int radius) {
 		Predicate<Entity> predicate = entity -> {
 	    	if (UtilsEntityType.isAnimal(entity)) {
 		    	if (entity.getLocation().getPosition().distance(player.getLocation().getPosition()) <= radius) {
@@ -161,10 +159,10 @@ public class EEButcherAnimal extends ESubCommand<EverEssentials> {
 				.replace("<radius>", String.valueOf(radius))
 				.replace("<count>", String.valueOf(list.size()))
 				.sendTo(player);
-			return true;
+			return CompletableFuture.completedFuture(true);
 		} else {
 			EEMessages.BUTCHER_NOENTITY.sendTo(player);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 	}
 }

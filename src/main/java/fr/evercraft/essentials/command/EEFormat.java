@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
@@ -65,16 +66,13 @@ public class EEFormat extends ECommand<EverEssentials> {
 	}
 	
 	@Override
-	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
-		// Résultat de la commande :
-		boolean resultat = false;
-		
+	public CompletableFuture<Boolean> execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Si on ne connait pas le joueur
 		if (args.size() == 0) {
 			
 			// Si la source est un joueur
 			if (source instanceof EPlayer) {
-				resultat = this.commandFormat((EPlayer) source);
+				return this.commandFormat((EPlayer) source);
 			// La source n'est pas un joueur
 			} else {
 				EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()
@@ -87,10 +85,10 @@ public class EEFormat extends ECommand<EverEssentials> {
 			source.sendMessage(this.help(source));
 		}
 		
-		return resultat;
+		return CompletableFuture.completedFuture(false);
 	}
 	
-	private boolean commandFormat(final EPlayer player) {
+	private CompletableFuture<Boolean> commandFormat(final EPlayer player) {
 		Builder book = BookView.builder();
 		
 		List<Text> page = new ArrayList<Text>();
@@ -103,7 +101,7 @@ public class EEFormat extends ECommand<EverEssentials> {
 		page.add(this.getButtomColor("r", EEMessages.FORMAT_RESET.getText()));
 		book.addPage(Text.joinWith(Text.of("\n"), page));
 		player.sendBookView(book.build());
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 	
 	private Text getButtomColor(String id, Text text) {

@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.concurrent.CompletableFuture;
 import java.util.Optional;
 import java.util.TreeMap;
 
@@ -67,20 +68,17 @@ public class EESpawns extends ECommand<EverEssentials> {
 	}
 	
 	@Override
-	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
-		// Résultat de la commande :
-		boolean resultat = false;
-
+	public CompletableFuture<Boolean> execute(final CommandSource source, final List<String> args) throws CommandException {
 		if (args.size() == 0) {
-			resultat = this.commandSpawns(source);
+			return this.commandSpawns(source);
 		// Nombre d'argument incorrect
 		} else {
 			source.sendMessage(this.help(source));
 		}
-		return resultat;
+		return CompletableFuture.completedFuture(false);
 	}
 	
-	private boolean commandSpawns(final CommandSource player) throws CommandException {
+	private CompletableFuture<Boolean> commandSpawns(final CommandSource player) throws CommandException {
 		TreeMap<String, VirtualTransform> spawns = new TreeMap<String, VirtualTransform>(this.plugin.getManagerServices().getSpawn().getAllSQL());
 		
 		List<Text> lists = new ArrayList<Text>();
@@ -119,7 +117,7 @@ public class EESpawns extends ECommand<EverEssentials> {
 		
 		this.plugin.getEverAPI().getManagerService().getEPagination().sendTo(EEMessages.SPAWNS_TITLE.getText().toBuilder()
 				.onClick(TextActions.runCommand("/spawns")).build(), lists, player);		
-		return false;
+		return CompletableFuture.completedFuture(false);
 	}
 	
 	private Text getButtonTeleport(final String name, final VirtualTransform location){

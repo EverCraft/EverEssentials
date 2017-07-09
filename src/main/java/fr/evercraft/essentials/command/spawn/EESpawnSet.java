@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
@@ -78,15 +79,12 @@ public class EESpawnSet extends ECommand<EverEssentials> {
 	}
 	
 	@Override
-	public boolean execute(final CommandSource source, final List<String> args) throws CommandException, ServerDisableException {
-		// Résultat de la commande :
-		boolean resultat = false;
-		
+	public CompletableFuture<Boolean> execute(final CommandSource source, final List<String> args) throws CommandException, ServerDisableException {
 		if (args.size() == 0) {
 			
 			// Si la source est un joueur
 			if (source instanceof EPlayer) {
-				resultat = this.commandSetSpawn((EPlayer) source, SpawnService.DEFAULT);
+				return this.commandSetSpawn((EPlayer) source, SpawnService.DEFAULT);
 			// La source n'est pas un joueur
 			} else {
 				EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()
@@ -101,7 +99,7 @@ public class EESpawnSet extends ECommand<EverEssentials> {
 			if (source instanceof EPlayer) {
 				Subject group = this.plugin.getEverAPI().getManagerService().getPermission().getGroupSubjects().get(args.get(0));
 				if (group != null) {
-					resultat = this.commandSetSpawn((EPlayer) source, group.getIdentifier());
+					return this.commandSetSpawn((EPlayer) source, group.getIdentifier());
 				} else {
 					EEMessages.SETSPAWN_ERROR_GROUP.sender()
 						.replace("<name>", args.get(0))
@@ -118,10 +116,10 @@ public class EESpawnSet extends ECommand<EverEssentials> {
 		} else {
 			source.sendMessage(this.help(source));
 		}
-		return resultat;
+		return CompletableFuture.completedFuture(false);
 	}
 	
-	private boolean commandSetSpawn(final EPlayer player, final String group_name) throws ServerDisableException {
+	private CompletableFuture<Boolean> commandSetSpawn(final EPlayer player, final String group_name) throws ServerDisableException {
 		Optional<Transform<World>> group = this.plugin.getManagerServices().getSpawn().get(group_name);
 		
 		if (group.isPresent()) {
@@ -130,7 +128,7 @@ public class EESpawnSet extends ECommand<EverEssentials> {
 				EEMessages.SETSPAWN_REPLACE.sender()
 					.replace("<name>", this.getButtonSpawn(group_name, player.getLocation()))
 					.sendTo(player);
-				return true;
+				return CompletableFuture.completedFuture(true);
 			} else {
 				EAMessages.COMMAND_ERROR.sender()
 					.prefix(EEMessages.PREFIX)
@@ -143,7 +141,7 @@ public class EESpawnSet extends ECommand<EverEssentials> {
 				EEMessages.SETSPAWN_NEW.sender()
 					.replace("<name>", this.getButtonSpawn(group_name, player.getLocation()))
 					.sendTo(player);
-				return true;
+				return CompletableFuture.completedFuture(true);
 			} else {
 				EAMessages.COMMAND_ERROR.sender()
 					.prefix(EEMessages.PREFIX)
@@ -151,7 +149,7 @@ public class EESpawnSet extends ECommand<EverEssentials> {
 			}
 			
 		}
-		return false;
+		return CompletableFuture.completedFuture(false);
 	}
 
 	private Text getButtonSpawn(final String name, final Location<World> location){

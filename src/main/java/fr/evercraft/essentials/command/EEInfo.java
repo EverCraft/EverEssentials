@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
@@ -67,16 +68,13 @@ public class EEInfo extends ECommand<EverEssentials> {
 	}
 	
 	@Override
-	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
-		// Résultat de la commande :
-		boolean resultat = false;
-		
+	public CompletableFuture<Boolean> execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Si on ne connait pas le joueur
 		if (args.size() == 0) {
 			
 			// Si la source est un joueur
 			if (source instanceof EPlayer) {
-				resultat = this.commandInfo((EPlayer) source);
+				return this.commandInfo((EPlayer) source);
 			// La source n'est pas un joueur
 			} else {
 				EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()
@@ -88,10 +86,10 @@ public class EEInfo extends ECommand<EverEssentials> {
 		} else {
 			source.sendMessage(this.help(source));
 		}
-		return resultat;
+		return CompletableFuture.completedFuture(false);
 	}
 	
-	private boolean commandInfo(final EPlayer player) {
+	private CompletableFuture<Boolean> commandInfo(final EPlayer player) {
 		Optional<ItemStack> item = player.getItemInMainHand();
 		
 		// Le joueur a aucun item dans la main
@@ -99,13 +97,13 @@ public class EEInfo extends ECommand<EverEssentials> {
 			EAMessages.EMPTY_ITEM_IN_HAND.sender()
 				.prefix(EEMessages.PREFIX)
 				.sendTo(player);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		EEMessages.INFO_PLAYER.sender()
 			.replace("<type>", item.get().getItem().getName().replaceAll("minecraft:", "").toUpperCase())
 			.replace("<item>", EChat.getButtomItem(item.get(), EEMessages.INFO_ITEM_COLOR.getColor()))
 			.sendTo(player);
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 }

@@ -22,6 +22,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.CompletableFuture;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -75,14 +76,11 @@ public class EETeleportationDeny extends ECommand<EverEssentials> {
 	}
 	
 	@Override
-	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
-		// Résultat de la commande :
-		boolean resultat = false;
-		
+	public CompletableFuture<Boolean> execute(final CommandSource source, final List<String> args) throws CommandException {
 		if (args.size() == 0) {
 			// Si la source est bien un joueur
 			if (source instanceof EPlayer) {
-				resultat = this.commandTeleportationDeny((EPlayer) source);
+				return this.commandTeleportationDeny((EPlayer) source);
 			// Si la source est une console ou un commande block
 			} else {
 				EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()
@@ -95,7 +93,7 @@ public class EETeleportationDeny extends ECommand<EverEssentials> {
 				Optional<EPlayer> player = this.plugin.getEServer().getEPlayer(args.get(0));
 				// Le joueur existe
 				if (player.isPresent()){
-					resultat = this.commandTeleportationDeny((EPlayer) source, player.get());
+					return this.commandTeleportationDeny((EPlayer) source, player.get());
 				// Joueur introuvable
 				} else {
 					EAMessages.PLAYER_NOT_FOUND.sender()
@@ -113,10 +111,10 @@ public class EETeleportationDeny extends ECommand<EverEssentials> {
 			source.sendMessage(this.help(source));
 		}
 		
-		return resultat;
+		return CompletableFuture.completedFuture(false);
 	}
 
-	private boolean commandTeleportationDeny(final EPlayer player) {
+	private CompletableFuture<Boolean> commandTeleportationDeny(final EPlayer player) {
 		Map<UUID, TeleportRequest> teleports = player.getAllTeleportsAsk();
 		List<Text> lists = new ArrayList<Text>();
 		Optional<EPlayer> one_player = Optional.empty();
@@ -151,10 +149,10 @@ public class EETeleportationDeny extends ECommand<EverEssentials> {
 			return this.commandTeleportationDeny(player, one_player.get());
 		}
 		
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 	
-	private boolean commandTeleportationDeny(final EPlayer player, final EPlayer player_request) {
+	private CompletableFuture<Boolean> commandTeleportationDeny(final EPlayer player, final EPlayer player_request) {
 		Optional<TeleportRequest> teleports = player.getTeleportAsk(player_request.getUniqueId());
 		
 		// Il y a une demande de téléportation
@@ -196,6 +194,6 @@ public class EETeleportationDeny extends ECommand<EverEssentials> {
 				.replace("<player>", player_request.getName())
 				.sendTo(player);
 		}
-		return false;
+		return CompletableFuture.completedFuture(false);
 	}
 }

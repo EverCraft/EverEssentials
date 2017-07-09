@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
@@ -76,14 +77,11 @@ public class EETeleportationAccept extends ECommand<EverEssentials> {
 	}
 	
 	@Override
-	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
-		// Résultat de la commande :
-		boolean resultat = false;
-		
+	public CompletableFuture<Boolean> execute(final CommandSource source, final List<String> args) throws CommandException {
 		if (args.size() == 0) {
 			// Si la source est bien un joueur
 			if (source instanceof EPlayer) {
-				resultat = this.commandTeleportationAccept((EPlayer) source);
+				return this.commandTeleportationAccept((EPlayer) source);
 			// Si la source est une console ou un commande block
 			} else {
 				EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()
@@ -96,7 +94,7 @@ public class EETeleportationAccept extends ECommand<EverEssentials> {
 				Optional<EPlayer> player = this.plugin.getEServer().getEPlayer(args.get(0));
 				// Le joueur existe
 				if (player.isPresent()){
-					resultat = this.commandTeleportationAccept((EPlayer) source, player.get());
+					return this.commandTeleportationAccept((EPlayer) source, player.get());
 				// Joueur introuvable
 				} else {
 					EAMessages.PLAYER_NOT_FOUND.sender()
@@ -114,10 +112,10 @@ public class EETeleportationAccept extends ECommand<EverEssentials> {
 			source.sendMessage(this.help(source));
 		}
 		
-		return resultat;
+		return CompletableFuture.completedFuture(false);
 	}
 
-	private boolean commandTeleportationAccept(EPlayer player) {
+	private CompletableFuture<Boolean> commandTeleportationAccept(EPlayer player) {
 		Map<UUID, TeleportRequest> teleports = player.getAllTeleportsAsk();
 		List<Text> lists = new ArrayList<Text>();
 		Optional<EPlayer> one_player = Optional.empty();
@@ -152,11 +150,11 @@ public class EETeleportationAccept extends ECommand<EverEssentials> {
 			return this.commandTeleportationAccept(player, one_player.get());
 		}
 		
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 	
 
-	private boolean commandTeleportationAccept(final EPlayer player, final EPlayer player_request) {
+	private CompletableFuture<Boolean> commandTeleportationAccept(final EPlayer player, final EPlayer player_request) {
 		Optional<TeleportRequest> teleports = player.getTeleportAsk(player_request.getUniqueId());
 		
 		// Il y a une demande de téléportation
@@ -164,7 +162,7 @@ public class EETeleportationAccept extends ECommand<EverEssentials> {
 			EEMessages.TPA_PLAYER_EMPTY.sender()
 				.replace("<player>", player_request.getName())
 				.sendTo(player);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		// La demande a expiré
@@ -172,7 +170,7 @@ public class EETeleportationAccept extends ECommand<EverEssentials> {
 			EEMessages.TPA_PLAYER_EXPIRE.sender()
 				.replace("<player>", player_request.getName())
 				.sendTo(player);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		player.removeTeleportAsk(player_request.getUniqueId());
@@ -182,10 +180,10 @@ public class EETeleportationAccept extends ECommand<EverEssentials> {
 		} else if (teleports.get().getType().equals(Type.TPAHERE)) {
 			this.commandTeleportationAcceptAskHere(player, player_request, teleports.get());
 		}
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 	
-	private boolean commandTeleportationAcceptAsk(final EPlayer player, final EPlayer player_request, final TeleportRequest teleport) {
+	private CompletableFuture<Boolean> commandTeleportationAcceptAsk(final EPlayer player, final EPlayer player_request, final TeleportRequest teleport) {
 		long delay = this.plugin.getConfigs().getTeleportDelay(player_request);
 		String delay_format = this.plugin.getEverAPI().getManagerUtils().getDate().formatDate(System.currentTimeMillis() + delay);
 		final Transform<World> location = player.getTransform();
@@ -195,7 +193,7 @@ public class EETeleportationAccept extends ECommand<EverEssentials> {
 				.prefix(EEMessages.PREFIX)
 				.replace("<world>", location.getExtent().getName())
 				.sendTo(player_request);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		if (delay > 0) {
@@ -210,10 +208,10 @@ public class EETeleportationAccept extends ECommand<EverEssentials> {
 		}
 		
 		player_request.setTeleport(delay, () -> this.teleportAsk(player_request, player, location), player_request.hasPermission(EEPermissions.TELEPORT_BYPASS_MOVE.get()));
-		return false;
+		return CompletableFuture.completedFuture(false);
 	}
 	
-	private boolean commandTeleportationAcceptAskHere(final EPlayer player, final EPlayer player_request, final TeleportRequest teleport) {
+	private CompletableFuture<Boolean> commandTeleportationAcceptAskHere(final EPlayer player, final EPlayer player_request, final TeleportRequest teleport) {
 		long delay = this.plugin.getConfigs().getTeleportDelay(player);
 		String delay_format = this.plugin.getEverAPI().getManagerUtils().getDate().formatDate(System.currentTimeMillis() + delay);
 		final Transform<World> location = teleport.getLocation().orElse(player_request.getTransform());
@@ -223,7 +221,7 @@ public class EETeleportationAccept extends ECommand<EverEssentials> {
 				.prefix(EEMessages.PREFIX)
 				.replace("<world>", location.getExtent().getName())
 				.sendTo(player_request);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		if (delay > 0) {
@@ -238,7 +236,7 @@ public class EETeleportationAccept extends ECommand<EverEssentials> {
 		}
 		
 		player.setTeleport(delay, () -> this.teleportAskHere(player_request, player, location), player_request.hasPermission(EEPermissions.TELEPORT_BYPASS_MOVE.get()));
-		return false;
+		return CompletableFuture.completedFuture(false);
 	}
 	
 	private void teleportAsk(final EPlayer player_request, final EPlayer player, final Transform<World> teleport) {

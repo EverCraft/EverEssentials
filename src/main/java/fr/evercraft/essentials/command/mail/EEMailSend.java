@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
@@ -52,7 +53,7 @@ public class EEMailSend extends ESubCommand<EverEssentials> {
 	}
 	
 	@Override
-	public Collection<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
+	public Collection<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		if (args.size() == 1) {
 			return this.getAllUsers(args.get(0), source);
 		} else if (args.size() == 2) {
@@ -70,10 +71,7 @@ public class EEMailSend extends ESubCommand<EverEssentials> {
 	}
 	
 	@Override
-	public boolean subExecute(final CommandSource source, final List<String> args) {
-		// Résultat de la commande :
-		boolean resultat = false;
-		
+	public CompletableFuture<Boolean> execute(final CommandSource source, final List<String> args) {
 		if (args.size() == 2){
 			// Si il a la permission
 			if (source.hasPermission(EEPermissions.MAIL_SEND.get())) {
@@ -81,7 +79,7 @@ public class EEMailSend extends ESubCommand<EverEssentials> {
 					
 					// Si il a la permission
 					if (source.hasPermission(EEPermissions.MAIL_SENDALL.get())){
-						resultat = this.commandSendAll(source, args.get(1));
+						return this.commandSendAll(source, args.get(1));
 					// Il n'a pas la permission
 					} else {
 						EAMessages.NO_PERMISSION.sender()
@@ -94,7 +92,7 @@ public class EEMailSend extends ESubCommand<EverEssentials> {
 					Optional<EUser> user = this.plugin.getEServer().getEUser(args.get(0));
 					// Le joueur existe
 					if (user.isPresent()){
-						resultat = this.commandSend(source, user.get(), args.get(1));
+						return this.commandSend(source, user.get(), args.get(1));
 					// Le joueur est introuvable
 					} else {
 						EAMessages.PLAYER_NOT_FOUND.sender()
@@ -113,16 +111,16 @@ public class EEMailSend extends ESubCommand<EverEssentials> {
 			source.sendMessage(this.help(source));
 		}
 		
-		return resultat;
+		return CompletableFuture.completedFuture(false);
 	}
 
-	private boolean commandSend(CommandSource staff, EUser user, String message) {
+	private CompletableFuture<Boolean> commandSend(CommandSource staff, EUser user, String message) {
 		// Le staff ignore le joueur
 		if (staff instanceof EPlayer && ((EPlayer) staff).ignore(user)) {
 			EEMessages.MAIL_SEND_IGNORE_PLAYER.sender()
 				.replace("<player>", user.getName())
 				.sendTo(staff);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		// Le joueur vous ignore
@@ -130,7 +128,7 @@ public class EEMailSend extends ESubCommand<EverEssentials> {
 			EEMessages.MAIL_SEND_IGNORE_RECEIVE.sender()
 				.replace("<player>", user.getName())
 				.sendTo(staff);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		// Event cancel
@@ -138,7 +136,7 @@ public class EEMailSend extends ESubCommand<EverEssentials> {
 			EEMessages.MAIL_SEND_CANCEL.sender()
 				.replace("<player>", user.getName())
 				.sendTo(staff);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		if (!staff.getIdentifier().equals(user.getIdentifier())) {
@@ -150,12 +148,12 @@ public class EEMailSend extends ESubCommand<EverEssentials> {
 				.replace("<player>", user.getName())
 				.sendTo(staff);
 		}
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 	
-	private boolean commandSendAll(CommandSource player, String message) {
+	private CompletableFuture<Boolean> commandSendAll(CommandSource player, String message) {
 		this.plugin.getThreadAsync().execute(() -> this.plugin.getDataBases().sendAllMail(player.getIdentifier(), message));
 		EEMessages.MAIL_SEND_ALL.sendTo(player);
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 }

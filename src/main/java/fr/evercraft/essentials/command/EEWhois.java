@@ -24,6 +24,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+
 import org.apache.commons.lang3.StringUtils;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
@@ -85,16 +87,13 @@ public class EEWhois extends ECommand<EverEssentials> {
 	}
 	
 	@Override
-	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
-		// Résultat de la commande :
-		boolean resultat = false;
-		
+	public CompletableFuture<Boolean> execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Nom du home inconnu
 		if (args.size() == 0) {
 			
 			// Si la source est un joueur
 			if (source instanceof EPlayer) {
-				resultat = this.commandWhoisPlayer(source, (EPlayer) source);
+				return this.commandWhoisPlayer(source, (EPlayer) source);
 			// La source n'est pas un joueur
 			} else {
 				EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()
@@ -111,9 +110,9 @@ public class EEWhois extends ECommand<EverEssentials> {
 				// Le joueur existe
 				if (user.isPresent()) {
 					if(user.get() instanceof EPlayer) {
-						resultat = this.commandWhoisPlayer(source, (EPlayer) user.get());
+						return this.commandWhoisPlayer(source, (EPlayer) user.get());
 					} else {
-						resultat = this.commandWhoisPlayer(source, user.get());
+						return this.commandWhoisPlayer(source, user.get());
 					}
 				// Joueur introuvable
 				} else {
@@ -133,10 +132,10 @@ public class EEWhois extends ECommand<EverEssentials> {
 			source.sendMessage(this.help(source));
 		}
 		
-		return resultat;
+		return CompletableFuture.completedFuture(false);
 	}
 	
-	private boolean commandWhoisPlayer(final CommandSource staff, final EPlayer player) {
+	private CompletableFuture<Boolean> commandWhoisPlayer(final CommandSource staff, final EPlayer player) {
 		List<Text> lists = new ArrayList<Text>();
 
 		lists.add(this.getUUID(player));
@@ -182,10 +181,10 @@ public class EEWhois extends ECommand<EverEssentials> {
 					.onClick(TextActions.runCommand("/whois \"" + player.getName() + "\""))
 					.build(), 
 				lists, staff);
-		return false;
+		return CompletableFuture.completedFuture(true);
 	}
 	
-	private boolean commandWhoisPlayer(final CommandSource staff, final EUser user) {
+	private CompletableFuture<Boolean> commandWhoisPlayer(final CommandSource staff, final EUser user) {
 		List<Text> lists = new ArrayList<Text>();
 
 		lists.add(this.getUUID(user));
@@ -217,7 +216,7 @@ public class EEWhois extends ECommand<EverEssentials> {
 					.onClick(TextActions.runCommand("/whois \"" + user.getName() + "\""))
 					.build(), 
 				lists, staff);
-		return false;
+		return CompletableFuture.completedFuture(true);
 	}
 	
 	private Text getUUID(final EUser player){

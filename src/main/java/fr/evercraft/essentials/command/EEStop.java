@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import java.util.regex.Pattern;
 
 import org.spongepowered.api.command.CommandException;
@@ -75,20 +76,15 @@ public class EEStop extends ECommand<EverEssentials> {
 	}
 	
 	@Override
-	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
-		// Résultat de la commande :
-		boolean resultat = false;
-		
+	public CompletableFuture<Boolean> execute(final CommandSource source, final List<String> args) throws CommandException {
 		if (args.size() == 0) {
-			resultat = this.commandStop(source);
+			return this.commandStop(source);
 		} else {
-			resultat = this.commandStop(source, args.get(0));
+			return this.commandStop(source, args.get(0));
 		}
-		
-		return resultat;
 	}
 
-	private boolean commandStop(final CommandSource player) {
+	private CompletableFuture<Boolean> commandStop(final CommandSource player) {
 		Map<Pattern, EReplace<?>> replaces = new HashMap<Pattern, EReplace<?>>();
 		replaces.putAll(this.plugin.getChat().getReplaceServer());
 		replaces.put(Pattern.compile("<staff>"), EReplace.of(player.getName()));
@@ -99,10 +95,10 @@ public class EEStop extends ECommand<EverEssentials> {
 		} else {
 			this.plugin.getGame().getServer().shutdown(EEMessages.STOP_MESSAGE.getFormat().toText(replaces));
 		}
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 	
-	private boolean commandStop(final CommandSource player, String message) {
+	private CompletableFuture<Boolean> commandStop(final CommandSource player, String message) {
 		Map<Pattern, EReplace<?>> replaces = new HashMap<Pattern, EReplace<?>>();
 		replaces.putAll(this.plugin.getChat().getReplaceServer());
 		replaces.put(Pattern.compile("<staff>"), EReplace.of(player.getName()));
@@ -114,6 +110,6 @@ public class EEStop extends ECommand<EverEssentials> {
 		} else {
 			this.plugin.getGame().getServer().shutdown(EEMessages.STOP_MESSAGE_REASON.getFormat().toText(replaces));
 		}		
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 }

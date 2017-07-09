@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
@@ -73,24 +74,21 @@ public class EEWarpDel extends ECommand<EverEssentials> {
 	}
 	
 	@Override
-	public boolean execute(final CommandSource source, final List<String> args) throws CommandException, ServerDisableException {
-		// Résultat de la commande :
-		boolean resultat = false;
-		
+	public CompletableFuture<Boolean> execute(final CommandSource source, final List<String> args) throws CommandException, ServerDisableException {
 		// Si on ne connait pas le joueur
 		if (args.size() == 1) {
-			resultat = this.commandDeleteWarp((EPlayer) source, args.get(0));
+			return this.commandDeleteWarp((EPlayer) source, args.get(0));
 		} else if (args.size() == 2 && args.get(1).equalsIgnoreCase("confirmation")) {
-			resultat = this.commandDeleteWarpConfirmation((EPlayer) source, args.get(0));
+			return this.commandDeleteWarpConfirmation((EPlayer) source, args.get(0));
 		// Nombre d'argument incorrect
 		} else {
 			source.sendMessage(this.help(source));
 		}
 		
-		return resultat;
+		return CompletableFuture.completedFuture(false);
 	}
 	
-	private boolean commandDeleteWarp(final EPlayer player, final String warp_name) {
+	private CompletableFuture<Boolean> commandDeleteWarp(final EPlayer player, final String warp_name) {
 		String name = EChat.fixLength(warp_name, this.plugin.getEverAPI().getConfigs().getMaxCaractere());
 		
 		Optional<Transform<World>> warp = this.plugin.getManagerServices().getWarp().get(name);
@@ -99,17 +97,17 @@ public class EEWarpDel extends ECommand<EverEssentials> {
 			EEMessages.DELWARP_INCONNU.sender()
 				.replace("<warp>", name)
 				.sendTo(player);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		EEMessages.DELWARP_CONFIRMATION.sender()
 			.replace("<warp>", () -> this.getButtonWarp(name, warp.get()))
 			.replace("<confirmation>", () -> this.getButtonConfirmation(name))
 			.sendTo(player);
-		return false;
+		return CompletableFuture.completedFuture(false);
 	}
 	
-	private boolean commandDeleteWarpConfirmation(final EPlayer player, final String warp_name) throws ServerDisableException {
+	private CompletableFuture<Boolean> commandDeleteWarpConfirmation(final EPlayer player, final String warp_name) throws ServerDisableException {
 		String name = EChat.fixLength(warp_name, this.plugin.getEverAPI().getConfigs().getMaxCaractere());
 		
 		Optional<Transform<World>> warp = this.plugin.getManagerServices().getWarp().get(name);
@@ -118,7 +116,7 @@ public class EEWarpDel extends ECommand<EverEssentials> {
 			EEMessages.DELWARP_INCONNU.sender()
 				.replace("<warp>", name)
 				.sendTo(player);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		// Le warp n'a pas été supprimer
@@ -126,13 +124,13 @@ public class EEWarpDel extends ECommand<EverEssentials> {
 			EEMessages.DELWARP_CANCEL.sender()
 				.replace("<warp>", name)
 				.sendTo(player);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		EEMessages.DELWARP_DELETE.sender()
 			.replace("<warp>", () -> this.getButtonWarp(name, warp.get()))
 			.sendTo(player);
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 	
 	private Text getButtonWarp(final String name, final Transform<World> location){

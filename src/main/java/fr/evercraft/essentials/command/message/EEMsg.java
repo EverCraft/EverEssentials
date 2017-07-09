@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import java.util.regex.Pattern;
 
 import org.spongepowered.api.command.CommandException;
@@ -94,10 +95,7 @@ public class EEMsg extends ECommand<EverEssentials> {
 	}
 	
 	@Override
-	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
-		// Résultat de la commande :
-		boolean resultat = false;
-		
+	public CompletableFuture<Boolean> execute(final CommandSource source, final List<String> args) throws CommandException {
 		if (args.size() == 2) {
 			String message = EEMsg.replaceMessage(this.plugin.getChat(), source, args.get(1));
 			
@@ -106,13 +104,13 @@ public class EEMsg extends ECommand<EverEssentials> {
 				
 				// La source est un joueur
 				if (source instanceof EPlayer) {
-					resultat = this.commandMsgConsole((EPlayer) source, this.plugin.getEServer().getConsole(), message);
+					return this.commandMsgConsole((EPlayer) source, this.plugin.getEServer().getConsole(), message);
 				// La source est la console
 				} else if (source instanceof ConsoleSource) {
 					EEMessages.MSG_CONSOLE_ERROR.sendTo(source);
 				// La source est un commande block
 				} else if (source instanceof CommandBlockSource) {
-					resultat = this.commandMsgCommandBlock(source, this.plugin.getEServer().getConsole(), message);
+					return this.commandMsgCommandBlock(source, this.plugin.getEServer().getConsole(), message);
 				// La source est inconnue
 				} else {
 					EAMessages.PLAYER_NOT_FOUND.sender()
@@ -128,13 +126,13 @@ public class EEMsg extends ECommand<EverEssentials> {
 				if (optPlayer.isPresent()) {
 					// La source est un joueur
 					if (source instanceof EPlayer) {
-						resultat = this.commandMsgPlayer((EPlayer) source, optPlayer.get(), message);
+						return this.commandMsgPlayer((EPlayer) source, optPlayer.get(), message);
 					// La source est la console
 					} else if (source instanceof ConsoleSource) {
-						resultat = this.commandMsgConsole(source, optPlayer.get(), message);
+						return this.commandMsgConsole(source, optPlayer.get(), message);
 					// La source est un commande block
 					} else if (source instanceof CommandBlockSource) {
-						resultat = this.commandMsgCommandBlock(source, optPlayer.get(), message);
+						return this.commandMsgCommandBlock(source, optPlayer.get(), message);
 					// La source est inconnue
 					} else {
 						EAMessages.COMMAND_ERROR.sender()
@@ -153,19 +151,19 @@ public class EEMsg extends ECommand<EverEssentials> {
 			source.sendMessage(this.help(source));
 		}
 		
-		return resultat;
+		return CompletableFuture.completedFuture(false);
 	}
 	
 	/*
 	 * Un joueur parle à un autre joueur
 	 */
-	private boolean commandMsgPlayer(final EPlayer player, final EPlayer receive, final String message) {
+	private CompletableFuture<Boolean> commandMsgPlayer(final EPlayer player, final EPlayer receive, final String message) {
 		if (receive.ignore(player)) {
 			EEMessages.MSG_IGNORE_RECEIVE.sender()
 				.replace("<message>", message)
 				.replace("<player>", receive.getName())
 				.sendTo(player);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		if (player.ignore(receive)) {
@@ -173,7 +171,7 @@ public class EEMsg extends ECommand<EverEssentials> {
 				.replace("<message>", message)
 				.replace("<player>", receive.getName())
 				.sendTo(player);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		Map<Pattern, EReplace<?>> replaces = new HashMap<Pattern, EReplace<?>>();
@@ -199,13 +197,13 @@ public class EEMsg extends ECommand<EverEssentials> {
 		}
 		receive.setReplyTo(player.getIdentifier());
 		player.setReplyTo(receive.getIdentifier());
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 	
 	/*
 	 * La console envoye un message à joueur
 	 */
-	private boolean commandMsgConsole(final CommandSource player, final EPlayer receive, final String message) {
+	private CompletableFuture<Boolean> commandMsgConsole(final CommandSource player, final EPlayer receive, final String message) {
 		Map<Pattern, EReplace<?>> replaces = new HashMap<Pattern, EReplace<?>>();
 		replaces.put(Pattern.compile("<message>"), EReplace.of(message));
 		
@@ -224,13 +222,13 @@ public class EEMsg extends ECommand<EverEssentials> {
 		
 		receive.setReplyTo(player.getIdentifier());
 		this.plugin.getManagerServices().getEssentials().getConsole().setReplyTo(receive.getIdentifier());
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 	
 	/*
 	 * Un joueur envoye un message à la console
 	 */
-	private boolean commandMsgConsole(final EPlayer player, final CommandSource receive, final String message) {
+	private CompletableFuture<Boolean> commandMsgConsole(final EPlayer player, final CommandSource receive, final String message) {
 		Map<Pattern, EReplace<?>> replaces = new HashMap<Pattern, EReplace<?>>();
 		replaces.put(Pattern.compile("<message>"), EReplace.of(message));
 		
@@ -249,27 +247,27 @@ public class EEMsg extends ECommand<EverEssentials> {
 		
 		player.setReplyTo(EEMsg.CONSOLE);
 		this.plugin.getManagerServices().getEssentials().getConsole().setReplyTo(player.getIdentifier());
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 	
 	/*
 	 * Un commande block envoye un message à un joueur
 	 */
-	private boolean commandMsgCommandBlock(final CommandSource player, final EPlayer receive, final String message) {
+	private CompletableFuture<Boolean> commandMsgCommandBlock(final CommandSource player, final EPlayer receive, final String message) {
 		EEMessages.MSG_COMMANDBLOCK_RECEIVE.sender()
 			.replace("<message>", message)
 			.sendTo(receive);
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 	
 	/*
 	 * Un commande block envoye un message la console
 	 */
-	private boolean commandMsgCommandBlock(final CommandSource player, final CommandSource receive, final String message) {
+	private CompletableFuture<Boolean> commandMsgCommandBlock(final CommandSource player, final CommandSource receive, final String message) {
 		EEMessages.MSG_COMMANDBLOCK_RECEIVE.sender()
 			.replace("<message>", message)
 			.sendTo(receive);
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 	
 	public static String replaceMessage(final EChat chat, final Subject player, String message) {

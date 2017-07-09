@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
@@ -73,21 +74,18 @@ public class EEHat extends ECommand<EverEssentials> {
 	}
 	
 	@Override
-	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
-		// Résultat de la commande :
-		boolean resultat = false;
-		
+	public CompletableFuture<Boolean> execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Si la source est un joueur
 		if (source instanceof EPlayer) {
 			// Nom du home inconnu
 			if (args.size() == 0) {
 				
-				resultat = this.commandHat((EPlayer) source);
+				return this.commandHat((EPlayer) source);
 				
 			} else if (args.size() == 1) {
 				
 				if (args.get(0).equalsIgnoreCase("remove")) {	
-					resultat = this.commandHatRemove((EPlayer) source);
+					return this.commandHatRemove((EPlayer) source);
 				} else {
 					source.sendMessage(this.help(source));
 				}
@@ -103,16 +101,16 @@ public class EEHat extends ECommand<EverEssentials> {
 				.sendTo(source);
 		}
 		
-		return resultat;
+		return CompletableFuture.completedFuture(false);
 	}
 	
-	private boolean commandHat(final EPlayer player) {
+	private CompletableFuture<Boolean> commandHat(final EPlayer player) {
 		Optional<ItemStack> item = player.getItemInMainHand();
 		
 		// Le jouer n'a pas d'objet dans la main
 		if (!item.isPresent()) {
 			EAMessages.EMPTY_ITEM_IN_HAND.sendTo(player);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		Optional<ItemStack> helmet = player.getHelmet();
@@ -122,7 +120,7 @@ public class EEHat extends ECommand<EverEssentials> {
 			EEMessages.HAT_NO_EMPTY.sender()
 				.replace("<item>", EChat.getButtomItem(player.getHelmet().get(), EEMessages.HAT_ITEM_COLOR.getColor()))
 				.sendTo(player);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 			
 		// Le joueur a un item sur la tête
@@ -144,16 +142,16 @@ public class EEHat extends ECommand<EverEssentials> {
         EEMessages.HAT_IS_HAT.sender()
 			.replace("<item>", EChat.getButtomItem(item.get(), EEMessages.HAT_ITEM_COLOR.getColor()))
 			.sendTo(player);
-        return true;
+        return CompletableFuture.completedFuture(true);
 	}
 	
-	private boolean commandHatRemove(final EPlayer player) {
+	private CompletableFuture<Boolean> commandHatRemove(final EPlayer player) {
 		Optional<ItemStack> helmet = player.getHelmet();
 		
 		// Le joueur n'a pas d'objet sur la tête
 		if (!helmet.isPresent() || UtilsItemType.isHelmet(helmet.get().getItem().getType())) {
 			EEMessages.HAT_REMOVE_EMPTY.sendTo(player);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		player.setHelmet(null);
@@ -162,6 +160,6 @@ public class EEHat extends ECommand<EverEssentials> {
 		EEMessages.HAT_REMOVE.sender()
 			.replace("<item>", EChat.getButtomItem(helmet.get(), EEMessages.HAT_ITEM_COLOR.getColor()))
 			.sendTo(player);
-		return false;
+		return CompletableFuture.completedFuture(true);
 	}
 }

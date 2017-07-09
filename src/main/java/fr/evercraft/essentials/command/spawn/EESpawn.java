@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.concurrent.CompletableFuture;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
@@ -37,11 +38,12 @@ import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
-import fr.evercraft.everapi.plugin.command.EReloadCommand;
+import fr.evercraft.everapi.plugin.command.ECommand;
+import fr.evercraft.everapi.plugin.command.ReloadCommand;
 import fr.evercraft.everapi.server.player.EPlayer;
 import fr.evercraft.everapi.services.essentials.SpawnService;
 
-public class EESpawn extends EReloadCommand<EverEssentials> {
+public class EESpawn extends ECommand<EverEssentials> implements ReloadCommand {
 	
 	public String newbies;
 	
@@ -95,16 +97,13 @@ public class EESpawn extends EReloadCommand<EverEssentials> {
 	}
 	
 	@Override
-	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
-		// Résultat de la commande :
-		boolean resultat = false;
-		
+	public CompletableFuture<Boolean> execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Groupe inconnu
 		if (args.size() == 0) {
 			
 			// Si la source est un joueur
 			if (source instanceof EPlayer) {
-				resultat = this.commandSpawn((EPlayer) source);
+				return this.commandSpawn((EPlayer) source);
 			// La source n'est pas un joueur
 			} else {
 				EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()
@@ -122,16 +121,16 @@ public class EESpawn extends EReloadCommand<EverEssentials> {
 					
 					// Spawn par défaut
 					if (args.get(0).equalsIgnoreCase(SpawnService.DEFAULT)) {
-						resultat = this.commandSpawn((EPlayer) source, this.plugin.getManagerServices().getSpawn().getDefault(), SpawnService.DEFAULT);
+						return this.commandSpawn((EPlayer) source, this.plugin.getManagerServices().getSpawn().getDefault(), SpawnService.DEFAULT);
 					// Spawn Newbie
 					} else if (args.get(0).equalsIgnoreCase(this.newbies)) {
-						resultat = this.commandSpawn((EPlayer) source, this.newbies);
+						return this.commandSpawn((EPlayer) source, this.newbies);
 					// Pas le spawn par défaut
 					} else {
 						Subject group = this.plugin.getEverAPI().getManagerService().getPermission().getGroupSubjects().get(args.get(0));
 						// Groupe existant
 						if (group != null) {
-							resultat = this.commandSpawn((EPlayer) source, group.getIdentifier());
+							return this.commandSpawn((EPlayer) source, group.getIdentifier());
 						// Groupe inexistant
 						} else {
 							EEMessages.SPAWN_ERROR_GROUP.sender()
@@ -158,10 +157,10 @@ public class EESpawn extends EReloadCommand<EverEssentials> {
 			source.sendMessage(this.help(source));
 		}
 		
-		return resultat;
+		return CompletableFuture.completedFuture(false);
 	}
 	
-	private boolean commandSpawn(final EPlayer player) throws CommandException {
+	private CompletableFuture<Boolean> commandSpawn(final EPlayer player) throws CommandException {
 		final Transform<World> spawn = player.getSpawn();
 		long delay = this.plugin.getConfigs().getTeleportDelay(player);
 		
@@ -172,10 +171,10 @@ public class EESpawn extends EReloadCommand<EverEssentials> {
 		}
 		
 		player.setTeleport(delay, () -> this.teleport(player, spawn), player.hasPermission(EEPermissions.TELEPORT_BYPASS_MOVE.get()));
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 	
-	private boolean commandSpawn(final EPlayer player, final String group) throws CommandException {
+	private CompletableFuture<Boolean> commandSpawn(final EPlayer player, final String group) throws CommandException {
 		Optional<Transform<World>> spawn = this.plugin.getManagerServices().getSpawn().get(group);
 		
 		if (spawn.isPresent()) {
@@ -186,10 +185,10 @@ public class EESpawn extends EReloadCommand<EverEssentials> {
 				.sendTo(player);
 		}
 		
-		return false;
+		return CompletableFuture.completedFuture(false);
 	}
 	
-	private boolean commandSpawn(final EPlayer player, final Transform<World> spawn, final String name) throws CommandException {
+	private CompletableFuture<Boolean> commandSpawn(final EPlayer player, final Transform<World> spawn, final String name) throws CommandException {
 		long delay = this.plugin.getConfigs().getTeleportDelay(player);
 		
 		if (delay > 0) {
@@ -199,7 +198,7 @@ public class EESpawn extends EReloadCommand<EverEssentials> {
 		}
 		
 		player.setTeleport(delay, () -> this.teleport(player, spawn, name), player.hasPermission(EEPermissions.TELEPORT_BYPASS_MOVE.get()));
-		return false;
+		return CompletableFuture.completedFuture(false);
 	}
 	
 	private void teleport(final EPlayer player, final Transform<World> location) {

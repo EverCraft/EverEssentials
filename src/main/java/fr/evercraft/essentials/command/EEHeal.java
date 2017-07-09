@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
@@ -73,16 +74,13 @@ public class EEHeal extends ECommand<EverEssentials> {
 	}
 	
 	@Override
-	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
-		// Résultat de la commande :
-		boolean resultat = false;
-		
+	public CompletableFuture<Boolean> execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Si on ne connait pas le joueur
 		if (args.size() == 0) {
 			
 			// Si la source est un joueur
 			if (source instanceof EPlayer) {
-				resultat = this.commandHeal((EPlayer) source);
+				return this.commandHeal((EPlayer) source);
 			// La source n'est pas un joueur
 			} else {
 				EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()
@@ -97,13 +95,13 @@ public class EEHeal extends ECommand<EverEssentials> {
 			if (source.hasPermission(EEPermissions.HEAL_OTHERS.get())){
 				// Pour tous les joueurs
 				if (args.get(0).equals("*")) {
-					resultat = this.commandHealAll(source);
+					return this.commandHealAll(source);
 				// Pour un joueur
 				} else {
 					Optional<EPlayer> player = this.plugin.getEServer().getEPlayer(args.get(0));
 					// Le joueur existe
 					if (player.isPresent()){
-						resultat = this.commandHealOthers(source, player.get());
+						return this.commandHealOthers(source, player.get());
 					// Le joueur est introuvable
 					} else {
 						EAMessages.PLAYER_NOT_FOUND.sender()
@@ -123,16 +121,16 @@ public class EEHeal extends ECommand<EverEssentials> {
 			source.sendMessage(this.help(source));
 		}
 		
-		return resultat;
+		return CompletableFuture.completedFuture(false);
 	}
 	
-	private boolean commandHeal(final EPlayer player) {
+	private CompletableFuture<Boolean> commandHeal(final EPlayer player) {
 		player.heal();
 		EEMessages.HEAL_PLAYER.sendTo(player);
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 	
-	private boolean commandHealOthers(final CommandSource staff, final EPlayer player) throws CommandException {
+	private CompletableFuture<Boolean> commandHealOthers(final CommandSource staff, final EPlayer player) throws CommandException {
 		// La source et le joueur sont identique
 		if (player.equals(staff)) {
 			return this.commandHeal(player);
@@ -141,7 +139,7 @@ public class EEHeal extends ECommand<EverEssentials> {
 		// Le joueur est mort
 		if (player.isDead()) {
 			EEMessages.HEAL_OTHERS_DEAD_STAFF.sendTo(staff);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		player.heal();
@@ -152,10 +150,10 @@ public class EEHeal extends ECommand<EverEssentials> {
 		EEMessages.HEAL_OTHERS_PLAYER.sender()
 			.replace("<staff>", staff.getName())
 			.sendTo(player);
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 	
-	private boolean commandHealAll(final CommandSource staff) {
+	private CompletableFuture<Boolean> commandHealAll(final CommandSource staff) {
 		// Pour tous les joueurs connecté
 		this.plugin.getEServer().getOnlineEPlayers().forEach(player -> {
 			// Si le joueur n'est pas mort
@@ -172,6 +170,6 @@ public class EEHeal extends ECommand<EverEssentials> {
 		});
 		
 		EEMessages.HEAL_ALL_STAFF.sendTo(staff);
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 }

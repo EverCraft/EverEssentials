@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
@@ -67,7 +68,7 @@ public class EEGodStatus extends ESubCommand<EverEssentials> {
 	}
 	
 	@Override
-	public Collection<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
+	public Collection<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		if (args.size() == 1 && source.hasPermission(EEPermissions.GOD_OTHERS.get())){
 			return this.getAllUsers(args.get(0), source);
 		}
@@ -75,13 +76,10 @@ public class EEGodStatus extends ESubCommand<EverEssentials> {
 	}
 	
 	@Override
-	public boolean subExecute(final CommandSource source, final List<String> args) throws CommandException {
-		// Résultat de la commande :
-		boolean resultat = false;
-		
+	public CompletableFuture<Boolean> execute(final CommandSource source, final List<String> args) throws CommandException {
 		if (args.size() == 0) {
 			if (source instanceof EPlayer) {
-				resultat = this.commandGodStatus((EPlayer) source);
+				return this.commandGodStatus((EPlayer) source);
 			} else {
 				EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()
 					.prefix(EEMessages.PREFIX)
@@ -93,7 +91,7 @@ public class EEGodStatus extends ESubCommand<EverEssentials> {
 				Optional<EUser> user = this.plugin.getEServer().getEUser(args.get(0));
 				// Le joueur existe
 				if (user.isPresent()){
-					resultat = this.commandGodStatusOthers(source, user.get());
+					return this.commandGodStatusOthers(source, user.get());
 				// Le joueur est introuvable
 				} else {
 					EAMessages.PLAYER_NOT_FOUND.sender()
@@ -110,10 +108,10 @@ public class EEGodStatus extends ESubCommand<EverEssentials> {
 			source.sendMessage(this.help(source));
 		}
 		
-		return resultat;
+		return CompletableFuture.completedFuture(false);
 	}
 
-	private boolean commandGodStatus(final EPlayer player) {
+	private CompletableFuture<Boolean> commandGodStatus(final EPlayer player) {
 		// Si le god mode est déjà activé
 		if (player.isGod()) {
 			EEMessages.GOD_STATUS_PLAYER_ON.sender()
@@ -125,10 +123,10 @@ public class EEGodStatus extends ESubCommand<EverEssentials> {
 				.replace("<player>", player.getDisplayName())
 				.sendTo(player);
 		}
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 	
-	private boolean commandGodStatusOthers(final CommandSource staff, final EUser user) {
+	private CompletableFuture<Boolean> commandGodStatusOthers(final CommandSource staff, final EUser user) {
 		if (staff instanceof EPlayer && user.getIdentifier().equals(staff.getIdentifier())) {
 			return this.commandGodStatus((EPlayer) staff);
 		} else {
@@ -144,6 +142,6 @@ public class EEGodStatus extends ESubCommand<EverEssentials> {
 					.sendTo(staff);
 			}
 		}
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 }

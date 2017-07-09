@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import java.util.regex.Pattern;
 
 import org.spongepowered.api.command.CommandException;
@@ -93,10 +94,7 @@ public class EESudo extends ECommand<EverEssentials> {
 	}
 	
 	@Override
-	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
-		// Résultat de la commande :
-		boolean resultat = false;
-		
+	public CompletableFuture<Boolean> execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Si on ne connait pas le joueur
 		if (args.size() == 2) {
 			
@@ -104,7 +102,7 @@ public class EESudo extends ECommand<EverEssentials> {
 				Optional<EPlayer> player = this.plugin.getEServer().getEPlayer(args.get(0));
 				// Le joueur existe
 				if (player.isPresent()){
-					resultat = this.commandSudo(source, player.get(), args.get(1));
+					return this.commandSudo(source, player.get(), args.get(1));
 				// Le joueur est introuvable
 				} else {
 					EAMessages.PLAYER_NOT_FOUND.sender()
@@ -114,7 +112,7 @@ public class EESudo extends ECommand<EverEssentials> {
 			} else {
 				// Si il a la permission
 				if (source.hasPermission(EEPermissions.SUDO_CONSOLE.get())){
-					resultat = this.commandSudoConsole(source, args.get(1));
+					return this.commandSudoConsole(source, args.get(1));
 				// Il n'a pas la permission
 				} else {
 					EAMessages.NO_PERMISSION.sender()
@@ -128,16 +126,16 @@ public class EESudo extends ECommand<EverEssentials> {
 			source.sendMessage(help(source));
 		}
 		
-		return resultat;
+		return CompletableFuture.completedFuture(false);
 	}
 	
-	private boolean commandSudo(final CommandSource staff, final EPlayer player, final String command) {
+	private CompletableFuture<Boolean> commandSudo(final CommandSource staff, final EPlayer player, final String command) {
 		// Le joueur a la permission bypass
 		if (player.hasPermission(EEPermissions.SUDO_BYPASS.get())) {
 			EEMessages.SUDO_BYPASS.sender()
 				.replace("<player>", player.getName())
 				.sendTo(staff);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 			
 		this.plugin.getGame().getCommandManager().process(player.get(), command);
@@ -145,15 +143,15 @@ public class EESudo extends ECommand<EverEssentials> {
 			.replace("<player>", player.getName())
 			.replace("<command>", this.getButtonCommand(command))
 			.sendTo(staff);
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 	
-	private boolean commandSudoConsole(final CommandSource staff, final String command) {			
+	private CompletableFuture<Boolean> commandSudoConsole(final CommandSource staff, final String command) {			
 		this.plugin.getGame().getCommandManager().process(this.plugin.getGame().getServer().getConsole(), command);
 		EEMessages.SUDO_CONSOLE.sender()
 			.replace("<command>", this.getButtonCommand(command))
 			.sendTo(staff);
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 	
 	private Text getButtonCommand(final String command){

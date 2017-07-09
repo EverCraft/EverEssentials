@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
@@ -33,10 +34,11 @@ import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
-import fr.evercraft.everapi.plugin.command.EReloadCommand;
+import fr.evercraft.everapi.plugin.command.ECommand;
+import fr.evercraft.everapi.plugin.command.ReloadCommand;
 import fr.evercraft.everapi.server.player.EPlayer;
 
-public class EEGenerate extends EReloadCommand<EverEssentials> {
+public class EEGenerate extends ECommand<EverEssentials> implements ReloadCommand {
 	
 	private float tickPercentLimit;
 	private int tickInterval;
@@ -89,15 +91,12 @@ public class EEGenerate extends EReloadCommand<EverEssentials> {
 	}
 	
 	@Override
-	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
-		// Résultat de la commande :
-		boolean resultat = false;
-		
+	public CompletableFuture<Boolean> execute(final CommandSource source, final List<String> args) throws CommandException {
 		if (args.size() == 0) {
 			
 			if (source instanceof EPlayer) {
 				EPlayer player = (EPlayer) source;
-				resultat = this.commandGenerate(player, player.getWorld());
+				return this.commandGenerate(player, player.getWorld());
 			} else {
 				EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()
 					.prefix(EEMessages.PREFIX)
@@ -108,7 +107,7 @@ public class EEGenerate extends EReloadCommand<EverEssentials> {
 			
 			Optional<World> world = this.plugin.getEServer().getEWorld(args.get(0));
 			if (world.isPresent()) {
-				resultat = this.commandGenerate(source, world.get());
+				return this.commandGenerate(source, world.get());
 			} else {
 				EAMessages.WORLD_NOT_FOUND.sender()
 					.prefix(EEMessages.PREFIX)
@@ -120,7 +119,7 @@ public class EEGenerate extends EReloadCommand<EverEssentials> {
 			
 			Optional<World> world = this.plugin.getEServer().getEWorld(args.get(0));
 			if (world.isPresent()) {
-				resultat = this.commandGenerateConfirmation(source, world.get());
+				return this.commandGenerateConfirmation(source, world.get());
 			} else {
 				EAMessages.WORLD_NOT_FOUND.sender()
 					.prefix(EEMessages.PREFIX)
@@ -132,10 +131,10 @@ public class EEGenerate extends EReloadCommand<EverEssentials> {
 			source.sendMessage(this.help(source));
 		}
 		
-		return resultat;
+		return CompletableFuture.completedFuture(false);
 	}
 	
-	private boolean commandGenerate(final CommandSource player, final World world) {
+	private CompletableFuture<Boolean> commandGenerate(final CommandSource player, final World world) {
 		int chunk = (int) Math.round(Math.pow((world.getWorldBorder().getDiameter() / 16), 2)); 
 		
 		EEMessages.GENERATE_WARNING.sender()
@@ -143,10 +142,10 @@ public class EEGenerate extends EReloadCommand<EverEssentials> {
 			.replace("<chunk>", String.valueOf(chunk))
 			.replace("<confirmation>", this.getButtonConfirmation(world))
 			.sendTo(player);
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 
-	private boolean commandGenerateConfirmation(final CommandSource player, World world) {
+	private CompletableFuture<Boolean> commandGenerateConfirmation(final CommandSource player, World world) {
 		world.getWorldBorder()
 			.newChunkPreGenerate(world)
 			.logger(this.plugin.getELogger().getLogger())
@@ -159,7 +158,7 @@ public class EEGenerate extends EReloadCommand<EverEssentials> {
 		EEMessages.GENERATE_LAUNCH.sender()
 			.replace("<world>", world.getName())
 			.sendTo(player);
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 	
 	private Text getButtonConfirmation(final World world){

@@ -19,6 +19,7 @@ package fr.evercraft.essentials.command.whitelist;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
@@ -48,7 +49,7 @@ public class EEWhitelistOff extends ESubCommand<EverEssentials> {
 	}
 	
 	@Override
-	public Collection<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
+	public Collection<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		return Arrays.asList();
 	}
 
@@ -61,26 +62,23 @@ public class EEWhitelistOff extends ESubCommand<EverEssentials> {
 	}
 	
 	@Override
-	public boolean subExecute(final CommandSource source, final List<String> args) {
-		// Résultat de la commande :
-		boolean resultat = false;
-		
+	public CompletableFuture<Boolean> execute(final CommandSource source, final List<String> args) {
 		if (args.size() == 0) {
-			resultat = this.commandWhitelistOff(source);
+			return this.commandWhitelistOff(source);
 		} else {
 			source.sendMessage(this.help(source));
 		}
 		
-		return resultat;
+		return CompletableFuture.completedFuture(false);
 	}
 
-	private boolean commandWhitelistOff(final CommandSource player) {
+	private CompletableFuture<Boolean> commandWhitelistOff(final CommandSource player) {
 		if (this.plugin.getEServer().hasWhitelist()){
 			this.plugin.getEServer().setHasWhitelist(false);
 			EEMessages.WHITELIST_OFF_DISABLED.sendTo(player);
 		} else {
 			EEMessages.WHITELIST_OFF_ALREADY_DISABLED.sendTo(player);
 		}
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 }

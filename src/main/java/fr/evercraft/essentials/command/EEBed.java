@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
@@ -81,14 +82,12 @@ public class EEBed extends ECommand<EverEssentials> {
 	}
 	
 	@Override
-	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
-		// Résultat de la commande :
-		boolean resultat = false;
+	public CompletableFuture<Boolean> execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Si on ne connait pas le joueur
 		if (args.size() == 0) {
 			// Si la source est un joueur
 			if (source instanceof EPlayer) {
-				resultat = commandBed((EPlayer) source);
+				return this.commandBed((EPlayer) source);
 			// La source n'est pas un joueur
 			} else {
 				EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()
@@ -102,7 +101,7 @@ public class EEBed extends ECommand<EverEssentials> {
 				Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(args.get(0));
 				// Le joueur existe
 				if (optPlayer.isPresent()){
-					resultat = commandBedOthers(source, optPlayer.get());
+					return this.commandBedOthers(source, optPlayer.get());
 				// Le joueur est introuvable
 				} else {
 					EAMessages.PLAYER_NOT_FOUND.sender()
@@ -117,28 +116,29 @@ public class EEBed extends ECommand<EverEssentials> {
 			}
 		// Nombre d'argument incorrect
 		} else {
-			source.sendMessage(help(source));
+			source.sendMessage(this.help(source));
 		}
-		return resultat;
+		return CompletableFuture.completedFuture(false);
 	}
 	
-	private boolean commandBed(final EPlayer player) {
+	private CompletableFuture<Boolean> commandBed(final EPlayer player) {
 		Optional<Map<UUID, RespawnLocation>> spawn = player.get(Keys.RESPAWN_LOCATIONS);
 		if (spawn.isPresent()){
 			player.sendMessage(spawn.get().toString());
 		} else {
 			player.sendMessage("En attente d'implémentation");
 		}
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 	
-	private boolean commandBedOthers(final CommandSource staff, final EPlayer player) throws CommandException {
+	private CompletableFuture<Boolean> commandBedOthers(final CommandSource staff, final EPlayer player) throws CommandException {
 		// La source et le joueur sont différent
 		if (!player.equals(staff)) {
-			return true;
+			// TODO
+			return CompletableFuture.completedFuture(true);
 		// La source et le joueur sont identique
 		} else {
-			return execute(staff, new ArrayList<String>());
+			return this.commandBed(player);
 		}
 	}
 }

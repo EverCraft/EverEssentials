@@ -19,6 +19,7 @@ package fr.evercraft.essentials.command.mail;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
@@ -58,19 +59,16 @@ public class EEMailClear extends ESubCommand<EverEssentials> {
 	}
 	
 	@Override
-	public Collection<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
+	public Collection<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		return Arrays.asList();
 	}
 	
 	@Override
-	public boolean subExecute(final CommandSource source, final List<String> args) {
-		// Résultat de la commande :
-		boolean resultat = false;
-		
+	public CompletableFuture<Boolean> execute(final CommandSource source, final List<String> args) {
 		if (args.size() == 0) {
 			// Si la source est un joueur
 			if (source instanceof EPlayer) {
-				resultat = this.commandClear((EPlayer) source);
+				return this.commandClear((EPlayer) source);
 			// La source n'est pas un joueur
 			} else {
 				EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()
@@ -80,26 +78,25 @@ public class EEMailClear extends ESubCommand<EverEssentials> {
 		} else {
 			source.sendMessage(this.help(source));
 		}
-		
-		return resultat;
+		return CompletableFuture.completedFuture(false);
 	}
 	
 	/*
 	 * Clear
 	 */
 	
-	private boolean commandClear(EPlayer player) {
+	private CompletableFuture<Boolean> commandClear(EPlayer player) {
 		if (player.getMails().isEmpty()) {
 			EEMessages.MAIL_CLEAR_ERROR.sendTo(player);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		if (!player.clearMails()) {
 			EEMessages.MAIL_CLEAR_CANCEL.sendTo(player);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		EEMessages.MAIL_CLEAR_MESSAGE.sendTo(player);
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 }

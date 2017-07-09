@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
@@ -73,16 +74,13 @@ public class EEClearInventory extends ECommand<EverEssentials> {
 	}
 	
 	@Override
-	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
-		// Résultat de la commande :
-		boolean resultat = false;
-		
+	public CompletableFuture<Boolean> execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Si on ne connait pas le joueur
 		if (args.size() == 0) {
 			
 			// Si la source est un joueur
 			if (source instanceof EPlayer) {
-				resultat = this.commandClearInventory((EPlayer) source);
+				return this.commandClearInventory((EPlayer) source);
 			// La source n'est pas un joueur
 			} else {
 				EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()
@@ -98,7 +96,7 @@ public class EEClearInventory extends ECommand<EverEssentials> {
 				Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(args.get(0));
 				// Le joueur existe
 				if (optPlayer.isPresent()){
-					resultat = this.commandClearInventory(source, optPlayer.get());
+					return this.commandClearInventory(source, optPlayer.get());
 				// Le joueur est introuvable
 				} else {
 					EAMessages.PLAYER_NOT_FOUND.sender()
@@ -117,16 +115,16 @@ public class EEClearInventory extends ECommand<EverEssentials> {
 			source.sendMessage(this.help(source));
 		}
 		
-		return resultat;
+		return CompletableFuture.completedFuture(false);
 	}
 	
-	private boolean commandClearInventory(final EPlayer player){
+	private CompletableFuture<Boolean> commandClearInventory(final EPlayer player){
 		int total = player.getInventory().totalItems();
 		
 		// Il n'y a pas d'item
 		if (total == 0) {
 			EEMessages.CLEARINVENTORY_NOITEM.sendTo(player);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		player.getInventory().clear();
@@ -134,10 +132,10 @@ public class EEClearInventory extends ECommand<EverEssentials> {
 		EEMessages.CLEARINVENTORY_PLAYER.sender()
 			.replace("<amount>", String.valueOf(total))
 			.sendTo(player);
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 	
-	private boolean commandClearInventory(final CommandSource staff, final EPlayer player) {
+	private CompletableFuture<Boolean> commandClearInventory(final CommandSource staff, final EPlayer player) {
 		// La source et le joueur sont identique
 		if (player.equals(staff)) {
 			return this.commandClearInventory(player);
@@ -148,7 +146,7 @@ public class EEClearInventory extends ECommand<EverEssentials> {
 		// Il n'y a pas d'item
 		if (total == 0) {
 			EEMessages.CLEARINVENTORY_OTHERS_NOITEM.sendTo(staff);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		player.getInventory().clear();
@@ -161,6 +159,6 @@ public class EEClearInventory extends ECommand<EverEssentials> {
 			.replace("<staff>", staff.getName())
 			.replace("<amount>", String.valueOf(total))
 			.sendTo(player);
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 }

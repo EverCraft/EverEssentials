@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
@@ -75,35 +76,32 @@ public class EEWorldsNether extends ECommand<EverEssentials> {
 	}
 
 	@Override
-	public boolean execute(CommandSource source, final List<String> args) throws CommandException {
+	public CompletableFuture<Boolean> execute(CommandSource source, final List<String> args) throws CommandException {
 		// Erreur : Context 
 		if(source instanceof EPlayer) {
 			source = ((EPlayer) source).get();
 		}
 		
-		// Résultat de la commande :
-		boolean resultat = false;
-		
 		// Si on ne connait pas le joueur
 		if (args.size() == 0) {
-			resultat = this.commandNether(source);
+			return this.commandNether(source);
 		} else if (args.size() == 1){
-			resultat = this.commandNether(source, args.get(0));
+			return this.commandNether(source, args.get(0));
 		// Nombre d'argument incorrect
 		} else {
 			source.sendMessage(help(source));
 		}
 		
-		return resultat;
+		return CompletableFuture.completedFuture(false);
 	}
 
-	private boolean commandNether(final CommandSource player) {
+	private CompletableFuture<Boolean> commandNether(final CommandSource player) {
 		this.plugin.getGame().getCommandManager().process(player, "worlds DIM-1");
-		return false;
+		return CompletableFuture.completedFuture(false);
 	}
 	
-	private boolean commandNether(final CommandSource player, final String arg) {
+	private CompletableFuture<Boolean> commandNether(final CommandSource player, final String arg) {
 		this.plugin.getGame().getCommandManager().process(player, "worlds DIM-1 "+ arg);
-		return false;
+		return CompletableFuture.completedFuture(false);
 	}
 }

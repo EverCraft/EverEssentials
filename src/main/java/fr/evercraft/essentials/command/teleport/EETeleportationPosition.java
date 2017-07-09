@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
@@ -80,16 +81,13 @@ public class EETeleportationPosition extends ECommand<EverEssentials> {
 	}
 	
 	@Override
-	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
-		// Résultat de la commande :
-		boolean resultat = false;
-		
+	public CompletableFuture<Boolean> execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Si connait que la location ou aussi peut être le monde
 		if (args.size() == 3) {
 			
 			// Si la source est bien un joueur
 			if (source instanceof EPlayer) {
-				resultat = this.commandTeleportationPosition((EPlayer) source, args.get(0), args.get(1), args.get(2));
+				return this.commandTeleportationPosition((EPlayer) source, args.get(0), args.get(1), args.get(2));
 			// Si la source est une console ou un commande block
 			} else {
 				EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()
@@ -101,7 +99,7 @@ public class EETeleportationPosition extends ECommand<EverEssentials> {
 			
 			// Si la source est bien un joueur
 			if (source instanceof EPlayer) {
-				resultat = this.commandTeleportationPosition((EPlayer) source, args.get(0), args.get(1), args.get(2), args.get(3));
+				return this.commandTeleportationPosition((EPlayer) source, args.get(0), args.get(1), args.get(2), args.get(3));
 			// Si la source est une console ou un commande block
 			} else {
 				EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()
@@ -117,7 +115,7 @@ public class EETeleportationPosition extends ECommand<EverEssentials> {
 				Optional<EPlayer> player = this.plugin.getEServer().getEPlayer(args.get(4));
 				// Le joueur existe
 				if (player.isPresent()){
-					resultat = this.commandTeleportationPositionOthers(source, player.get(), args.get(0), args.get(1), args.get(2), args.get(3));
+					return this.commandTeleportationPositionOthers(source, player.get(), args.get(0), args.get(1), args.get(2), args.get(3));
 				// Joueur introuvable
 				} else {
 					EAMessages.PLAYER_NOT_FOUND.sender()
@@ -135,10 +133,10 @@ public class EETeleportationPosition extends ECommand<EverEssentials> {
 		} else {
 			source.sendMessage(this.help(source));
 		}
-		return resultat;
+		return CompletableFuture.completedFuture(false); 
 	}
 	
-	private boolean commandTeleportationPosition(final EPlayer player, final String x, final String y, final String z) {
+	private CompletableFuture<Boolean> commandTeleportationPosition(final EPlayer player, final String x, final String y, final String z) {
 		LocationResult location = this.plugin.getEverAPI().getManagerUtils().getLocation().getLocation(player, x, y, z);
 		// Si les coordonnées sont valides
 		if (!location.isError()) {
@@ -146,17 +144,17 @@ public class EETeleportationPosition extends ECommand<EverEssentials> {
 				EEMessages.TPPOS_PLAYER.sender()
 					.replace("<position>", this.getButtonPosition(player.getLocation()))
 					.sendTo(player);
-				return true;
+				return CompletableFuture.completedFuture(true);
 			} else {
 				EEMessages.TPPOS_PLAYER_ERROR.sender()
 					.replace("<position>", this.getButtonPosition(player.getWorld().getLocation(location.getLocation().get())))
 					.sendTo(player);
 			}
 		}
-		return false;
+		return CompletableFuture.completedFuture(false);
 	}
 	
-	private boolean commandTeleportationPosition(final EPlayer player, final String x, final String y, final String z, final String world_name) {
+	private CompletableFuture<Boolean> commandTeleportationPosition(final EPlayer player, final String x, final String y, final String z, final String world_name) {
 		LocationResult location = this.plugin.getEverAPI().getManagerUtils().getLocation().getLocation(player, x, y, z);
 		
 		// Si les coordonnées sont valides
@@ -165,7 +163,7 @@ public class EETeleportationPosition extends ECommand<EverEssentials> {
 				.prefix(EEMessages.PREFIX)
 				.replace("<world>", world_name)
 				.sendTo(player);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		Optional<World> world =  this.plugin.getEServer().getWorld(world_name);
@@ -175,7 +173,7 @@ public class EETeleportationPosition extends ECommand<EverEssentials> {
 				.prefix(EEMessages.PREFIX)
 				.replace("<world>", world_name)
 				.sendTo(player);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		if (!player.getWorld().equals(world.get()) && !this.plugin.getManagerServices().getEssentials().hasPermissionWorld(player, world.get())) {
@@ -183,23 +181,23 @@ public class EETeleportationPosition extends ECommand<EverEssentials> {
 				.prefix(EEMessages.PREFIX)
 				.replace("<world>", world_name)
 				.sendTo(player);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		if (!player.teleportSafeZone(world.get().getLocation(location.getLocation().get()), true)) {
 			EEMessages.TPPOS_PLAYER_ERROR.sender()
 				.replace("<position>", () -> this.getButtonPosition(world.get().getLocation(location.getLocation().get())))
 				.sendTo(player);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		EEMessages.TPPOS_PLAYER.sender()
 			.replace("<position>", () -> this.getButtonPosition(player.getLocation()))
 			.sendTo(player);
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 	
-	private boolean commandTeleportationPositionOthers(final CommandSource staff, final EPlayer player, final String x, final String y, final String z, final String world_name) {
+	private CompletableFuture<Boolean> commandTeleportationPositionOthers(final CommandSource staff, final EPlayer player, final String x, final String y, final String z, final String world_name) {
 		LocationResult location = this.plugin.getEverAPI().getManagerUtils().getLocation().getLocation(player, x, y, z);
 		
 		// Si les coordonnées sont valides
@@ -208,7 +206,7 @@ public class EETeleportationPosition extends ECommand<EverEssentials> {
 				.prefix(EEMessages.PREFIX)
 				.replace("<world>", world_name)
 				.sendTo(staff);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		Optional<World> world =  this.plugin.getEServer().getWorld(world_name);
@@ -217,7 +215,7 @@ public class EETeleportationPosition extends ECommand<EverEssentials> {
 			location.getError().get()
 				.prefix(EEMessages.PREFIX)
 				.sendTo(staff);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		if (!player.getWorld().equals(world.get()) && !this.plugin.getManagerServices().getEssentials().hasPermissionWorld(player, world.get())) {
@@ -225,7 +223,7 @@ public class EETeleportationPosition extends ECommand<EverEssentials> {
 				.prefix(EEMessages.PREFIX)
 				.replace("<world>", world_name)
 				.sendTo(staff);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		if (!player.teleportSafeZone(world.get().getLocation(location.getLocation().get()), true)) {
@@ -233,7 +231,7 @@ public class EETeleportationPosition extends ECommand<EverEssentials> {
 				.replace("<player>", player.getName())
 				.replace("<position>", this.getButtonPosition(world.get().getLocation(location.getLocation().get())))
 				.sendTo(staff);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		EEMessages.TPPOS_OTHERS_PLAYER.sender()
@@ -244,7 +242,7 @@ public class EETeleportationPosition extends ECommand<EverEssentials> {
 			.replace("<player>", player.getName())
 			.replace("<position>", () -> this.getButtonPosition(player.getLocation()))
 			.sendTo(staff);
-		 return true;
+		return CompletableFuture.completedFuture(true);
 	}
 	
 	private Text getButtonPosition(final Location<World> location){

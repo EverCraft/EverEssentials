@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
@@ -53,7 +54,7 @@ public class EEWorldborderWarning extends ESubCommand<EverEssentials> {
 	}
 	
 	@Override
-	public Collection<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
+	public Collection<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		if (args.size() == 1){
 			return Arrays.asList("time", "distance");
 		} else if (args.size() == 2){
@@ -93,10 +94,7 @@ public class EEWorldborderWarning extends ESubCommand<EverEssentials> {
 	}
 	
 	@Override
-	public boolean subExecute(final CommandSource source, final List<String> args) {
-		// Résultat de la commande :
-		boolean resultat = false;
-		
+	public CompletableFuture<Boolean> execute(final CommandSource source, final List<String> args) {
 		if (args.size() == 0){
 			source.sendMessage(this.help(source));
 		} else if (args.size() == 1){
@@ -113,9 +111,9 @@ public class EEWorldborderWarning extends ESubCommand<EverEssentials> {
 			if (source instanceof EPlayer){
 				
 				if (args.get(0).equalsIgnoreCase("time")){
-					resultat = this.commandWorldborderWarningTime(source, ((EPlayer)source).getWorld(), args.get(1));
+					return this.commandWorldborderWarningTime(source, ((EPlayer)source).getWorld(), args.get(1));
 				} else if (args.get(0).equalsIgnoreCase("distance")){
-					resultat = this.commandWorldborderWarningDistance(source, ((EPlayer)source).getWorld(), args.get(1));
+					return this.commandWorldborderWarningDistance(source, ((EPlayer)source).getWorld(), args.get(1));
 				} else {
 					source.sendMessage(this.help(source));
 				}
@@ -130,9 +128,9 @@ public class EEWorldborderWarning extends ESubCommand<EverEssentials> {
 			if (optWorld.isPresent()) {
 				
 				if (args.get(0).equalsIgnoreCase("time")){
-					resultat = this.commandWorldborderWarningTime(source, optWorld.get(), args.get(1));
+					return this.commandWorldborderWarningTime(source, optWorld.get(), args.get(1));
 				} else if (args.get(0).equalsIgnoreCase("distance")){
-					resultat = this.commandWorldborderWarningDistance(source, optWorld.get(), args.get(1));
+					return this.commandWorldborderWarningDistance(source, optWorld.get(), args.get(1));
 				} else {
 					source.sendMessage(this.help(source));
 				}
@@ -147,10 +145,10 @@ public class EEWorldborderWarning extends ESubCommand<EverEssentials> {
 			source.sendMessage(this.help(source));
 		}
 		
-		return resultat;
+		return CompletableFuture.completedFuture(false);
 	}
 
-	private boolean commandWorldborderWarningTime(CommandSource source, World world, String value_string) {
+	private CompletableFuture<Boolean> commandWorldborderWarningTime(CommandSource source, World world, String value_string) {
 		try {
 			int value = Integer.parseInt(value_string);
 
@@ -160,17 +158,17 @@ public class EEWorldborderWarning extends ESubCommand<EverEssentials> {
 				.replace("<world>", world.getName())
 				.sendTo(source);
 			
-			return true;
+			return CompletableFuture.completedFuture(true);
 		} catch (NumberFormatException e) {
 			EAMessages.IS_NOT_NUMBER.sender()
 				.prefix(EEMessages.PREFIX)
 				.replace("<number>", value_string)
 				.sendTo(source);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 	}
 	
-	private boolean commandWorldborderWarningDistance(CommandSource source, World world, String value_string) {
+	private CompletableFuture<Boolean> commandWorldborderWarningDistance(CommandSource source, World world, String value_string) {
 		try {
 			int value = Integer.parseInt(value_string);
 
@@ -180,13 +178,13 @@ public class EEWorldborderWarning extends ESubCommand<EverEssentials> {
 				.replace("<world>", world.getName())
 				.sendTo(source);
 			
-			return true;
+			return CompletableFuture.completedFuture(true);
 		} catch (NumberFormatException e) {
 			EAMessages.IS_NOT_NUMBER.sender()
 				.prefix(EEMessages.PREFIX)
 				.replace("<number>", value_string)
 				.sendTo(source);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 	}
 }

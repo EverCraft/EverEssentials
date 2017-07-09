@@ -17,6 +17,7 @@
 package fr.evercraft.essentials.command.toggle;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.text.Text;
@@ -50,13 +51,10 @@ public class EEToggle extends EParentCommand<EverEssentials> {
 	}
 	
 	@Override
-	protected boolean commandDefault(final CommandSource source, final List<String> args) {
-		// Résultat de la commande :
-		boolean resultat = false;
-				
+	protected CompletableFuture<Boolean> commandDefault(final CommandSource source, final List<String> args) {
 		// Si la source est un joueur
 		if (source instanceof EPlayer) {
-			resultat = this.commandToggle((EPlayer) source);
+			return this.commandToggle((EPlayer) source);
 		// La source n'est pas un joueur
 		} else {
 			EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()
@@ -64,10 +62,10 @@ public class EEToggle extends EParentCommand<EverEssentials> {
 				.sendTo(source);
 		}
 		
-		return resultat;
+		return CompletableFuture.completedFuture(false);
 	}
 	
-	private boolean commandToggle(final EPlayer player) {
+	private CompletableFuture<Boolean> commandToggle(final EPlayer player) {
 		boolean toggle = !player.isToggle();
 		
 		if (player.setToggle(toggle)) {
@@ -76,7 +74,7 @@ public class EEToggle extends EParentCommand<EverEssentials> {
 			} else {
 				EEMessages.TOGGLE_OFF_PLAYER.sendTo(player);
 			}
-			return true;
+			return CompletableFuture.completedFuture(true);
 		} else {
 			if (toggle) {
 				EEMessages.TOGGLE_ON_PLAYER_CANCEL.sendTo(player);
@@ -84,6 +82,6 @@ public class EEToggle extends EParentCommand<EverEssentials> {
 				EEMessages.TOGGLE_OFF_PLAYER_CANCEL.sendTo(player);
 			}
 		}
-		return false;
+		return CompletableFuture.completedFuture(false);
 	}
 }

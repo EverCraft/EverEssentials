@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import java.util.regex.Pattern;
 
 import org.spongepowered.api.command.CommandException;
@@ -58,7 +59,7 @@ public class EEWorldborderInfo extends ESubCommand<EverEssentials> {
 	}
 	
 	@Override
-	public Collection<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
+	public Collection<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		if (args.size() == 1) {
 			List<String> suggests = new ArrayList<String>();
 			for (World world : this.plugin.getEServer().getWorlds()) {
@@ -80,13 +81,10 @@ public class EEWorldborderInfo extends ESubCommand<EverEssentials> {
 	}
 	
 	@Override
-	public boolean subExecute(final CommandSource source, final List<String> args) {
-		// Résultat de la commande :
-		boolean resultat = false;
-		
+	public CompletableFuture<Boolean> execute(final CommandSource source, final List<String> args) {
 		if (args.size() == 0) {
 			if (source instanceof Locatable) {
-				resultat = this.commandWorldborder(source, ((Locatable) source).getWorld());
+				return this.commandWorldborder(source, ((Locatable) source).getWorld());
 			} else {
 				EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()
 					.prefix(EEMessages.PREFIX)
@@ -95,7 +93,7 @@ public class EEWorldborderInfo extends ESubCommand<EverEssentials> {
 		} else if (args.size() == 1){
 			Optional<World> world = this.plugin.getEServer().getWorld(args.get(0));
 			if (world.isPresent()) {
-				resultat = this.commandWorldborder(source, world.get());
+				return this.commandWorldborder(source, world.get());
 			} else {
 				EAMessages.WORLD_NOT_FOUND.sender()
 					.prefix(EEMessages.PREFIX)
@@ -106,10 +104,10 @@ public class EEWorldborderInfo extends ESubCommand<EverEssentials> {
 			source.sendMessage(this.help(source));
 		}
 		
-		return resultat;
+		return CompletableFuture.completedFuture(false);
 	}
 	
-	private boolean commandWorldborder(final CommandSource source, final World world) {
+	private CompletableFuture<Boolean> commandWorldborder(final CommandSource source, final World world) {
 		List<Text> lists = new ArrayList<Text>();
 		
 		lists.add(this.getLocation(world));
@@ -123,7 +121,7 @@ public class EEWorldborderInfo extends ESubCommand<EverEssentials> {
 				.toText("<world>", world.getName()).toBuilder()
 				.onClick(TextActions.runCommand("/" + this.getName()))
 				.build(), lists, source);
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 	
 	public Text getLocation(final World world){

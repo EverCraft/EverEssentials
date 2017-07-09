@@ -17,6 +17,7 @@
 package fr.evercraft.essentials.command.fly;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.text.Text;
@@ -50,13 +51,10 @@ public class EEFly extends EParentCommand<EverEssentials> {
 	}
 	
 	@Override
-	protected boolean commandDefault(final CommandSource source, final List<String> args) {
-		// Résultat de la commande :
-		boolean resultat = false;
-				
+	protected CompletableFuture<Boolean> commandDefault(final CommandSource source, final List<String> args) {
 		// Si la source est un joueur
 		if (source instanceof EPlayer) {
-			resultat = this.commandFly((EPlayer) source);
+			return this.commandFly((EPlayer) source);
 		// La source n'est pas un joueur
 		} else {
 			EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()
@@ -64,10 +62,10 @@ public class EEFly extends EParentCommand<EverEssentials> {
 				.sendTo(source);
 		}
 		
-		return resultat;
+		return CompletableFuture.completedFuture(false);
 	}
 	
-	private boolean commandFly(final EPlayer player) {
+	private CompletableFuture<Boolean> commandFly(final EPlayer player) {
 		boolean fly = !player.getAllowFlight();
 		if (!(player.isCreative() && !fly)) {
 			if (player.setAllowFlight(fly)) {
@@ -78,7 +76,7 @@ public class EEFly extends EParentCommand<EverEssentials> {
 					player.teleportBottom();
 					EEMessages.FLY_OFF_PLAYER.sendTo(player);
 				}
-				return true;
+				return CompletableFuture.completedFuture(true);
 			} else {
 				if (fly) {
 					EEMessages.FLY_ON_PLAYER_CANCEL.sendTo(player);
@@ -89,6 +87,6 @@ public class EEFly extends EParentCommand<EverEssentials> {
 		} else {
 			EEMessages.FLY_OFF_PLAYER_CREATIVE.sendTo(player);
 		}
-		return false;
+		return CompletableFuture.completedFuture(false);
 	}
 }

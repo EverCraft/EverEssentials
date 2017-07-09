@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import java.util.regex.Pattern;
 
 import org.spongepowered.api.command.CommandException;
@@ -89,15 +90,13 @@ public class EEKick extends ECommand<EverEssentials> {
 	}
 	
 	@Override
-	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
-		// Résultat de la commande :
-		boolean resultat = false;
+	public CompletableFuture<Boolean> execute(final CommandSource source, final List<String> args) throws CommandException {
 		if (args.size() == 1) {
 			
 			Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(args.get(0));
 			// Le joueur existe
 			if (optPlayer.isPresent()) {
-				resultat = this.commandKick(source, optPlayer.get(), EEMessages.KICK_DEFAULT_REASON.getText());
+				return this.commandKick(source, optPlayer.get(), EEMessages.KICK_DEFAULT_REASON.getText());
 			// Le joueur est introuvable
 			} else {
 				EAMessages.PLAYER_NOT_FOUND.sender()
@@ -110,7 +109,7 @@ public class EEKick extends ECommand<EverEssentials> {
 			Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(args.get(0));
 			// Le joueur existe
 			if (optPlayer.isPresent()) {
-				resultat = this.commandKick(source, optPlayer.get(), EChat.of(args.get(1)));
+				return this.commandKick(source, optPlayer.get(), EChat.of(args.get(1)));
 			// Le joueur est introuvable
 			} else {
 				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
@@ -121,21 +120,21 @@ public class EEKick extends ECommand<EverEssentials> {
 			source.sendMessage(this.help(source));
 		}
 		
-		return resultat;
+		return CompletableFuture.completedFuture(false);
 	}
 	
-	private boolean commandKick(final CommandSource staff, final EPlayer player, final Text message) throws CommandException {
+	private CompletableFuture<Boolean> commandKick(final CommandSource staff, final EPlayer player, final Text message) throws CommandException {
 		// Le joueur a la permission bypass
 		if(player.hasPermission(EEPermissions.KICK_BYPASS.get())) {
 			EEMessages.KICK_BYPASS.sender()
 				.replace("<player>", player.getName())
 				.sendTo(staff);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		player.kick(EEMessages.KICK_MESSAGE.getFormat().toText(
 			"<staff>", staff.getName(),
 			"<reason>", message));
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 }

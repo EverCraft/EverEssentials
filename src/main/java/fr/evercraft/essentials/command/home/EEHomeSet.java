@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.CompletableFuture;
 
 import ninja.leaping.configurate.ConfigurationNode;
 
@@ -39,10 +40,11 @@ import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.java.UtilsMap;
 import fr.evercraft.everapi.plugin.EChat;
-import fr.evercraft.everapi.plugin.command.EReloadCommand;
+import fr.evercraft.everapi.plugin.command.ECommand;
+import fr.evercraft.everapi.plugin.command.ReloadCommand;
 import fr.evercraft.everapi.server.player.EPlayer;
 
-public class EEHomeSet extends EReloadCommand<EverEssentials> {
+public class EEHomeSet extends ECommand<EverEssentials> implements ReloadCommand {
 	
 	private final static String DEFAULT_HOME = "home";
 	
@@ -115,15 +117,12 @@ public class EEHomeSet extends EReloadCommand<EverEssentials> {
 	}
 	
 	@Override
-	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
-		// Résultat de la commande :
-		boolean resultat = false;
-		
+	public CompletableFuture<Boolean> execute(final CommandSource source, final List<String> args) throws CommandException {
 		if (args.size() == 0) {
 			
 			// Si la source est un joueur
 			if (source instanceof EPlayer) {
-				resultat = this.commandSetHome((EPlayer) source);
+				return this.commandSetHome((EPlayer) source);
 			// La source n'est pas un joueur
 			} else {
 				EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()
@@ -137,7 +136,7 @@ public class EEHomeSet extends EReloadCommand<EverEssentials> {
 			if (source.hasPermission(EEPermissions.SETHOME_MULTIPLE.get())) {
 				// Si la source est un joueur
 				if (source instanceof EPlayer) {
-					resultat = this.commandSetHome((EPlayer) source, args.get(0)); 
+					return this.commandSetHome((EPlayer) source, args.get(0)); 
 				// La source n'est pas un joueur
 				} else {
 					EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()
@@ -155,10 +154,10 @@ public class EEHomeSet extends EReloadCommand<EverEssentials> {
 			source.sendMessage(this.help(source));
 		}
 		
-		return resultat;
+		return CompletableFuture.completedFuture(false);
 	}
 	
-	private boolean commandSetHome(final EPlayer player) {
+	private CompletableFuture<Boolean> commandSetHome(final EPlayer player) {
 		int max = this.getMaxHome(player);
 		int homes = player.getHomes().size();
 		
@@ -169,7 +168,7 @@ public class EEHomeSet extends EReloadCommand<EverEssentials> {
 			EEMessages.SETHOME_MULTIPLE_ERROR_MAX.sender()
 				.replace("<nombre>", String.valueOf(getMaxHome(player)))
 				.sendTo(player);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		// Ajout d'un home
@@ -181,41 +180,42 @@ public class EEHomeSet extends EReloadCommand<EverEssentials> {
 		}
 	}
 	
-	private boolean commandSetHomeAdd(final EPlayer player) {
+	private CompletableFuture<Boolean> commandSetHomeAdd(final EPlayer player) {
 		if (!player.addHome(DEFAULT_HOME)) {
 			EEMessages.SETHOME_SET_CANCEL.sender()
 				.replace("<home>", this.getButtonHome(DEFAULT_HOME, player.getLocation()))
 				.sendTo(player);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 			
 		EEMessages.SETHOME_SET.sender()
 			.replace("<home>", this.getButtonHome(DEFAULT_HOME, player.getLocation()))
 			.sendTo(player);
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 	
-	private boolean commandSetHomeMove(final EPlayer player) {
+	private CompletableFuture<Boolean> commandSetHomeMove(final EPlayer player) {
 		if (!player.moveHome(DEFAULT_HOME)) {
 			EEMessages.SETHOME_MOVE_CANCEL.sender()
 				.replace("<home>", this.getButtonHome(DEFAULT_HOME, player.getLocation()))
 				.sendTo(player);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 			
 		EEMessages.SETHOME_MOVE.sender()
 			.replace("<home>", this.getButtonHome(DEFAULT_HOME, player.getLocation()))
 			.sendTo(player);
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 	
-	private boolean commandSetHome(final EPlayer player, final String home_name) {
+	private CompletableFuture<Boolean> commandSetHome(final EPlayer player, final String home_name) {
 		String name = EChat.fixLength(home_name, this.plugin.getEverAPI().getConfigs().getMaxCaractere());
 		
 		// Il n'a pas la permission multihome
 		if (!player.hasPermission(EEPermissions.SETHOME_MULTIPLE.get())) {
 			EEMessages.SETHOME_MULTIPLE_NO_PERMISSION.sender()
 				.sendTo(player);
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		int max = this.getMaxHome(player);
@@ -238,32 +238,32 @@ public class EEHomeSet extends EReloadCommand<EverEssentials> {
 		}
 	}
 	
-	private boolean commandSetHomeAdd(final EPlayer player, final String name) {
+	private CompletableFuture<Boolean> commandSetHomeAdd(final EPlayer player, final String name) {
 		if (!player.addHome(name)) {
 			EEMessages.SETHOME_MULTIPLE_SET_CANCEL.sender()
 				.replace("<home>", this.getButtonHome(name, player.getLocation()))
 				.sendTo(player);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		EEMessages.SETHOME_MULTIPLE_SET.sender()
 			.replace("<home>", this.getButtonHome(name, player.getLocation()))
 			.sendTo(player);
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 	
-	private boolean commandSetHomeMove(final EPlayer player, final String name) {
+	private CompletableFuture<Boolean> commandSetHomeMove(final EPlayer player, final String name) {
 		if (!player.moveHome(name)) {
 			EEMessages.SETHOME_MULTIPLE_MOVE_CANCEL.sender()
 				.replace("<home>", this.getButtonHome(name, player.getLocation()))
 				.sendTo(player);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		EEMessages.SETHOME_MULTIPLE_MOVE.sender()
 			.replace("<home>", this.getButtonHome(name, player.getLocation()))
 			.sendTo(player);
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 
 	private Text getButtonHome(final String name, final Location<World> location){

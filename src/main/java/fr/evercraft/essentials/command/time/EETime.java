@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
@@ -105,15 +106,12 @@ public class EETime extends ECommand<EverEssentials> {
 	}
 
 	@Override
-	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
-		// Résultat de la commande :
-		boolean resultat = false;
-		
+	public CompletableFuture<Boolean> execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Si on ne connait pas le joueur
 		if (args.size() == 0) {
 			// Si la source est un joueur
 			if (source instanceof EPlayer) {
-				resultat = this.commandTime((EPlayer) source);
+				return this.commandTime((EPlayer) source);
 			// La source n'est pas un joueur
 			} else {
 				EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()
@@ -124,7 +122,7 @@ public class EETime extends ECommand<EverEssentials> {
 		} else if (args.size() == 1) {
 			// Si la source est un joueur
 			if (source instanceof Locatable) {
-				resultat = this.commandTimeSet(source, parseTime(args.get(0)), ((Locatable) source).getWorld());
+				return this.commandTimeSet(source, parseTime(args.get(0)), ((Locatable) source).getWorld());
 			// La source n'est pas un joueur
 			} else {
 				EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()
@@ -134,12 +132,12 @@ public class EETime extends ECommand<EverEssentials> {
 		// On connais le joueur
 		} else if (args.size() == 2) {
 			if (args.get(1).equals("*")){
-				resultat = this.commandTimeSetAll(source, parseTime(args.get(0)));
+				return this.commandTimeSetAll(source, parseTime(args.get(0)));
 			} else {
 				Optional<World> world = this.plugin.getEServer().getWorld(args.get(1));
 				// Si le monde existe
 				if (world.isPresent()) {
-					resultat = this.commandTimeSet(source, parseTime(args.get(0)), world.get());
+					return this.commandTimeSet(source, parseTime(args.get(0)), world.get());
 				} else {
 					EAMessages.WORLD_NOT_FOUND.sender()
 						.prefix(EEMessages.PREFIX)
@@ -152,30 +150,30 @@ public class EETime extends ECommand<EverEssentials> {
 			source.sendMessage(this.help(source));
 		}
 		
-		return resultat;
+		return CompletableFuture.completedFuture(false);
 	}
 
-	private boolean commandTime(final EPlayer player) {
+	private CompletableFuture<Boolean> commandTime(final EPlayer player) {
 		EEMessages.TIME_INFORMATION.sender()
 			.replace("<world>", player.getWorld().getName())
 			.replace("<hours>", this.getTime(player.getWorld().getProperties().getWorldTime()))
 			.replace("<ticks>", String.valueOf(player.getWorld().getProperties().getWorldTime()))
 			.sendTo(player);
-		return false;
+		return CompletableFuture.completedFuture(false);
 	}
 	
-	private boolean commandTimeSet(final CommandSource player, final Optional<Long> time, final World world) {
+	private CompletableFuture<Boolean> commandTimeSet(final CommandSource player, final Optional<Long> time, final World world) {
 		if (!this.plugin.getManagerServices().getEssentials().hasPermissionWorld(player, world)) {
 			EAMessages.NO_PERMISSION_WORLD.sender()
 				.prefix(EEMessages.PREFIX)
 				.replace("<world>", world.getName())
 				.sendTo(player);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		if (!time.isPresent()) {
 			EEMessages.TIME_ERROR.sendTo(player);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		this.setWorldTime(world.getProperties(), time.get());
@@ -184,13 +182,13 @@ public class EETime extends ECommand<EverEssentials> {
 			.replace("<hours>", this.getTime(time.get()))
 			.replace("<ticks>", String.valueOf(time))
 			.sendTo(player);
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 	
-	private boolean commandTimeSetAll(final CommandSource player, final Optional<Long> time) {
+	private CompletableFuture<Boolean> commandTimeSetAll(final CommandSource player, final Optional<Long> time) {
 		if (!time.isPresent()) {
 			EEMessages.TIME_ERROR.sendTo(player);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		for (World world : this.plugin.getEServer().getWorlds()) {
@@ -204,7 +202,7 @@ public class EETime extends ECommand<EverEssentials> {
 			.replace("<hours>", this.getTime(time.get()))
 			.replace("<ticks>", String.valueOf(time.get()))
 			.sendTo(player);
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 	
 	private void setWorldTime(WorldProperties world, long time) {

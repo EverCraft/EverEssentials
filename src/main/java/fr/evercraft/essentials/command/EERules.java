@@ -19,6 +19,7 @@ package fr.evercraft.essentials.command;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
@@ -62,26 +63,23 @@ public class EERules extends ECommand<EverEssentials> {
 	}
 	
 	@Override
-	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
-		// Résultat de la commande :
-		boolean resultat = false;
-		
+	public CompletableFuture<Boolean> execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Nom du warp inconnu
 		if (args.size() == 0) {
-			resultat = this.commandRules(source);
+			return this.commandRules(source);
 		// Nom du warp connu
 		} else {
 			source.sendMessage(this.help(source));
 		}
 		
-		return resultat;
+		return CompletableFuture.completedFuture(false);
 	}
 	
-	private boolean commandRules(final CommandSource player) {		
+	private CompletableFuture<Boolean> commandRules(final CommandSource player) {		
 		this.plugin.getEverAPI().getManagerService().getEPagination().sendTo(
 				this.plugin.getRules().getTitle(),
 				EChat.of(this.plugin.getChat().replaceGlobal(this.plugin.getRules().getList())),
 				player);
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 }

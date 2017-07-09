@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
@@ -70,10 +71,7 @@ public class EETeleportationAskHere extends ECommand<EverEssentials> {
 	}
 	
 	@Override
-	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
-		// Résultat de la commande :
-		boolean resultat = false;
-		
+	public CompletableFuture<Boolean> execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Si connait que la location ou aussi peut être le monde
 		if (args.size() == 1) {
 			// Si la source est bien un joueur
@@ -81,7 +79,7 @@ public class EETeleportationAskHere extends ECommand<EverEssentials> {
 				Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(args.get(0));
 				// Le joueur existe
 				if (optPlayer.isPresent()) {
-					resultat = this.commandTeleportation((EPlayer) source, optPlayer.get());
+					return this.commandTeleportation((EPlayer) source, optPlayer.get());
 				// Joueur introuvable
 				} else {
 					EAMessages.PLAYER_NOT_FOUND.sender()
@@ -99,14 +97,14 @@ public class EETeleportationAskHere extends ECommand<EverEssentials> {
 			source.sendMessage(this.help(source));
 		}
 		
-		return resultat;
+		return CompletableFuture.completedFuture(false);
 	}
 
-	private boolean commandTeleportation(EPlayer staff, EPlayer player) {
+	private CompletableFuture<Boolean> commandTeleportation(EPlayer staff, EPlayer player) {
 		// La source et le joueur sont identique
 		if (staff.equals(player)) {
 			EEMessages.TPAHERE_ERROR_EQUALS.sendTo(staff);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		// Le staff ignore le joueur
@@ -114,7 +112,7 @@ public class EETeleportationAskHere extends ECommand<EverEssentials> {
 			EEMessages.TPAHERE_IGNORE_STAFF.sender()
 				.replace("<player>", player.getName())
 				.sendTo(staff);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		// Le joueur ignore le staff
@@ -122,7 +120,7 @@ public class EETeleportationAskHere extends ECommand<EverEssentials> {
 			EEMessages.TPAHERE_IGNORE_PLAYER.sender()
 				.replace("<player>", player.getName())
 				.sendTo(staff);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 					
 		// La destination n'accepte pas les demandes de téléportation
@@ -130,7 +128,7 @@ public class EETeleportationAskHere extends ECommand<EverEssentials> {
 			EEMessages.TOGGLE_DISABLED.sender()
 				.replace("<player>", player.getName())
 				.sendTo(staff);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		// Le joueur n'a pas la permission
@@ -139,7 +137,7 @@ public class EETeleportationAskHere extends ECommand<EverEssentials> {
 				.prefix(EEMessages.PREFIX)
 				.replace("<world>", staff.getWorld().getName())
 				.sendTo(staff);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		long delay = this.plugin.getConfigs().getTpaAcceptCancellation();
@@ -150,7 +148,7 @@ public class EETeleportationAskHere extends ECommand<EverEssentials> {
 			EEMessages.TPAHERE_ERROR_DELAY.sender()
 				.replace("<player>", player.getName())
 				.sendTo(staff);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		EEMessages.TPAHERE_STAFF_QUESTION.sender()
@@ -163,7 +161,7 @@ public class EETeleportationAskHere extends ECommand<EverEssentials> {
 			.replace("<accept>", EETeleportationAskHere.getButtonAccept(staff.getName()))
 			.replace("<deny>", EETeleportationAskHere.getButtonDeny(staff.getName()))
 			.sendTo(player);
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 	
 	public static Text getButtonPosition(final String player, final Location<World> location){

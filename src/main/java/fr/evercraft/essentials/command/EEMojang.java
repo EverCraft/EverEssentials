@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
@@ -68,26 +69,23 @@ public class EEMojang extends ECommand<EverEssentials> {
 	}
 	
 	@Override
-	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
-		// Résultat de la commande :
-		boolean resultat = false;
-		
+	public CompletableFuture<Boolean> execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Nom du home inconnu
 		if (args.size() == 0) {
 			this.plugin.getGame().getScheduler().createTaskBuilder()
 								.async()
 								.execute(() -> this.commandMojang(source))
 								.name("Command : Mojang").submit(this.plugin);
-			resultat = true;
+			return CompletableFuture.completedFuture(true);
 		// Nombre d'argument incorrect
 		} else {
 			source.sendMessage(this.help(source));
 		}
 		
-		return resultat;
+		return CompletableFuture.completedFuture(false);
 	}
 	
-	private boolean commandMojang(final CommandSource player) {
+	private CompletableFuture<Boolean> commandMojang(final CommandSource player) {
 		MojangService service = this.plugin.getEverAPI().getManagerService().getMojangService();
 		
 		try {
@@ -96,7 +94,7 @@ public class EEMojang extends ECommand<EverEssentials> {
 			EAMessages.COMMAND_ERROR.sender()
 				.prefix(EEMessages.PREFIX)
 				.sendTo(player);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 
 		List<Text> lists = new ArrayList<Text>();
@@ -116,7 +114,7 @@ public class EEMojang extends ECommand<EverEssentials> {
 				EEMessages.MOJANG_TITLE.getText().toBuilder()
 					.onClick(TextActions.runCommand("/mojang ")).build(), 
 				lists, player);
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 	
 	private Text server(final MojangServer server) {

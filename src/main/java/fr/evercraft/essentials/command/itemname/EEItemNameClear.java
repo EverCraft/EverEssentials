@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
@@ -53,7 +54,7 @@ public class EEItemNameClear extends ESubCommand<EverEssentials> {
 	}
 	
 	@Override
-	public Collection<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
+	public Collection<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		return Arrays.asList();
 	}
 
@@ -66,7 +67,7 @@ public class EEItemNameClear extends ESubCommand<EverEssentials> {
 	}
 	
 	@Override
-	public boolean subExecute(final CommandSource source, final List<String> args) {
+	public CompletableFuture<Boolean> execute(final CommandSource source, final List<String> args) {
 		if(args.size() == 0){
 			if(source instanceof EPlayer){
 				return this.commandItemNameClear((EPlayer) source);
@@ -74,28 +75,27 @@ public class EEItemNameClear extends ESubCommand<EverEssentials> {
 				EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()
 					.prefix(EEMessages.PREFIX)
 					.sendTo(source);
-				return false;
 			}
 		} else {
 			source.sendMessage(this.help(source));
-			return false;
 		}
+		return CompletableFuture.completedFuture(false);
 	}
 
-	private boolean commandItemNameClear(final EPlayer player) {
+	private CompletableFuture<Boolean> commandItemNameClear(final EPlayer player) {
 		Optional<ItemStack> item = player.getItemInMainHand();
 		if(!item.isPresent()) {
 			EAMessages.EMPTY_ITEM_IN_HAND.sender()
 				.prefix(EEMessages.PREFIX)
 				.sendTo(player);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		if(!item.get().get(Keys.DISPLAY_NAME).isPresent()) {
 			EEMessages.ITEM_NAME_CLEAR_ERROR.sender()
 				.replace("<item>", EChat.getButtomItem(item.get(), EEMessages.ITEM_NAME_CLEAR_COLOR.getColor()))
 				.sendTo(player);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		EEMessages.ITEM_NAME_CLEAR_NAME.sender()
@@ -103,6 +103,6 @@ public class EEItemNameClear extends ESubCommand<EverEssentials> {
 			.sendTo(player);
 		item.get().remove(Keys.DISPLAY_NAME);
 		player.setItemInMainHand(item.get());
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 }

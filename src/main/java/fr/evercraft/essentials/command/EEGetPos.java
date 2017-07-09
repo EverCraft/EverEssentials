@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
@@ -75,16 +76,13 @@ public class EEGetPos extends ECommand<EverEssentials> {
 	}
 	
 	@Override
-	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
-		// Résultat de la commande :
-		boolean resultat = false;
-		
+	public CompletableFuture<Boolean> execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Si on ne connait pas le joueur
 		if (args.size() == 0) {
 			
 			// Si la source est un joueur
 			if (source instanceof EPlayer) {
-				resultat = this.commandGetPos((EPlayer) source);
+				return this.commandGetPos((EPlayer) source);
 			// La source n'est pas un joueur
 			} else {
 				EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()
@@ -100,7 +98,7 @@ public class EEGetPos extends ECommand<EverEssentials> {
 				Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(args.get(0));
 				// Le joueur existe
 				if (optPlayer.isPresent()){
-					resultat = this.commandGetPosOthers(source, optPlayer.get());
+					return this.commandGetPosOthers(source, optPlayer.get());
 				// Le joueur est introuvable
 				} else {
 					EAMessages.PLAYER_NOT_FOUND.sender()
@@ -119,20 +117,20 @@ public class EEGetPos extends ECommand<EverEssentials> {
 			source.sendMessage(this.help(source));
 		}
 		
-		return resultat;
+		return CompletableFuture.completedFuture(false);
 	}
 	
-	private boolean commandGetPos(final EPlayer player) {
+	private CompletableFuture<Boolean> commandGetPos(final EPlayer player) {
 		EEMessages.GETPOS_MESSAGE.sender()
 			.replace("<world>", player.getWorld().getName())
 			.replace("<x>", String.valueOf(player.getLocation().getBlockX()))
 			.replace("<y>", String.valueOf(player.getLocation().getBlockY()))
 			.replace("<z>", String.valueOf(player.getLocation().getBlockZ()))
 			.sendTo(player);
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 	
-	private boolean commandGetPosOthers(final CommandSource staff, final EPlayer player) throws CommandException {
+	private CompletableFuture<Boolean> commandGetPosOthers(final CommandSource staff, final EPlayer player) throws CommandException {
 		EEMessages.GETPOS_MESSAGE_OTHERS.sender()
 			.replace("<player>", player.getName())
 			.replace("<world>", player.getWorld().getName())
@@ -141,7 +139,7 @@ public class EEGetPos extends ECommand<EverEssentials> {
 			.replace("<z>", String.valueOf(player.getLocation().getBlockZ()))
 			.replace("<position>", this.getButtonPos(player.getLocation()))
 			.sendTo(staff);
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 	
 	private Text getButtonPos(final Location<World> location){

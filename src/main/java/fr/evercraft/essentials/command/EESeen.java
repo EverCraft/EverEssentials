@@ -22,6 +22,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
@@ -72,16 +73,13 @@ public class EESeen extends ECommand<EverEssentials> {
 	}
 	
 	@Override
-	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
-		// Résultat de la commande :
-		boolean resultat = false;
-		
+	public CompletableFuture<Boolean> execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Si on ne connait pas le joueur
 		if (args.size() == 0) {
 			
 			// Si la source est un joueur
 			if (source instanceof EPlayer) {
-				resultat = this.commandSeen((EPlayer) source);
+				return this.commandSeen((EPlayer) source);
 			// La source n'est pas un joueur
 			} else {
 				EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()
@@ -92,12 +90,12 @@ public class EESeen extends ECommand<EverEssentials> {
 		// On connais le joueur
 		} else if (args.size() == 1) {
 			if(InetAddresses.isInetAddress(args.get(0))){
-				resultat = this.commandSeenOthers(source, args.get(0));
+				return this.commandSeenOthers(source, args.get(0));
 			} else { 
 				Optional<EUser> optUser = this.plugin.getEServer().getEUser(args.get(0));
 				// Le joueur existe
 				if (optUser.isPresent()){
-					resultat = this.commandSeenOthers(source, optUser.get());
+					return this.commandSeenOthers(source, optUser.get());
 				// Le joueur est introuvable
 				} else {
 					EAMessages.PLAYER_NOT_FOUND.sender()
@@ -111,17 +109,17 @@ public class EESeen extends ECommand<EverEssentials> {
 			source.sendMessage(this.help(source));
 		}
 		
-		return resultat;
+		return CompletableFuture.completedFuture(false);
 	}
 	
-	private boolean commandSeen(final EPlayer player) {
+	private CompletableFuture<Boolean> commandSeen(final EPlayer player) {
 		EEMessages.SEEN_IP.sender()
 			.replace("<ip>", getButtomIP(UtilsNetwork.getHostString(player.getConnection().getAddress().getAddress())))
 			.sendTo(player);
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 	
-	private boolean commandSeenOthers(final CommandSource staff, final EUser user) throws CommandException {
+	private CompletableFuture<Boolean> commandSeenOthers(final CommandSource staff, final EUser user) throws CommandException {
 		// La source et le joueur sont identique
 		if (user.equals(staff)) {
 			return this.commandSeen((EPlayer) user);
@@ -136,10 +134,10 @@ public class EESeen extends ECommand<EverEssentials> {
 				.replace("<player>", user.getDisplayName())
 				.sendTo(staff);
 		}
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 	
-	private boolean commandSeenOthers(final CommandSource staff, final String address) throws CommandException {
+	private CompletableFuture<Boolean> commandSeenOthers(final CommandSource staff, final String address) throws CommandException {
 		List<Text> lists = new ArrayList<Text>();
 		Optional<List<UUID>> uuids = this.plugin.getDataBases().getPlayersWithSameIP(address);
 		lists.add(EEMessages.SEEN_IP_MESSAGE.getFormat().toText("<ip>", address));
@@ -158,7 +156,7 @@ public class EESeen extends ECommand<EverEssentials> {
 					.onClick(TextActions.runCommand("/s \"" + address + "\""))
 					.build(), 
 				lists, staff);
-		return false;
+		return CompletableFuture.completedFuture(true);
 	}
 	
 	private Text getButtomIP(final String address){

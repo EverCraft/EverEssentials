@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.CompletableFuture;
 import java.util.Optional;
 import java.util.TreeMap;
 import java.util.regex.Pattern;
@@ -76,19 +77,16 @@ public class EEList extends ECommand<EverEssentials> {
 		return Arrays.asList();
 	}
 	
-	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
-		// Résultat de la commande :
-		boolean resultat = false;
-		
+	public CompletableFuture<Boolean> execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Si on ne connait pas le joueur
 		if (args.size() == 0) {
 			
 			// Si la source est un joueur
 			if (source instanceof EPlayer) {
-				resultat = this.commandList(source, this.plugin.getEServer().getOnlineEPlayers((EPlayer) source));
+				return this.commandList(source, this.plugin.getEServer().getOnlineEPlayers((EPlayer) source));
 			// La source n'est pas un joueur
 			} else {
-				resultat = this.commandList(source, this.plugin.getEServer().getOnlineEPlayers());
+				return this.commandList(source, this.plugin.getEServer().getOnlineEPlayers());
 			}
 			
 		// Nombre d'argument incorrect
@@ -96,10 +94,10 @@ public class EEList extends ECommand<EverEssentials> {
 			source.sendMessage(this.help(source));
 		}
 		
-		return resultat;
+		return CompletableFuture.completedFuture(false);
 	}
 	
-	private boolean commandList(final CommandSource staff, final Collection<EPlayer> players) throws CommandException {
+	private CompletableFuture<Boolean> commandList(final CommandSource staff, final Collection<EPlayer> players) throws CommandException {
 		// La liste des groupes avec des joueurs
 		Map<String, TreeMap<String, EPlayer>> groups = new HashMap<String, TreeMap<String, EPlayer>>();
 		for (EPlayer player : players) {
@@ -216,6 +214,6 @@ public class EEList extends ECommand<EverEssentials> {
 					.build(), 
 				group_texts, staff);
 		
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 }

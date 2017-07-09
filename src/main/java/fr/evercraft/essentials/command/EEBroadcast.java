@@ -19,6 +19,7 @@ package fr.evercraft.essentials.command;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
@@ -71,21 +72,19 @@ public class EEBroadcast extends ECommand<EverEssentials> {
 	}
 	
 	@Override
-	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
-		// Résultat de la commande :
-		boolean resultat = false;
+	public CompletableFuture<Boolean> execute(final CommandSource source, final List<String> args) throws CommandException {
 		if (args.size() == 1) {
-			resultat = this.commandBroadcast(args.get(0));
+			return this.commandBroadcast(args.get(0));
 		} else {
 			source.sendMessage(this.help(source));
 		}
-		return resultat;
+		return CompletableFuture.completedFuture(false);
 	}
 	
-	private boolean commandBroadcast(final String message) {
+	private CompletableFuture<Boolean> commandBroadcast(final String message) {
 		this.plugin.getEServer().getBroadcastChannel().send(
 				EEMessages.BROADCAST_MESSAGE.getFormat()
 					.toText("<message>", message));
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 }

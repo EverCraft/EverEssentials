@@ -22,6 +22,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.CompletableFuture;
 import java.util.Optional;
 import java.util.TreeMap;
 
@@ -92,17 +93,14 @@ public class EEHomeOthers extends ECommand<EverEssentials> {
 	}
 	
 	@Override
-	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
-		// Résultat de la commande :
-		boolean resultat = false;
-		
+	public CompletableFuture<Boolean> execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Nom du home inconnu
 		if (args.size() == 1) {
 			
 			Optional<EUser> user = this.plugin.getEServer().getEUser(args.get(0));
 			// Le joueur existe
 			if (user.isPresent()){
-				resultat = this.commandHomeList(source, user.get());
+				return this.commandHomeList(source, user.get());
 			// Le joueur est introuvable
 			} else {
 				EAMessages.PLAYER_NOT_FOUND.sender()
@@ -117,7 +115,7 @@ public class EEHomeOthers extends ECommand<EverEssentials> {
 				Optional<EUser> user = this.plugin.getEServer().getEUser(args.get(0));
 				// Le joueur existe
 				if (user.isPresent()){
-					resultat = this.commandHomeTeleport((EPlayer) source, user.get(), args.get(1));
+					return this.commandHomeTeleport((EPlayer) source, user.get(), args.get(1));
 				// Le joueur est introuvable
 				} else {
 					EAMessages.PLAYER_NOT_FOUND.sender()
@@ -139,7 +137,7 @@ public class EEHomeOthers extends ECommand<EverEssentials> {
 					Optional<EUser> user = this.plugin.getEServer().getEUser(args.get(0));
 					// Le joueur existe
 					if (user.isPresent()){
-						resultat = this.commandHomeDelete(source, user.get(), args.get(1));
+						return this.commandHomeDelete(source, user.get(), args.get(1));
 					// Le joueur est introuvable
 					} else {
 						EAMessages.PLAYER_NOT_FOUND.sender()
@@ -164,7 +162,7 @@ public class EEHomeOthers extends ECommand<EverEssentials> {
 					Optional<EUser> user = this.plugin.getEServer().getEUser(args.get(0));
 					// Le joueur existe
 					if (user.isPresent()) {
-						resultat = this.commandHomeDeleteConfirmation(source, user.get(), args.get(1));
+						return this.commandHomeDeleteConfirmation(source, user.get(), args.get(1));
 					// Le joueur est introuvable
 					} else {
 						EAMessages.PLAYER_NOT_FOUND.sender()
@@ -185,10 +183,10 @@ public class EEHomeOthers extends ECommand<EverEssentials> {
 		} else {
 			source.sendMessage(this.help(source));
 		}
-		return resultat;
+		return CompletableFuture.completedFuture(false);
 	}
 	
-	private boolean commandHomeList(final CommandSource staff, final EUser user){
+	private CompletableFuture<Boolean> commandHomeList(final CommandSource staff, final EUser user){
 		Map<String, Transform<World>> homes = user.getHomes();
 		
 		// Le joueur n'as pas de home
@@ -196,7 +194,7 @@ public class EEHomeOthers extends ECommand<EverEssentials> {
 			EEMessages.HOMEOTHERS_EMPTY.sender()
 				.replace("<player>", user.getName())
 				.sendTo(staff);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		List<Text> lists = new ArrayList<Text>();
@@ -211,10 +209,10 @@ public class EEHomeOthers extends ECommand<EverEssentials> {
 		this.plugin.getEverAPI().getManagerService().getEPagination().sendTo(EEMessages.HOMEOTHERS_LIST_TITLE.getFormat()
 				.toText("<player>", user.getName()).toBuilder()
 				.onClick(TextActions.runCommand("/homeothers " + user.getName())).build(), lists, staff);
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 	
-	private boolean commandHomeTeleport(final EPlayer staff, final EUser player, final String home_name){
+	private CompletableFuture<Boolean> commandHomeTeleport(final EPlayer staff, final EUser player, final String home_name){
 		String name = EChat.fixLength(home_name, this.plugin.getEverAPI().getConfigs().getMaxCaractere());
 		
 		Optional<Transform<World>> home = player.getHome(name);
@@ -224,7 +222,7 @@ public class EEHomeOthers extends ECommand<EverEssentials> {
 				.replace("<player>", player.getName())
 				.replace("<home>", name)
 				.sendTo(staff);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		staff.teleport(home.get(), true);
@@ -232,10 +230,10 @@ public class EEHomeOthers extends ECommand<EverEssentials> {
 			.replace("<player>", player.getName())
 			.replace("<home>", this.getButtonHome(name, home.get()))
 			.sendTo(staff);
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 	
-	private boolean commandHomeDelete(final CommandSource staff, final EUser user, final String home_name){
+	private CompletableFuture<Boolean> commandHomeDelete(final CommandSource staff, final EUser user, final String home_name){
 		String name = EChat.fixLength(home_name, this.plugin.getEverAPI().getConfigs().getMaxCaractere());
 
 		Optional<EUserSubject> subject = this.plugin.getManagerServices().getEssentials().getSubject(user.getUniqueId());
@@ -243,7 +241,7 @@ public class EEHomeOthers extends ECommand<EverEssentials> {
 			EAMessages.PLAYER_NOT_FOUND.sender()
 				.prefix(EEMessages.PREFIX)
 				.sendTo(staff);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 			
 		Optional<VirtualTransform> home = subject.get().getHomeLocation(name);
@@ -253,7 +251,7 @@ public class EEHomeOthers extends ECommand<EverEssentials> {
 				.replace("<player>", user.getName())
 				.replace("<home>", name)
 				.sendTo(staff);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		EEMessages.HOMEOTHERS_DELETE_CONFIRMATION.sender()
@@ -261,10 +259,10 @@ public class EEHomeOthers extends ECommand<EverEssentials> {
 			.replace("<home>", this.getButtonHome(name, home.get()))
 			.replace("<confirmation>", this.getButtonConfirmation(user.getName(), name))
 			.sendTo(staff);
-		return false;
+		return CompletableFuture.completedFuture(false);
 	}
 	
-	private boolean commandHomeDeleteConfirmation(final CommandSource staff, final EUser user, final String home_name){
+	private CompletableFuture<Boolean> commandHomeDeleteConfirmation(final CommandSource staff, final EUser user, final String home_name){
 		String name = EChat.fixLength(home_name, this.plugin.getEverAPI().getConfigs().getMaxCaractere());
 		
 		Optional<EUserSubject> subject = this.plugin.getManagerServices().getEssentials().getSubject(user.getUniqueId());
@@ -272,7 +270,7 @@ public class EEHomeOthers extends ECommand<EverEssentials> {
 			EAMessages.PLAYER_NOT_FOUND.sender()
 				.prefix(EEMessages.PREFIX)
 				.sendTo(staff);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		Optional<VirtualTransform> home = subject.get().getHomeLocation(name);
@@ -281,7 +279,7 @@ public class EEHomeOthers extends ECommand<EverEssentials> {
 			EEMessages.DELHOME_INCONNU.sender()
 				.replace("<home>", name)
 				.sendTo(staff);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 				
 		// Le home n'a pas été supprimer
@@ -289,14 +287,14 @@ public class EEHomeOthers extends ECommand<EverEssentials> {
 			EAMessages.COMMAND_ERROR.sender()
 				.prefix(EEMessages.PREFIX)
 				.sendTo(staff);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		EEMessages.HOMEOTHERS_DELETE.sender()
 			.replace("<player>", user.getName())
 			.replace("<home>", getButtonHome(name, home.get()))
 			.sendTo(staff);
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 	
 	private Text getButtonHome(final String name, final Transform<World> location) {

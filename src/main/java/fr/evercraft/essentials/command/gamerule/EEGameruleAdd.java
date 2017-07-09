@@ -19,6 +19,7 @@ package fr.evercraft.essentials.command.gamerule;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
@@ -57,18 +58,15 @@ public class EEGameruleAdd extends ESubCommand<EverEssentials> {
 	}
 	
 	@Override
-	public Collection<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
+	public Collection<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		return Arrays.asList();
 	}
 	
 	@Override
-	public boolean subExecute(final CommandSource source, final List<String> args) throws CommandException {
-		// Résultat de la commande :
-		boolean resultat = false;
-		
+	public CompletableFuture<Boolean> execute(final CommandSource source, final List<String> args) throws CommandException {
 		if(args.size() == 2) {
 			if(source instanceof EPlayer) {
-				resultat = this.commandGameruleAdd((EPlayer) source, args.get(0), args.get(1));
+				return this.commandGameruleAdd((EPlayer) source, args.get(0), args.get(1));
 			} else {
 				EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()
 					.prefix(EEMessages.PREFIX)
@@ -78,10 +76,10 @@ public class EEGameruleAdd extends ESubCommand<EverEssentials> {
 			source.sendMessage(this.help(source));
 		}
 		
-		return resultat;
+		return CompletableFuture.completedFuture(false);
 	}
 
-	private boolean commandGameruleAdd(final EPlayer player, final String gamerule, final String value) {
+	private CompletableFuture<Boolean> commandGameruleAdd(final EPlayer player, final String gamerule, final String value) {
 		WorldProperties properties = player.getWorld().getProperties();
 		if (!properties.getGameRule(gamerule).isPresent()) {
 			properties.setGameRule(gamerule, value);
@@ -95,6 +93,6 @@ public class EEGameruleAdd extends ESubCommand<EverEssentials> {
 			.prefix(EEMessages.PREFIX)
 			.sendTo(player);
 		}
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 }

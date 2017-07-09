@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
@@ -77,31 +78,28 @@ public class EEWeatherSun extends ECommand<EverEssentials> {
 	}
 
 	@Override
-	public boolean execute(CommandSource source, final List<String> args) throws CommandException {
+	public CompletableFuture<Boolean> execute(CommandSource source, final List<String> args) throws CommandException {
 		// Erreur : Context 
 		if(source instanceof EPlayer) {
 			source = ((EPlayer) source).get();
 		}
 		
-		// Résultat de la commande :
-		boolean resultat = false;
-		
 		if (args.size() == 0) {
-			resultat = this.commandWeatherSun(source, "");
+			return this.commandWeatherSun(source, "");
 		} else if (args.size() == 1) {
-			resultat = this.commandWeatherSun(source, "\"" + args.get(0) + "\"");
+			return this.commandWeatherSun(source, "\"" + args.get(0) + "\"");
 		} else if (args.size() == 2) {
-			resultat = this.commandWeatherSun(source, "\"" + args.get(0) + "\" \"" + args.get(1) + "\"");
+			return this.commandWeatherSun(source, "\"" + args.get(0) + "\" \"" + args.get(1) + "\"");
 		// Nombre d'argument incorrect
 		} else {
 			source.sendMessage(this.help(source));
 		}
 		
-		return resultat;
+		return CompletableFuture.completedFuture(false);
 	}
 
-	public boolean commandWeatherSun(final CommandSource player, final String arg) {
+	public CompletableFuture<Boolean> commandWeatherSun(final CommandSource player, final String arg) {
 		this.plugin.getGame().getCommandManager().process(player, "weather sun " + arg);
-		return false;
+		return CompletableFuture.completedFuture(false);
 	}
 }

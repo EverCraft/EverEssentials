@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.TreeMap;
+import java.util.concurrent.CompletableFuture;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
@@ -37,11 +38,12 @@ import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.EChat;
-import fr.evercraft.everapi.plugin.command.EReloadCommand;
+import fr.evercraft.everapi.plugin.command.ECommand;
+import fr.evercraft.everapi.plugin.command.ReloadCommand;
 import fr.evercraft.everapi.server.location.VirtualTransform;
 import fr.evercraft.everapi.server.player.EPlayer;
 
-public class EEWarp extends EReloadCommand<EverEssentials> {
+public class EEWarp extends ECommand<EverEssentials> implements ReloadCommand {
 	
 	private boolean permission;
 	
@@ -85,18 +87,15 @@ public class EEWarp extends EReloadCommand<EverEssentials> {
 	}
 	
 	@Override
-	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
-		// Résultat de la commande :
-		boolean resultat = false;
-		
+	public CompletableFuture<Boolean> execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Nom du warp inconnu
 		if (args.size() == 0) {
-			resultat = this.commandWarpList(source);
+			return this.commandWarpList(source);
 		// Nom du warp connu
 		} else if (args.size() == 1) {
 			// Si la source est un joueur
 			if (source instanceof EPlayer) {
-				resultat = this.commandWarpTeleport((EPlayer) source, args.get(0));
+				return this.commandWarpTeleport((EPlayer) source, args.get(0));
 			// La source n'est pas un joueur
 			} else {
 				EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()
@@ -109,7 +108,7 @@ public class EEWarp extends EReloadCommand<EverEssentials> {
 				Optional<EPlayer> player = this.plugin.getEServer().getEPlayer(args.get(1));
 				// Le joueur existe
 				if (player.isPresent()){
-					resultat = this.commandWarpTeleportOthers(source, player.get(), args.get(0));
+					return this.commandWarpTeleportOthers(source, player.get(), args.get(0));
 				// Le joueur est introuvable
 				} else {
 					source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
@@ -123,10 +122,10 @@ public class EEWarp extends EReloadCommand<EverEssentials> {
 			source.sendMessage(this.help(source));
 		}
 		
-		return resultat;
+		return CompletableFuture.completedFuture(false);
 	}
 	
-	public boolean commandWarpList(final CommandSource player) throws CommandException {
+	public CompletableFuture<Boolean> commandWarpList(final CommandSource player) throws CommandException {
 		TreeMap<String, VirtualTransform> warps = new TreeMap<String, VirtualTransform>(this.plugin.getManagerServices().getWarp().getAllSQL());
 		
 		List<Text> lists = new ArrayList<Text>();
@@ -169,10 +168,10 @@ public class EEWarp extends EReloadCommand<EverEssentials> {
 		
 		this.plugin.getEverAPI().getManagerService().getEPagination().sendTo(EEMessages.WARP_LIST_TITLE.getText().toBuilder()
 				.onClick(TextActions.runCommand("/warp")).build(), lists, player);			
-		return false;
+		return CompletableFuture.completedFuture(false);
 	}
 	
-	private boolean commandWarpTeleport(final EPlayer player, final String warp_name) {
+	private CompletableFuture<Boolean> commandWarpTeleport(final EPlayer player, final String warp_name) {
 		String name = EChat.fixLength(warp_name, this.plugin.getEverAPI().getConfigs().getMaxCaractere());
 		
 		Optional<Transform<World>> warp = this.plugin.getManagerServices().getWarp().get(name);
@@ -181,14 +180,14 @@ public class EEWarp extends EReloadCommand<EverEssentials> {
 			EEMessages.WARP_INCONNU.sender()
 				.replace("<warp>", name)
 				.sendTo(player);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		if (!this.hasPermission(player, name)) {
 			EEMessages.WARP_NO_PERMISSION.sender()
 				.replace("<warp>", name)
 				.sendTo(player);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 				
 		// Erreur lors de la téléportation du joueur
@@ -196,16 +195,16 @@ public class EEWarp extends EReloadCommand<EverEssentials> {
 			EEMessages.WARP_TELEPORT_PLAYER_ERROR.sender()
 				.replace("<warp>", () -> this.getButtonWarp(name, warp.get()))
 				.sendTo(player);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 			
 		EEMessages.WARP_TELEPORT_PLAYER.sender()
 			.replace("<warp>", () -> this.getButtonWarp(name, warp.get()))
 			.sendTo(player);
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 	
-	private boolean commandWarpTeleportOthers(final CommandSource staff, final EPlayer player, final String warp_name) {
+	private CompletableFuture<Boolean> commandWarpTeleportOthers(final CommandSource staff, final EPlayer player, final String warp_name) {
 		String name = EChat.fixLength(warp_name, this.plugin.getEverAPI().getConfigs().get("maxCaractere").getInt(16));
 		
 		Optional<Transform<World>> warp = this.plugin.getManagerServices().getWarp().get(name);
@@ -214,7 +213,7 @@ public class EEWarp extends EReloadCommand<EverEssentials> {
 			EEMessages.WARP_INCONNU.sender()
 				.replace("<warp>", name)
 				.sendTo(staff);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		// Erreur lors de la téléportation du joueur
@@ -222,7 +221,7 @@ public class EEWarp extends EReloadCommand<EverEssentials> {
 			EEMessages.WARP_TELEPORT_OTHERS_ERROR.sender()
 				.replace("<warp>", () -> this.getButtonWarp(name, warp.get()))
 				.sendTo(staff);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 			
 		EEMessages.WARP_TELEPORT_OTHERS_PLAYER.sender()
@@ -233,7 +232,7 @@ public class EEWarp extends EReloadCommand<EverEssentials> {
 			.replace("<player>", player.getName())
 			.replace("<warp>", () -> this.getButtonWarp(name, warp.get()))
 			.sendTo(staff);
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 	
 	private Text getButtonTeleport(final String name, final VirtualTransform location){

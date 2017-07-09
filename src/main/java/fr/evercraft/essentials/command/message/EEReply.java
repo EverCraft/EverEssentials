@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.regex.Pattern;
 
 import org.spongepowered.api.command.CommandException;
@@ -82,19 +83,16 @@ public class EEReply extends ECommand<EverEssentials> {
 	}
 	
 	@Override
-	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
-		// Résultat de la commande :
-		boolean resultat = false;
-		
+	public CompletableFuture<Boolean> execute(final CommandSource source, final List<String> args) throws CommandException {
 		if (args.size() == 1) {
 			String message = EEMsg.replaceMessage(this.plugin.getChat(), source, args.get(0));
 			
 			// La source est un joueur
 			if (source instanceof EPlayer) {
-				resultat = this.commandReply(source, ((EPlayer) source).getReplyTo(), message);
+				return this.commandReply(source, ((EPlayer) source).getReplyTo(), message);
 			// La source est une console
 			} else if (source instanceof ConsoleSource) {
-				resultat = this.commandReply(source, this.plugin.getManagerServices().getEssentials().getConsole().getReplyTo(), message);
+				return this.commandReply(source, this.plugin.getManagerServices().getEssentials().getConsole().getReplyTo(), message);
 			} else {
 				EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()
 					.prefix(EEMessages.PREFIX)
@@ -104,24 +102,20 @@ public class EEReply extends ECommand<EverEssentials> {
 		} else {
 			source.sendMessage(this.help(source));
 		}
-		
-		return resultat;
+		return CompletableFuture.completedFuture(false);
 	}
 	
-	private boolean commandReply(final CommandSource player, final Optional<String> receive, final String message) {
-		// Résultat de la commande :
-		boolean resultat = false;
-		
+	private CompletableFuture<Boolean> commandReply(final CommandSource player, final Optional<String> receive, final String message) {
 		if (!receive.isPresent()) {
 			EEMessages.REPLY_EMPTY.sendTo(player);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		// Le destinataire est le console
 		if (receive.get().equalsIgnoreCase(EEMsg.CONSOLE)) {
 			// La source est un joueur
 			if (player instanceof EPlayer) {
-				resultat = this.commandMsgConsole((EPlayer) player, this.plugin.getEServer().getConsole(), message);
+				return this.commandMsgConsole((EPlayer) player, this.plugin.getEServer().getConsole(), message);
 			// La source est une console
 			} else {
 				EAMessages.COMMAND_ERROR.sender()
@@ -135,10 +129,10 @@ public class EEReply extends ECommand<EverEssentials> {
 				if (replyTo.isPresent()) {
 					// La source est un joueur
 					if (player instanceof EPlayer) {
-						resultat = this.commandMsgPlayer((EPlayer) player, replyTo.get(), message);
+						return this.commandMsgPlayer((EPlayer) player, replyTo.get(), message);
 					// La source est une console
 					} else {
-						resultat = this.commandMsgConsole(player, replyTo.get(), message);
+						return this.commandMsgConsole(player, replyTo.get(), message);
 					}
 				} else {
 					EAMessages.PLAYER_NOT_FOUND.sender()
@@ -151,20 +145,19 @@ public class EEReply extends ECommand<EverEssentials> {
 					.sendTo(player);
 			}
 		}
-
-		return resultat;
+		return CompletableFuture.completedFuture(false);
 	}
 	
 	/*
 	 * Un joueur parle à un autre joueur
 	 */
-	private boolean commandMsgPlayer(final EPlayer player, final EPlayer receive, final String message) {
+	private CompletableFuture<Boolean> commandMsgPlayer(final EPlayer player, final EPlayer receive, final String message) {
 		if (receive.ignore(player)) {
 				EEMessages.REPLY_IGNORE_RECEIVE.sender()
 				.replace("<message>", message)
 				.replace("<player>", receive.getName())
 				.sendTo(player);
-			return false;
+				return CompletableFuture.completedFuture(false);
 		}
 		
 		if (player.ignore(receive)) {
@@ -172,7 +165,7 @@ public class EEReply extends ECommand<EverEssentials> {
 				.replace("<message>", message)
 				.replace("<player>", receive.getName())
 				.sendTo(player);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		Map<Pattern, EReplace<?>> replaces = new HashMap<Pattern, EReplace<?>>();
@@ -191,13 +184,13 @@ public class EEReply extends ECommand<EverEssentials> {
 					.onHover(TextActions.showText(EEMessages.REPLY_PLAYER_SEND_HOVER.getFormat().toText(replaces)))
 					.onClick(TextActions.suggestCommand("/msg " + receive.getName() + " "))
 					.build());
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 	
 	/*
 	 * La console envoye un message à joueur
 	 */
-	private boolean commandMsgConsole(final CommandSource player, final EPlayer receive, final String message) {
+	private CompletableFuture<Boolean> commandMsgConsole(final CommandSource player, final EPlayer receive, final String message) {
 		Map<Pattern, EReplace<?>> replaces = new HashMap<Pattern, EReplace<?>>();
 		replaces.put(Pattern.compile("<message>"), EReplace.of(message));
 		
@@ -213,13 +206,13 @@ public class EEReply extends ECommand<EverEssentials> {
 					.onHover(TextActions.showText(EEMessages.REPLY_PLAYER_RECEIVE_HOVER.getFormat().toText(replaces)))
 					.onClick(TextActions.suggestCommand("/msg " + EEMsg.CONSOLE + " "))
 					.build());
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 	
 	/*
 	 * Un joueur envoye un message à la console
 	 */
-	private boolean commandMsgConsole(final EPlayer player, final CommandSource receive, final String message) {
+	private CompletableFuture<Boolean> commandMsgConsole(final EPlayer player, final CommandSource receive, final String message) {
 		Map<Pattern, EReplace<?>> replaces = new HashMap<Pattern, EReplace<?>>();
 		replaces.put(Pattern.compile("<message>"), EReplace.of(message));
 		
@@ -235,6 +228,6 @@ public class EEReply extends ECommand<EverEssentials> {
 					.onHover(TextActions.showText(EEMessages.REPLY_PLAYER_RECEIVE_HOVER.getFormat().toText(replaces)))
 					.onClick(TextActions.suggestCommand("/msg " + EEMsg.CONSOLE + " "))
 					.build());
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 }

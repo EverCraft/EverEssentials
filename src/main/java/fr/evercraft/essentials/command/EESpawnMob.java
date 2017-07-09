@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 import org.apache.commons.lang3.StringUtils;
 import org.spongepowered.api.command.CommandException;
@@ -42,11 +43,12 @@ import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
-import fr.evercraft.everapi.plugin.command.EReloadCommand;
+import fr.evercraft.everapi.plugin.command.ECommand;
+import fr.evercraft.everapi.plugin.command.ReloadCommand;
 import fr.evercraft.everapi.server.player.EPlayer;
 import fr.evercraft.everapi.services.entity.EntityTemplate;
 
-public class EESpawnMob extends EReloadCommand<EverEssentials> {
+public class EESpawnMob extends ECommand<EverEssentials> implements ReloadCommand {
 	
 	private int limit;
 	
@@ -101,16 +103,13 @@ public class EESpawnMob extends EReloadCommand<EverEssentials> {
 	}
 	
 	@Override
-	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
-		// Résultat de la commande :
-		boolean resultat = false;
-		
+	public CompletableFuture<Boolean> execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Si on ne connait pas le joueur
 		if (args.size() == 1) {
 			
 			// Si la source est un joueur
 			if (source instanceof EPlayer) {
-				resultat = this.commandSpawnMob((EPlayer) source, args.get(0), 1);
+				return this.commandSpawnMob((EPlayer) source, args.get(0), 1);
 			// La source n'est pas un joueur
 			} else {
 				EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()
@@ -123,7 +122,7 @@ public class EESpawnMob extends EReloadCommand<EverEssentials> {
 			if (source instanceof EPlayer) {
 				try {
 					int amount = Math.max(Math.min(Integer.parseInt(args.get(1)), this.limit), 1);
-					resultat = this.commandSpawnMob((EPlayer) source, args.get(0), amount);						
+					return this.commandSpawnMob((EPlayer) source, args.get(0), amount);						
 				} catch (NumberFormatException e) {
 					EAMessages.IS_NOT_NUMBER.sender()
 						.prefix(EEMessages.PREFIX)
@@ -140,17 +139,17 @@ public class EESpawnMob extends EReloadCommand<EverEssentials> {
 		} else {
 			source.sendMessage(this.help(source));
 		}
-		return resultat;
+		return CompletableFuture.completedFuture(false);
 	}
 	
-	private boolean commandSpawnMob(final EPlayer player, String entityString, int amount) {
+	private CompletableFuture<Boolean> commandSpawnMob(final EPlayer player, String entityString, int amount) {
 		Optional<Vector3i> block = player.getViewBlock();
 		// Aucun block
 		if (!block.isPresent()) {
 			EAMessages.PLAYER_NO_LOOK_BLOCK.sender()
 				.prefix(EEMessages.PREFIX)
 				.sendTo(player);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		Vector3d location = block.get().toDouble().add(0.5, 1, 0.5);
 		
@@ -168,10 +167,10 @@ public class EESpawnMob extends EReloadCommand<EverEssentials> {
 		EEMessages.SPAWNMOB_ERROR_MOB.sender()
 			.replace("<entity>", entityString)
 			.sendTo(player);
-		return false;
+		return CompletableFuture.completedFuture(false);
 	}
 	
-	private boolean commandSpawnMob(final EPlayer player, EntityTemplate format, int amount, Vector3d location) {
+	private CompletableFuture<Boolean> commandSpawnMob(final EPlayer player, EntityTemplate format, int amount, Vector3d location) {
 		for(int cpt=0; cpt < amount; cpt++) {
 			Entity entity = player.getWorld().createEntityNaturally(format.getType(), location);
 			format.apply(entity, player.get());
@@ -188,6 +187,6 @@ public class EESpawnMob extends EReloadCommand<EverEssentials> {
 			.replace("<amount>", String.valueOf(amount))
 			.replace("<entity>", StringUtils.capitalize(format.getName()))
 			.sendTo(player);
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 }

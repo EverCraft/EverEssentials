@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
@@ -73,16 +74,13 @@ public class EEExt extends ECommand<EverEssentials> {
 	}
 	
 	@Override
-	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
-		// Résultat de la commande :
-		boolean resultat = false;
-		
+	public CompletableFuture<Boolean> execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Si on ne connait pas le joueur
 		if (args.size() == 0) {
 			
 			// Si la source est un joueur
 			if (source instanceof EPlayer) {
-				resultat = this.commandExt((EPlayer) source);
+				return this.commandExt((EPlayer) source);
 			// La source n'est pas un joueur
 			} else {
 				EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()
@@ -96,12 +94,12 @@ public class EEExt extends ECommand<EverEssentials> {
 			// Si il a la permission
 			if (source.hasPermission(EEPermissions.EXT_OTHERS.get())){
 				if (args.get(0).equals("*")) {
-					resultat = this.commandExtAll(source);
+					return this.commandExtAll(source);
 				} else {
 					Optional<EPlayer> optPlayer = this.plugin.getEServer().getEPlayer(args.get(0));
 					// Le joueur existe
 					if (optPlayer.isPresent()){
-						resultat = this.commandExtOthers(source, optPlayer.get());
+						return this.commandExtOthers(source, optPlayer.get());
 					// Le joueur est introuvable
 					} else {
 						source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
@@ -117,22 +115,22 @@ public class EEExt extends ECommand<EverEssentials> {
 			source.sendMessage(this.help(source));
 		}
 		
-		return resultat;
+		return CompletableFuture.completedFuture(false);
 	}
 	
-	private boolean commandExt(final EPlayer player) {
+	private CompletableFuture<Boolean> commandExt(final EPlayer player) {
 		// Le joueur n'est pas en feu
 		if (player.getFireTicks() <= 0) {
 			player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.EXT_PLAYER_ERROR.getText()));
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 			
 		player.setFireTicks(0);
 		player.sendMessage(EEMessages.PREFIX.getText().concat(EEMessages.EXT_PLAYER.getText()));
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 	
-	private boolean commandExtOthers(final CommandSource staff, final EPlayer player) {
+	private CompletableFuture<Boolean> commandExtOthers(final CommandSource staff, final EPlayer player) {
 		// La source et le joueur sont identique
 		if (player.equals(staff)) {
 			return this.commandExt(player);
@@ -143,7 +141,7 @@ public class EEExt extends ECommand<EverEssentials> {
 			EEMessages.EXT_OTHERS_ERROR.sender()
 				.replace("<player>", player.getName())
 				.sendTo(staff);
-			return false;
+			return CompletableFuture.completedFuture(false);
 		}
 		
 		
@@ -155,10 +153,10 @@ public class EEExt extends ECommand<EverEssentials> {
 		EEMessages.EXT_OTHERS_PLAYER.sender()
 			.replace("<staff>", player.getName())
 			.sendTo(player);
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 	
-	private boolean commandExtAll(final CommandSource staff) {
+	private CompletableFuture<Boolean> commandExtAll(final CommandSource staff) {
 		// Pour tous les joueurs connecté
 		this.plugin.getEServer().getOnlineEPlayers().forEach(player -> {
 			if (player.getFireTicks() > 0) {
@@ -172,6 +170,6 @@ public class EEExt extends ECommand<EverEssentials> {
 			}
 		});
 		EEMessages.EXT_ALL_STAFF.sendTo(staff);
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 }

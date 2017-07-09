@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
@@ -72,14 +73,11 @@ public class EEWarpSet extends ECommand<EverEssentials> {
 	}
 	
 	@Override
-	public boolean execute(final CommandSource source, final List<String> args) throws CommandException, ServerDisableException {
-		// Résultat de la commande :
-		boolean resultat = false;
-		
+	public CompletableFuture<Boolean> execute(final CommandSource source, final List<String> args) throws CommandException, ServerDisableException {
 		if (args.size() == 1) {
 			// Si la source est un joueur
 			if (source instanceof EPlayer) {
-				resultat = this.commandSetWarp((EPlayer) source, args.get(0)); 
+				return this.commandSetWarp((EPlayer) source, args.get(0)); 
 			// La source n'est pas un joueur
 			} else {
 				EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()
@@ -90,10 +88,10 @@ public class EEWarpSet extends ECommand<EverEssentials> {
 		} else {
 			source.sendMessage(this.help(source));
 		}
-		return resultat;
+		return CompletableFuture.completedFuture(false);
 	}
 	
-	private boolean commandSetWarp(final EPlayer player, final String warp_name) throws ServerDisableException {
+	private CompletableFuture<Boolean> commandSetWarp(final EPlayer player, final String warp_name) throws ServerDisableException {
 		String name = EChat.fixLength(warp_name, this.plugin.getEverAPI().getConfigs().getMaxCaractere());
 		
 		Optional<Transform<World>> warp = this.plugin.getManagerServices().getWarp().get(name);
@@ -102,7 +100,7 @@ public class EEWarpSet extends ECommand<EverEssentials> {
 				EEMessages.SETWARP_REPLACE.sender()
 					.replace("<warp>", () -> this.getButtonWarp(name, player.getLocation()))
 					.sendTo(player);
-				return true;
+				return CompletableFuture.completedFuture(true);
 			} else {
 				EEMessages.SETWARP_REPLACE_CANCEL.sender()
 					.replace("<warp>", name)
@@ -113,14 +111,14 @@ public class EEWarpSet extends ECommand<EverEssentials> {
 				EEMessages.SETWARP_NEW.sender()
 					.replace("<warp>", () -> this.getButtonWarp(name, player.getLocation()))
 					.sendTo(player);
-				return true;
+				return CompletableFuture.completedFuture(true);
 			} else {
 				EEMessages.SETWARP_NEW_CANCEL.sender()
 					.replace("<warp>", name)
 					.sendTo(player);
 			}
 		}
-		return false;
+		return CompletableFuture.completedFuture(false);
 	}
 
 	private Text getButtonWarp(final String name, final Location<World> location){

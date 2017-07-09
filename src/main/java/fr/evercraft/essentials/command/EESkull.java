@@ -23,7 +23,6 @@ import java.util.concurrent.CompletableFuture;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
-import org.spongepowered.api.profile.GameProfile;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
@@ -75,15 +74,12 @@ public class EESkull extends ECommand<EverEssentials> {
 	}
 
 	@Override
-	public boolean execute(final CommandSource source, final List<String> args) throws CommandException {
-		// Résultat de la commande :
-		boolean resultat = false;
-		
+	public CompletableFuture<Boolean> execute(final CommandSource source, final List<String> args) throws CommandException {
 		// Si on ne connait pas le joueur
 		if (args.size() == 0) {
 			// Si la source est un joueur
 			if (source instanceof EPlayer) {
-				resultat = this.commandSkull((EPlayer) source);
+				return this.commandSkull((EPlayer) source);
 				// La source n'est pas un joueur
 			} else {
 				EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()
@@ -94,7 +90,7 @@ public class EESkull extends ECommand<EverEssentials> {
 		} else if (args.size() == 1) {
 			// Si il a la permission
 			if (source.hasPermission(EEPermissions.SKULL_OTHERS.get())) {
-				resultat = this.commandSkullOthers((EPlayer) source, args.get(0));
+				return this.commandSkullOthers((EPlayer) source, args.get(0));
 				// Il n'a pas la permission
 			} else {
 				EAMessages.NO_PERMISSION.sender()
@@ -106,43 +102,42 @@ public class EESkull extends ECommand<EverEssentials> {
 			source.sendMessage(this.help(source));
 		}
 		
-		return resultat;
+		return CompletableFuture.completedFuture(false);
 	}
 
-	private boolean commandSkull(final EPlayer player) {
+	private CompletableFuture<Boolean> commandSkull(final EPlayer player) {
 		player.giveItemAndDrop(UtilsItemStack.createPlayerHead(player.getProfile()));
 		EEMessages.SKULL_MY_HEAD.sendTo(player);
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 
-	private boolean commandSkullOthers(final EPlayer player, final String name) {
-		CompletableFuture<GameProfile> future = this.plugin.getEServer().getGameProfileFuture(name);
-		future.exceptionally(e -> null)
-			.thenAccept((profile) -> {
-				if (!player.isOnline()) return;
+	private CompletableFuture<Boolean> commandSkullOthers(final EPlayer player, final String name) {
+		return this.plugin.getEServer().getGameProfileFuture(name).exceptionally(e -> null)
+			.thenCompose((profile) -> {
+				if (!player.isOnline()) return CompletableFuture.completedFuture(false);
 				if (profile == null || !profile.getName().isPresent()) {
 					EAMessages.PLAYER_NOT_FOUND.sender()
 						.prefix(EEMessages.PREFIX)
 						.sendTo(player);
-					return;
+					return CompletableFuture.completedFuture(false);
 				}
 				
-				this.plugin.getEServer().getGameProfileManager().fill(profile, true, true)
+				return this.plugin.getEServer().getGameProfileManager().fill(profile, true, true)
 					.exceptionally(e -> null)
-					.thenAcceptAsync(profile_skin -> {
+					.thenApplyAsync(profile_skin -> {
 						if (profile_skin == null) {
 							EAMessages.PLAYER_NOT_FOUND.sender()
 								.prefix(EEMessages.PREFIX)
 								.sendTo(player);
-							return;
+							return false;
 						}
 						
 						player.giveItemAndDrop(UtilsItemStack.createPlayerHead(profile_skin));
 						EEMessages.SKULL_OTHERS.sender()
 							.replace("<player>", profile_skin.getName().get())
 							.sendTo(player);
+						return true;
 					}, this.plugin.getGame().getScheduler().createSyncExecutor(this.plugin));
 			});
-		return true;
 	}
 }
