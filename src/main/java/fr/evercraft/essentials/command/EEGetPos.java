@@ -126,6 +126,7 @@ public class EEGetPos extends ECommand<EverEssentials> {
 			.replace("<x>", String.valueOf(player.getLocation().getBlockX()))
 			.replace("<y>", String.valueOf(player.getLocation().getBlockY()))
 			.replace("<z>", String.valueOf(player.getLocation().getBlockZ()))
+			.replace("<position>", this.getButtonPos(player.getLocation()))
 			.sendTo(player);
 		return CompletableFuture.completedFuture(true);
 	}
