@@ -123,7 +123,7 @@ public class EEExp extends ECommand<EverEssentials> {
 				Optional<EUser> user = this.plugin.getEServer().getEUser(args.get(3));
 				// Le joueur existe
 				if (user.isPresent()){
-					if (!user.get().equals(source)){
+					if (!user.get().getIdentifier().equalsIgnoreCase(source.getIdentifier())){
 						if (args.get(0).equals("give")){
 							if (args.get(1).equals("lvl")){
 								return this.commandOthersGiveLevel(source, user.get(), args.get(2));

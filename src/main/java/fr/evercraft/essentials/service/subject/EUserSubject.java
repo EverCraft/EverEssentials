@@ -709,7 +709,7 @@ public class EUserSubject implements SubjectUserEssentials {
 				this.back = Optional.of(locationSQL);
 				this.plugin.getThreadAsync().execute(() -> this.plugin.getDataBases().addBack(this.getIdentifier(), locationSQL));
 				return true;
-			} else if (!this.back.get().getTransform().equals(location)) {
+			} else if (!this.back.get().getTransform().isPresent() && !this.back.get().getTransform().get().equals(location)) {
 				final EVirtualTransform locationSQL = new EVirtualTransform(this.plugin, location);
 				this.back = Optional.of(locationSQL);
 				this.plugin.getThreadAsync().execute(() -> this.plugin.getDataBases().setBack(this.getIdentifier(), locationSQL));

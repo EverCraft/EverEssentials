@@ -121,7 +121,7 @@ public class EESeen extends ECommand<EverEssentials> {
 	
 	private CompletableFuture<Boolean> commandSeenOthers(final CommandSource staff, final EUser user) throws CommandException {
 		// La source et le joueur sont identique
-		if (user.equals(staff)) {
+		if (user.getIdentifier().equalsIgnoreCase(staff.getIdentifier())) {
 			return this.commandSeen((EPlayer) user);
 		}
 		if(user.getLastIP().isPresent()) {
