@@ -99,6 +99,7 @@ public class EETeleportationAccept extends ECommand<EverEssentials> {
 				} else {
 					EAMessages.PLAYER_NOT_FOUND.sender()
 						.prefix(EEMessages.PREFIX)
+						.replace("<player>", args.get(0))
 						.sendTo(source);
 				}
 			// Si la source est une console ou un commande block

@@ -80,7 +80,10 @@ public class EETeleportationHere extends ECommand<EverEssentials> {
 					return this.commandTeleportationHere((EPlayer) source, player.get());
 				// Joueur introuvable
 				} else {
-					source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
+					EAMessages.PLAYER_NOT_FOUND.sender()
+						.prefix(EEMessages.PREFIX)
+						.replace("<player>", args.get(0))
+						.sendTo(source);
 				}
 			// Si la source est une console ou un commande block
 			} else {

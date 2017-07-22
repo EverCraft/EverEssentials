@@ -118,6 +118,7 @@ public class EESkull extends ECommand<EverEssentials> {
 				if (profile == null || !profile.getName().isPresent()) {
 					EAMessages.PLAYER_NOT_FOUND.sender()
 						.prefix(EEMessages.PREFIX)
+						.replace("<player>", name)
 						.sendTo(player);
 					return CompletableFuture.completedFuture(false);
 				}
@@ -128,6 +129,7 @@ public class EESkull extends ECommand<EverEssentials> {
 						if (profile_skin == null) {
 							EAMessages.PLAYER_NOT_FOUND.sender()
 								.prefix(EEMessages.PREFIX)
+								.replace("<player>", name)
 								.sendTo(player);
 							return false;
 						}

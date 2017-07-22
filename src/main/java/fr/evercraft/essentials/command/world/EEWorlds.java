@@ -113,6 +113,7 @@ public class EEWorlds extends ECommand<EverEssentials> {
 					} else {
 						EAMessages.PLAYER_NOT_FOUND.sender()
 							.prefix(EEMessages.PREFIX)
+							.replace("<player>", args.get(1))
 							.sendTo(source);
 					}
 				// Si la source est une console ou un commande block

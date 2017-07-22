@@ -105,6 +105,7 @@ public class EEHomeOthers extends ECommand<EverEssentials> {
 			} else {
 				EAMessages.PLAYER_NOT_FOUND.sender()
 					.prefix(EEMessages.PREFIX)
+					.replace("<player>", args.get(0))
 					.sendTo(source);
 			}
 			
@@ -120,6 +121,7 @@ public class EEHomeOthers extends ECommand<EverEssentials> {
 				} else {
 					EAMessages.PLAYER_NOT_FOUND.sender()
 						.prefix(EEMessages.PREFIX)
+						.replace("<player>", args.get(0))
 						.sendTo(source);
 				}
 			// La source n'est pas un joueur
@@ -142,6 +144,7 @@ public class EEHomeOthers extends ECommand<EverEssentials> {
 					} else {
 						EAMessages.PLAYER_NOT_FOUND.sender()
 							.prefix(EEMessages.PREFIX)
+							.replace("<player>", args.get(0))
 							.sendTo(source);
 					}
 				// Il n'a pas la permission
@@ -167,6 +170,7 @@ public class EEHomeOthers extends ECommand<EverEssentials> {
 					} else {
 						EAMessages.PLAYER_NOT_FOUND.sender()
 							.prefix(EEMessages.PREFIX)
+							.replace("<player>", args.get(0))
 							.sendTo(source);
 					}
 				// Il n'a pas la permission
@@ -240,6 +244,7 @@ public class EEHomeOthers extends ECommand<EverEssentials> {
 		if (!subject.isPresent()) {
 			EAMessages.PLAYER_NOT_FOUND.sender()
 				.prefix(EEMessages.PREFIX)
+				.replace("<player>", user.getName())
 				.sendTo(staff);
 			return CompletableFuture.completedFuture(false);
 		}
@@ -269,6 +274,7 @@ public class EEHomeOthers extends ECommand<EverEssentials> {
 		if (!subject.isPresent()) {
 			EAMessages.PLAYER_NOT_FOUND.sender()
 				.prefix(EEMessages.PREFIX)
+				.replace("<player>", user.getName())
 				.sendTo(staff);
 			return CompletableFuture.completedFuture(false);
 		}

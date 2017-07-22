@@ -132,6 +132,7 @@ public class EEUuid extends ECommand<EverEssentials> {
 				} else {
 					EAMessages.PLAYER_NOT_FOUND.sender()
 						.prefix(EEMessages.PREFIX)
+						.replace("<player>", name)
 						.sendTo(source);
 				}
 				return profile;
@@ -140,6 +141,7 @@ public class EEUuid extends ECommand<EverEssentials> {
 		} catch (IllegalArgumentException e) {
 			EAMessages.PLAYER_NOT_FOUND.sender()
 				.prefix(EEMessages.PREFIX)
+				.replace("<player>", name)
 				.sendTo(source);
 			return CompletableFuture.completedFuture(false);
 		}
@@ -163,6 +165,7 @@ public class EEUuid extends ECommand<EverEssentials> {
 		if(!profile.getName().isPresent()) {
 			EAMessages.PLAYER_NOT_FOUND.sender()
 				.prefix(EEMessages.PREFIX)
+				.replace("<player>", profile.getUniqueId().toString())
 				.sendTo(staff);
 			return CompletableFuture.completedFuture(false);
 		}

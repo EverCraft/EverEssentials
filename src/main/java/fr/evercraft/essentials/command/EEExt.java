@@ -102,7 +102,10 @@ public class EEExt extends ECommand<EverEssentials> {
 						return this.commandExtOthers(source, optPlayer.get());
 					// Le joueur est introuvable
 					} else {
-						source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
+						EAMessages.PLAYER_NOT_FOUND.sender()
+							.prefix(EEMessages.PREFIX)
+							.replace("<player>", args.get(0))
+							.sendTo(source);
 					}
 				}
 			// Il n'a pas la permission

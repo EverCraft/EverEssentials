@@ -117,7 +117,9 @@ public class EEName extends ECommand<EverEssentials> {
 	}
 
 	private CompletableFuture<Boolean> commandNames(final EPlayer player) {
-		return this.plugin.getEverAPI().getManagerService().getMojangService().getNameHistory().get(player.getUniqueId()).thenApply(names -> {
+		return this.plugin.getEverAPI().getManagerService().getMojangService().getNameHistory().get(player.getUniqueId())
+				.exceptionally(e -> null)
+				.thenApply(names -> {
 			if (names == null) {
 				EAMessages.COMMAND_ERROR.sender()
 					.prefix(EEMessages.PREFIX)
@@ -156,7 +158,9 @@ public class EEName extends ECommand<EverEssentials> {
 	}
 	
 	private CompletableFuture<Boolean> commandNames(final CommandSource player, String name) {
-		return this.plugin.getEServer().getGameProfileFuture(name).thenCompose(profile -> {
+		return this.plugin.getEServer().getGameProfileFuture(name)
+				.exceptionally(e -> null)
+				.thenCompose(profile -> {
 			if (profile != null && profile.isFilled() && profile.getName().isPresent()) {
 				if (player instanceof EPlayer && ((EPlayer) player).getProfile().equals(profile)) {
 					return this.commandNames((EPlayer) player);
@@ -166,6 +170,7 @@ public class EEName extends ECommand<EverEssentials> {
 			} else {
 				EAMessages.PLAYER_NOT_FOUND.sender()
 					.prefix(EEMessages.PREFIX)
+					.replace("<player>", name)
 					.sendTo(player);
 			}
 			return CompletableFuture.completedFuture(false);
@@ -173,7 +178,9 @@ public class EEName extends ECommand<EverEssentials> {
 	}
 	
 	private CompletableFuture<Boolean> commandNames(CommandSource staff, GameProfile gameprofile) {
-		return this.plugin.getEverAPI().getManagerService().getMojangService().getNameHistory().get(gameprofile.getUniqueId()).thenApply(names -> {
+		return this.plugin.getEverAPI().getManagerService().getMojangService().getNameHistory().get(gameprofile.getUniqueId())
+				.exceptionally(e -> null)
+				.thenApply(names -> {
 			if (names == null) {
 				EAMessages.COMMAND_ERROR.sender()
 					.prefix(EEMessages.PREFIX)

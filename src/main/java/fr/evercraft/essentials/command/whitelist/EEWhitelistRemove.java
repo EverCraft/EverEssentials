@@ -94,6 +94,7 @@ public class EEWhitelistRemove extends ESubCommand<EverEssentials> {
 		if (!gameprofile.isPresent()) {
 			EAMessages.PLAYER_NOT_FOUND.sender()
 				.prefix(EEMessages.PREFIX)
+				.replace("<player>", identifier)
 				.sendTo(player);
 			return CompletableFuture.completedFuture(false);
 		}

@@ -94,6 +94,7 @@ public class EEWhitelistAdd extends ESubCommand<EverEssentials> {
 		if (!gameprofile.isPresent()) {
 			EAMessages.PLAYER_NOT_FOUND.sender()
 				.prefix(EEMessages.PREFIX)
+				.replace("<player>", identifier)
 				.sendTo(player);
 			return false;
 		}

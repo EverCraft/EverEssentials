@@ -113,7 +113,7 @@ public class EEMsg extends ECommand<EverEssentials> {
 					return this.commandMsgCommandBlock(source, this.plugin.getEServer().getConsole(), message);
 				// La source est inconnue
 				} else {
-					EAMessages.PLAYER_NOT_FOUND.sender()
+					EAMessages.COMMAND_ERROR.sender()
 						.prefix(EEMessages.PREFIX)
 						.sendTo(source);
 				}
@@ -143,6 +143,7 @@ public class EEMsg extends ECommand<EverEssentials> {
 				} else {
 					EAMessages.PLAYER_NOT_FOUND.sender()
 						.prefix(EEMessages.PREFIX)
+						.replace("<player>", args.get(0))
 						.sendTo(source);
 				}
 				

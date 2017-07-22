@@ -35,7 +35,6 @@ import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.command.ESubCommand;
 import fr.evercraft.everapi.server.player.EPlayer;
 import fr.evercraft.everapi.server.user.EUser;
-import fr.evercraft.everapi.services.essentials.SubjectUserEssentials;
 
 public class EEGodOff extends ESubCommand<EverEssentials> {
 	
@@ -91,21 +90,13 @@ public class EEGodOff extends ESubCommand<EverEssentials> {
 			if (source.hasPermission(EEPermissions.GOD_OTHERS.get())){
 				Optional<EUser> user = this.plugin.getEServer().getEUser(args.get(0));
 				// Le joueur existe
-				if (user.isPresent()){
-					Optional<SubjectUserEssentials> subject = this.plugin.getManagerServices().getEssentials().get(user.get().getUniqueId());
-					// Le joueur existe
-					if (subject.isPresent()){
-						return this.commandGodOffOthers(source, user.get());
-					// Le joueur est introuvable
-					} else {
-						EAMessages.PLAYER_NOT_FOUND.sender()
-							.prefix(EEMessages.PREFIX)
-							.sendTo(source);
-					}
+				if (user.isPresent()) {
+					return this.commandGodOffOthers(source, user.get());
 				// Le joueur est introuvable
 				} else {
 					EAMessages.PLAYER_NOT_FOUND.sender()
 						.prefix(EEMessages.PREFIX)
+						.replace("<player>", args.get(0))
 						.sendTo(source);
 				}
 			// Il n'a pas la permission

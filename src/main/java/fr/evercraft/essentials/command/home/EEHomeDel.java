@@ -119,6 +119,7 @@ public class EEHomeDel extends ECommand<EverEssentials> {
 		if (!subject.isPresent()) {
 			EAMessages.PLAYER_NOT_FOUND.sender()
 				.prefix(EEMessages.PREFIX)
+				.replace("<player>", player.getName())
 				.sendTo(player);
 			return CompletableFuture.completedFuture(false);
 		}
@@ -147,6 +148,7 @@ public class EEHomeDel extends ECommand<EverEssentials> {
 		if (!subject.isPresent()) {
 			EAMessages.PLAYER_NOT_FOUND.sender()
 				.prefix(EEMessages.PREFIX)
+				.replace("<player>", player.getName())
 				.sendTo(player);
 			return CompletableFuture.completedFuture(false);
 		}

@@ -80,6 +80,7 @@ public class EEIgnoreRemove extends ESubCommand<EverEssentials> {
 				} else {
 					EAMessages.PLAYER_NOT_FOUND.sender()
 						.prefix(EEMessages.PREFIX)
+						.replace("<player>", args.get(0))
 						.sendTo(source);
 				}
 			// La source n'est pas un joueur

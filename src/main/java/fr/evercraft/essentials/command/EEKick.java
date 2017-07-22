@@ -101,6 +101,7 @@ public class EEKick extends ECommand<EverEssentials> {
 			} else {
 				EAMessages.PLAYER_NOT_FOUND.sender()
 					.prefix(EEMessages.PREFIX)
+					.replace("<player>", args.get(0))
 					.sendTo(source);
 			}
 			
@@ -112,7 +113,10 @@ public class EEKick extends ECommand<EverEssentials> {
 				return this.commandKick(source, optPlayer.get(), EChat.of(args.get(1)));
 			// Le joueur est introuvable
 			} else {
-				source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
+				EAMessages.PLAYER_NOT_FOUND.sender()
+					.prefix(EEMessages.PREFIX)
+					.replace("<player>", args.get(0))
+					.sendTo(source);
 			}
 		
 		// Nombre d'argument incorrect

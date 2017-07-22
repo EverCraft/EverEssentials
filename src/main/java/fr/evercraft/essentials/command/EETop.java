@@ -78,7 +78,7 @@ public class EETop extends ECommand<EverEssentials> {
 				return this.commandTop((EPlayer) source);
 			// Si la source est une console ou un commande block
 			} else {
-				EAMessages.PLAYER_NOT_FOUND.sender()
+				EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()
 					.prefix(EEMessages.PREFIX)
 					.sendTo(source);
 			}

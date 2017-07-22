@@ -137,6 +137,7 @@ public class EEReply extends ECommand<EverEssentials> {
 				} else {
 					EAMessages.PLAYER_NOT_FOUND.sender()
 						.prefix(EEMessages.PREFIX)
+						.replace("<player>", receive.get())
 						.sendTo(player);
 				}
 			} catch(IllegalArgumentException e) {

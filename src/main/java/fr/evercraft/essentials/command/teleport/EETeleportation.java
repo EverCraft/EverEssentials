@@ -95,6 +95,7 @@ public class EETeleportation extends ECommand<EverEssentials> {
 				} else {
 					EAMessages.PLAYER_NOT_FOUND.sender()
 						.prefix(EEMessages.PREFIX)
+						.replace("<player>", args.get(0))
 						.sendTo(source);
 				}
 			// Si la source est une console ou un commande block
@@ -120,6 +121,7 @@ public class EETeleportation extends ECommand<EverEssentials> {
 					} else {
 						EAMessages.PLAYER_NOT_FOUND.sender()
 							.prefix(EEMessages.PREFIX)
+							.replace("<player>", args.get(1))
 							.sendTo(source);
 					}
 					
@@ -127,6 +129,7 @@ public class EETeleportation extends ECommand<EverEssentials> {
 				} else {
 					EAMessages.PLAYER_NOT_FOUND.sender()
 						.prefix(EEMessages.PREFIX)
+						.replace("<player>", args.get(0))
 						.sendTo(source);
 				}
 			// Il n'a pas la permission

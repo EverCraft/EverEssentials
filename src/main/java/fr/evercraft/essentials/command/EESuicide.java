@@ -81,7 +81,7 @@ public class EESuicide extends ECommand<EverEssentials> {
 				return this.commandSuicide((EPlayer) source);
 			// La source n'est pas un joueur
 			} else {
-				EAMessages.PLAYER_NOT_FOUND.sender()
+				EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()
 					.prefix(EEMessages.PREFIX)
 					.sendTo(source);
 			}

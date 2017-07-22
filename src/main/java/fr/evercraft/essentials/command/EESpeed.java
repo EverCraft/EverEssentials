@@ -171,7 +171,6 @@ public class EESpeed extends ECommand<EverEssentials> {
 			if (source.hasPermission(EEPermissions.SPEED_OTHERS.get())) {
 				Optional<Double> speed = this.getSpeed(args.get(0));
 				if (speed.isPresent()) {
-					//Optional<User> player = this.plugin.getEServer().getUser(args.get(2));
 					Optional<EUser> player = this.plugin.getEServer().getEUser(args.get(2));
 					if (player.isPresent()){
 						if (args.get(1).equalsIgnoreCase(EESpeed.WALK)) {
@@ -184,6 +183,7 @@ public class EESpeed extends ECommand<EverEssentials> {
 					} else {
 						EAMessages.PLAYER_NOT_FOUND.sender()
 							.prefix(EEMessages.PREFIX)
+							.replace("<player>", args.get(2))
 							.sendTo(source);
 					}
 				} else {

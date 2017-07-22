@@ -111,11 +111,14 @@ public class EEWarp extends ECommand<EverEssentials> implements ReloadCommand {
 					return this.commandWarpTeleportOthers(source, player.get(), args.get(0));
 				// Le joueur est introuvable
 				} else {
-					source.sendMessage(EEMessages.PREFIX.getText().concat(EAMessages.PLAYER_NOT_FOUND.getText()));
+					EAMessages.PLAYER_NOT_FOUND.sender()
+						.prefix(EEMessages.PREFIX)
+						.replace("<player>", args.get(1))
+						.sendTo(source);
 				}
 			// Il n'a pas la permission
 			} else {
-				source.sendMessage(EAMessages.NO_PERMISSION.getText());
+				EAMessages.NO_PERMISSION.sendTo(source);
 			}
 		// Nombre d'argument incorrect
 		} else {
