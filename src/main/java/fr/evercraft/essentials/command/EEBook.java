@@ -122,7 +122,7 @@ public class EEBook extends ECommand<EverEssentials> {
 		// Si le joueur a bien un item dans la main
 		if (player.getItemInMainHand().isPresent()) {
 			ItemStack item = player.getItemInMainHand().get();
-			if (item.getItem().equals(ItemTypes.WRITTEN_BOOK) && item.get(Keys.BOOK_PAGES).isPresent()) {
+			if (item.getType().equals(ItemTypes.WRITTEN_BOOK) && item.get(Keys.BOOK_PAGES).isPresent()) {
 				// Nouveau livre
 				ItemStack book = ItemStack.of(ItemTypes.WRITABLE_BOOK, 1);
 				

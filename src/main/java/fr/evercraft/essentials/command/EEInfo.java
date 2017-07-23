@@ -101,7 +101,7 @@ public class EEInfo extends ECommand<EverEssentials> {
 		}
 		
 		EEMessages.INFO_PLAYER.sender()
-			.replace("<type>", item.get().getItem().getName().replaceAll("minecraft:", "").toUpperCase())
+			.replace("<type>", item.get().getType().getName().replaceAll("minecraft:", "").toUpperCase())
 			.replace("<item>", EChat.getButtomItem(item.get(), EEMessages.INFO_ITEM_COLOR.getColor()))
 			.sendTo(player);
 		return CompletableFuture.completedFuture(true);

@@ -116,7 +116,7 @@ public class EEHat extends ECommand<EverEssentials> {
 		Optional<ItemStack> helmet = player.getHelmet();
 			
 		// Le joueur a un casque sur la tête
-		if (helmet.isPresent() && UtilsItemType.isHelmet(helmet.get().getItem().getType())) {
+		if (helmet.isPresent() && UtilsItemType.isHelmet(helmet.get().getType())) {
 			EEMessages.HAT_NO_EMPTY.sender()
 				.replace("<item>", EChat.getButtomItem(player.getHelmet().get(), EEMessages.HAT_ITEM_COLOR.getColor()))
 				.sendTo(player);
@@ -149,7 +149,7 @@ public class EEHat extends ECommand<EverEssentials> {
 		Optional<ItemStack> helmet = player.getHelmet();
 		
 		// Le joueur n'a pas d'objet sur la tête
-		if (!helmet.isPresent() || UtilsItemType.isHelmet(helmet.get().getItem().getType())) {
+		if (!helmet.isPresent() || UtilsItemType.isHelmet(helmet.get().getType())) {
 			EEMessages.HAT_REMOVE_EMPTY.sendTo(player);
 			return CompletableFuture.completedFuture(false);
 		}
