@@ -83,22 +83,21 @@ public class ESpawnService implements SpawnService {
 	}
 
 	@Override
-	public Optional<Transform<World>> get(final String identifier) {
+	public Optional<VirtualTransform> get(final String identifier) {
 		Preconditions.checkNotNull(identifier, "identifier");
 		
 		if (this.spawns.containsKey(identifier)) {
-			return this.spawns.get(identifier).getTransform();
+			return Optional.of(this.spawns.get(identifier));
 		}
 		return Optional.empty();
 	}
 	
 	@Override
 	public Transform<World> getDefault() {
-		Optional<Transform<World>> spawn = this.get(SpawnService.DEFAULT);
-		if (spawn.isPresent()) {
-			return spawn.get();
-		}
-		return this.plugin.getEServer().getSpawn();
+		Optional<VirtualTransform> spawn = this.get(SpawnService.DEFAULT);
+		if (!spawn.isPresent()) return this.plugin.getEServer().getSpawn();
+		
+		return spawn.get().getTransform().orElseGet(() -> this.plugin.getEServer().getSpawn());
 	}
 
 	@Override

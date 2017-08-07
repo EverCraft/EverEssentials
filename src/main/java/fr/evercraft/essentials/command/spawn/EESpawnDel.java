@@ -24,12 +24,10 @@ import java.util.concurrent.CompletableFuture;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
-import org.spongepowered.api.entity.Transform;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
-import org.spongepowered.api.world.World;
 
 import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
@@ -37,6 +35,7 @@ import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.exception.ServerDisableException;
 import fr.evercraft.everapi.plugin.command.ECommand;
+import fr.evercraft.everapi.server.location.VirtualTransform;
 import fr.evercraft.everapi.server.player.EPlayer;
 
 public class EESpawnDel extends ECommand<EverEssentials> {
@@ -89,7 +88,7 @@ public class EESpawnDel extends ECommand<EverEssentials> {
 	}
 	
 	private CompletableFuture<Boolean> commandDeleteSpawn(final EPlayer player, final String spawn_name) {
-		Optional<Transform<World>> spawn = this.plugin.getManagerServices().getSpawn().get(spawn_name);
+		Optional<VirtualTransform> spawn = this.plugin.getManagerServices().getSpawn().get(spawn_name);
 		
 		// Le serveur a un spawn qui porte ce nom
 		if (spawn.isPresent()) {
@@ -107,7 +106,7 @@ public class EESpawnDel extends ECommand<EverEssentials> {
 	}
 	
 	private CompletableFuture<Boolean> commandDeleteSpawnConfirmation(final EPlayer player, final String spawn_name) throws ServerDisableException {
-		Optional<Transform<World>> spawn = this.plugin.getManagerServices().getSpawn().get(spawn_name);
+		Optional<VirtualTransform> spawn = this.plugin.getManagerServices().getSpawn().get(spawn_name);
 		
 		// Le serveur n'a pas de spawn qui porte ce nom
 		if (!spawn.isPresent()) {
@@ -131,14 +130,14 @@ public class EESpawnDel extends ECommand<EverEssentials> {
 		return CompletableFuture.completedFuture(true);
 	}
 	
-	private Text getButtonSpawn(final String name, final Transform<World> location){
+	private Text getButtonSpawn(final String name, final VirtualTransform location) {
 		return EEMessages.DELSPAWN_NAME.getFormat().toText("<name>", name).toBuilder()
 					.onHover(TextActions.showText(EEMessages.DELSPAWN_NAME_HOVER.getFormat().toText(
 							"<name>", name,
-							"<world>", location.getExtent().getName(),
-							"<x>", String.valueOf(location.getLocation().getBlockX()),
-							"<y>", String.valueOf(location.getLocation().getBlockY()),
-							"<z>", String.valueOf(location.getLocation().getBlockZ()))))
+							"<world>", location.getWorldName().orElse(location.getWorldIdentifier()),
+							"<x>", String.valueOf(location.getPosition().getFloorX()),
+							"<y>", String.valueOf(location.getPosition().getFloorY()),
+							"<z>", String.valueOf(location.getPosition().getFloorZ()))))
 					.build();
 	}
 	

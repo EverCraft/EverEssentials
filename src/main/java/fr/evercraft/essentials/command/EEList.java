@@ -32,7 +32,7 @@ import ninja.leaping.configurate.ConfigurationNode;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
-import org.spongepowered.api.service.permission.Subject;
+import org.spongepowered.api.service.permission.SubjectReference;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
@@ -101,12 +101,12 @@ public class EEList extends ECommand<EverEssentials> {
 		// La liste des groupes avec des joueurs
 		Map<String, TreeMap<String, EPlayer>> groups = new HashMap<String, TreeMap<String, EPlayer>>();
 		for (EPlayer player : players) {
-			Optional<Subject> group = player.getGroup();
+			Optional<SubjectReference> group = player.getGroup();
 			if (group.isPresent()) {
-				if (!groups.containsKey(group.get().getIdentifier())) {
-					groups.put(group.get().getIdentifier(), new TreeMap<String, EPlayer>());
+				if (!groups.containsKey(group.get().getSubjectIdentifier())) {
+					groups.put(group.get().getSubjectIdentifier(), new TreeMap<String, EPlayer>());
 				}
-				groups.get(group.get().getIdentifier()).put(player.getName(), player);
+				groups.get(group.get().getSubjectIdentifier()).put(player.getName(), player);
 			} else {
 				if (!groups.containsKey(EEList.GROUPS_DEFAULT)) {
 					groups.put(EEList.GROUPS_DEFAULT, new TreeMap<String, EPlayer>());

@@ -41,6 +41,9 @@ import fr.evercraft.everapi.plugin.command.ECommand;
 import fr.evercraft.everapi.server.player.EPlayer;
 
 public class EEWorlds extends ECommand<EverEssentials> {
+	
+	private static final String DIM_1 = "Nether";
+	private static final String DIM1 = "End";
 
 	public EEWorlds(final EverEssentials plugin) {
 		super(plugin, "worlds", "world");
@@ -140,8 +143,15 @@ public class EEWorlds extends ECommand<EverEssentials> {
 		
 		for (World world : this.plugin.getEServer().getWorlds()) {
 			if (this.plugin.getManagerServices().getEssentials().hasPermissionWorld(player, world)) {
+				String name = world.getName();
+				if (name.equalsIgnoreCase("DIM-1")) {
+					name = name + " (" + DIM_1 + ")";
+				} else if (name.equalsIgnoreCase("DIM1")) {
+					name = name + " (" + DIM1 + ")";
+				}
+				
 				lists.add(EEMessages.WORLDS_LIST_LINE.getFormat().toText(
-						"<world>", EReplace.of(world.getName()),
+						"<world>", EReplace.of(name),
 						"<teleport>", EReplace.of(() -> this.getButtonTeleport(world.getName(), world.getUniqueId()))));
 			}
 		}
@@ -170,7 +180,7 @@ public class EEWorlds extends ECommand<EverEssentials> {
 			return CompletableFuture.completedFuture(false);
 		}
 		
-		if (!player.teleport(world.get().getSpawnLocation(), true)) {
+		if (!player.teleportSafeZone(world.get().getSpawnLocation(), true)) {
 			EEMessages.WORLDS_TELEPORT_PLAYER_ERROR.sender()
 				.replace("<world>", this.getButtonPosition(world.get().getSpawnLocation()))
 				.sendTo(player);
@@ -207,7 +217,7 @@ public class EEWorlds extends ECommand<EverEssentials> {
 			return CompletableFuture.completedFuture(false);
 		}
 		
-		if (!player.teleportSafe(world.get().getSpawnLocation(), true)) {
+		if (!player.teleportSafeZone(world.get().getSpawnLocation(), true)) {
 			EEMessages.WORLDS_TELEPORT_OTHERS_ERROR.sender()
 				.replace("<player>", player.getName())
 				.replace("<world>", () -> this.getButtonPosition(world.get().getSpawnLocation()))

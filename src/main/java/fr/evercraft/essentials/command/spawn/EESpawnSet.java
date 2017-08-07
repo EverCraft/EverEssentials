@@ -16,7 +16,6 @@
  */
 package fr.evercraft.essentials.command.spawn;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -25,8 +24,6 @@ import java.util.concurrent.CompletableFuture;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
-import org.spongepowered.api.entity.Transform;
-import org.spongepowered.api.service.permission.Subject;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
@@ -39,6 +36,7 @@ import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.exception.ServerDisableException;
 import fr.evercraft.everapi.plugin.command.ECommand;
+import fr.evercraft.everapi.server.location.VirtualTransform;
 import fr.evercraft.everapi.server.player.EPlayer;
 import fr.evercraft.everapi.services.essentials.SpawnService;
 
@@ -69,11 +67,7 @@ public class EESpawnSet extends ECommand<EverEssentials> {
 	@Override
 	public Collection<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		if (args.size() == 1) {
-			ArrayList<String> suggests = new ArrayList<String>();
-			for (Subject group : this.plugin.getEverAPI().getManagerService().getPermission().getGroupSubjects().getAllSubjects()) {
-				suggests.add(group.getIdentifier());
-			}
-			return suggests;
+			return this.getAllGroups();
 		}
 		return Arrays.asList();
 	}
@@ -84,7 +78,7 @@ public class EESpawnSet extends ECommand<EverEssentials> {
 			
 			// Si la source est un joueur
 			if (source instanceof EPlayer) {
-				return this.commandSetSpawn((EPlayer) source, SpawnService.DEFAULT);
+				return CompletableFuture.completedFuture(this.commandSetSpawn((EPlayer) source, SpawnService.DEFAULT));
 			// La source n'est pas un joueur
 			} else {
 				EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()
@@ -97,14 +91,23 @@ public class EESpawnSet extends ECommand<EverEssentials> {
 			
 			// Si la source est un joueur
 			if (source instanceof EPlayer) {
-				Subject group = this.plugin.getEverAPI().getManagerService().getPermission().getGroupSubjects().get(args.get(0));
-				if (group != null) {
-					return this.commandSetSpawn((EPlayer) source, group.getIdentifier());
-				} else {
-					EEMessages.SETSPAWN_ERROR_GROUP.sender()
-						.replace("<name>", args.get(0))
-						.sendTo(source);
-				}				
+				return this.plugin.getEverAPI().getManagerService().getPermission().getGroupSubjects().hasSubject(args.get(0))
+					.exceptionally(e -> null)
+					.thenApplyAsync(result -> {
+						if (result == null) {
+							EAMessages.COMMAND_ERROR.sendTo(source);
+							return false;
+						}
+						
+						if (!result) {
+							EEMessages.SETSPAWN_ERROR_GROUP.sender()
+								.replace("<name>", args.get(0))
+								.sendTo(source);
+							return false;
+						}
+						
+						return this.commandSetSpawn((EPlayer) source, args.get(0));
+					});	
 			// La source n'est pas un joueur
 			} else {
 				EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()
@@ -119,8 +122,8 @@ public class EESpawnSet extends ECommand<EverEssentials> {
 		return CompletableFuture.completedFuture(false);
 	}
 	
-	private CompletableFuture<Boolean> commandSetSpawn(final EPlayer player, final String group_name) throws ServerDisableException {
-		Optional<Transform<World>> group = this.plugin.getManagerServices().getSpawn().get(group_name);
+	private boolean commandSetSpawn(final EPlayer player, final String group_name) {
+		Optional<VirtualTransform> group = this.plugin.getManagerServices().getSpawn().get(group_name);
 		
 		if (group.isPresent()) {
 			
@@ -128,7 +131,7 @@ public class EESpawnSet extends ECommand<EverEssentials> {
 				EEMessages.SETSPAWN_REPLACE.sender()
 					.replace("<name>", this.getButtonSpawn(group_name, player.getLocation()))
 					.sendTo(player);
-				return CompletableFuture.completedFuture(true);
+				return true;
 			} else {
 				EAMessages.COMMAND_ERROR.sender()
 					.prefix(EEMessages.PREFIX)
@@ -141,7 +144,7 @@ public class EESpawnSet extends ECommand<EverEssentials> {
 				EEMessages.SETSPAWN_NEW.sender()
 					.replace("<name>", this.getButtonSpawn(group_name, player.getLocation()))
 					.sendTo(player);
-				return CompletableFuture.completedFuture(true);
+				return true;
 			} else {
 				EAMessages.COMMAND_ERROR.sender()
 					.prefix(EEMessages.PREFIX)
@@ -149,7 +152,7 @@ public class EESpawnSet extends ECommand<EverEssentials> {
 			}
 			
 		}
-		return CompletableFuture.completedFuture(false);
+		return false;
 	}
 
 	private Text getButtonSpawn(final String name, final Location<World> location){

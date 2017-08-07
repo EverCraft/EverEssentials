@@ -451,8 +451,8 @@ public class EEMessage extends EMessage<EverEssentials> {
 		LAG_HISTORY_TPS("lag.historyTps", 							"    &6&l➤  &6Historique TPS : <tps>"),
 		LAG_HISTORY_TPS_HOVER("lag.historyTpsHover", 				"&6Minute : &c<num>[RT]&6TPS : &c<tps>"),
 		LAG_MEMORY("lag.memory", 									"    &6&l➤  &6RAM : &c<usage>&6/&c<total> &6Mo"),
-		LAG_WORLDS("lag.worlds", 									"    &6&l➤  &6Liste des mondes :"),
-		LAG_WORLDS_SEPARATOR("lag.worldsSeparator", 				"\n"),
+		LAG_WORLDS("lag.worlds", 									"    &6&l➤  &6Liste des mondes : [RT]<worlds>"),
+		LAG_WORLDS_SEPARATOR("lag.worldsSeparator", 				"[RT]"),
 		LAG_WORLDS_WORLD("lag.worldsWorld", 						"        &6&l●  &6<world>"),
 		LAG_WORLDS_WORLD_HOVER("lag.worldsWorldHover", 				"&6Chunks : &c<chunks>[RT]&6Entités : &c<entities>[RT]&6Tiles : &c<tiles>"),
 		
