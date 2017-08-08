@@ -94,20 +94,20 @@ public class EEWhitelistAdd extends ESubCommand<EverEssentials> {
 		if (!gameprofile.isPresent()) {
 			EAMessages.PLAYER_NOT_FOUND.sender()
 				.prefix(EEMessages.PREFIX)
-				.replace("<player>", identifier)
+				.replace("{player}", identifier)
 				.sendTo(player);
 			return false;
 		}
 				
 		if (this.plugin.getEverAPI().getManagerService().getWhitelist().addProfile(gameprofile.get())) {
 			EEMessages.WHITELIST_ADD_ERROR.sender()
-				.replace("<player>", gameprofile.get().getName().orElse(identifier))
+				.replace("{player}", gameprofile.get().getName().orElse(identifier))
 				.sendTo(player);
 			return false;
 		}
 		
 		EEMessages.WHITELIST_ADD_PLAYER.sender()
-			.replace("<player>", gameprofile.get().getName().orElse(identifier))
+			.replace("{player}", gameprofile.get().getName().orElse(identifier))
 			.sendTo(player);
 		return true;
 	}

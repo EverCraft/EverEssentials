@@ -110,8 +110,8 @@ public class EEMore extends ECommand<EverEssentials> {
 		// La quantité est invalide
 		if (item.get().getQuantity() > max) {
 			EEMessages.MORE_MAX_QUANTITY.sender()
-				.replace("<quantity>", max.toString())
-				.replace("<item>", EChat.getButtomItem(item.get(), EEMessages.MORE_ITEM_COLOR.getColor()))
+				.replace("{quantity}", max.toString())
+				.replace("{item}", EChat.getButtomItem(item.get(), EEMessages.MORE_ITEM_COLOR.getColor()))
 				.sendTo(player);
 			return CompletableFuture.completedFuture(false);
 		}
@@ -120,8 +120,8 @@ public class EEMore extends ECommand<EverEssentials> {
 		player.setItemInMainHand(item.get());
 		
 		EEMessages.MORE_PLAYER.sender()
-			.replace("<quantity>", max.toString())
-			.replace("<item>", EChat.getButtomItem(item.get(), EEMessages.MORE_ITEM_COLOR.getColor()))
+			.replace("{quantity}", max.toString())
+			.replace("{item}", EChat.getButtomItem(item.get(), EEMessages.MORE_ITEM_COLOR.getColor()))
 			.sendTo(player);
 		return CompletableFuture.completedFuture(true);
 	}

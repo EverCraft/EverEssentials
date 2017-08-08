@@ -103,7 +103,7 @@ public class EEGetPos extends ECommand<EverEssentials> {
 				} else {
 					EAMessages.PLAYER_NOT_FOUND.sender()
 						.prefix(EEMessages.PREFIX)
-						.replace("<player>", args.get(0))
+						.replace("{player}", args.get(0))
 						.sendTo(source);
 				}
 			// Il n'a pas la permission
@@ -123,23 +123,23 @@ public class EEGetPos extends ECommand<EverEssentials> {
 	
 	private CompletableFuture<Boolean> commandGetPos(final EPlayer player) {
 		EEMessages.GETPOS_MESSAGE.sender()
-			.replace("<world>", player.getWorld().getName())
-			.replace("<x>", String.valueOf(player.getLocation().getBlockX()))
-			.replace("<y>", String.valueOf(player.getLocation().getBlockY()))
-			.replace("<z>", String.valueOf(player.getLocation().getBlockZ()))
-			.replace("<position>", this.getButtonPos(player.getLocation()))
+			.replace("{world}", player.getWorld().getName())
+			.replace("{x}", String.valueOf(player.getLocation().getBlockX()))
+			.replace("{y}", String.valueOf(player.getLocation().getBlockY()))
+			.replace("{z}", String.valueOf(player.getLocation().getBlockZ()))
+			.replace("{position}", this.getButtonPos(player.getLocation()))
 			.sendTo(player);
 		return CompletableFuture.completedFuture(true);
 	}
 	
 	private CompletableFuture<Boolean> commandGetPosOthers(final CommandSource staff, final EPlayer player) throws CommandException {
 		EEMessages.GETPOS_MESSAGE_OTHERS.sender()
-			.replace("<player>", player.getName())
-			.replace("<world>", player.getWorld().getName())
-			.replace("<x>", String.valueOf(player.getLocation().getBlockX()))
-			.replace("<y>", String.valueOf(player.getLocation().getBlockY()))
-			.replace("<z>", String.valueOf(player.getLocation().getBlockZ()))
-			.replace("<position>", this.getButtonPos(player.getLocation()))
+			.replace("{player}", player.getName())
+			.replace("{world}", player.getWorld().getName())
+			.replace("{x}", String.valueOf(player.getLocation().getBlockX()))
+			.replace("{y}", String.valueOf(player.getLocation().getBlockY()))
+			.replace("{z}", String.valueOf(player.getLocation().getBlockZ()))
+			.replace("{position}", this.getButtonPos(player.getLocation()))
 			.sendTo(staff);
 		return CompletableFuture.completedFuture(true);
 	}
@@ -147,10 +147,10 @@ public class EEGetPos extends ECommand<EverEssentials> {
 	private Text getButtonPos(final Location<World> location){
 		return EEMessages.GETPOS_POTISITON_NAME.getText().toBuilder()
 					.onHover(TextActions.showText(EEMessages.GETPOS_POSITION_HOVER.getFormat().toText(
-							"<world>", location.getExtent().getName(),
-							"<x>", String.valueOf(location.getBlockX()),
-							"<y>", String.valueOf(location.getBlockY()),
-							"<z>", String.valueOf(location.getBlockZ()))))
+							"{world}", location.getExtent().getName(),
+							"{x}", String.valueOf(location.getBlockX()),
+							"{y}", String.valueOf(location.getBlockY()),
+							"{z}", String.valueOf(location.getBlockZ()))))
 					.build();
 	}
 }

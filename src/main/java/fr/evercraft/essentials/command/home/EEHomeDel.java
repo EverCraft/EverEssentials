@@ -59,7 +59,7 @@ public class EEHomeDel extends ECommand<EverEssentials> {
 
 	@Override
 	public Text help(final CommandSource source) {
-		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_HOME.getString() + ">")
+		return Text.builder("/" + this.getName() + " {" + EAMessages.ARGS_HOME.getString() + "}")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
 					.build();
@@ -119,7 +119,7 @@ public class EEHomeDel extends ECommand<EverEssentials> {
 		if (!subject.isPresent()) {
 			EAMessages.PLAYER_NOT_FOUND.sender()
 				.prefix(EEMessages.PREFIX)
-				.replace("<player>", player.getName())
+				.replace("{player}", player.getName())
 				.sendTo(player);
 			return CompletableFuture.completedFuture(false);
 		}
@@ -128,14 +128,14 @@ public class EEHomeDel extends ECommand<EverEssentials> {
 		// Le n'a pas de home qui porte ce nom
 		if (!home.isPresent()) {
 			EEMessages.DELHOME_INCONNU.sender()
-				.replace("<home>", name)
+				.replace("{home}", name)
 				.sendTo(player);
 			return CompletableFuture.completedFuture(false);
 		}
 		
 		EEMessages.DELHOME_CONFIRMATION.sender()
-			.replace("<home>", this.getButtonHome(name, home.get()))
-			.replace("<confirmation>", this.getButtonConfirmation(name))
+			.replace("{home}", this.getButtonHome(name, home.get()))
+			.replace("{confirmation}", this.getButtonConfirmation(name))
 			.sendTo(player);
 		return CompletableFuture.completedFuture(false);
 	}
@@ -148,7 +148,7 @@ public class EEHomeDel extends ECommand<EverEssentials> {
 		if (!subject.isPresent()) {
 			EAMessages.PLAYER_NOT_FOUND.sender()
 				.prefix(EEMessages.PREFIX)
-				.replace("<player>", player.getName())
+				.replace("{player}", player.getName())
 				.sendTo(player);
 			return CompletableFuture.completedFuture(false);
 		}
@@ -157,7 +157,7 @@ public class EEHomeDel extends ECommand<EverEssentials> {
 		// Le joueur a bien un home qui porte ce nom
 		if (!home.isPresent()) {
 			EEMessages.DELHOME_INCONNU.sender()
-				.replace("<home>", name)
+				.replace("{home}", name)
 				.sendTo(player);
 			return CompletableFuture.completedFuture(false);
 		}
@@ -171,26 +171,26 @@ public class EEHomeDel extends ECommand<EverEssentials> {
 		}
 		
 		EEMessages.DELHOME_DELETE.sender()
-			.replace("<home>", this.getButtonHome(name, home.get()))
+			.replace("{home}", this.getButtonHome(name, home.get()))
 			.sendTo(player);
 		return CompletableFuture.completedFuture(true);
 	}
 	
 	private Text getButtonHome(final String name, final VirtualTransform location){
-		return EEMessages.HOME_NAME.getFormat().toText("<name>", name).toBuilder()
+		return EEMessages.HOME_NAME.getFormat().toText("{name}", name).toBuilder()
 					.onHover(TextActions.showText(EEMessages.HOME_NAME_HOVER.getFormat().toText(
-								"<home>", name,
-								"<world>", location.getWorldName(),
-								"<x>", String.valueOf(location.getPosition().getFloorX()),
-								"<y>",String.valueOf(location.getPosition().getFloorY()),
-								"<z>", String.valueOf(location.getPosition().getFloorZ()))))
+								"{home}", name,
+								"{world}", location.getWorldName(),
+								"{x}", String.valueOf(location.getPosition().getFloorX()),
+								"{y}",String.valueOf(location.getPosition().getFloorY()),
+								"{z}", String.valueOf(location.getPosition().getFloorZ()))))
 					.build();
 	}
 	
 	private Text getButtonConfirmation(final String name){
 		return EEMessages.DELHOME_CONFIRMATION_VALID.getText().toBuilder()
 					.onHover(TextActions.showText(EEMessages.DELHOME_CONFIRMATION_VALID_HOVER.getFormat()
-							.toText("<home>", name)))
+							.toText("{home}", name)))
 					.onClick(TextActions.runCommand("/delhome \"" + name + "\" confirmation"))
 					.build();
 	}

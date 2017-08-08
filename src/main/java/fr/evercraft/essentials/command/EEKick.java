@@ -56,7 +56,7 @@ public class EEKick extends ECommand<EverEssentials> {
 
 	@Override
 	public Text help(final CommandSource source) {
-		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_PLAYER.getString() + "> [" + EAMessages.ARGS_REASON.getString() + "]")
+		return Text.builder("/" + this.getName() + " {" + EAMessages.ARGS_PLAYER.getString() + "} [" + EAMessages.ARGS_REASON.getString() + "]")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
 					.build();
@@ -101,7 +101,7 @@ public class EEKick extends ECommand<EverEssentials> {
 			} else {
 				EAMessages.PLAYER_NOT_FOUND.sender()
 					.prefix(EEMessages.PREFIX)
-					.replace("<player>", args.get(0))
+					.replace("{player}", args.get(0))
 					.sendTo(source);
 			}
 			
@@ -115,7 +115,7 @@ public class EEKick extends ECommand<EverEssentials> {
 			} else {
 				EAMessages.PLAYER_NOT_FOUND.sender()
 					.prefix(EEMessages.PREFIX)
-					.replace("<player>", args.get(0))
+					.replace("{player}", args.get(0))
 					.sendTo(source);
 			}
 		
@@ -131,14 +131,14 @@ public class EEKick extends ECommand<EverEssentials> {
 		// Le joueur a la permission bypass
 		if(player.hasPermission(EEPermissions.KICK_BYPASS.get())) {
 			EEMessages.KICK_BYPASS.sender()
-				.replace("<player>", player.getName())
+				.replace("{player}", player.getName())
 				.sendTo(staff);
 			return CompletableFuture.completedFuture(false);
 		}
 		
 		player.kick(EEMessages.KICK_MESSAGE.getFormat().toText(
-			"<staff>", staff.getName(),
-			"<reason>", message));
+			"{staff}", staff.getName(),
+			"{reason}", message));
 		return CompletableFuture.completedFuture(true);
 	}
 }

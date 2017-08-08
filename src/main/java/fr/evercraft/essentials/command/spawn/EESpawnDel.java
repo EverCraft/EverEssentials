@@ -93,13 +93,13 @@ public class EESpawnDel extends ECommand<EverEssentials> {
 		// Le serveur a un spawn qui porte ce nom
 		if (spawn.isPresent()) {
 			EEMessages.DELSPAWN_CONFIRMATION.sender()
-				.replace("<spawn>", () -> this.getButtonSpawn(spawn_name, spawn.get()))
-				.replace("<confirmation>", () -> this.getButtonConfirmation(spawn_name))
+				.replace("{spawn}", () -> this.getButtonSpawn(spawn_name, spawn.get()))
+				.replace("{confirmation}", () -> this.getButtonConfirmation(spawn_name))
 				.sendTo(player);
 		// Le serveur n'a pas de spawn qui porte ce nom
 		} else {
 			EEMessages.DELSPAWN_INCONNU.sender()
-				.replace("<name>", spawn_name)
+				.replace("{name}", spawn_name)
 				.sendTo(player);
 		}
 		return CompletableFuture.completedFuture(false);
@@ -111,7 +111,7 @@ public class EESpawnDel extends ECommand<EverEssentials> {
 		// Le serveur n'a pas de spawn qui porte ce nom
 		if (!spawn.isPresent()) {
 			EEMessages.DELSPAWN_INCONNU.sender()
-				.replace("<name>", spawn_name)
+				.replace("{name}", spawn_name)
 				.sendTo(player);
 			return CompletableFuture.completedFuture(false);
 		}
@@ -125,26 +125,26 @@ public class EESpawnDel extends ECommand<EverEssentials> {
 		}
 		
 		EEMessages.DELSPAWN_DELETE.sender()
-			.replace("<spawn>", this.getButtonSpawn(spawn_name, spawn.get()))
+			.replace("{spawn}", this.getButtonSpawn(spawn_name, spawn.get()))
 			.sendTo(player);
 		return CompletableFuture.completedFuture(true);
 	}
 	
 	private Text getButtonSpawn(final String name, final VirtualTransform location) {
-		return EEMessages.DELSPAWN_NAME.getFormat().toText("<name>", name).toBuilder()
+		return EEMessages.DELSPAWN_NAME.getFormat().toText("{name}", name).toBuilder()
 					.onHover(TextActions.showText(EEMessages.DELSPAWN_NAME_HOVER.getFormat().toText(
-							"<name>", name,
-							"<world>", location.getWorldName().orElse(location.getWorldIdentifier()),
-							"<x>", String.valueOf(location.getPosition().getFloorX()),
-							"<y>", String.valueOf(location.getPosition().getFloorY()),
-							"<z>", String.valueOf(location.getPosition().getFloorZ()))))
+							"{name}", name,
+							"{world}", location.getWorldName().orElse(location.getWorldIdentifier()),
+							"{x}", String.valueOf(location.getPosition().getFloorX()),
+							"{y}", String.valueOf(location.getPosition().getFloorY()),
+							"{z}", String.valueOf(location.getPosition().getFloorZ()))))
 					.build();
 	}
 	
 	private Text getButtonConfirmation(final String name){
 		return EEMessages.DELSPAWN_CONFIRMATION_VALID.getText().toBuilder()
 					.onHover(TextActions.showText(EEMessages.DELSPAWN_CONFIRMATION_VALID_HOVER.getFormat()
-							.toText("<name>", name)))
+							.toText("{name}", name)))
 					.onClick(TextActions.runCommand("/delspawn \"" + name + "\" confirmation"))
 					.build();
 	}

@@ -54,7 +54,7 @@ public class EEIgnoreAdd extends ESubCommand<EverEssentials> {
 	
 	@Override
 	public Text help(final CommandSource source) {
-		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_USER.getString() + ">")
+		return Text.builder("/" + this.getName() + " {" + EAMessages.ARGS_USER.getString() + "}")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
 					.build();
@@ -81,7 +81,7 @@ public class EEIgnoreAdd extends ESubCommand<EverEssentials> {
 				} else {
 					EAMessages.PLAYER_NOT_FOUND.sender()
 						.prefix(EEMessages.PREFIX)
-						.replace("<player>", args.get(0))
+						.replace("{player}", args.get(0))
 						.sendTo(source);
 				}
 			// La source n'est pas un joueur
@@ -99,27 +99,27 @@ public class EEIgnoreAdd extends ESubCommand<EverEssentials> {
 	private CompletableFuture<Boolean> commandIgnoreAdd(final EPlayer player, final EUser user) {
 		if(player.ignore(user.getUniqueId())) {
 			EEMessages.IGNORE_ADD_ERROR.sender()
-				.replace("<player>", user.getName())
+				.replace("{player}", user.getName())
 				.sendTo(player);
 			return CompletableFuture.completedFuture(false);
 		}
 		
 		if (user.hasPermission(EEPermissions.IGNORE_BYPASS.get())) {
 			EEMessages.IGNORE_ADD_BYPASS.sender()
-				.replace("<player>", user.getName())
+				.replace("{player}", user.getName())
 				.sendTo(player);
 			return CompletableFuture.completedFuture(false);
 		}
 		
 		if (!player.addIgnore(user.getUniqueId())) {
 			EEMessages.IGNORE_ADD_CANCEL.sender()
-				.replace("<player>", user.getName())
+				.replace("{player}", user.getName())
 				.sendTo(player);
 			return CompletableFuture.completedFuture(false);
 		}
 		
 		EEMessages.IGNORE_ADD_PLAYER.sender()
-			.replace("<player>", user.getName())
+			.replace("{player}", user.getName())
 			.sendTo(player);
 		return CompletableFuture.completedFuture(true);
 	}

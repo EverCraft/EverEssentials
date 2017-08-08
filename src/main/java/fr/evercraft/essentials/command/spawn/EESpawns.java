@@ -88,13 +88,13 @@ public class EESpawns extends ECommand<EverEssentials> {
 				Optional<World> world = spawn.getValue().getWorld();
 				if (world.isPresent()){
 					lists.add(EEMessages.SPAWNS_LINE_DELETE.getFormat().toText(
-							"<spawn>", () -> this.getButtonSpawn(spawn.getKey(), spawn.getValue()),
-							"<teleport>", () -> this.getButtonTeleport(spawn.getKey(), spawn.getValue()),
-							"<delete>", () -> this.getButtonDelete(spawn.getKey(), spawn.getValue())));
+							"{spawn}", () -> this.getButtonSpawn(spawn.getKey(), spawn.getValue()),
+							"{teleport}", () -> this.getButtonTeleport(spawn.getKey(), spawn.getValue()),
+							"{delete}", () -> this.getButtonDelete(spawn.getKey(), spawn.getValue())));
 				} else {
 					lists.add(EEMessages.SPAWNS_LINE_DELETE_ERROR_WORLD.getFormat().toText(
-							"<spawn>", () -> this.getButtonSpawn(spawn.getKey(), spawn.getValue()),
-							"<delete>", () -> this.getButtonDelete(spawn.getKey(), spawn.getValue())));
+							"{spawn}", () -> this.getButtonSpawn(spawn.getKey(), spawn.getValue()),
+							"{delete}", () -> this.getButtonDelete(spawn.getKey(), spawn.getValue())));
 				}
 			}
 			
@@ -104,8 +104,8 @@ public class EESpawns extends ECommand<EverEssentials> {
 				Optional<World> world = spawn.getValue().getWorld();
 				if (world.isPresent()){
 					lists.add(EEMessages.SPAWNS_LINE.getFormat().toText(
-							"<spawn>", () -> this.getButtonSpawn(spawn.getKey(), spawn.getValue()),
-							"<teleport>", () -> this.getButtonTeleport(spawn.getKey(), spawn.getValue())));
+							"{spawn}", () -> this.getButtonSpawn(spawn.getKey(), spawn.getValue()),
+							"{teleport}", () -> this.getButtonTeleport(spawn.getKey(), spawn.getValue())));
 				}
 			}
 			
@@ -123,7 +123,7 @@ public class EESpawns extends ECommand<EverEssentials> {
 	private Text getButtonTeleport(final String name, final VirtualTransform location){
 		return EEMessages.SPAWNS_TELEPORT.getText().toBuilder()
 					.onHover(TextActions.showText(EEMessages.SPAWNS_TELEPORT_HOVER.getFormat()
-							.toText("<name>", name)))
+							.toText("{name}", name)))
 					.onClick(TextActions.runCommand("/spawn \"" + name + "\""))
 					.build();
 	}
@@ -131,19 +131,19 @@ public class EESpawns extends ECommand<EverEssentials> {
 	private Text getButtonDelete(final String name, final VirtualTransform location){
 		return EEMessages.SPAWNS_DELETE.getText().toBuilder()
 					.onHover(TextActions.showText(EEMessages.SPAWNS_DELETE_HOVER.getFormat()
-							.toText("<name>", name)))
+							.toText("{name}", name)))
 					.onClick(TextActions.runCommand("/delspawn \"" + name + "\""))
 					.build();
 	}
 	
 	private Text getButtonSpawn(final String name, final VirtualTransform location){
-		return EEMessages.SPAWNS_NAME.getFormat().toText("<name>", name).toBuilder()
+		return EEMessages.SPAWNS_NAME.getFormat().toText("{name}", name).toBuilder()
 					.onHover(TextActions.showText(EEMessages.SPAWNS_NAME_HOVER.getFormat().toText(
-							"<name>", name,
-							"<world>", location.getWorldName(),
-							"<x>", String.valueOf(location.getPosition().getFloorX()),
-							"<y>", String.valueOf(location.getPosition().getFloorY()),
-							"<z>", String.valueOf(location.getPosition().getFloorZ()))))
+							"{name}", name,
+							"{world}", location.getWorldName(),
+							"{x}", String.valueOf(location.getPosition().getFloorX()),
+							"{y}", String.valueOf(location.getPosition().getFloorY()),
+							"{z}", String.valueOf(location.getPosition().getFloorZ()))))
 					.build();
 	}
 }

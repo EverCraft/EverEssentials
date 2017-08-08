@@ -93,13 +93,13 @@ public class EEItemNameClear extends ESubCommand<EverEssentials> {
 		
 		if(!item.get().get(Keys.DISPLAY_NAME).isPresent()) {
 			EEMessages.ITEM_NAME_CLEAR_ERROR.sender()
-				.replace("<item>", EChat.getButtomItem(item.get(), EEMessages.ITEM_NAME_CLEAR_COLOR.getColor()))
+				.replace("{item}", EChat.getButtomItem(item.get(), EEMessages.ITEM_NAME_CLEAR_COLOR.getColor()))
 				.sendTo(player);
 			return CompletableFuture.completedFuture(false);
 		}
 		
 		EEMessages.ITEM_NAME_CLEAR_NAME.sender()
-			.replace("<item>", EChat.getButtomItem(item.get(), EEMessages.ITEM_NAME_CLEAR_COLOR.getColor()))
+			.replace("{item}", EChat.getButtomItem(item.get(), EEMessages.ITEM_NAME_CLEAR_COLOR.getColor()))
 			.sendTo(player);
 		item.get().remove(Keys.DISPLAY_NAME);
 		player.setItemInMainHand(item.get());

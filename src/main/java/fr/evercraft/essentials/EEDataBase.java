@@ -53,7 +53,7 @@ public class EEDataBase extends EDataBase<EverEssentials> {
 
 	public boolean init() throws ServerDisableException {
 		this.table_players = "players";
-		String players = 	"CREATE TABLE IF NOT EXISTS <table> (" +
+		String players = 	"CREATE TABLE IF NOT EXISTS {table} (" +
 							"`uuid` varchar(36) NOT NULL," +
 							"`vanish` BOOL NOT NULL DEFAULT '0'," +
 							"`god` BOOL NOT NULL DEFAULT '0'," +
@@ -65,14 +65,14 @@ public class EEDataBase extends EDataBase<EverEssentials> {
 		initTable(this.getTablePlayers(), players);
 		
 		this.table_ignores = "ignores";
-		String ignores = 	"CREATE TABLE IF NOT EXISTS <table> (" +
+		String ignores = 	"CREATE TABLE IF NOT EXISTS {table} (" +
 							"`uuid` varchar(36) NOT NULL," +
 							"`ignore` varchar(36) NOT NULL," +
 							"PRIMARY KEY (`uuid`, `ignore`));";
 		initTable(this.getTableIgnores(), ignores);
 		
 		this.table_mails = "mails";
-		String mails = 	"CREATE TABLE IF NOT EXISTS <table> (" +
+		String mails = 	"CREATE TABLE IF NOT EXISTS {table} (" +
 							"`id` MEDIUMINT NOT NULL AUTO_INCREMENT," +
 							"`datetime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP," +
 							"`read` BOOLEAN DEFAULT FALSE," +
@@ -83,7 +83,7 @@ public class EEDataBase extends EDataBase<EverEssentials> {
 		initTable(this.getTableMails(), mails);
 		
 		this.table_homes = "homes";
-		String homes = 		"CREATE TABLE IF NOT EXISTS <table> (" +
+		String homes = 		"CREATE TABLE IF NOT EXISTS {table} (" +
 							"`uuid` varchar(36) NOT NULL," +
 							"`name` varchar(25) NOT NULL," +
 							"`world` varchar(36) NOT NULL," +
@@ -96,7 +96,7 @@ public class EEDataBase extends EDataBase<EverEssentials> {
 		initTable(this.getTableHomes(), homes);
 		
 		this.table_backs = "backs";
-		String backs = 		"CREATE TABLE IF NOT EXISTS <table> (" +
+		String backs = 		"CREATE TABLE IF NOT EXISTS {table} (" +
 							"`uuid` varchar(36) NOT NULL," +
 							"`world` varchar(36) NOT NULL," +
 							"`x` double NOT NULL," +
@@ -108,7 +108,7 @@ public class EEDataBase extends EDataBase<EverEssentials> {
 		initTable(this.getTableBacks(), backs);
 		
 		this.table_warps = "warps";
-		String warps = 		"CREATE TABLE IF NOT EXISTS <table> (" +
+		String warps = 		"CREATE TABLE IF NOT EXISTS {table} (" +
 							"`identifier` varchar(25) NOT NULL," +
 							"`world` varchar(36) NOT NULL," +
 							"`x` double NOT NULL," +
@@ -120,7 +120,7 @@ public class EEDataBase extends EDataBase<EverEssentials> {
 		initTable(this.getTableWarps(), warps);
 		
 		this.table_spawns = "spawns";
-		String spawns = 	"CREATE TABLE IF NOT EXISTS <table> (" +
+		String spawns = 	"CREATE TABLE IF NOT EXISTS {table} (" +
 							"`identifier` varchar(25) NOT NULL," +
 							"`world` varchar(36) NOT NULL," +
 							"`x` double NOT NULL," +

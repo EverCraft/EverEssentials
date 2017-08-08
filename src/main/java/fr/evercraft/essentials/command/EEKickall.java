@@ -53,7 +53,7 @@ public class EEKickall extends ECommand<EverEssentials> {
 
 	@Override
 	public Text help(final CommandSource source) {
-		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_REASON.getString() +">")
+		return Text.builder("/" + this.getName() + " {" + EAMessages.ARGS_REASON.getString() +"}")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
 					.build();
@@ -86,8 +86,8 @@ public class EEKickall extends ECommand<EverEssentials> {
 	
 	private CompletableFuture<Boolean> commandKick(final CommandSource staff, final Text message) throws CommandException {
 		Text raison = EEMessages.KICKALL_MESSAGE.getFormat().toText(
-							"<staff>", staff.getName(),
-							"<reason>", message);
+							"{staff}", staff.getName(),
+							"{reason}", message);
 
 		for (EPlayer player : this.plugin.getEServer().getOnlineEPlayers()) {
 			if (!player.equals(staff) && !player.hasPermission(EEPermissions.KICK_BYPASS.get())) {

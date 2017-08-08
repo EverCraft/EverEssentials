@@ -96,7 +96,7 @@ public class EEVanishStatus extends ESubCommand<EverEssentials> {
 				} else {
 					EAMessages.PLAYER_NOT_FOUND.sender()
 						.prefix(EEMessages.PREFIX)
-						.replace("<player>", args.get(0))
+						.replace("{player}", args.get(0))
 						.sendTo(source);
 				}
 			// Il n'a pas la permission
@@ -115,12 +115,12 @@ public class EEVanishStatus extends ESubCommand<EverEssentials> {
 		// Vanish activé
 		if (player.isVanish()){
 			EEMessages.VANISH_STATUS_PLAYER_ON.sender()
-				.replace("<player>", player.getDisplayName())
+				.replace("{player}", player.getDisplayName())
 				.sendTo(player);
 		// Vanish désactivé
 		} else {
 			EEMessages.VANISH_STATUS_PLAYER_OFF.sender()
-				.replace("<player>", player.getDisplayName())
+				.replace("{player}", player.getDisplayName())
 				.sendTo(player);
 		}
 		return CompletableFuture.completedFuture(true);
@@ -135,12 +135,12 @@ public class EEVanishStatus extends ESubCommand<EverEssentials> {
 		// Vanish activé
 		if (user.isVanish()){
 			EEMessages.VANISH_STATUS_OTHERS_ON.sender()
-				.replace("<player>", user.getDisplayName())
+				.replace("{player}", user.getDisplayName())
 				.sendTo(staff);
 		// Vanish désactivé
 		} else {
 			EEMessages.VANISH_STATUS_OTHERS_OFF.sender()
-				.replace("<player>", user.getDisplayName())
+				.replace("{player}", user.getDisplayName())
 				.sendTo(staff);
 		}
 		return CompletableFuture.completedFuture(true);

@@ -100,7 +100,7 @@ public class EESeen extends ECommand<EverEssentials> {
 				} else {
 					EAMessages.PLAYER_NOT_FOUND.sender()
 						.prefix(EEMessages.PREFIX)
-						.replace("<player>", args.get(0))
+						.replace("{player}", args.get(0))
 						.sendTo(source);
 				}
 			}
@@ -115,7 +115,7 @@ public class EESeen extends ECommand<EverEssentials> {
 	
 	private CompletableFuture<Boolean> commandSeen(final EPlayer player) {
 		EEMessages.SEEN_IP.sender()
-			.replace("<ip>", getButtomIP(UtilsNetwork.getHostString(player.getConnection().getAddress().getAddress())))
+			.replace("{ip}", getButtomIP(UtilsNetwork.getHostString(player.getConnection().getAddress().getAddress())))
 			.sendTo(player);
 		return CompletableFuture.completedFuture(true);
 	}
@@ -127,12 +127,12 @@ public class EESeen extends ECommand<EverEssentials> {
 		}
 		if(user.getLastIP().isPresent()) {
 			EEMessages.SEEN_IP_OTHERS.sender()
-				.replace("<player>", user.getDisplayName())
-				.replace("<ip>", getButtomIP(UtilsNetwork.getHostString(user.getLastIP().get())))
+				.replace("{player}", user.getDisplayName())
+				.replace("{ip}", getButtomIP(UtilsNetwork.getHostString(user.getLastIP().get())))
 				.sendTo(staff);
 		} else {
 			EEMessages.SEEN_IP_OTHERS_NO_IP.sender()
-				.replace("<player>", user.getDisplayName())
+				.replace("{player}", user.getDisplayName())
 				.sendTo(staff);
 		}
 		return CompletableFuture.completedFuture(true);
@@ -141,19 +141,19 @@ public class EESeen extends ECommand<EverEssentials> {
 	private CompletableFuture<Boolean> commandSeenOthers(final CommandSource staff, final String address) throws CommandException {
 		List<Text> lists = new ArrayList<Text>();
 		Optional<List<UUID>> uuids = this.plugin.getDataBases().getPlayersWithSameIP(address);
-		lists.add(EEMessages.SEEN_IP_MESSAGE.getFormat().toText("<ip>", address));
+		lists.add(EEMessages.SEEN_IP_MESSAGE.getFormat().toText("{ip}", address));
 		if(uuids.isPresent()){
 			for(UUID uuid : uuids.get()){
 				Optional<EUser> player = this.plugin.getEServer().getEUser(uuid);
 				if(player.isPresent()){
-					lists.add(EEMessages.SEEN_IP_LIST.getFormat().toText("<player>", getButtomUser(player.get())));
+					lists.add(EEMessages.SEEN_IP_LIST.getFormat().toText("{player}", getButtomUser(player.get())));
 				}
 			}
 		} else {
 			lists.add(EEMessages.SEEN_IP_NO_PLAYER.getText());
 		}
 		this.plugin.getEverAPI().getManagerService().getEPagination().sendTo(
-				EEMessages.SEEN_IP_TITLE.getFormat().toText("<ip>", address).toBuilder()
+				EEMessages.SEEN_IP_TITLE.getFormat().toText("{ip}", address).toBuilder()
 					.onClick(TextActions.runCommand("/s \"" + address + "\""))
 					.build(), 
 				lists, staff);
@@ -161,7 +161,7 @@ public class EESeen extends ECommand<EverEssentials> {
 	}
 	
 	private Text getButtomIP(final String address){
-		return EEMessages.SEEN_IP_STYLE.getFormat().toText("<ip>", address).toBuilder()
+		return EEMessages.SEEN_IP_STYLE.getFormat().toText("{ip}", address).toBuilder()
 			.onHover(TextActions.showText(EAMessages.HOVER_COPY.getText()))
 			.onClick(TextActions.suggestCommand(address))
 			.onShiftClick(TextActions.insertText(address))
@@ -169,7 +169,7 @@ public class EESeen extends ECommand<EverEssentials> {
 	}
 	
 	private Text getButtomUser(final EUser player){
-		return EEMessages.SEEN_PLAYER_STYLE.getFormat().toText("<player>", player.getDisplayName()).toBuilder()
+		return EEMessages.SEEN_PLAYER_STYLE.getFormat().toText("{player}", player.getDisplayName()).toBuilder()
 			.onHover(TextActions.showText(EAMessages.HOVER_COPY.getText()))
 			.onClick(TextActions.suggestCommand(player.getName()))
 			.onShiftClick(TextActions.insertText(player.getName()))

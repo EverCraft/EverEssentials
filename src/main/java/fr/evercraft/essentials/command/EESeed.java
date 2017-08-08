@@ -98,7 +98,7 @@ public class EESeed extends ECommand<EverEssentials> {
 				} else {
 					EAMessages.WORLD_NOT_FOUND.sender()
 						.prefix(EEMessages.PREFIX)
-						.replace("<world>", args.get(0))
+						.replace("{world}", args.get(0))
 						.sendTo(source);
 				}
 			}
@@ -112,14 +112,14 @@ public class EESeed extends ECommand<EverEssentials> {
 	
 	private CompletableFuture<Boolean> commandSeed(final EPlayer player, final World world) {
 		EEMessages.SEED_MESSAGE.sender()
-			.replace("<world>", world.getName())
-			.replace("<seed>", this.getButtonSeed(world.getProperties().getSeed()))
+			.replace("{world}", world.getName())
+			.replace("{seed}", this.getButtonSeed(world.getProperties().getSeed()))
 			.sendTo(player);				
 		return CompletableFuture.completedFuture(true);
 	}
 	
 	private Text getButtonSeed(final Long seed){
-		return EEMessages.SEED_NAME.getFormat().toText("<seed>", seed.toString()).toBuilder()
+		return EEMessages.SEED_NAME.getFormat().toText("{seed}", seed.toString()).toBuilder()
 				.onHover(TextActions.showText(EAMessages.HOVER_COPY.getText()))
 					.onClick(TextActions.suggestCommand(seed.toString()))
 					.onShiftClick(TextActions.insertText(seed.toString()))

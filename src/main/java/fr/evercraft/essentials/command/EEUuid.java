@@ -113,8 +113,8 @@ public class EEUuid extends ECommand<EverEssentials> {
 	
 	private CompletableFuture<Boolean> commandUUIDPlayerName(final EPlayer player) {
 		EEMessages.UUID_PLAYER_NAME.sender()
-			.replace("<uuid>", this.getButtonUUID(player.getUniqueId()))
-			.replace("<name>", this.getButtonName(player.getName()))
+			.replace("{uuid}", this.getButtonUUID(player.getUniqueId()))
+			.replace("{name}", this.getButtonName(player.getName()))
 			.sendTo(player);
 		return CompletableFuture.completedFuture(true);
 	}
@@ -132,7 +132,7 @@ public class EEUuid extends ECommand<EverEssentials> {
 				} else {
 					EAMessages.PLAYER_NOT_FOUND.sender()
 						.prefix(EEMessages.PREFIX)
-						.replace("<player>", name)
+						.replace("{player}", name)
 						.sendTo(source);
 				}
 				return profile;
@@ -141,7 +141,7 @@ public class EEUuid extends ECommand<EverEssentials> {
 		} catch (IllegalArgumentException e) {
 			EAMessages.PLAYER_NOT_FOUND.sender()
 				.prefix(EEMessages.PREFIX)
-				.replace("<player>", name)
+				.replace("{player}", name)
 				.sendTo(source);
 			return CompletableFuture.completedFuture(false);
 		}
@@ -149,8 +149,8 @@ public class EEUuid extends ECommand<EverEssentials> {
 	
 	private CompletableFuture<Boolean> commandUUIDPlayerUUID(final EPlayer player) {
 		EEMessages.UUID_PLAYER_UUID.sender()
-			.replace("<uuid>", this.getButtonUUID(player.getUniqueId()))
-			.replace("<name>", this.getButtonName(player.getName()))
+			.replace("{uuid}", this.getButtonUUID(player.getUniqueId()))
+			.replace("{name}", this.getButtonName(player.getName()))
 			.sendTo(player);
 		return CompletableFuture.completedFuture(true);
 	}
@@ -165,14 +165,14 @@ public class EEUuid extends ECommand<EverEssentials> {
 		if(!profile.getName().isPresent()) {
 			EAMessages.PLAYER_NOT_FOUND.sender()
 				.prefix(EEMessages.PREFIX)
-				.replace("<player>", profile.getUniqueId().toString())
+				.replace("{player}", profile.getUniqueId().toString())
 				.sendTo(staff);
 			return CompletableFuture.completedFuture(false);
 		}
 		
 		EEMessages.UUID_OTHERS_PLAYER_NAME.sender()
-			.replace("<uuid>", this.getButtonUUID(profile.getUniqueId()))
-			.replace("<name>", this.getButtonName(profile.getName().get()))
+			.replace("{uuid}", this.getButtonUUID(profile.getUniqueId()))
+			.replace("{name}", this.getButtonName(profile.getName().get()))
 			.sendTo(staff);				
 		return CompletableFuture.completedFuture(true);
 	}
@@ -184,15 +184,15 @@ public class EEUuid extends ECommand<EverEssentials> {
 		}
 		
 		EEMessages.UUID_OTHERS_PLAYER_UUID.sender()
-			.replace("<player>", profile.getName().orElse(profile.getUniqueId().toString()))
-			.replace("<uuid>", this.getButtonUUID(profile.getUniqueId()))
-			.replace("<name>", this.getButtonName(profile.getName().get()))
+			.replace("{player}", profile.getName().orElse(profile.getUniqueId().toString()))
+			.replace("{uuid}", this.getButtonUUID(profile.getUniqueId()))
+			.replace("{name}", this.getButtonName(profile.getName().get()))
 			.sendTo(staff);				
 		return CompletableFuture.completedFuture(true);
 	}
 	
 	private Text getButtonUUID(final UUID uuid){
-		return EEMessages.UUID_UUID.getFormat().toText("<uuid>", uuid.toString()).toBuilder()
+		return EEMessages.UUID_UUID.getFormat().toText("{uuid}", uuid.toString()).toBuilder()
 				.onHover(TextActions.showText(EAMessages.HOVER_COPY.getText()))
 					.onClick(TextActions.suggestCommand(uuid.toString()))
 					.onShiftClick(TextActions.insertText(uuid.toString()))
@@ -200,7 +200,7 @@ public class EEUuid extends ECommand<EverEssentials> {
 	}
 	
 	private Text getButtonName(final String name){
-		return EEMessages.UUID_NAME.getFormat().toText("<name>", name.toString()).toBuilder()
+		return EEMessages.UUID_NAME.getFormat().toText("{name}", name.toString()).toBuilder()
 				.onHover(TextActions.showText(EAMessages.HOVER_COPY.getText()))
 					.onClick(TextActions.suggestCommand(name))
 					.onShiftClick(TextActions.insertText(name))

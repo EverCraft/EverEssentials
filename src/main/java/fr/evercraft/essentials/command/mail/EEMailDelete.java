@@ -61,7 +61,7 @@ public class EEMailDelete extends ESubCommand<EverEssentials> {
 	
 	@Override
 	public Text help(final CommandSource source) {
-		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_ID.getString() + ">")
+		return Text.builder("/" + this.getName() + " {" + EAMessages.ARGS_ID.getString() + "}")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
 					.build();
@@ -124,7 +124,7 @@ public class EEMailDelete extends ESubCommand<EverEssentials> {
 		if (!id.isPresent()) {
 			EAMessages.IS_NOT_NUMBER.sender()
 				.prefix(EEMessages.PREFIX)
-				.replace("<number>", id_string)
+				.replace("{number}", id_string)
 				.sendTo(player);
 			return CompletableFuture.completedFuture(false);
 		}
@@ -132,19 +132,19 @@ public class EEMailDelete extends ESubCommand<EverEssentials> {
 		Optional<Mail> mail = player.getMail(id.get());
 		if (!mail.isPresent()) {
 			EEMessages.MAIL_DELETE_ERROR.sender()
-				.replace("<number>", id_string)
+				.replace("{number}", id_string)
 				.sendTo(player);
 			return CompletableFuture.completedFuture(false);
 		}
 		
 		Map<String, EReplace<?>> replaces = new HashMap<String, EReplace<?>>();
-		replaces.put("<id>", EReplace.of(String.valueOf(mail.get().getID())));
-		replaces.put("<player>", EReplace.of(mail.get().getToName()));
-		replaces.put("<time>", EReplace.of(() -> this.plugin.getEverAPI().getManagerUtils().getDate().parseTime(mail.get().getDateTime())));
-		replaces.put("<date>", EReplace.of(() -> this.plugin.getEverAPI().getManagerUtils().getDate().parseDate(mail.get().getDateTime())));
-		replaces.put("<datetime>", EReplace.of(() -> this.plugin.getEverAPI().getManagerUtils().getDate().parseDateTime(mail.get().getDateTime())));
-		replaces.put("<mail>", EReplace.of(() -> this.getButtomDeleteMail(mail.get())));
-		replaces.put("<confirmation>", EReplace.of(() -> this.getButtonDeleteConfirmation(mail.get())));
+		replaces.put("{id}", EReplace.of(String.valueOf(mail.get().getID())));
+		replaces.put("{player}", EReplace.of(mail.get().getToName()));
+		replaces.put("{time}", EReplace.of(() -> this.plugin.getEverAPI().getManagerUtils().getDate().parseTime(mail.get().getDateTime())));
+		replaces.put("{date}", EReplace.of(() -> this.plugin.getEverAPI().getManagerUtils().getDate().parseDate(mail.get().getDateTime())));
+		replaces.put("{datetime}", EReplace.of(() -> this.plugin.getEverAPI().getManagerUtils().getDate().parseDateTime(mail.get().getDateTime())));
+		replaces.put("{mail}", EReplace.of(() -> this.getButtomDeleteMail(mail.get())));
+		replaces.put("{confirmation}", EReplace.of(() -> this.getButtonDeleteConfirmation(mail.get())));
 		
 		EEMessages.MAIL_DELETE_MESSAGE.sender()
 			.replaceString(replaces)
@@ -157,7 +157,7 @@ public class EEMailDelete extends ESubCommand<EverEssentials> {
 		if (!id.isPresent()) {
 			EAMessages.IS_NOT_NUMBER.sender()
 				.prefix(EEMessages.PREFIX)
-				.replace("<number>", id_string)
+				.replace("{number}", id_string)
 				.sendTo(player);
 			return CompletableFuture.completedFuture(false);
 		}
@@ -165,18 +165,18 @@ public class EEMailDelete extends ESubCommand<EverEssentials> {
 		Optional<Mail> mail = player.getMail(id.get());
 		if (!mail.isPresent()) {
 			EEMessages.MAIL_DELETE_ERROR.sender()
-				.replace("<number>", id_string)
+				.replace("{number}", id_string)
 				.sendTo(player);
 			return CompletableFuture.completedFuture(false);
 		}
 		
 		Map<String, EReplace<?>> replaces = new HashMap<String, EReplace<?>>();
-		replaces.put("<id>", EReplace.of(String.valueOf(mail.get().getID())));
-		replaces.put("<player>", EReplace.of(mail.get().getToName()));
-		replaces.put("<time>", EReplace.of(() -> this.plugin.getEverAPI().getManagerUtils().getDate().parseTime(mail.get().getDateTime())));
-		replaces.put("<date>", EReplace.of(() -> this.plugin.getEverAPI().getManagerUtils().getDate().parseDate(mail.get().getDateTime())));
-		replaces.put("<datetime>", EReplace.of(() -> this.plugin.getEverAPI().getManagerUtils().getDate().parseDateTime(mail.get().getDateTime())));
-		replaces.put("<mail>", EReplace.of(() -> this.getButtomDeleteMail(mail.get())));
+		replaces.put("{id}", EReplace.of(String.valueOf(mail.get().getID())));
+		replaces.put("{player}", EReplace.of(mail.get().getToName()));
+		replaces.put("{time}", EReplace.of(() -> this.plugin.getEverAPI().getManagerUtils().getDate().parseTime(mail.get().getDateTime())));
+		replaces.put("{date}", EReplace.of(() -> this.plugin.getEverAPI().getManagerUtils().getDate().parseDate(mail.get().getDateTime())));
+		replaces.put("{datetime}", EReplace.of(() -> this.plugin.getEverAPI().getManagerUtils().getDate().parseDateTime(mail.get().getDateTime())));
+		replaces.put("{mail}", EReplace.of(() -> this.getButtomDeleteMail(mail.get())));
 		
 		if (!player.removeMail(mail.get())) {
 			EEMessages.MAIL_DELETE_CONFIRMATION.sender()
@@ -200,11 +200,11 @@ public class EEMailDelete extends ESubCommand<EverEssentials> {
 	
 	private Text getButtomDeleteMail(final Mail mail) {
 		Map<String, EReplace<?>> replaces = new HashMap<String, EReplace<?>>();
-		replaces.put("<id>", EReplace.of(String.valueOf(mail.getID())));
-		replaces.put("<player>", EReplace.of(mail.getToName()));
-		replaces.put("<time>", EReplace.of(() -> this.plugin.getEverAPI().getManagerUtils().getDate().parseTime(mail.getDateTime())));
-		replaces.put("<date>", EReplace.of(() -> this.plugin.getEverAPI().getManagerUtils().getDate().parseDate(mail.getDateTime())));
-		replaces.put("<datetime>", EReplace.of(() -> this.plugin.getEverAPI().getManagerUtils().getDate().parseDateTime(mail.getDateTime())));
+		replaces.put("{id}", EReplace.of(String.valueOf(mail.getID())));
+		replaces.put("{player}", EReplace.of(mail.getToName()));
+		replaces.put("{time}", EReplace.of(() -> this.plugin.getEverAPI().getManagerUtils().getDate().parseTime(mail.getDateTime())));
+		replaces.put("{date}", EReplace.of(() -> this.plugin.getEverAPI().getManagerUtils().getDate().parseDate(mail.getDateTime())));
+		replaces.put("{datetime}", EReplace.of(() -> this.plugin.getEverAPI().getManagerUtils().getDate().parseDateTime(mail.getDateTime())));
 		
 		return EEMessages.MAIL_DELETE_MAIL.getText().toBuilder()
 					.onHover(TextActions.showText(EEMessages.MAIL_DELETE_MAIL_HOVER.getFormat().toText2(replaces)))

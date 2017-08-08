@@ -59,12 +59,12 @@ public class EETeleportation extends ECommand<EverEssentials> {
 	@Override
 	public Text help(final CommandSource source) {
 		if (source.hasPermission(EEPermissions.TP_OTHERS.get())){
-			return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_RECIPIENT.getString() + "] <" + EAMessages.ARGS_PLAYER.getString() + ">")
+			return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_RECIPIENT.getString() + "] {" + EAMessages.ARGS_PLAYER.getString() + "}")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
 					.build();
 		} 
-		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_PLAYER.getString() + ">")
+		return Text.builder("/" + this.getName() + " {" + EAMessages.ARGS_PLAYER.getString() + "}")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
 					.build();
@@ -95,7 +95,7 @@ public class EETeleportation extends ECommand<EverEssentials> {
 				} else {
 					EAMessages.PLAYER_NOT_FOUND.sender()
 						.prefix(EEMessages.PREFIX)
-						.replace("<player>", args.get(0))
+						.replace("{player}", args.get(0))
 						.sendTo(source);
 				}
 			// Si la source est une console ou un commande block
@@ -121,7 +121,7 @@ public class EETeleportation extends ECommand<EverEssentials> {
 					} else {
 						EAMessages.PLAYER_NOT_FOUND.sender()
 							.prefix(EEMessages.PREFIX)
-							.replace("<player>", args.get(1))
+							.replace("{player}", args.get(1))
 							.sendTo(source);
 					}
 					
@@ -129,7 +129,7 @@ public class EETeleportation extends ECommand<EverEssentials> {
 				} else {
 					EAMessages.PLAYER_NOT_FOUND.sender()
 						.prefix(EEMessages.PREFIX)
-						.replace("<player>", args.get(0))
+						.replace("{player}", args.get(0))
 						.sendTo(source);
 				}
 			// Il n'a pas la permission
@@ -158,7 +158,7 @@ public class EETeleportation extends ECommand<EverEssentials> {
 			
 			EAMessages.NO_PERMISSION_WORLD.sender()
 				.prefix(EEMessages.PREFIX)
-				.replace("<world>", destination.getWorld().getName())
+				.replace("{world}", destination.getWorld().getName())
 				.sendTo(player);
 			return CompletableFuture.completedFuture(false);
 		}
@@ -169,7 +169,7 @@ public class EETeleportation extends ECommand<EverEssentials> {
 		}
 		
 		EEMessages.TP_PLAYER.sender()
-			.replace("<destination>", this.getButtonPosition(destination.getName(), player.getLocation()))
+			.replace("{destination}", this.getButtonPosition(destination.getName(), player.getLocation()))
 			.sendTo(player);
 		return CompletableFuture.completedFuture(true);
 	}
@@ -179,15 +179,15 @@ public class EETeleportation extends ECommand<EverEssentials> {
 			!this.plugin.getManagerServices().getEssentials().hasPermissionWorld(player, destination.getWorld())) {
 			
 			EAMessages.NO_PERMISSION_WORLD_OTHERS.sender()
-				.replace("<world>", destination.getWorld().getName())
+				.replace("{world}", destination.getWorld().getName())
 				.sendTo(staff);
 			return CompletableFuture.completedFuture(false);
 		}
 		
 		Map<String, EReplace<?>> replaces = new HashMap<String, EReplace<?>>();
-		replaces.put("<staff>", EReplace.of(staff.getName()));
-		replaces.put("<player>", EReplace.of(player.getName()));
-		replaces.put("<destination>", EReplace.of(() -> this.getButtonPosition(player.getName(), player.getLocation())));
+		replaces.put("{staff}", EReplace.of(staff.getName()));
+		replaces.put("{player}", EReplace.of(player.getName()));
+		replaces.put("{destination}", EReplace.of(() -> this.getButtonPosition(player.getName(), player.getLocation())));
 			
 		// Reposition
 		if (destination.equals(player)) {
@@ -241,12 +241,12 @@ public class EETeleportation extends ECommand<EverEssentials> {
 	}
 	
 	private Text getButtonPosition(final String player, final Location<World> location){
-		return EEMessages.TP_DESTINATION.getFormat().toText("<player>", player).toBuilder()
+		return EEMessages.TP_DESTINATION.getFormat().toText("{player}", player).toBuilder()
 					.onHover(TextActions.showText(EEMessages.TP_DESTINATION_HOVER.getFormat().toText(
-							"<world>", location.getExtent().getName(),
-							"<x>", String.valueOf(location.getBlockX()),
-							"<y>", String.valueOf(location.getBlockY()),
-							"<z>", String.valueOf(location.getBlockZ()))))
+							"{world}", location.getExtent().getName(),
+							"{x}", String.valueOf(location.getBlockX()),
+							"{y}", String.valueOf(location.getBlockY()),
+							"{z}", String.valueOf(location.getBlockZ()))))
 					.build();
 	}
 }

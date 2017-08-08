@@ -56,7 +56,7 @@ public class EETeleportationAskHere extends ECommand<EverEssentials> {
 
 	@Override
 	public Text help(final CommandSource source) {
-		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_PLAYER.getString() + ">")
+		return Text.builder("/" + this.getName() + " {" + EAMessages.ARGS_PLAYER.getString() + "}")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
 					.build();
@@ -84,7 +84,7 @@ public class EETeleportationAskHere extends ECommand<EverEssentials> {
 				} else {
 					EAMessages.PLAYER_NOT_FOUND.sender()
 						.prefix(EEMessages.PREFIX)
-						.replace("<player>", args.get(0))
+						.replace("{player}", args.get(0))
 						.sendTo(source);
 				}
 			// Si la source est une console ou un commande block
@@ -111,7 +111,7 @@ public class EETeleportationAskHere extends ECommand<EverEssentials> {
 		// Le staff ignore le joueur
 		if (staff.ignore(player)) {
 			EEMessages.TPAHERE_IGNORE_STAFF.sender()
-				.replace("<player>", player.getName())
+				.replace("{player}", player.getName())
 				.sendTo(staff);
 			return CompletableFuture.completedFuture(false);
 		}
@@ -119,7 +119,7 @@ public class EETeleportationAskHere extends ECommand<EverEssentials> {
 		// Le joueur ignore le staff
 		if (player.ignore(staff)) {
 			EEMessages.TPAHERE_IGNORE_PLAYER.sender()
-				.replace("<player>", player.getName())
+				.replace("{player}", player.getName())
 				.sendTo(staff);
 			return CompletableFuture.completedFuture(false);
 		}
@@ -127,7 +127,7 @@ public class EETeleportationAskHere extends ECommand<EverEssentials> {
 		// La destination n'accepte pas les demandes de téléportation
 		if (!player.isToggle()) {
 			EEMessages.TOGGLE_DISABLED.sender()
-				.replace("<player>", player.getName())
+				.replace("{player}", player.getName())
 				.sendTo(staff);
 			return CompletableFuture.completedFuture(false);
 		}
@@ -136,7 +136,7 @@ public class EETeleportationAskHere extends ECommand<EverEssentials> {
 		if (!player.getWorld().equals(staff.getWorld()) && !this.plugin.getManagerServices().getEssentials().hasPermissionWorld(player, staff.getWorld())) {
 			EAMessages.NO_PERMISSION_WORLD_OTHERS.sender()
 				.prefix(EEMessages.PREFIX)
-				.replace("<world>", staff.getWorld().getName())
+				.replace("{world}", staff.getWorld().getName())
 				.sendTo(staff);
 			return CompletableFuture.completedFuture(false);
 		}
@@ -147,38 +147,38 @@ public class EETeleportationAskHere extends ECommand<EverEssentials> {
 		// Il y a déjà une demande de téléportation en cours
 		if (!player.addTeleportAskHere(staff.getUniqueId(), delay, staff.getTransform())) {
 			EEMessages.TPAHERE_ERROR_DELAY.sender()
-				.replace("<player>", player.getName())
+				.replace("{player}", player.getName())
 				.sendTo(staff);
 			return CompletableFuture.completedFuture(false);
 		}
 		
 		EEMessages.TPAHERE_STAFF_QUESTION.sender()
-			.replace("<player>", player.getName())
-			.replace("<delay>", delay_format)
+			.replace("{player}", player.getName())
+			.replace("{delay}", delay_format)
 			.sendTo(staff);
 		EEMessages.TPAHERE_PLAYER_QUESTION.sender()
-			.replace("<player>", staff.getName())
-			.replace("<delay>", delay_format)
-			.replace("<accept>", EETeleportationAskHere.getButtonAccept(staff.getName()))
-			.replace("<deny>", EETeleportationAskHere.getButtonDeny(staff.getName()))
+			.replace("{player}", staff.getName())
+			.replace("{delay}", delay_format)
+			.replace("{accept}", EETeleportationAskHere.getButtonAccept(staff.getName()))
+			.replace("{deny}", EETeleportationAskHere.getButtonDeny(staff.getName()))
 			.sendTo(player);
 		return CompletableFuture.completedFuture(true);
 	}
 	
 	public static Text getButtonPosition(final String player, final Location<World> location){
-		return EEMessages.TPAHERE_DESTINATION.getFormat().toText("<player>", player).toBuilder()
+		return EEMessages.TPAHERE_DESTINATION.getFormat().toText("{player}", player).toBuilder()
 					.onHover(TextActions.showText(EEMessages.TPAHERE_DESTINATION_HOVER.getFormat().toText(
-							"<world>", location.getExtent().getName(),
-							"<x>", String.valueOf(location.getBlockX()),
-							"<y>", String.valueOf(location.getBlockY()),
-							"<z>", String.valueOf(location.getBlockZ()))))
+							"{world}", location.getExtent().getName(),
+							"{x}", String.valueOf(location.getBlockX()),
+							"{y}", String.valueOf(location.getBlockY()),
+							"{z}", String.valueOf(location.getBlockZ()))))
 					.build();
 	}
 	
 	public static Text getButtonAccept(final String player){
 		return EEMessages.TPAHERE_PLAYER_QUESTION_ACCEPT.getText().toBuilder()
 					.onHover(TextActions.showText(EEMessages.TPAHERE_PLAYER_QUESTION_ACCEPT_HOVER.getFormat()
-							.toText("<player>", player)))
+							.toText("{player}", player)))
 					.onClick(TextActions.runCommand("/tpaccept " + player))
 					.build();
 	}
@@ -186,7 +186,7 @@ public class EETeleportationAskHere extends ECommand<EverEssentials> {
 	public static Text getButtonDeny(final String player){
 		return EEMessages.TPAHERE_PLAYER_QUESTION_DENY.getText().toBuilder()
 					.onHover(TextActions.showText(EEMessages.TPAHERE_PLAYER_QUESTION_DENY_HOVER.getFormat()
-							.toText("<player>", player)))
+							.toText("{player}", player)))
 					.onClick(TextActions.runCommand("/tpdeny " + player))
 					.build();
 	}

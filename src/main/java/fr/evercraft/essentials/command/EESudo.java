@@ -56,12 +56,12 @@ public class EESudo extends ECommand<EverEssentials> {
 	@Override
 	public Text help(final CommandSource source) {
 		if (source.hasPermission(EEPermissions.SUDO_CONSOLE.get())){
-			return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_PLAYER.getString() + "|console> <" + EAMessages.ARGS_COMMAND.getString() + ">")
+			return Text.builder("/" + this.getName() + " {" + EAMessages.ARGS_PLAYER.getString() + "|console} {" + EAMessages.ARGS_COMMAND.getString() + "}")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
 					.build();
 		}
-		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_PLAYER.getString() + "> <" + EAMessages.ARGS_COMMAND.getString() + ">")
+		return Text.builder("/" + this.getName() + " {" + EAMessages.ARGS_PLAYER.getString() + "} {" + EAMessages.ARGS_COMMAND.getString() + "}")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
 					.build();
@@ -107,7 +107,7 @@ public class EESudo extends ECommand<EverEssentials> {
 				} else {
 					EAMessages.PLAYER_NOT_FOUND.sender()
 						.prefix(EEMessages.PREFIX)
-						.replace("<player>", args.get(0))
+						.replace("{player}", args.get(0))
 						.sendTo(source);
 				} 
 			} else {
@@ -134,15 +134,15 @@ public class EESudo extends ECommand<EverEssentials> {
 		// Le joueur a la permission bypass
 		if (player.hasPermission(EEPermissions.SUDO_BYPASS.get())) {
 			EEMessages.SUDO_BYPASS.sender()
-				.replace("<player>", player.getName())
+				.replace("{player}", player.getName())
 				.sendTo(staff);
 			return CompletableFuture.completedFuture(false);
 		}
 			
 		this.plugin.getGame().getCommandManager().process(player.get(), command);
 		EEMessages.SUDO_PLAYER.sender()
-			.replace("<player>", player.getName())
-			.replace("<command>", this.getButtonCommand(command))
+			.replace("{player}", player.getName())
+			.replace("{command}", this.getButtonCommand(command))
 			.sendTo(staff);
 		return CompletableFuture.completedFuture(true);
 	}
@@ -150,7 +150,7 @@ public class EESudo extends ECommand<EverEssentials> {
 	private CompletableFuture<Boolean> commandSudoConsole(final CommandSource staff, final String command) {			
 		this.plugin.getGame().getCommandManager().process(this.plugin.getGame().getServer().getConsole(), command);
 		EEMessages.SUDO_CONSOLE.sender()
-			.replace("<command>", this.getButtonCommand(command))
+			.replace("{command}", this.getButtonCommand(command))
 			.sendTo(staff);
 		return CompletableFuture.completedFuture(true);
 	}
@@ -158,7 +158,7 @@ public class EESudo extends ECommand<EverEssentials> {
 	private Text getButtonCommand(final String command){
 		return EEMessages.SUDO_COMMAND.getText().toBuilder()
 					.onHover(TextActions.showText(EEMessages.SUDO_COMMAND_HOVER.getFormat()
-							.toText("<command>", "/" + command)))
+							.toText("{command}", "/" + command)))
 					.build();
 	}
 }

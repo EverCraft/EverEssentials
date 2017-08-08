@@ -96,7 +96,7 @@ public class EEGodStatus extends ESubCommand<EverEssentials> {
 				} else {
 					EAMessages.PLAYER_NOT_FOUND.sender()
 						.prefix(EEMessages.PREFIX)
-						.replace("<player>", args.get(0))
+						.replace("{player}", args.get(0))
 						.sendTo(source);
 				}
 			// Il n'a pas la permission
@@ -116,12 +116,12 @@ public class EEGodStatus extends ESubCommand<EverEssentials> {
 		// Si le god mode est déjà activé
 		if (player.isGod()) {
 			EEMessages.GOD_STATUS_PLAYER_ON.sender()
-				.replace("<player>", player.getDisplayName())
+				.replace("{player}", player.getDisplayName())
 				.sendTo(player);
 		// God mode est déjà désactivé
 		} else {
 			EEMessages.GOD_STATUS_PLAYER_OFF.sender()
-				.replace("<player>", player.getDisplayName())
+				.replace("{player}", player.getDisplayName())
 				.sendTo(player);
 		}
 		return CompletableFuture.completedFuture(true);
@@ -134,12 +134,12 @@ public class EEGodStatus extends ESubCommand<EverEssentials> {
 			// Si le god mode est déjà activé
 			if (user.isGod()) {
 				EEMessages.GOD_STATUS_OTHERS_ON.sender()
-					.replace("<player>", user.getDisplayName())
+					.replace("{player}", user.getDisplayName())
 					.sendTo(staff);
 			// God mode est déjà désactivé
 			} else {
 				EEMessages.GOD_STATUS_OTHERS_OFF.sender()
-					.replace("<player>", user.getDisplayName())
+					.replace("{player}", user.getDisplayName())
 					.sendTo(staff);
 			}
 		}

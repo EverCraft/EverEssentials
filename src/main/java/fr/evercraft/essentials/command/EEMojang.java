@@ -122,8 +122,8 @@ public class EEMojang extends ECommand<EverEssentials> {
 		Optional<EEMessages> color_name = EEMojang.getMojangColor(server.getColor());
 		if (server_name.isPresent() && color_name.isPresent()) {
 			return EEMessages.MOJANG_LINE.getFormat().toText(
-					"<server>", server_name.get().getText(),
-					"<color>", color_name.get().getText());
+					"{server}", server_name.get().getText(),
+					"{color}", color_name.get().getText());
 		}
 		return Text.of();
 	}

@@ -59,7 +59,7 @@ public class EEReply extends ECommand<EverEssentials> {
 
 	@Override
 	public Text help(final CommandSource source) {
-		Text help = Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_MESSAGE.getString() + ">")
+		Text help = Text.builder("/" + this.getName() + " {" + EAMessages.ARGS_MESSAGE.getString() + "}")
 						.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 						.color(TextColors.RED)
 						.build();
@@ -137,7 +137,7 @@ public class EEReply extends ECommand<EverEssentials> {
 				} else {
 					EAMessages.PLAYER_NOT_FOUND.sender()
 						.prefix(EEMessages.PREFIX)
-						.replace("<player>", receive.get())
+						.replace("{player}", receive.get())
 						.sendTo(player);
 				}
 			} catch(IllegalArgumentException e) {
@@ -155,22 +155,22 @@ public class EEReply extends ECommand<EverEssentials> {
 	private CompletableFuture<Boolean> commandMsgPlayer(final EPlayer player, final EPlayer receive, final String message) {
 		if (receive.ignore(player)) {
 				EEMessages.REPLY_IGNORE_RECEIVE.sender()
-				.replace("<message>", message)
-				.replace("<player>", receive.getName())
+				.replace("{message}", message)
+				.replace("{player}", receive.getName())
 				.sendTo(player);
 				return CompletableFuture.completedFuture(false);
 		}
 		
 		if (player.ignore(receive)) {
 			EEMessages.REPLY_IGNORE_PLAYER.sender()
-				.replace("<message>", message)
-				.replace("<player>", receive.getName())
+				.replace("{message}", message)
+				.replace("{player}", receive.getName())
 				.sendTo(player);
 			return CompletableFuture.completedFuture(false);
 		}
 		
 		Map<Pattern, EReplace<?>> replaces = new HashMap<Pattern, EReplace<?>>();
-		replaces.put(Pattern.compile("<message>"), EReplace.of(message));
+		replaces.put(Pattern.compile("{message}"), EReplace.of(message));
 		
 		replaces.putAll(player.getReplaces());
 		receive.sendMessage(EEMessages.REPLY_PLAYER_RECEIVE.getFormat().toText(replaces)
@@ -193,7 +193,7 @@ public class EEReply extends ECommand<EverEssentials> {
 	 */
 	private CompletableFuture<Boolean> commandMsgConsole(final CommandSource player, final EPlayer receive, final String message) {
 		Map<Pattern, EReplace<?>> replaces = new HashMap<Pattern, EReplace<?>>();
-		replaces.put(Pattern.compile("<message>"), EReplace.of(message));
+		replaces.put(Pattern.compile("{message}"), EReplace.of(message));
 		
 		receive.sendMessage(EEMessages.REPLY_CONSOLE_SEND.getFormat().toText(replaces)
 					.toBuilder()
@@ -215,7 +215,7 @@ public class EEReply extends ECommand<EverEssentials> {
 	 */
 	private CompletableFuture<Boolean> commandMsgConsole(final EPlayer player, final CommandSource receive, final String message) {
 		Map<Pattern, EReplace<?>> replaces = new HashMap<Pattern, EReplace<?>>();
-		replaces.put(Pattern.compile("<message>"), EReplace.of(message));
+		replaces.put(Pattern.compile("{message}"), EReplace.of(message));
 		
 		player.sendMessage(EEMessages.REPLY_CONSOLE_SEND.getFormat().toText(replaces)
 					.toBuilder()

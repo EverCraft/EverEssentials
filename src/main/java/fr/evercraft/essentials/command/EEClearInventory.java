@@ -101,7 +101,7 @@ public class EEClearInventory extends ECommand<EverEssentials> {
 				} else {
 					EAMessages.PLAYER_NOT_FOUND.sender()
 						.prefix(EEMessages.PREFIX)
-						.replace("<player>", args.get(0))
+						.replace("{player}", args.get(0))
 						.sendTo(source);
 				}
 			// Il n'a pas la permission
@@ -131,7 +131,7 @@ public class EEClearInventory extends ECommand<EverEssentials> {
 		player.getInventory().clear();
 		
 		EEMessages.CLEARINVENTORY_PLAYER.sender()
-			.replace("<amount>", String.valueOf(total))
+			.replace("{amount}", String.valueOf(total))
 			.sendTo(player);
 		return CompletableFuture.completedFuture(true);
 	}
@@ -153,12 +153,12 @@ public class EEClearInventory extends ECommand<EverEssentials> {
 		player.getInventory().clear();
 		
 		EEMessages.CLEARINVENTORY_OTHERS_STAFF.sender()
-			.replace("<player>", player.getName())
-			.replace("<amount>", String.valueOf(total))
+			.replace("{player}", player.getName())
+			.replace("{amount}", String.valueOf(total))
 			.sendTo(staff);
 		EEMessages.CLEARINVENTORY_OTHERS_PLAYER.sender()
-			.replace("<staff>", staff.getName())
-			.replace("<amount>", String.valueOf(total))
+			.replace("{staff}", staff.getName())
+			.replace("{amount}", String.valueOf(total))
 			.sendTo(player);
 		return CompletableFuture.completedFuture(true);
 	}

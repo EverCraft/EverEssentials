@@ -133,8 +133,8 @@ public class EENear extends ECommand<EverEssentials> implements ReloadCommand {
 		List<Text> lists = new ArrayList<Text>();
 		for (Entry<EPlayer, Integer> position : UtilsMap.valueASC(list)){
 			lists.add(EEMessages.NEAR_LIST_LINE.getFormat().toText(
-					"<player>", position.getKey().getName(),
-					"<distance>", position.getValue().toString()));
+					"{player}", position.getKey().getName(),
+					"{distance}", position.getValue().toString()));
 		}
 		this.plugin.getEverAPI().getManagerService().getEPagination().sendTo(EEMessages.NEAR_LIST_TITLE.getText().toBuilder()
 				.onClick(TextActions.runCommand("/near")).build(), lists, player);

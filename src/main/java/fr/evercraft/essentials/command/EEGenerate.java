@@ -68,7 +68,7 @@ public class EEGenerate extends ECommand<EverEssentials> implements ReloadComman
 
 	@Override
 	public Text help(final CommandSource source) {
-		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_WORLD.getString() + ">")
+		return Text.builder("/" + this.getName() + " {" + EAMessages.ARGS_WORLD.getString() + "}")
 				.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 				.color(TextColors.RED)
 				.build();
@@ -111,7 +111,7 @@ public class EEGenerate extends ECommand<EverEssentials> implements ReloadComman
 			} else {
 				EAMessages.WORLD_NOT_FOUND.sender()
 					.prefix(EEMessages.PREFIX)
-					.replace("<world>", args.get(0))
+					.replace("{world}", args.get(0))
 					.sendTo(source);
 			}
 			
@@ -123,7 +123,7 @@ public class EEGenerate extends ECommand<EverEssentials> implements ReloadComman
 			} else {
 				EAMessages.WORLD_NOT_FOUND.sender()
 					.prefix(EEMessages.PREFIX)
-					.replace("<world>", args.get(0))
+					.replace("{world}", args.get(0))
 					.sendTo(source);
 			}
 			
@@ -138,9 +138,9 @@ public class EEGenerate extends ECommand<EverEssentials> implements ReloadComman
 		int chunk = (int) Math.round(Math.pow((world.getWorldBorder().getDiameter() / 16), 2)); 
 		
 		EEMessages.GENERATE_WARNING.sender()
-			.replace("<world>", world.getName())
-			.replace("<chunk>", String.valueOf(chunk))
-			.replace("<confirmation>", this.getButtonConfirmation(world))
+			.replace("{world}", world.getName())
+			.replace("{chunk}", String.valueOf(chunk))
+			.replace("{confirmation}", this.getButtonConfirmation(world))
 			.sendTo(player);
 		return CompletableFuture.completedFuture(true);
 	}
@@ -156,7 +156,7 @@ public class EEGenerate extends ECommand<EverEssentials> implements ReloadComman
 			.start();
 		
 		EEMessages.GENERATE_LAUNCH.sender()
-			.replace("<world>", world.getName())
+			.replace("{world}", world.getName())
 			.sendTo(player);
 		return CompletableFuture.completedFuture(true);
 	}
@@ -164,7 +164,7 @@ public class EEGenerate extends ECommand<EverEssentials> implements ReloadComman
 	private Text getButtonConfirmation(final World world){
 		return EEMessages.GENERATE_WARNING_VALID.getText().toBuilder()
 					.onHover(TextActions.showText(EEMessages.GENERATE_WARNING_VALID_HOVER.getFormat()
-							.toText("<world>", world.getName())))
+							.toText("{world}", world.getName())))
 					.onClick(TextActions.runCommand("/generate \"" + world.getUniqueId() + "\" confirmation"))
 					.build();
 	}

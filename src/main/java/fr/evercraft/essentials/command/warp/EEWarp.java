@@ -113,7 +113,7 @@ public class EEWarp extends ECommand<EverEssentials> implements ReloadCommand {
 				} else {
 					EAMessages.PLAYER_NOT_FOUND.sender()
 						.prefix(EEMessages.PREFIX)
-						.replace("<player>", args.get(1))
+						.replace("{player}", args.get(1))
 						.sendTo(source);
 				}
 			// Il n'a pas la permission
@@ -139,13 +139,13 @@ public class EEWarp extends ECommand<EverEssentials> implements ReloadCommand {
 					Optional<World> world = warp.getValue().getWorld();
 					if (world.isPresent()){
 						lists.add(EEMessages.WARP_LIST_LINE_DELETE.getFormat().toText(
-									"<warp>", () -> this.getButtonWarp(warp.getKey(), warp.getValue()),
-									"<teleport>", () -> this.getButtonTeleport(warp.getKey(), warp.getValue()),
-									"<delete>", () -> this.getButtonDelete(warp.getKey(), warp.getValue())));
+									"{warp}", () -> this.getButtonWarp(warp.getKey(), warp.getValue()),
+									"{teleport}", () -> this.getButtonTeleport(warp.getKey(), warp.getValue()),
+									"{delete}", () -> this.getButtonDelete(warp.getKey(), warp.getValue())));
 					} else {
 						lists.add(EEMessages.WARP_LIST_LINE_DELETE_ERROR_WORLD.getFormat().toText(
-										"<warp>", () -> this.getButtonWarp(warp.getKey(), warp.getValue()),
-										"<delete>", () -> this.getButtonDelete(warp.getKey(), warp.getValue())));
+										"{warp}", () -> this.getButtonWarp(warp.getKey(), warp.getValue()),
+										"{delete}", () -> this.getButtonDelete(warp.getKey(), warp.getValue())));
 					}
 				}
 			}
@@ -157,8 +157,8 @@ public class EEWarp extends ECommand<EverEssentials> implements ReloadCommand {
 					Optional<World> world = warp.getValue().getWorld();
 					if (world.isPresent()){
 						lists.add(EEMessages.WARP_LIST_LINE.getFormat().toText(
-									"<warp>", () -> this.getButtonWarp(warp.getKey(), warp.getValue()),
-									"<teleport>", () -> this.getButtonTeleport(warp.getKey(), warp.getValue())));
+									"{warp}", () -> this.getButtonWarp(warp.getKey(), warp.getValue()),
+									"{teleport}", () -> this.getButtonTeleport(warp.getKey(), warp.getValue())));
 					}
 				}
 			}
@@ -181,14 +181,14 @@ public class EEWarp extends ECommand<EverEssentials> implements ReloadCommand {
 		// Le serveur n'a pas de warp qui porte ce nom
 		if (!warp.isPresent()) {
 			EEMessages.WARP_INCONNU.sender()
-				.replace("<warp>", name)
+				.replace("{warp}", name)
 				.sendTo(player);
 			return CompletableFuture.completedFuture(false);
 		}
 		
 		if (!this.hasPermission(player, name)) {
 			EEMessages.WARP_NO_PERMISSION.sender()
-				.replace("<warp>", name)
+				.replace("{warp}", name)
 				.sendTo(player);
 			return CompletableFuture.completedFuture(false);
 		}
@@ -196,13 +196,13 @@ public class EEWarp extends ECommand<EverEssentials> implements ReloadCommand {
 		// Erreur lors de la téléportation du joueur
 		if (!player.teleportSafe(warp.get(), true)) {
 			EEMessages.WARP_TELEPORT_PLAYER_ERROR.sender()
-				.replace("<warp>", () -> this.getButtonWarp(name, warp.get()))
+				.replace("{warp}", () -> this.getButtonWarp(name, warp.get()))
 				.sendTo(player);
 			return CompletableFuture.completedFuture(false);
 		}
 			
 		EEMessages.WARP_TELEPORT_PLAYER.sender()
-			.replace("<warp>", () -> this.getButtonWarp(name, warp.get()))
+			.replace("{warp}", () -> this.getButtonWarp(name, warp.get()))
 			.sendTo(player);
 		return CompletableFuture.completedFuture(true);
 	}
@@ -214,7 +214,7 @@ public class EEWarp extends ECommand<EverEssentials> implements ReloadCommand {
 		// Le serveur a un warp qui porte ce nom
 		if (!warp.isPresent()) {
 			EEMessages.WARP_INCONNU.sender()
-				.replace("<warp>", name)
+				.replace("{warp}", name)
 				.sendTo(staff);
 			return CompletableFuture.completedFuture(false);
 		}
@@ -222,55 +222,55 @@ public class EEWarp extends ECommand<EverEssentials> implements ReloadCommand {
 		// Erreur lors de la téléportation du joueur
 		if (!player.teleportSafe(warp.get(), true)) {
 			EEMessages.WARP_TELEPORT_OTHERS_ERROR.sender()
-				.replace("<warp>", () -> this.getButtonWarp(name, warp.get()))
+				.replace("{warp}", () -> this.getButtonWarp(name, warp.get()))
 				.sendTo(staff);
 			return CompletableFuture.completedFuture(false);
 		}
 			
 		EEMessages.WARP_TELEPORT_OTHERS_PLAYER.sender()
-			.replace("<staff>", staff.getName())
-			.replace("<warp>", () -> this.getButtonWarp(name, warp.get()))
+			.replace("{staff}", staff.getName())
+			.replace("{warp}", () -> this.getButtonWarp(name, warp.get()))
 			.sendTo(player);
 		EEMessages.WARP_TELEPORT_OTHERS_STAFF.sender()
-			.replace("<player>", player.getName())
-			.replace("<warp>", () -> this.getButtonWarp(name, warp.get()))
+			.replace("{player}", player.getName())
+			.replace("{warp}", () -> this.getButtonWarp(name, warp.get()))
 			.sendTo(staff);
 		return CompletableFuture.completedFuture(true);
 	}
 	
 	private Text getButtonTeleport(final String name, final VirtualTransform location){
 		return EEMessages.WARP_LIST_TELEPORT.getText().toBuilder()
-					.onHover(TextActions.showText(EEMessages.WARP_LIST_TELEPORT_HOVER.getFormat().toText("<warp>", name)))
+					.onHover(TextActions.showText(EEMessages.WARP_LIST_TELEPORT_HOVER.getFormat().toText("{warp}", name)))
 					.onClick(TextActions.runCommand("/warp \"" + name + "\""))
 					.build();
 	}
 	
 	private Text getButtonDelete(final String name, final VirtualTransform location){
 		return EEMessages.WARP_LIST_DELETE.getText().toBuilder()
-					.onHover(TextActions.showText(EEMessages.WARP_LIST_DELETE_HOVER.getFormat().toText("<warp>", name)))
+					.onHover(TextActions.showText(EEMessages.WARP_LIST_DELETE_HOVER.getFormat().toText("{warp}", name)))
 					.onClick(TextActions.runCommand("/delwarp \"" + name + "\""))
 					.build();
 	}
 	
 	private Text getButtonWarp(final String name, final VirtualTransform location){
-		return EEMessages.WARP_NAME.getFormat().toText("<name>", name).toBuilder()
+		return EEMessages.WARP_NAME.getFormat().toText("{name}", name).toBuilder()
 					.onHover(TextActions.showText(EEMessages.WARP_NAME_HOVER.getFormat().toText(
-								"<warp>", name,
-							"<world>", location.getWorldName(),
-							"<x>", String.valueOf(location.getPosition().getFloorX()),
-							"<y>", String.valueOf(location.getPosition().getFloorY()),
-							"<z>", String.valueOf(location.getPosition().getFloorZ()))))
+								"{warp}", name,
+							"{world}", location.getWorldName(),
+							"{x}", String.valueOf(location.getPosition().getFloorX()),
+							"{y}", String.valueOf(location.getPosition().getFloorY()),
+							"{z}", String.valueOf(location.getPosition().getFloorZ()))))
 					.build();
 	}
 	
 	private Text getButtonWarp(final String name, final Transform<World> location){
-		return EEMessages.WARP_NAME.getFormat().toText("<name>", name).toBuilder()
+		return EEMessages.WARP_NAME.getFormat().toText("{name}", name).toBuilder()
 					.onHover(TextActions.showText(EEMessages.WARP_NAME_HOVER.getFormat().toText(
-								"<warp>", name,
-								"<world>", location.getExtent().getName(),
-								"<x>", String.valueOf(location.getLocation().getBlockX()),
-								"<y>", String.valueOf(location.getLocation().getBlockY()),
-								"<z>", String.valueOf(location.getLocation().getBlockZ()))))
+								"{warp}", name,
+								"{world}", location.getExtent().getName(),
+								"{x}", String.valueOf(location.getLocation().getBlockX()),
+								"{y}", String.valueOf(location.getLocation().getBlockY()),
+								"{z}", String.valueOf(location.getLocation().getBlockZ()))))
 					.build();
 	}
 	

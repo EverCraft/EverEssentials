@@ -86,7 +86,7 @@ public class EEGameruleList extends ESubCommand<EverEssentials> {
 				} else {
 					EAMessages.WORLD_NOT_FOUND.sender()
 						.prefix(EEMessages.PREFIX)
-						.replace("<world>", args.get(0))
+						.replace("{world}", args.get(0))
 						.sendTo(source);
 				}
 			} else {
@@ -106,12 +106,12 @@ public class EEGameruleList extends ESubCommand<EverEssentials> {
 		List<Text> lists = new ArrayList<Text>();
 		for(Entry<String, String> gamerule : gamerules.entrySet()){
 			lists.add(EEMessages.GAMERULE_LIST_LINE.getFormat().toText(
-						"<gamerule>", gamerule.getKey(),
-						"<statut>", gamerule.getValue()).toBuilder()
+						"{gamerule}", gamerule.getKey(),
+						"{statut}", gamerule.getValue()).toBuilder()
 					.onClick(TextActions.suggestCommand("")).build());
 		}
 		this.plugin.getEverAPI().getManagerService().getEPagination().sendTo(EEMessages.GAMERULE_LIST_TITLE.getFormat()
-			.toText("<world>", player.getWorld().getName()).toBuilder()
+			.toText("{world}", player.getWorld().getName()).toBuilder()
 				.onClick(TextActions.runCommand("/" + this.getName())).build(), lists, player);
 		return CompletableFuture.completedFuture(true);
 	}

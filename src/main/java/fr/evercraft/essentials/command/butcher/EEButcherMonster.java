@@ -57,7 +57,7 @@ public class EEButcherMonster extends ESubCommand<EverEssentials> {
 	
 	@Override
 	public Text help(final CommandSource source) {
-		Builder build = Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_ENTITY.getString() + "> <" + EAMessages.ARGS_RADIUS.getString());
+		Builder build = Text.builder("/" + this.getName() + " {" + EAMessages.ARGS_ENTITY.getString() + "} {" + EAMessages.ARGS_RADIUS.getString());
 		if (source.hasPermission(EEPermissions.BUTCHER_WORLD.get())) {
 			build.append(Text.of("|" + EAMessages.ARGS_ALL.getString()));
 		}
@@ -109,7 +109,7 @@ public class EEButcherMonster extends ESubCommand<EverEssentials> {
 					} catch (NumberFormatException e) {
 						EAMessages.IS_NOT_NUMBER.sender()
 							.prefix(EEMessages.PREFIX)
-							.replace("<number>", args.get(0))
+							.replace("{number}", args.get(0))
 							.sendTo(player);
 					}
 				}
@@ -132,7 +132,7 @@ public class EEButcherMonster extends ESubCommand<EverEssentials> {
 		if (!list.isEmpty()){
 			list.forEach(entity -> entity.remove());
 			EEMessages.BUTCHER_MONSTER.sender()
-				.replace("<count>", String.valueOf(list.size()))
+				.replace("{count}", String.valueOf(list.size()))
 				.sendTo(player);
 			return CompletableFuture.completedFuture(true);
 		} else {
@@ -157,8 +157,8 @@ public class EEButcherMonster extends ESubCommand<EverEssentials> {
 		if (!list.isEmpty()){
 			list.forEach(entity -> entity.remove());
 			EEMessages.BUTCHER_MONSTER_RADIUS.sender()
-				.replace("<radius>", String.valueOf(radius))
-				.replace("<count>", String.valueOf(list.size()))
+				.replace("{radius}", String.valueOf(radius))
+				.replace("{count}", String.valueOf(list.size()))
 				.sendTo(player);
 			return CompletableFuture.completedFuture(true);
 		} else {

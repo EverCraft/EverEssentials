@@ -73,7 +73,7 @@ public class EEWorldborderCenter extends ESubCommand<EverEssentials> {
 
 	@Override
 	public Text help(final CommandSource source) {
-		return Text.builder("/" + this.getName() + " <x> <z> [" + EAMessages.ARGS_WORLD.getString() + "]")
+		return Text.builder("/" + this.getName() + " {x} {z} [" + EAMessages.ARGS_WORLD.getString() + "]")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
 					.build();
@@ -96,7 +96,7 @@ public class EEWorldborderCenter extends ESubCommand<EverEssentials> {
 			} else {
 				EAMessages.WORLD_NOT_FOUND.sender()
 					.prefix(EEMessages.PREFIX)
-					.replace("<world>", args.get(2))
+					.replace("{world}", args.get(2))
 					.sendTo(source);
 			}
 		} else {
@@ -114,22 +114,22 @@ public class EEWorldborderCenter extends ESubCommand<EverEssentials> {
 				
 				world.getWorldBorder().setCenter(x, z);
 				EEMessages.WORLDBORDER_CENTER_MESSAGE.sender()
-					.replace("<world>", world.getName())
-					.replace("<x>", String.valueOf(x))
-					.replace("<z>", String.valueOf(z))
+					.replace("{world}", world.getName())
+					.replace("{x}", String.valueOf(x))
+					.replace("{z}", String.valueOf(z))
 					.sendTo(source);
 				return CompletableFuture.completedFuture(true);
 				
 			} catch (NumberFormatException e) {
 				EAMessages.IS_NOT_NUMBER.sender()
 					.prefix(EEMessages.PREFIX)
-					.replace("<number>", y_string)
+					.replace("{number}", y_string)
 					.sendTo(source);
 			}
 		} catch (NumberFormatException e) {
 			EAMessages.IS_NOT_NUMBER.sender()
 				.prefix(EEMessages.PREFIX)
-				.replace("<number>", x_string)
+				.replace("{number}", x_string)
 				.sendTo(source);
 		}
 		return CompletableFuture.completedFuture(false);

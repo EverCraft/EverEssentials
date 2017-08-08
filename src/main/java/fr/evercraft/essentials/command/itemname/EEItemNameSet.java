@@ -74,7 +74,7 @@ public class EEItemNameSet extends ESubCommand<EverEssentials> {
 
 	@Override
 	public Text help(final CommandSource source) {
-		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_NAME.getString() + ">")
+		return Text.builder("/" + this.getName() + " {" + EAMessages.ARGS_NAME.getString() + "}")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
 					.build();
@@ -100,7 +100,7 @@ public class EEItemNameSet extends ESubCommand<EverEssentials> {
 		this.plugin.getEServer().broadcast("" + this.max_displayname);
 		if(name.length() > this.max_displayname) {
 			EEMessages.ITEM_NAME_SET_ERROR.sender()
-				.replace("<amount>", String.valueOf(this.max_displayname))
+				.replace("{amount}", String.valueOf(this.max_displayname))
 				.sendTo(player);
 			return CompletableFuture.completedFuture(false);
 		}
@@ -115,8 +115,8 @@ public class EEItemNameSet extends ESubCommand<EverEssentials> {
 		
 		item.get().offer(Keys.DISPLAY_NAME, EChat.of(name));
 		EEMessages.ITEM_NAME_SET_NAME.sender()
-			.replace("<item-before>", EChat.getButtomItem(item.get(), EEMessages.ITEM_NAME_SET_COLOR.getColor()))
-			.replace("<item-after>", EChat.getButtomItem(item.get(), EEMessages.ITEM_NAME_SET_COLOR.getColor()))
+			.replace("{item-before}", EChat.getButtomItem(item.get(), EEMessages.ITEM_NAME_SET_COLOR.getColor()))
+			.replace("{item-after}", EChat.getButtomItem(item.get(), EEMessages.ITEM_NAME_SET_COLOR.getColor()))
 			.sendTo(player);
 		player.setItemInMainHand(item.get());
 		return CompletableFuture.completedFuture(true);

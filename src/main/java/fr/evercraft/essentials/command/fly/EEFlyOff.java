@@ -97,7 +97,7 @@ public class EEFlyOff extends ESubCommand<EverEssentials> {
 				} else {
 					EAMessages.PLAYER_NOT_FOUND.sender()
 						.prefix(EEMessages.PREFIX)
-						.replace("<player>", args.get(0))
+						.replace("{player}", args.get(0))
 						.sendTo(source);
 				}
 			// Il n'a pas la permission
@@ -145,21 +145,21 @@ public class EEFlyOff extends ESubCommand<EverEssentials> {
 		// Fly activé
 		if (!user.getAllowFlight()) {
 			EEMessages.FLY_OFF_OTHERS_ERROR.sender()
-				.replace("<player>", user.getName())
+				.replace("{player}", user.getName())
 				.sendTo(staff);
 			return CompletableFuture.completedFuture(false);
 		}
 		
 		if (user.isCreative()) {
 			EEMessages.FLY_OFF_OTHERS_CREATIVE.sender()
-				.replace("<player>", user.getName())
+				.replace("{player}", user.getName())
 				.sendTo(staff);
 			return CompletableFuture.completedFuture(false);
 		}
 		
 		if (!user.setAllowFlight(false)) {
 			EEMessages.FLY_OFF_OTHERS_CANCEL.sender()
-				.replace("<player>", user.getName())
+				.replace("{player}", user.getName())
 				.sendTo(staff);
 			return CompletableFuture.completedFuture(false);
 		}
@@ -167,14 +167,14 @@ public class EEFlyOff extends ESubCommand<EverEssentials> {
 		user.setFlying(false);
 		
 		EEMessages.FLY_OFF_OTHERS_STAFF.sender()
-			.replace("<player>", user.getName())
+			.replace("{player}", user.getName())
 			.sendTo(staff);
 		
 		if(user instanceof EPlayer) {
 			EPlayer player = (EPlayer) user;
 			player.teleportBottom();
 			EEMessages.FLY_OFF_OTHERS_PLAYER.sender()
-				.replace("<staff>", staff.getName())
+				.replace("{staff}", staff.getName())
 				.sendTo(player);
 		}
 		return CompletableFuture.completedFuture(true);

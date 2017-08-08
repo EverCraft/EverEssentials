@@ -116,7 +116,7 @@ public class EEHelp extends ECommand<EverEssentials> {
 				source.sendMessage(EAMessages.NO_PERMISSION.getText());
 			}
 		} else {
-			Text title = EEMessages.HELP_SEARCH_TITLE.getFormat().toText("<command>", alias).toBuilder()
+			Text title = EEMessages.HELP_SEARCH_TITLE.getFormat().toText("{command}", alias).toBuilder()
 					.onClick(TextActions.runCommand("/help " + alias))
 					.color(TextColors.RED)
 					.build();

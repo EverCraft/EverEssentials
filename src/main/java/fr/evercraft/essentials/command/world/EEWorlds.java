@@ -116,7 +116,7 @@ public class EEWorlds extends ECommand<EverEssentials> {
 					} else {
 						EAMessages.PLAYER_NOT_FOUND.sender()
 							.prefix(EEMessages.PREFIX)
-							.replace("<player>", args.get(1))
+							.replace("{player}", args.get(1))
 							.sendTo(source);
 					}
 				// Si la source est une console ou un commande block
@@ -151,8 +151,8 @@ public class EEWorlds extends ECommand<EverEssentials> {
 				}
 				
 				lists.add(EEMessages.WORLDS_LIST_LINE.getFormat().toText(
-						"<world>", EReplace.of(name),
-						"<teleport>", EReplace.of(() -> this.getButtonTeleport(world.getName(), world.getUniqueId()))));
+						"{world}", EReplace.of(name),
+						"{teleport}", EReplace.of(() -> this.getButtonTeleport(world.getName(), world.getUniqueId()))));
 			}
 		}
 		
@@ -167,7 +167,7 @@ public class EEWorlds extends ECommand<EverEssentials> {
 		if (!world.isPresent()) {
 			EAMessages.WORLD_NOT_FOUND.sender()
 				.prefix(EEMessages.PREFIX)
-				.replace("<world>", world_name)
+				.replace("{world}", world_name)
 				.sendTo(player);
 			return CompletableFuture.completedFuture(false);
 		}
@@ -175,20 +175,20 @@ public class EEWorlds extends ECommand<EverEssentials> {
 		if (!this.plugin.getManagerServices().getEssentials().hasPermissionWorld(player, world.get())) {
 			EAMessages.NO_PERMISSION_WORLD.sender()
 				.prefix(EEMessages.PREFIX)
-				.replace("<world>", world.get().getName())
+				.replace("{world}", world.get().getName())
 				.sendTo(player);
 			return CompletableFuture.completedFuture(false);
 		}
 		
 		if (!player.teleportSafeZone(world.get().getSpawnLocation(), true)) {
 			EEMessages.WORLDS_TELEPORT_PLAYER_ERROR.sender()
-				.replace("<world>", this.getButtonPosition(world.get().getSpawnLocation()))
+				.replace("{world}", this.getButtonPosition(world.get().getSpawnLocation()))
 				.sendTo(player);
 			return CompletableFuture.completedFuture(false);
 		}
 
 		EEMessages.WORLDS_TELEPORT_PLAYER.sender()
-			.replace("<world>", () -> this.getButtonPosition(player.getLocation()))
+			.replace("{world}", () -> this.getButtonPosition(player.getLocation()))
 			.sendTo(player);
 		return CompletableFuture.completedFuture(true);
 	}
@@ -203,7 +203,7 @@ public class EEWorlds extends ECommand<EverEssentials> {
 		if (!world.isPresent()) {
 			EAMessages.WORLD_NOT_FOUND.sender()
 				.prefix(EEMessages.PREFIX)
-				.replace("<world>", world_name)
+				.replace("{world}", world_name)
 				.sendTo(staff);
 			return CompletableFuture.completedFuture(false);
 		}
@@ -211,27 +211,27 @@ public class EEWorlds extends ECommand<EverEssentials> {
 		if (!this.plugin.getManagerServices().getEssentials().hasPermissionWorld(player, world.get())) {
 			EAMessages.NO_PERMISSION_WORLD_OTHERS.sender()
 				.prefix(EEMessages.PREFIX)
-				.replace("<world>", world.get().getName())
-				.replace("<player>", player.getName())
+				.replace("{world}", world.get().getName())
+				.replace("{player}", player.getName())
 				.sendTo(staff);
 			return CompletableFuture.completedFuture(false);
 		}
 		
 		if (!player.teleportSafeZone(world.get().getSpawnLocation(), true)) {
 			EEMessages.WORLDS_TELEPORT_OTHERS_ERROR.sender()
-				.replace("<player>", player.getName())
-				.replace("<world>", () -> this.getButtonPosition(world.get().getSpawnLocation()))
+				.replace("{player}", player.getName())
+				.replace("{world}", () -> this.getButtonPosition(world.get().getSpawnLocation()))
 				.sendTo(staff);
 			return CompletableFuture.completedFuture(false);
 		}
 		
 		EEMessages.WORLDS_TELEPORT_OTHERS_PLAYER.sender()
-			.replace("<staff>", staff.getName())
-			.replace("<world>", () -> this.getButtonPosition(player.getLocation()))
+			.replace("{staff}", staff.getName())
+			.replace("{world}", () -> this.getButtonPosition(player.getLocation()))
 			.sendTo(player);
 		EEMessages.WORLDS_TELEPORT_OTHERS_STAFF.sender()
-			.replace("<player>", player.getName())
-			.replace("<world>", () -> this.getButtonPosition(player.getLocation()))
+			.replace("{player}", player.getName())
+			.replace("{world}", () -> this.getButtonPosition(player.getLocation()))
 			.sendTo(staff);
 		return CompletableFuture.completedFuture(true);
 	}
@@ -239,19 +239,19 @@ public class EEWorlds extends ECommand<EverEssentials> {
 	private Text getButtonTeleport(final String name, final UUID uuid){
 		return EEMessages.WORLDS_LIST_TELEPORT.getText().toBuilder()
 					.onHover(TextActions.showText(EEMessages.WORLDS_LIST_TELEPORT_HOVER.getFormat()
-							.toText("<world>", name)))
+							.toText("{world}", name)))
 					.onClick(TextActions.runCommand("/worlds \"" + uuid + "\""))
 					.build();
 	}
 	
 	private Text getButtonPosition(final Location<World> location){
 		return EEMessages.WORLDS_TELEPORT_WORLD.getFormat()
-				.toText("<world>", location.getExtent().getName()).toBuilder()
+				.toText("{world}", location.getExtent().getName()).toBuilder()
 					.onHover(TextActions.showText(EEMessages.WORLDS_TELEPORT_WORLD_HOVER.getFormat().toText(
-								"<world>", location.getExtent().getName(),
-								"<x>", String.valueOf(location.getBlockX()),
-								"<y>", String.valueOf(location.getBlockY()),
-								"<z>", String.valueOf(location.getBlockZ()))))
+								"{world}", location.getExtent().getName(),
+								"{x}", String.valueOf(location.getBlockX()),
+								"{y}", String.valueOf(location.getBlockY()),
+								"{z}", String.valueOf(location.getBlockZ()))))
 					.build();
 	}
 }

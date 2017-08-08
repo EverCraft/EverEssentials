@@ -97,7 +97,7 @@ public class EEHomeSet extends ECommand<EverEssentials> implements ReloadCommand
 	@Override
 	public Text help(final CommandSource source) {
 		if (source.hasPermission(EEPermissions.SETHOME_MULTIPLE.get())) {
-			return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_HOME.getString() + ">")
+			return Text.builder("/" + this.getName() + " {" + EAMessages.ARGS_HOME.getString() + "}")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
 					.build();
@@ -166,7 +166,7 @@ public class EEHomeSet extends ECommand<EverEssentials> implements ReloadCommand
 		// Il a déjà le nombre maximum d'home
 		if (!hasHome && homes != 0 && homes >= max) {
 			EEMessages.SETHOME_MULTIPLE_ERROR_MAX.sender()
-				.replace("<nombre>", String.valueOf(getMaxHome(player)))
+				.replace("{nombre}", String.valueOf(getMaxHome(player)))
 				.sendTo(player);
 			return CompletableFuture.completedFuture(false);
 		}
@@ -183,13 +183,13 @@ public class EEHomeSet extends ECommand<EverEssentials> implements ReloadCommand
 	private CompletableFuture<Boolean> commandSetHomeAdd(final EPlayer player) {
 		if (!player.addHome(DEFAULT_HOME)) {
 			EEMessages.SETHOME_SET_CANCEL.sender()
-				.replace("<home>", this.getButtonHome(DEFAULT_HOME, player.getLocation()))
+				.replace("{home}", this.getButtonHome(DEFAULT_HOME, player.getLocation()))
 				.sendTo(player);
 			return CompletableFuture.completedFuture(false);
 		}
 			
 		EEMessages.SETHOME_SET.sender()
-			.replace("<home>", this.getButtonHome(DEFAULT_HOME, player.getLocation()))
+			.replace("{home}", this.getButtonHome(DEFAULT_HOME, player.getLocation()))
 			.sendTo(player);
 		return CompletableFuture.completedFuture(true);
 	}
@@ -197,13 +197,13 @@ public class EEHomeSet extends ECommand<EverEssentials> implements ReloadCommand
 	private CompletableFuture<Boolean> commandSetHomeMove(final EPlayer player) {
 		if (!player.moveHome(DEFAULT_HOME)) {
 			EEMessages.SETHOME_MOVE_CANCEL.sender()
-				.replace("<home>", this.getButtonHome(DEFAULT_HOME, player.getLocation()))
+				.replace("{home}", this.getButtonHome(DEFAULT_HOME, player.getLocation()))
 				.sendTo(player);
 			return CompletableFuture.completedFuture(false);
 		}
 			
 		EEMessages.SETHOME_MOVE.sender()
-			.replace("<home>", this.getButtonHome(DEFAULT_HOME, player.getLocation()))
+			.replace("{home}", this.getButtonHome(DEFAULT_HOME, player.getLocation()))
 			.sendTo(player);
 		return CompletableFuture.completedFuture(true);
 	}
@@ -225,7 +225,7 @@ public class EEHomeSet extends ECommand<EverEssentials> implements ReloadCommand
 		// Il a déjà le nombre maximum d'home
 		if (!hasHome && homes != 0 && homes >= max) {
 			EEMessages.SETHOME_MULTIPLE_ERROR_MAX.sender()
-				.replace("<nombre>", String.valueOf(max))
+				.replace("{nombre}", String.valueOf(max))
 				.sendTo(player);
 		}
 		
@@ -241,13 +241,13 @@ public class EEHomeSet extends ECommand<EverEssentials> implements ReloadCommand
 	private CompletableFuture<Boolean> commandSetHomeAdd(final EPlayer player, final String name) {
 		if (!player.addHome(name)) {
 			EEMessages.SETHOME_MULTIPLE_SET_CANCEL.sender()
-				.replace("<home>", this.getButtonHome(name, player.getLocation()))
+				.replace("{home}", this.getButtonHome(name, player.getLocation()))
 				.sendTo(player);
 			return CompletableFuture.completedFuture(false);
 		}
 		
 		EEMessages.SETHOME_MULTIPLE_SET.sender()
-			.replace("<home>", this.getButtonHome(name, player.getLocation()))
+			.replace("{home}", this.getButtonHome(name, player.getLocation()))
 			.sendTo(player);
 		return CompletableFuture.completedFuture(true);
 	}
@@ -255,25 +255,25 @@ public class EEHomeSet extends ECommand<EverEssentials> implements ReloadCommand
 	private CompletableFuture<Boolean> commandSetHomeMove(final EPlayer player, final String name) {
 		if (!player.moveHome(name)) {
 			EEMessages.SETHOME_MULTIPLE_MOVE_CANCEL.sender()
-				.replace("<home>", this.getButtonHome(name, player.getLocation()))
+				.replace("{home}", this.getButtonHome(name, player.getLocation()))
 				.sendTo(player);
 			return CompletableFuture.completedFuture(false);
 		}
 		
 		EEMessages.SETHOME_MULTIPLE_MOVE.sender()
-			.replace("<home>", this.getButtonHome(name, player.getLocation()))
+			.replace("{home}", this.getButtonHome(name, player.getLocation()))
 			.sendTo(player);
 		return CompletableFuture.completedFuture(true);
 	}
 
 	private Text getButtonHome(final String name, final Location<World> location){
-		return EEMessages.HOME_NAME.getFormat().toText("<name>", name).toBuilder()
+		return EEMessages.HOME_NAME.getFormat().toText("{name}", name).toBuilder()
 					.onHover(TextActions.showText(EEMessages.HOME_NAME_HOVER.getFormat().toText(
-								"<home>", name,
-								"<world>", location.getExtent().getName(),
-								"<x>", String.valueOf(location.getBlockX()),
-								"<y>", String.valueOf(location.getBlockY()),
-								"<z>", String.valueOf(location.getBlockZ()))))
+								"{home}", name,
+								"{world}", location.getExtent().getName(),
+								"{x}", String.valueOf(location.getBlockX()),
+								"{y}", String.valueOf(location.getBlockY()),
+								"{z}", String.valueOf(location.getBlockZ()))))
 					.build();
 	}
 }

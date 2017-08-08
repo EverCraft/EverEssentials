@@ -132,24 +132,24 @@ public class EEName extends ECommand<EverEssentials> {
 			for (NameHistory name : names) {
 				if (!name.getDate().isPresent()) {
 					lists.add(EEMessages.NAMES_PLAYER_LINE_ORIGINAL.getFormat()
-							.toText("<name>", name.getName()));
+							.toText("{name}", name.getName()));
 				} else {
 					lists.add(EEMessages.NAMES_PLAYER_LINE_OTHERS.getFormat().toText(
-							"<name>", EReplace.of(name.getName()),
-							"<date>", EReplace.of(() -> this.plugin.getEverAPI().getManagerUtils().getDate().parseDate(name.getDate().get())),
-							"<time>", EReplace.of(() -> this.plugin.getEverAPI().getManagerUtils().getDate().parseTime(name.getDate().get())),
-							"<datetime>", EReplace.of(() -> this.plugin.getEverAPI().getManagerUtils().getDate().parseDateTime(name.getDate().get()))));
+							"{name}", EReplace.of(name.getName()),
+							"{date}", EReplace.of(() -> this.plugin.getEverAPI().getManagerUtils().getDate().parseDate(name.getDate().get())),
+							"{time}", EReplace.of(() -> this.plugin.getEverAPI().getManagerUtils().getDate().parseTime(name.getDate().get())),
+							"{datetime}", EReplace.of(() -> this.plugin.getEverAPI().getManagerUtils().getDate().parseDateTime(name.getDate().get()))));
 				}
 			}
 			
 			if (lists.size() <= 1) {
 				lists.clear();
 				lists.add(EEMessages.NAMES_PLAYER_EMPTY.getFormat()
-						.toText("<player>", player.getName()));
+						.toText("{player}", player.getName()));
 			}
 			
 			this.plugin.getEverAPI().getManagerService().getEPagination().sendTo(
-					EEMessages.NAMES_PLAYER_TITLE.getFormat().toText("<player>", player.getName()).toBuilder()
+					EEMessages.NAMES_PLAYER_TITLE.getFormat().toText("{player}", player.getName()).toBuilder()
 						.onClick(TextActions.runCommand("/names ")).build(), 
 					lists, player);
 			return true;
@@ -170,7 +170,7 @@ public class EEName extends ECommand<EverEssentials> {
 			} else {
 				EAMessages.PLAYER_NOT_FOUND.sender()
 					.prefix(EEMessages.PREFIX)
-					.replace("<player>", name)
+					.replace("{player}", name)
 					.sendTo(player);
 			}
 			return CompletableFuture.completedFuture(false);
@@ -193,24 +193,24 @@ public class EEName extends ECommand<EverEssentials> {
 			for (NameHistory name : names) {
 				if (!name.getDate().isPresent()) {
 					lists.add(EEMessages.NAMES_OTHERS_LINE_ORIGINAL.getFormat()
-							.toText("<name>", name.getName()));
+							.toText("{name}", name.getName()));
 				} else {
 					lists.add(EEMessages.NAMES_OTHERS_LINE_OTHERS.getFormat().toText(
-							"<name>", EReplace.of(name.getName()),
-							"<date>", EReplace.of(() -> this.plugin.getEverAPI().getManagerUtils().getDate().parseDate(name.getDate().get())),
-							"<time>", EReplace.of(() -> this.plugin.getEverAPI().getManagerUtils().getDate().parseTime(name.getDate().get())),
-							"<datetime>", EReplace.of(() -> this.plugin.getEverAPI().getManagerUtils().getDate().parseDateTime(name.getDate().get()))));
+							"{name}", EReplace.of(name.getName()),
+							"{date}", EReplace.of(() -> this.plugin.getEverAPI().getManagerUtils().getDate().parseDate(name.getDate().get())),
+							"{time}", EReplace.of(() -> this.plugin.getEverAPI().getManagerUtils().getDate().parseTime(name.getDate().get())),
+							"{datetime}", EReplace.of(() -> this.plugin.getEverAPI().getManagerUtils().getDate().parseDateTime(name.getDate().get()))));
 				}
 			}
 			
 			if (lists.size() <= 1) {
 				lists.clear();
 				lists.add(EEMessages.NAMES_OTHERS_EMPTY.getFormat()
-						.toText("<player>", gameprofile.getName().get()));
+						.toText("{player}", gameprofile.getName().get()));
 			}
 			
 			this.plugin.getEverAPI().getManagerService().getEPagination().sendTo(
-					EEMessages.NAMES_PLAYER_TITLE.getFormat().toText("<player>", gameprofile.getName().get()).toBuilder()
+					EEMessages.NAMES_PLAYER_TITLE.getFormat().toText("{player}", gameprofile.getName().get()).toBuilder()
 						.onClick(TextActions.runCommand("/names " + gameprofile.getUniqueId().toString())).build(), 
 					lists, staff);
 			return true;

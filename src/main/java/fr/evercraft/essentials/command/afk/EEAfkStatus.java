@@ -95,7 +95,7 @@ public class EEAfkStatus extends ESubCommand<EverEssentials> {
 				} else {
 					EAMessages.PLAYER_NOT_FOUND.sender()
 						.prefix(EEMessages.PREFIX)
-						.replace("<player>", args.get(0))
+						.replace("{player}", args.get(0))
 						.sendTo(source);
 				}
 			// Il n'a pas la permission
@@ -115,12 +115,12 @@ public class EEAfkStatus extends ESubCommand<EverEssentials> {
 		// Si le mode afk est déjà activé
 		if (player.isAfk()){
 			EEMessages.AFK_STATUS_PLAYER_ON.sender()
-				.replace("<player>", player.getDisplayName())
+				.replace("{player}", player.getDisplayName())
 				.sendTo(player);
 		// Le mode afk est déjà désactivé
 		} else {
 			EEMessages.AFK_STATUS_PLAYER_OFF.sender()
-				.replace("<player>", player.getDisplayName())
+				.replace("{player}", player.getDisplayName())
 				.sendTo(player);
 		}
 		return CompletableFuture.completedFuture(true);
@@ -134,12 +134,12 @@ public class EEAfkStatus extends ESubCommand<EverEssentials> {
 		// Si le mode afk est déjà activé
 		if (player.isAfk()){
 			EEMessages.AFK_STATUS_OTHERS_ON.sender()
-				.replace("<player>", player.getDisplayName())
+				.replace("{player}", player.getDisplayName())
 				.sendTo(staff);
 		// Le mode afk est déjà désactivé
 		} else {
 			EEMessages.AFK_STATUS_OTHERS_OFF.sender()
-				.replace("<player>", player.getDisplayName())
+				.replace("{player}", player.getDisplayName())
 				.sendTo(staff);
 		}
 		return CompletableFuture.completedFuture(true);

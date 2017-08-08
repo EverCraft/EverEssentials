@@ -56,7 +56,7 @@ public class EETeleportationAsk extends ECommand<EverEssentials> {
 
 	@Override
 	public Text help(final CommandSource source) {
-		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_PLAYER.getString() + ">")
+		return Text.builder("/" + this.getName() + " {" + EAMessages.ARGS_PLAYER.getString() + "}")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
 					.build();
@@ -84,7 +84,7 @@ public class EETeleportationAsk extends ECommand<EverEssentials> {
 				} else {
 					EAMessages.PLAYER_NOT_FOUND.sender()
 						.prefix(EEMessages.PREFIX)
-						.replace("<player>", args.get(0))
+						.replace("{player}", args.get(0))
 						.sendTo(source);
 				}
 				
@@ -112,7 +112,7 @@ public class EETeleportationAsk extends ECommand<EverEssentials> {
 		// Le joueur ignore la destination
 		if (player.ignore(destination)) {
 			EEMessages.TPA_IGNORE_PLAYER.sender()
-				.replace("<player>", destination.getName())
+				.replace("{player}", destination.getName())
 				.sendTo(player);
 			return CompletableFuture.completedFuture(false);
 		}
@@ -120,7 +120,7 @@ public class EETeleportationAsk extends ECommand<EverEssentials> {
 		// La destination ignore le joueur
 		if (destination.ignore(player)) {
 			EEMessages.TPA_IGNORE_DESTINATION.sender()
-				.replace("<player>", destination.getName())
+				.replace("{player}", destination.getName())
 				.sendTo(player);
 			return CompletableFuture.completedFuture(false);
 		}
@@ -128,7 +128,7 @@ public class EETeleportationAsk extends ECommand<EverEssentials> {
 		// La destination n'accepte pas les demandes de téléportation
 		if (!destination.isToggle()) {
 			EEMessages.TOGGLE_DISABLED.sender()
-				.replace("<player>", destination.getName())
+				.replace("{player}", destination.getName())
 				.sendTo(player);
 			return CompletableFuture.completedFuture(false);
 		}
@@ -139,46 +139,46 @@ public class EETeleportationAsk extends ECommand<EverEssentials> {
 		// Il y a déjà une demande de téléportation en cours
 		if (!destination.addTeleportAsk(player.getUniqueId(), delay)) {
 			EEMessages.TPA_ERROR_DELAY.sender()
-				.replace("<player>", destination.getName())
+				.replace("{player}", destination.getName())
 				.sendTo(player);
 			return CompletableFuture.completedFuture(false);
 		}
 		
 		EEMessages.TPA_STAFF_QUESTION.sender()
-			.replace("<player>", destination.getName())
-			.replace("<delay>", delay_format)
+			.replace("{player}", destination.getName())
+			.replace("{delay}", delay_format)
 			.sendTo(player);
 		EEMessages.TPA_PLAYER_QUESTION.sender()
-			.replace("<player>", player.getName())
-			.replace("<delay>", delay_format)
-			.replace("<accept>", EETeleportationAsk.getButtonAccept(player.getName()))
-			.replace("<deny>", EETeleportationAsk.getButtonDeny(player.getName()))
+			.replace("{player}", player.getName())
+			.replace("{delay}", delay_format)
+			.replace("{accept}", EETeleportationAsk.getButtonAccept(player.getName()))
+			.replace("{deny}", EETeleportationAsk.getButtonDeny(player.getName()))
 			.sendTo(destination);
 		return CompletableFuture.completedFuture(true);
 	}
 	
 	public static Text getButtonPosition(final String player, final Location<World> location){
-		return EEMessages.TPA_DESTINATION.getFormat().toText("<player>", player).toBuilder()
+		return EEMessages.TPA_DESTINATION.getFormat().toText("{player}", player).toBuilder()
 					.onHover(TextActions.showText(EEMessages.TPA_DESTINATION_HOVER.getFormat().toText(
-							"<world>", location.getExtent().getName(),
-							"<x>", String.valueOf(location.getBlockX()),
-							"<y>", String.valueOf(location.getBlockY()),
-							"<z>", String.valueOf(location.getBlockZ()))))
+							"{world}", location.getExtent().getName(),
+							"{x}", String.valueOf(location.getBlockX()),
+							"{y}", String.valueOf(location.getBlockY()),
+							"{z}", String.valueOf(location.getBlockZ()))))
 					.build();
 	}
 	
 	public static Text getButtonAccept(final String player){
-		return EEMessages.TPA_PLAYER_QUESTION_ACCEPT.getFormat().toText("<player>", player).toBuilder()
+		return EEMessages.TPA_PLAYER_QUESTION_ACCEPT.getFormat().toText("{player}", player).toBuilder()
 					.onHover(TextActions.showText(EEMessages.TPA_PLAYER_QUESTION_ACCEPT_HOVER.getFormat()
-							.toText("<player>", player)))
+							.toText("{player}", player)))
 					.onClick(TextActions.runCommand("/tpaccept " + player))
 					.build();
 	}
 	
 	public static Text getButtonDeny(final String player){
-		return EEMessages.TPA_PLAYER_QUESTION_DENY.getFormat().toText("<player>", player).toBuilder()
+		return EEMessages.TPA_PLAYER_QUESTION_DENY.getFormat().toText("{player}", player).toBuilder()
 					.onHover(TextActions.showText(EEMessages.TPA_PLAYER_QUESTION_DENY_HOVER.getFormat()
-							.toText("<player>", player)))
+							.toText("{player}", player)))
 					.onClick(TextActions.runCommand("/tpdeny " + player))
 					.build();
 	}

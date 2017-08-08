@@ -74,7 +74,7 @@ public class EESpawnMob extends ECommand<EverEssentials> implements ReloadComman
 
 	@Override
 	public Text help(final CommandSource source) {
-		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_ENTITY.getString() + "> [" + EAMessages.ARGS_AMOUNT.getString() + "]")
+		return Text.builder("/" + this.getName() + " {" + EAMessages.ARGS_ENTITY.getString() + "} [" + EAMessages.ARGS_AMOUNT.getString() + "]")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
 					.build();
@@ -126,7 +126,7 @@ public class EESpawnMob extends ECommand<EverEssentials> implements ReloadComman
 				} catch (NumberFormatException e) {
 					EAMessages.IS_NOT_NUMBER.sender()
 						.prefix(EEMessages.PREFIX)
-						.replace("<number>", args.get(1))
+						.replace("{number}", args.get(1))
 						.sendTo(source);
 				}
 			// La source n'est pas un joueur
@@ -165,7 +165,7 @@ public class EESpawnMob extends ECommand<EverEssentials> implements ReloadComman
 		
 		// Erreur
 		EEMessages.SPAWNMOB_ERROR_MOB.sender()
-			.replace("<entity>", entityString)
+			.replace("{entity}", entityString)
 			.sendTo(player);
 		return CompletableFuture.completedFuture(false);
 	}
@@ -184,8 +184,8 @@ public class EESpawnMob extends ECommand<EverEssentials> implements ReloadComman
 		}
 		
 		EEMessages.SPAWNMOB_MOB.sender()
-			.replace("<amount>", String.valueOf(amount))
-			.replace("<entity>", StringUtils.capitalize(format.getName()))
+			.replace("{amount}", String.valueOf(amount))
+			.replace("{entity}", StringUtils.capitalize(format.getName()))
 			.sendTo(player);
 		return CompletableFuture.completedFuture(true);
 	}

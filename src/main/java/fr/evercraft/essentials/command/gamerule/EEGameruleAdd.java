@@ -84,8 +84,8 @@ public class EEGameruleAdd extends ESubCommand<EverEssentials> {
 		if (!properties.getGameRule(gamerule).isPresent()) {
 			properties.setGameRule(gamerule, value);
 			EEMessages.GAMERULE_ADD_GAMERULE.sender()
-				.replace("<gamerule>", gamerule)
-				.replace("<value>", value)
+				.replace("{gamerule}", gamerule)
+				.replace("{value}", value)
 				.prefix(EEMessages.PREFIX)
 				.sendTo(player);
 		} else {

@@ -68,7 +68,7 @@ public class EEWhitelistRemove extends ESubCommand<EverEssentials> {
 
 	@Override
 	public Text help(final CommandSource source) {
-		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_USER.getString() + ">")
+		return Text.builder("/" + this.getName() + " {" + EAMessages.ARGS_USER.getString() + "}")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
 					.build();
@@ -94,20 +94,20 @@ public class EEWhitelistRemove extends ESubCommand<EverEssentials> {
 		if (!gameprofile.isPresent()) {
 			EAMessages.PLAYER_NOT_FOUND.sender()
 				.prefix(EEMessages.PREFIX)
-				.replace("<player>", identifier)
+				.replace("{player}", identifier)
 				.sendTo(player);
 			return CompletableFuture.completedFuture(false);
 		}
 		
 		if (!this.plugin.getEverAPI().getManagerService().getWhitelist().removeProfile(gameprofile.get())) {
 			EEMessages.WHITELIST_REMOVE_ERROR.sender()
-				.replace("<player>", gameprofile.get().getName().orElse(identifier))
+				.replace("{player}", gameprofile.get().getName().orElse(identifier))
 				.sendTo(player);
 			return CompletableFuture.completedFuture(false);
 		}
 		
 		EEMessages.WHITELIST_REMOVE_PLAYER.sender()
-			.replace("<player>", gameprofile.get().getName().orElse(identifier))
+			.replace("{player}", gameprofile.get().getName().orElse(identifier))
 			.sendTo(player);
 		return CompletableFuture.completedFuture(true);
 	}

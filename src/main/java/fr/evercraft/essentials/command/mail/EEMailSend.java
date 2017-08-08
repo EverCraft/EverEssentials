@@ -64,7 +64,7 @@ public class EEMailSend extends ESubCommand<EverEssentials> {
 
 	@Override
 	public Text help(final CommandSource source) {
-		return Text.builder("/" + this.getName()+ " <" + EAMessages.ARGS_USER.getString() + "> <" + EAMessages.ARGS_MESSAGE.getString() + ">")
+		return Text.builder("/" + this.getName()+ " {" + EAMessages.ARGS_USER.getString() + "} {" + EAMessages.ARGS_MESSAGE.getString() + "}")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
 					.build();
@@ -97,7 +97,7 @@ public class EEMailSend extends ESubCommand<EverEssentials> {
 					} else {
 						EAMessages.PLAYER_NOT_FOUND.sender()
 							.prefix(EEMessages.PREFIX)
-							.replace("<player>", args.get(0))
+							.replace("{player}", args.get(0))
 							.sendTo(source);
 					}
 					
@@ -119,7 +119,7 @@ public class EEMailSend extends ESubCommand<EverEssentials> {
 		// Le staff ignore le joueur
 		if (staff instanceof EPlayer && ((EPlayer) staff).ignore(user)) {
 			EEMessages.MAIL_SEND_IGNORE_PLAYER.sender()
-				.replace("<player>", user.getName())
+				.replace("{player}", user.getName())
 				.sendTo(staff);
 			return CompletableFuture.completedFuture(false);
 		}
@@ -127,7 +127,7 @@ public class EEMailSend extends ESubCommand<EverEssentials> {
 		// Le joueur vous ignore
 		if (staff instanceof EPlayer && user.ignore((EPlayer) staff)) {
 			EEMessages.MAIL_SEND_IGNORE_RECEIVE.sender()
-				.replace("<player>", user.getName())
+				.replace("{player}", user.getName())
 				.sendTo(staff);
 			return CompletableFuture.completedFuture(false);
 		}
@@ -135,18 +135,18 @@ public class EEMailSend extends ESubCommand<EverEssentials> {
 		// Event cancel
 		if (!user.addMail(staff, message)) {
 			EEMessages.MAIL_SEND_CANCEL.sender()
-				.replace("<player>", user.getName())
+				.replace("{player}", user.getName())
 				.sendTo(staff);
 			return CompletableFuture.completedFuture(false);
 		}
 		
 		if (!staff.getIdentifier().equals(user.getIdentifier())) {
 			EEMessages.MAIL_SEND_MESSAGE.sender()
-				.replace("<player>", user.getName())
+				.replace("{player}", user.getName())
 				.sendTo(staff);
 		} else {
 			EEMessages.MAIL_SEND_EQUALS.sender()
-				.replace("<player>", user.getName())
+				.replace("{player}", user.getName())
 				.sendTo(staff);
 		}
 		return CompletableFuture.completedFuture(true);

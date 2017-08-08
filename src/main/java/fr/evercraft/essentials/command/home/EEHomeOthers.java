@@ -64,7 +64,7 @@ public class EEHomeOthers extends ECommand<EverEssentials> {
 
 	@Override
 	public Text help(final CommandSource source) {
-		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_USER.getString() + "> [" + EAMessages.ARGS_HOME.getString() + " [delete]]")
+		return Text.builder("/" + this.getName() + " {" + EAMessages.ARGS_USER.getString() + "} [" + EAMessages.ARGS_HOME.getString() + " [delete]]")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
 					.build();
@@ -105,7 +105,7 @@ public class EEHomeOthers extends ECommand<EverEssentials> {
 			} else {
 				EAMessages.PLAYER_NOT_FOUND.sender()
 					.prefix(EEMessages.PREFIX)
-					.replace("<player>", args.get(0))
+					.replace("{player}", args.get(0))
 					.sendTo(source);
 			}
 			
@@ -121,7 +121,7 @@ public class EEHomeOthers extends ECommand<EverEssentials> {
 				} else {
 					EAMessages.PLAYER_NOT_FOUND.sender()
 						.prefix(EEMessages.PREFIX)
-						.replace("<player>", args.get(0))
+						.replace("{player}", args.get(0))
 						.sendTo(source);
 				}
 			// La source n'est pas un joueur
@@ -144,7 +144,7 @@ public class EEHomeOthers extends ECommand<EverEssentials> {
 					} else {
 						EAMessages.PLAYER_NOT_FOUND.sender()
 							.prefix(EEMessages.PREFIX)
-							.replace("<player>", args.get(0))
+							.replace("{player}", args.get(0))
 							.sendTo(source);
 					}
 				// Il n'a pas la permission
@@ -170,7 +170,7 @@ public class EEHomeOthers extends ECommand<EverEssentials> {
 					} else {
 						EAMessages.PLAYER_NOT_FOUND.sender()
 							.prefix(EEMessages.PREFIX)
-							.replace("<player>", args.get(0))
+							.replace("{player}", args.get(0))
 							.sendTo(source);
 					}
 				// Il n'a pas la permission
@@ -196,7 +196,7 @@ public class EEHomeOthers extends ECommand<EverEssentials> {
 		// Le joueur n'as pas de home
 		if (homes.size() == 0) {
 			EEMessages.HOMEOTHERS_EMPTY.sender()
-				.replace("<player>", user.getName())
+				.replace("{player}", user.getName())
 				.sendTo(staff);
 			return CompletableFuture.completedFuture(false);
 		}
@@ -204,14 +204,14 @@ public class EEHomeOthers extends ECommand<EverEssentials> {
 		List<Text> lists = new ArrayList<Text>();
 		for (Entry<String, Transform<World>> home : (new TreeMap<String, Transform<World>>(homes)).entrySet()) {
 			lists.add(EEMessages.HOMEOTHERS_LIST_LINE.getFormat().toText(
-						"<player>", user.getName(),
-						"<home>", this.getButtonHome(home.getKey(), home.getValue()),
-						"<teleport>", this.getButtonTeleport(user.getName(), home.getKey()),
-						"<delete>", this.getButtonDelete(user.getName(), home.getKey())));
+						"{player}", user.getName(),
+						"{home}", this.getButtonHome(home.getKey(), home.getValue()),
+						"{teleport}", this.getButtonTeleport(user.getName(), home.getKey()),
+						"{delete}", this.getButtonDelete(user.getName(), home.getKey())));
 		}
 		
 		this.plugin.getEverAPI().getManagerService().getEPagination().sendTo(EEMessages.HOMEOTHERS_LIST_TITLE.getFormat()
-				.toText("<player>", user.getName()).toBuilder()
+				.toText("{player}", user.getName()).toBuilder()
 				.onClick(TextActions.runCommand("/homeothers " + user.getName())).build(), lists, staff);
 		return CompletableFuture.completedFuture(true);
 	}
@@ -223,16 +223,16 @@ public class EEHomeOthers extends ECommand<EverEssentials> {
 		// Le joueur n'a pas de home qui porte ce nom
 		if (!home.isPresent()) {
 			EEMessages.HOMEOTHERS_INCONNU.sender()
-				.replace("<player>", player.getName())
-				.replace("<home>", name)
+				.replace("{player}", player.getName())
+				.replace("{home}", name)
 				.sendTo(staff);
 			return CompletableFuture.completedFuture(false);
 		}
 		
 		staff.teleport(home.get(), true);
 		EEMessages.HOMEOTHERS_TELEPORT.sender()
-			.replace("<player>", player.getName())
-			.replace("<home>", this.getButtonHome(name, home.get()))
+			.replace("{player}", player.getName())
+			.replace("{home}", this.getButtonHome(name, home.get()))
 			.sendTo(staff);
 		return CompletableFuture.completedFuture(true);
 	}
@@ -244,7 +244,7 @@ public class EEHomeOthers extends ECommand<EverEssentials> {
 		if (!subject.isPresent()) {
 			EAMessages.PLAYER_NOT_FOUND.sender()
 				.prefix(EEMessages.PREFIX)
-				.replace("<player>", user.getName())
+				.replace("{player}", user.getName())
 				.sendTo(staff);
 			return CompletableFuture.completedFuture(false);
 		}
@@ -253,16 +253,16 @@ public class EEHomeOthers extends ECommand<EverEssentials> {
 		// Le n'a pas de home qui porte ce nom
 		if (!home.isPresent()) {
 			EEMessages.HOMEOTHERS_INCONNU.sender()
-				.replace("<player>", user.getName())
-				.replace("<home>", name)
+				.replace("{player}", user.getName())
+				.replace("{home}", name)
 				.sendTo(staff);
 			return CompletableFuture.completedFuture(false);
 		}
 		
 		EEMessages.HOMEOTHERS_DELETE_CONFIRMATION.sender()
-			.replace("<player>", user.getName())
-			.replace("<home>", this.getButtonHome(name, home.get()))
-			.replace("<confirmation>", this.getButtonConfirmation(user.getName(), name))
+			.replace("{player}", user.getName())
+			.replace("{home}", this.getButtonHome(name, home.get()))
+			.replace("{confirmation}", this.getButtonConfirmation(user.getName(), name))
 			.sendTo(staff);
 		return CompletableFuture.completedFuture(false);
 	}
@@ -274,7 +274,7 @@ public class EEHomeOthers extends ECommand<EverEssentials> {
 		if (!subject.isPresent()) {
 			EAMessages.PLAYER_NOT_FOUND.sender()
 				.prefix(EEMessages.PREFIX)
-				.replace("<player>", user.getName())
+				.replace("{player}", user.getName())
 				.sendTo(staff);
 			return CompletableFuture.completedFuture(false);
 		}
@@ -283,7 +283,7 @@ public class EEHomeOthers extends ECommand<EverEssentials> {
 		// Le n'a pas de home qui porte ce nom
 		if (!home.isPresent()) {
 			EEMessages.DELHOME_INCONNU.sender()
-				.replace("<home>", name)
+				.replace("{home}", name)
 				.sendTo(staff);
 			return CompletableFuture.completedFuture(false);
 		}
@@ -297,39 +297,39 @@ public class EEHomeOthers extends ECommand<EverEssentials> {
 		}
 		
 		EEMessages.HOMEOTHERS_DELETE.sender()
-			.replace("<player>", user.getName())
-			.replace("<home>", getButtonHome(name, home.get()))
+			.replace("{player}", user.getName())
+			.replace("{home}", getButtonHome(name, home.get()))
 			.sendTo(staff);
 		return CompletableFuture.completedFuture(true);
 	}
 	
 	private Text getButtonHome(final String name, final Transform<World> location) {
-		return EEMessages.HOME_NAME.getFormat().toText("<name>", name).toBuilder()
+		return EEMessages.HOME_NAME.getFormat().toText("{name}", name).toBuilder()
 					.onHover(TextActions.showText(EEMessages.HOME_NAME_HOVER.getFormat().toText(
-								"<home>", name,
-								"<world>", location.getExtent().getName(),
-								"<x>", String.valueOf(location.getLocation().getBlockX()),
-								"<y>", String.valueOf(location.getLocation().getBlockY()),
-								"<z>", String.valueOf(location.getLocation().getBlockZ()))))
+								"{home}", name,
+								"{world}", location.getExtent().getName(),
+								"{x}", String.valueOf(location.getLocation().getBlockX()),
+								"{y}", String.valueOf(location.getLocation().getBlockY()),
+								"{z}", String.valueOf(location.getLocation().getBlockZ()))))
 					.build();
 	}
 	
 	private Text getButtonHome(final String name, final VirtualTransform location) {
-		return EEMessages.HOME_NAME.getFormat().toText("<name>", name).toBuilder()
+		return EEMessages.HOME_NAME.getFormat().toText("{name}", name).toBuilder()
 					.onHover(TextActions.showText(EEMessages.HOME_NAME_HOVER.getFormat().toText(
-								"<home>", name,
-								"<world>", location.getWorldName(),
-								"<x>", String.valueOf(location.getPosition().getFloorX()),
-								"<y>", String.valueOf(location.getPosition().getFloorY()),
-								"<z>", String.valueOf(location.getPosition().getFloorZ()))))
+								"{home}", name,
+								"{world}", location.getWorldName(),
+								"{x}", String.valueOf(location.getPosition().getFloorX()),
+								"{y}", String.valueOf(location.getPosition().getFloorY()),
+								"{z}", String.valueOf(location.getPosition().getFloorZ()))))
 					.build();
 	}
 	
 	private Text getButtonTeleport(final String player, final String name) {
 		return EEMessages.HOMEOTHERS_LIST_TELEPORT.getText().toBuilder()
 					.onHover(TextActions.showText(EEMessages.HOMEOTHERS_LIST_TELEPORT_HOVER.getFormat().toText(
-								"<player>", player,
-								"<home>", name)))
+								"{player}", player,
+								"{home}", name)))
 					.onClick(TextActions.runCommand("/homeothers " + player + " \"" + name + "\""))
 					.build();
 	}
@@ -337,8 +337,8 @@ public class EEHomeOthers extends ECommand<EverEssentials> {
 	private Text getButtonDelete(final String player, final String name) {
 		return EEMessages.HOMEOTHERS_LIST_DELETE.getText().toBuilder()
 					.onHover(TextActions.showText(EEMessages.HOMEOTHERS_LIST_DELETE_HOVER.getFormat().toText(
-								"<player>", player,
-								"<home>", name)))
+								"{player}", player,
+								"{home}", name)))
 					.onClick(TextActions.runCommand("/homeothers " + player + " \"" + name + "\" delete"))
 					.build();
 	}
@@ -346,8 +346,8 @@ public class EEHomeOthers extends ECommand<EverEssentials> {
 	private Text getButtonConfirmation(final String player, final String name) {
 		return EEMessages.HOMEOTHERS_DELETEE_CONFIRMATION_VALID.getText().toBuilder()
 					.onHover(TextActions.showText(EEMessages.HOMEOTHERS_DELETE_CONFIRMATION_VALID_HOVER.getFormat().toText(
-								"<player>", player,
-								"<home>", name)))
+								"{player}", player,
+								"{home}", name)))
 					.onClick(TextActions.runCommand("/homeothers " + player + " \"" + name + "\" delete confirmation"))
 					.build();
 	}

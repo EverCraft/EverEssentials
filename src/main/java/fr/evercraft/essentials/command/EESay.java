@@ -53,7 +53,7 @@ public class EESay extends ECommand<EverEssentials> {
 
 	@Override
 	public Text help(final CommandSource source) {
-		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_MESSAGE.getString() + ">")
+		return Text.builder("/" + this.getName() + " {" + EAMessages.ARGS_MESSAGE.getString() + "}")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
 					.build();
@@ -93,20 +93,20 @@ public class EESay extends ECommand<EverEssentials> {
 	
 	private CompletableFuture<Boolean> commandSayPlayer(final EPlayer player, String message) {
 		this.plugin.getEServer().getBroadcastChannel().send(EEMessages.SAY_PLAYER.getFormat().toText(
-				"<player>", player.getName(),
-				"<message>", message));
+				"{player}", player.getName(),
+				"{message}", message));
 		return CompletableFuture.completedFuture(true);
 	}
 	
 	private CompletableFuture<Boolean> commandSayCommandBlock(final CommandSource player, String message) {
 		this.plugin.getEServer().getBroadcastChannel().send(EEMessages.SAY_COMMANDBLOCK.getFormat().toText(
-				"<message>", message));
+				"{message}", message));
 		return CompletableFuture.completedFuture(true);
 	}
 	
 	private CompletableFuture<Boolean> commandSayConsole(final CommandSource player, String message) {
 		this.plugin.getEServer().getBroadcastChannel().send(EEMessages.SAY_CONSOLE.getFormat().toText(
-				"<message>", message));
+				"{message}", message));
 		return CompletableFuture.completedFuture(true);
 	}
 }

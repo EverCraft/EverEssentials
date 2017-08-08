@@ -99,7 +99,7 @@ public class EETeleportationAskAll extends ECommand<EverEssentials> {
 				} else {
 					EAMessages.PLAYER_NOT_FOUND.sender()
 						.prefix(EEMessages.PREFIX)
-						.replace("<player>", args.get(0))
+						.replace("{player}", args.get(0))
 						.sendTo(source);
 				}
 			// Il n'a pas la permission
@@ -137,10 +137,10 @@ public class EETeleportationAskAll extends ECommand<EverEssentials> {
 				if (!player.ignore(staff) && !staff.ignore(player) && player.isToggle()) {
 					if (player.addTeleportAskHere(staff.getUniqueId(), delay, location)) {							
 						EEMessages.TPAHERE_PLAYER_QUESTION.sender()
-							.replace("<player>", staff.getName())
-							.replace("<delay>", delay_format)
-							.replace("<accept>", () -> EETeleportationAsk.getButtonAccept(staff.getName()))
-							.replace("<deny>", () -> EETeleportationAsk.getButtonDeny(staff.getName()))
+							.replace("{player}", staff.getName())
+							.replace("{delay}", delay_format)
+							.replace("{accept}", () -> EETeleportationAsk.getButtonAccept(staff.getName()))
+							.replace("{deny}", () -> EETeleportationAsk.getButtonDeny(staff.getName()))
 							.sendTo(player);
 					}
 				}
@@ -164,7 +164,7 @@ public class EETeleportationAskAll extends ECommand<EverEssentials> {
 		
 		if (this.plugin.getEverAPI().getManagerUtils().getLocation().isPositionSafe(location)) {
 			EEMessages.TPAALL_ERROR_OTHERS_LOCATION.sender()
-				.replace("<player>", destination.getName())
+				.replace("{player}", destination.getName())
 				.sendTo(staff);
 			return CompletableFuture.completedFuture(false);
 		}
@@ -173,10 +173,10 @@ public class EETeleportationAskAll extends ECommand<EverEssentials> {
 		String delay_format = this.plugin.getEverAPI().getManagerUtils().getDate().formatDate(System.currentTimeMillis() + delay);
 		
 		EEMessages.TPAALL_OTHERS_STAFF.sender()
-			.replace("<player>", destination.getName())
+			.replace("{player}", destination.getName())
 			.sendTo(staff);
 		EEMessages.TPAALL_OTHERS_PLAYER.sender()
-			.replace("<staff>", staff.getName())
+			.replace("{staff}", staff.getName())
 			.sendTo(destination);
 		
 		for (EPlayer player : this.plugin.getEServer().getOnlineEPlayers()) {
@@ -184,10 +184,10 @@ public class EETeleportationAskAll extends ECommand<EverEssentials> {
 				if (!(staff instanceof EPlayer) || (!player.ignore((EPlayer) staff) && !((EPlayer) staff).ignore(player))) {
 					if (player.isToggle() && player.addTeleportAskHere(destination.getUniqueId(), delay, location)) {							
 						EEMessages.TPAHERE_PLAYER_QUESTION.sender()
-							.replace("<player>", destination.getName())
-							.replace("<delay>", delay_format)
-							.replace("<accept>", () -> EETeleportationAsk.getButtonAccept(destination.getName()))
-							.replace("<deny>", () -> EETeleportationAsk.getButtonDeny(destination.getName()));
+							.replace("{player}", destination.getName())
+							.replace("{delay}", delay_format)
+							.replace("{accept}", () -> EETeleportationAsk.getButtonAccept(destination.getName()))
+							.replace("{deny}", () -> EETeleportationAsk.getButtonDeny(destination.getName()));
 					}
 				}
 			}

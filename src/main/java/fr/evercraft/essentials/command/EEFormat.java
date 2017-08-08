@@ -106,8 +106,8 @@ public class EEFormat extends ECommand<EverEssentials> {
 	
 	private Text getButtomColor(String id, Text text) {
 		return EEMessages.FORMAT_LIST_MESSAGE.getFormat().toText(
-					"<format>", "&" + id,
-					"<name>", text,
-					"<id>", Text.of("&" + id));
+					"{format}", "&" + id,
+					"{name}", text,
+					"{id}", Text.of("&" + id));
 	}
 }

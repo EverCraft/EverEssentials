@@ -117,7 +117,7 @@ public class EEBack extends ECommand<EverEssentials> {
 		long delay = this.plugin.getConfigs().getTeleportDelay(player);
 		if (delay > 0) {
 			EEMessages.BACK_DELAY.sender()
-				.replace("<delay>", () -> this.plugin.getEverAPI().getManagerUtils().getDate().diff(delay))
+				.replace("{delay}", () -> this.plugin.getEverAPI().getManagerUtils().getDate().diff(delay))
 				.sendTo(player);
 		}
 		
@@ -139,17 +139,17 @@ public class EEBack extends ECommand<EverEssentials> {
 		}
 		
 		EEMessages.BACK_TELEPORT.sender()
-			.replace("<back>", () -> this.getButtonLocation(teleport.getLocation()))
+			.replace("{back}", () -> this.getButtonLocation(teleport.getLocation()))
 			.sendTo(player);
 	}
 	
 	private Text getButtonLocation(final Location<World> location){
 		return EEMessages.BACK_NAME.getText().toBuilder()
 					.onHover(TextActions.showText(EEMessages.BACK_NAME_HOVER.getFormat().toText(
-							"<world>", location.getExtent().getName(),
-							"<x>", String.valueOf(location.getBlockX()),
-							"<y>", String.valueOf(location.getBlockY()),
-							"<z>", String.valueOf(location.getBlockZ()))))
+							"{world}", location.getExtent().getName(),
+							"{x}", String.valueOf(location.getBlockX()),
+							"{y}", String.valueOf(location.getBlockY()),
+							"{z}", String.valueOf(location.getBlockZ()))))
 					.build();
 	}
 }

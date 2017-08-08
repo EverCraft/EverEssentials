@@ -61,7 +61,7 @@ public class EEEnchant extends ECommand<EverEssentials> {
 
 	@Override
 	public Text help(final CommandSource source) {
-		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_ENCHANTMENT.getString() + "> [" + EAMessages.ARGS_LEVEL.getString() + "]")
+		return Text.builder("/" + this.getName() + " {" + EAMessages.ARGS_ENCHANTMENT.getString() + "} [" + EAMessages.ARGS_LEVEL.getString() + "]")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
 					.build();
@@ -132,7 +132,7 @@ public class EEEnchant extends ECommand<EverEssentials> {
 					} catch (NumberFormatException e) {
 						EAMessages.IS_NOT_NUMBER.sender()
 							.prefix(EEMessages.PREFIX)
-							.replace("<number>", args.get(1))
+							.replace("{number}", args.get(1))
 							.sendTo(source);
 					}
 				// L'enchantement n'existe pas
@@ -166,14 +166,14 @@ public class EEEnchant extends ECommand<EverEssentials> {
 		// Le level est trop faible
 		if (level < enchantment.getMinimumLevel()) {
 			EEMessages.ENCHANT_LEVEL_TOO_LOW.sender()
-				.replace("<number>", String.valueOf(level))
+				.replace("{number}", String.valueOf(level))
 				.sendTo(player);
 			return CompletableFuture.completedFuture(false);
 		}
 		
 		if (level > enchantment.getMaximumLevel()) {
 			EEMessages.ENCHANT_LEVEL_TOO_HIGHT.sender()
-				.replace("<number>", String.valueOf(level))
+				.replace("{number}", String.valueOf(level))
 				.sendTo(player);
 			return CompletableFuture.completedFuture(false);
 		}
@@ -183,9 +183,9 @@ public class EEEnchant extends ECommand<EverEssentials> {
 		// L'enchantement n'est pas applicable sur cet item
 		if (!UtilsEnchantment.canBeAppliedToItemStack(item, enchantment)) {
 			EEMessages.ENCHANT_INCOMPATIBLE.sender()
-				.replace("<enchantment>", () -> enchantment.getId().toLowerCase().replace("minecraft:", "").replaceAll(" ", ""))
-				.replace("<level>", String.valueOf(level))
-				.replace("<item>", () -> EChat.getButtomItem(item, EEMessages.ENCHANT_ITEM_COLOR.getColor()))
+				.replace("{enchantment}", () -> enchantment.getId().toLowerCase().replace("minecraft:", "").replaceAll(" ", ""))
+				.replace("{level}", String.valueOf(level))
+				.replace("{item}", () -> EChat.getButtomItem(item, EEMessages.ENCHANT_ITEM_COLOR.getColor()))
 				.sendTo(player);
 			return CompletableFuture.completedFuture(false);
 		}
@@ -195,9 +195,9 @@ public class EEEnchant extends ECommand<EverEssentials> {
 		player.setItemInMainHand(item);
 		
 		EEMessages.ENCHANT_SUCCESSFULL.sender()
-			.replace("<enchantment>", enchantment.getTranslation().get())
-			.replace("<level>", String.valueOf(level))
-			.replace("<item>", () -> EChat.getButtomItem(item, EEMessages.ENCHANT_ITEM_COLOR.getColor()))
+			.replace("{enchantment}", enchantment.getTranslation().get())
+			.replace("{level}", String.valueOf(level))
+			.replace("{item}", () -> EChat.getButtomItem(item, EEMessages.ENCHANT_ITEM_COLOR.getColor()))
 			.sendTo(player);
 		return CompletableFuture.completedFuture(true);
 	}

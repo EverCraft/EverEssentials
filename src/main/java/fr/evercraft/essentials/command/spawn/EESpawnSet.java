@@ -101,7 +101,7 @@ public class EESpawnSet extends ECommand<EverEssentials> {
 						
 						if (!result) {
 							EEMessages.SETSPAWN_ERROR_GROUP.sender()
-								.replace("<name>", args.get(0))
+								.replace("{name}", args.get(0))
 								.sendTo(source);
 							return false;
 						}
@@ -129,7 +129,7 @@ public class EESpawnSet extends ECommand<EverEssentials> {
 			
 			if (this.plugin.getManagerServices().getSpawn().update(group_name, player.getTransform())) {
 				EEMessages.SETSPAWN_REPLACE.sender()
-					.replace("<name>", this.getButtonSpawn(group_name, player.getLocation()))
+					.replace("{name}", this.getButtonSpawn(group_name, player.getLocation()))
 					.sendTo(player);
 				return true;
 			} else {
@@ -142,7 +142,7 @@ public class EESpawnSet extends ECommand<EverEssentials> {
 			
 			if (this.plugin.getManagerServices().getSpawn().add(group_name, player.getTransform())) {
 				EEMessages.SETSPAWN_NEW.sender()
-					.replace("<name>", this.getButtonSpawn(group_name, player.getLocation()))
+					.replace("{name}", this.getButtonSpawn(group_name, player.getLocation()))
 					.sendTo(player);
 				return true;
 			} else {
@@ -156,13 +156,13 @@ public class EESpawnSet extends ECommand<EverEssentials> {
 	}
 
 	private Text getButtonSpawn(final String name, final Location<World> location){
-		return EEMessages.SETSPAWN_NAME.getFormat().toText("<name>", name).toBuilder()
+		return EEMessages.SETSPAWN_NAME.getFormat().toText("{name}", name).toBuilder()
 					.onHover(TextActions.showText(EEMessages.SETSPAWN_NAME_HOVER.getFormat().toText(
-							"<name>", name,
-							"<world>", location.getExtent().getName(),
-							"<x>", String.valueOf(location.getBlockX()),
-							"<y>", String.valueOf(location.getBlockY()),
-							"<z>", String.valueOf(location.getBlockZ()))))
+							"{name}", name,
+							"{world}", location.getExtent().getName(),
+							"{x}", String.valueOf(location.getBlockX()),
+							"{y}", String.valueOf(location.getBlockY()),
+							"{z}", String.valueOf(location.getBlockZ()))))
 					.build();
 	}
 }

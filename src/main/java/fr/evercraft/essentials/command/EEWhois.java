@@ -118,7 +118,7 @@ public class EEWhois extends ECommand<EverEssentials> {
 				} else {
 					EAMessages.PLAYER_NOT_FOUND.sender()
 						.prefix(EEMessages.PREFIX)
-						.replace("<player>", args.get(0))
+						.replace("{player}", args.get(0))
 						.sendTo(source);
 				}
 			// Il n'a pas la permission
@@ -178,7 +178,7 @@ public class EEWhois extends ECommand<EverEssentials> {
 		
 		
 		this.plugin.getEverAPI().getManagerService().getEPagination().sendTo(
-				title.getFormat().toText("<player>", player.getName()).toBuilder()
+				title.getFormat().toText("{player}", player.getName()).toBuilder()
 					.onClick(TextActions.runCommand("/whois \"" + player.getName() + "\""))
 					.build(), 
 				lists, staff);
@@ -213,7 +213,7 @@ public class EEWhois extends ECommand<EverEssentials> {
 		lists.add(this.getTotalTimePlayed(user));
 		
 		this.plugin.getEverAPI().getManagerService().getEPagination().sendTo(
-				EEMessages.WHOIS_TITLE_OTHERS.getFormat().toText("<player>", user.getName()).toBuilder()
+				EEMessages.WHOIS_TITLE_OTHERS.getFormat().toText("{player}", user.getName()).toBuilder()
 					.onClick(TextActions.runCommand("/whois \"" + user.getName() + "\""))
 					.build(), 
 				lists, staff);
@@ -222,12 +222,12 @@ public class EEWhois extends ECommand<EverEssentials> {
 	
 	private Text getUUID(final EUser player){
 		return EEMessages.WHOIS_UUID.getFormat()
-				.toText("<uuid>", this.getButtomUUID(player));
+				.toText("{uuid}", this.getButtomUUID(player));
 	}
 	
 	private Text getButtomUUID(final EUser player){
 		return EEMessages.WHOIS_UUID_STYLE.getFormat()
-						.toText("<uuid>", player.getUniqueId().toString()).toBuilder()
+						.toText("{uuid}", player.getUniqueId().toString()).toBuilder()
 					.onHover(TextActions.showText(EAMessages.HOVER_COPY.getText()))
 					.onClick(TextActions.suggestCommand(player.getUniqueId().toString()))
 					.onShiftClick(TextActions.insertText(player.getUniqueId().toString()))
@@ -236,17 +236,17 @@ public class EEWhois extends ECommand<EverEssentials> {
 	
 	private Text getIP(final EPlayer player){
 		return EEMessages.WHOIS_IP.getFormat()
-				.toText("<ip>", getButtomIP(UtilsNetwork.getHostString(player.getConnection().getAddress().getAddress())));
+				.toText("{ip}", getButtomIP(UtilsNetwork.getHostString(player.getConnection().getAddress().getAddress())));
 	}
 	
 	private Text getLastIp(final User user, final InetAddress address) {
 		return EEMessages.WHOIS_LAST_IP.getFormat()
-				.toText("<ip>", this.getButtomIP(UtilsNetwork.getHostString(address)));
+				.toText("{ip}", this.getButtomIP(UtilsNetwork.getHostString(address)));
 	}
 	
 	private Text getButtomIP(String address){
 		return EEMessages.WHOIS_IP_STYLE.getFormat()
-				.toText("<ip>", address).toBuilder()
+				.toText("{ip}", address).toBuilder()
 			.onHover(TextActions.showText(EAMessages.HOVER_COPY.getText()))
 			.onClick(TextActions.suggestCommand(address))
 			.onShiftClick(TextActions.insertText(address))
@@ -255,26 +255,26 @@ public class EEWhois extends ECommand<EverEssentials> {
 	
 	private Text getPing(final EPlayer player){
 		return EEMessages.WHOIS_PING.getFormat()
-				.toText("<ping>", String.valueOf(player.getConnection().getLatency()));
+				.toText("{ping}", String.valueOf(player.getConnection().getLatency()));
 	}
 	
 	private Text getHeal(final EUser player){
 		return EEMessages.WHOIS_HEAL.getFormat().toText(
-				"<heal>", String.valueOf((int) Math.ceil(player.getHealth())),
-				"<max_heal>", String.valueOf((int) Math.ceil(player.getMaxHealth())));
+				"{heal}", String.valueOf((int) Math.ceil(player.getHealth())),
+				"{max_heal}", String.valueOf((int) Math.ceil(player.getMaxHealth())));
 	}
 	
 	private Text getFood(final EUser player) {
 		int saturation = (int) Math.ceil(player.getSaturation());
 		if (saturation > 0) {
 			return EEMessages.WHOIS_FOOD_SATURATION.getFormat().toText(
-					"<food>", String.valueOf(player.getFood()),
-					"<max_food>", String.valueOf(EPlayer.MAX_FOOD),
-					"<saturation>", String.valueOf(saturation));
+					"{food}", String.valueOf(player.getFood()),
+					"{max_food}", String.valueOf(EPlayer.MAX_FOOD),
+					"{saturation}", String.valueOf(saturation));
 		} else {
 			return EEMessages.WHOIS_FOOD.getFormat().toText(
-					"<food>", String.valueOf(player.getFood()),
-					"<max_food>", String.valueOf(EPlayer.MAX_FOOD));
+					"{food}", String.valueOf(player.getFood()),
+					"{max_food}", String.valueOf(EPlayer.MAX_FOOD));
 		}
 	}
 	
@@ -284,12 +284,12 @@ public class EEWhois extends ECommand<EverEssentials> {
 	
 	private Text getExpLevel(final EUser player){
 		return EEMessages.WHOIS_EXP_LEVEL.getFormat()
-				.toText("<level>", String.valueOf(player.getLevel()));
+				.toText("{level}", String.valueOf(player.getLevel()));
 	}
 	
 	private Text getExpPoint(final EUser player){
 		return EEMessages.WHOIS_EXP_POINT.getFormat()
-				.toText("<point>", String.valueOf(player.getLevel()));
+				.toText("{point}", String.valueOf(player.getLevel()));
 	}
 	
 	private Text getSpeed(){
@@ -298,25 +298,25 @@ public class EEWhois extends ECommand<EverEssentials> {
 	
 	private Text getSpeedFly(final EUser player){
 		return EEMessages.WHOIS_SPEED_FLY.getFormat()
-				.toText("<speed>", String.valueOf(UtilsDouble.round(player.getFlySpeed() / EPlayer.CONVERSION_FLY, 3)));
+				.toText("{speed}", String.valueOf(UtilsDouble.round(player.getFlySpeed() / EPlayer.CONVERSION_FLY, 3)));
 	}
 	
 	private Text getSpeedWalk(final EUser player){
 		return EEMessages.WHOIS_SPEED_WALK.getFormat()
-				.toText("<speed>", String.valueOf( UtilsDouble.round(player.getWalkSpeed() / EPlayer.CONVERSION_WALF, 3)));
+				.toText("{speed}", String.valueOf( UtilsDouble.round(player.getWalkSpeed() / EPlayer.CONVERSION_WALF, 3)));
 	}
 	
 	private Text getLocation(final EPlayer player){
 		return EEMessages.WHOIS_LOCATION.getFormat()
-				.toText("<position>", getButtonLocation(player));
+				.toText("{position}", getButtonLocation(player));
 	}
 	
 	private Text getButtonLocation(final EPlayer player) {
 		Map<String, EReplace<?>> replaces = new HashMap<String, EReplace<?>>();
-		replaces.put("<x>", EReplace.of(String.valueOf(player.getLocation().getBlockX())));
-		replaces.put("<y>", EReplace.of(String.valueOf(player.getLocation().getBlockY())));
-		replaces.put("<z>", EReplace.of(String.valueOf(player.getLocation().getBlockZ())));
-		replaces.put("<world>", EReplace.of(player.getLocation().getExtent().getName()));
+		replaces.put("{x}", EReplace.of(String.valueOf(player.getLocation().getBlockX())));
+		replaces.put("{y}", EReplace.of(String.valueOf(player.getLocation().getBlockY())));
+		replaces.put("{z}", EReplace.of(String.valueOf(player.getLocation().getBlockZ())));
+		replaces.put("{world}", EReplace.of(player.getLocation().getExtent().getName()));
 		
 		return EEMessages.WHOIS_LOCATION_POSITION.getFormat().toText2(replaces).toBuilder()
 				.onHover(TextActions.showText(EEMessages.WHOIS_LOCATION_POSITION_HOVER.getFormat().toText2(replaces)))
@@ -325,12 +325,12 @@ public class EEWhois extends ECommand<EverEssentials> {
 	
 	private Text getBalance(final EUser player) {
 		return EEMessages.WHOIS_BALANCE.getFormat()
-				.toText("<money>", this.plugin.getEverAPI().getManagerService().getEconomy().get().getDefaultCurrency().format(player.getBalance()).toPlain());
+				.toText("{money}", this.plugin.getEverAPI().getManagerService().getEconomy().get().getDefaultCurrency().format(player.getBalance()).toPlain());
 	}
 	
 	private Text getGameMode(final EUser player){
 		return EEMessages.WHOIS_GAMEMODE.getFormat()
-				.toText("<gamemode>", UtilsGameMode.getName(player.getGameMode()));
+				.toText("{gamemode}", UtilsGameMode.getName(player.getGameMode()));
 	}
 	
 	private Text getGod(final EUser player){
@@ -391,22 +391,22 @@ public class EEWhois extends ECommand<EverEssentials> {
 	
 	private Text getFirstDatePlayed(final EUser player){
 		return EEMessages.WHOIS_FIRST_DATE_PLAYED.getFormat()
-				.toText("<time>", this.plugin.getEverAPI().getManagerUtils().getDate().parseDateTime(player.getFirstDatePlayed()));
+				.toText("{time}", this.plugin.getEverAPI().getManagerUtils().getDate().parseDateTime(player.getFirstDatePlayed()));
 	}
 	
 	private Text getLastDatePlayed(final EPlayer player) {
 		return EEMessages.WHOIS_LAST_DATE_PLAYED_ONLINE.getFormat()
-				.toText("<time>", this.plugin.getEverAPI().getManagerUtils().getDate().parseDateTime(player.getLastDatePlayed()));
+				.toText("{time}", this.plugin.getEverAPI().getManagerUtils().getDate().parseDateTime(player.getLastDatePlayed()));
 	}
 	
 	private Text getLastDatePlayed(final EUser player) {
 		return EEMessages.WHOIS_LAST_DATE_PLAYED_OFFLINE.getFormat()
-				.toText("<time>", this.plugin.getEverAPI().getManagerUtils().getDate().parseDateTime(player.getLastDatePlayed()));
+				.toText("{time}", this.plugin.getEverAPI().getManagerUtils().getDate().parseDateTime(player.getLastDatePlayed()));
 	}
 	
 	private Text getTotalTimePlayed(final EUser player){
 		return EEMessages.WHOIS_TOTAL_TIME_PLAYED.getFormat()
-				.toText("<time>", this.plugin.getEverAPI().getManagerUtils().getDate().diff(player.getTotalTimePlayed()));
+				.toText("{time}", this.plugin.getEverAPI().getManagerUtils().getDate().diff(player.getTotalTimePlayed()));
 	}
 	
 	private Text getChatVisibility(final EPlayer player){
@@ -422,7 +422,7 @@ public class EEWhois extends ECommand<EverEssentials> {
 	
 	private Text getViewDistance(final EPlayer player){
 		return EEMessages.WHOIS_VIEW_DISTANCE.getFormat()
-				.toText("<amount>", String.valueOf(player.getViewDistance()));
+				.toText("{amount}", String.valueOf(player.getViewDistance()));
 	}
 	
 	private Text getChatColor(final EPlayer player){
@@ -435,7 +435,7 @@ public class EEWhois extends ECommand<EverEssentials> {
 	
 	private Text getLocale(final EPlayer player){
 		return EEMessages.WHOIS_LANGUAGE.getFormat()
-				.toText("<langue>", StringUtils.capitalize(player.getLocale().getDisplayLanguage()));
+				.toText("{langue}", StringUtils.capitalize(player.getLocale().getDisplayLanguage()));
 	}
 	
 	private Text getToggle(final EUser player){

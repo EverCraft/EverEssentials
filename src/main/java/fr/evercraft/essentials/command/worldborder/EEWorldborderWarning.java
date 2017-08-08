@@ -73,21 +73,21 @@ public class EEWorldborderWarning extends ESubCommand<EverEssentials> {
 
 	@Override
 	public Text help(final CommandSource source) {
-		return Text.builder("/" + this.getName() + " <time|distance> <" + EAMessages.ARGS_VALUE.getString() + ">")
+		return Text.builder("/" + this.getName() + " {time|distance} {" + EAMessages.ARGS_VALUE.getString() + "}")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
 					.build();
 	}
 	
 	public Text helpTime(final CommandSource source) {
-		return Text.builder("/" + this.getName() + " time <" + EAMessages.ARGS_SECONDS.getString() + "> [" + EAMessages.ARGS_WORLD.getString() + "]")
+		return Text.builder("/" + this.getName() + " time {" + EAMessages.ARGS_SECONDS.getString() + "} [" + EAMessages.ARGS_WORLD.getString() + "]")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " time "))
 					.color(TextColors.RED)
 					.build();
 	}
 	
 	public Text helpDistance(final CommandSource source) {
-		return Text.builder("/" + this.getName() + " distance <" + EAMessages.ARGS_DISTANCE.getString() + "> [" + EAMessages.ARGS_WORLD.getString() + "]")
+		return Text.builder("/" + this.getName() + " distance {" + EAMessages.ARGS_DISTANCE.getString() + "} [" + EAMessages.ARGS_WORLD.getString() + "]")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " distance "))
 					.color(TextColors.RED)
 					.build();
@@ -138,7 +138,7 @@ public class EEWorldborderWarning extends ESubCommand<EverEssentials> {
 			} else {
 				EAMessages.WORLD_NOT_FOUND.sender()
 					.prefix(EEMessages.PREFIX)
-					.replace("<world>", args.get(2))
+					.replace("{world}", args.get(2))
 					.sendTo(source);
 			}
 		} else {
@@ -154,15 +154,15 @@ public class EEWorldborderWarning extends ESubCommand<EverEssentials> {
 
 			world.getWorldBorder().setWarningTime(value);
 			EEMessages.WORLDBORDER_WARNING_TIME.sender()
-				.replace("<amount>", String.valueOf(value))
-				.replace("<world>", world.getName())
+				.replace("{amount}", String.valueOf(value))
+				.replace("{world}", world.getName())
 				.sendTo(source);
 			
 			return CompletableFuture.completedFuture(true);
 		} catch (NumberFormatException e) {
 			EAMessages.IS_NOT_NUMBER.sender()
 				.prefix(EEMessages.PREFIX)
-				.replace("<number>", value_string)
+				.replace("{number}", value_string)
 				.sendTo(source);
 			return CompletableFuture.completedFuture(false);
 		}
@@ -174,15 +174,15 @@ public class EEWorldborderWarning extends ESubCommand<EverEssentials> {
 
 			world.getWorldBorder().setWarningDistance(value);
 			EEMessages.WORLDBORDER_WARNING_DISTANCE.sender()
-				.replace("<amount>", String.valueOf(value))
-				.replace("<world>", world.getName())
+				.replace("{amount}", String.valueOf(value))
+				.replace("{world}", world.getName())
 				.sendTo(source);
 			
 			return CompletableFuture.completedFuture(true);
 		} catch (NumberFormatException e) {
 			EAMessages.IS_NOT_NUMBER.sender()
 				.prefix(EEMessages.PREFIX)
-				.replace("<number>", value_string)
+				.replace("{number}", value_string)
 				.sendTo(source);
 			return CompletableFuture.completedFuture(false);
 		}

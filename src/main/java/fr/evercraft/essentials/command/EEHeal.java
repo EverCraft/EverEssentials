@@ -106,7 +106,7 @@ public class EEHeal extends ECommand<EverEssentials> {
 					} else {
 						EAMessages.PLAYER_NOT_FOUND.sender()
 							.prefix(EEMessages.PREFIX)
-							.replace("<player>", args.get(0))
+							.replace("{player}", args.get(0))
 							.sendTo(source);
 					}
 				}
@@ -146,10 +146,10 @@ public class EEHeal extends ECommand<EverEssentials> {
 		player.heal();
 		
 		EEMessages.HEAL_OTHERS_STAFF.sender()
-			.replace("<player>", player.getName())
+			.replace("{player}", player.getName())
 			.sendTo(staff);
 		EEMessages.HEAL_OTHERS_PLAYER.sender()
-			.replace("<staff>", staff.getName())
+			.replace("{staff}", staff.getName())
 			.sendTo(player);
 		return CompletableFuture.completedFuture(true);
 	}
@@ -164,7 +164,7 @@ public class EEHeal extends ECommand<EverEssentials> {
 				// La source et le joueur sont différent
 				if (!staff.equals(player)) {
 					EEMessages.HEAL_OTHERS_PLAYER.sender()
-						.replace("<staff>", staff.getName())
+						.replace("{staff}", staff.getName())
 						.sendTo(player);
 				}
 			}

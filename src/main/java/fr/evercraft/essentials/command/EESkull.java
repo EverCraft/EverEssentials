@@ -118,7 +118,7 @@ public class EESkull extends ECommand<EverEssentials> {
 				if (profile == null || !profile.getName().isPresent()) {
 					EAMessages.PLAYER_NOT_FOUND.sender()
 						.prefix(EEMessages.PREFIX)
-						.replace("<player>", name)
+						.replace("{player}", name)
 						.sendTo(player);
 					return CompletableFuture.completedFuture(false);
 				}
@@ -129,14 +129,14 @@ public class EESkull extends ECommand<EverEssentials> {
 						if (profile_skin == null) {
 							EAMessages.PLAYER_NOT_FOUND.sender()
 								.prefix(EEMessages.PREFIX)
-								.replace("<player>", name)
+								.replace("{player}", name)
 								.sendTo(player);
 							return false;
 						}
 						
 						player.giveItemAndDrop(UtilsItemStack.createPlayerHead(profile_skin));
 						EEMessages.SKULL_OTHERS.sender()
-							.replace("<player>", profile_skin.getName().get())
+							.replace("{player}", profile_skin.getName().get())
 							.sendTo(player);
 						return true;
 					}, this.plugin.getGame().getScheduler().createSyncExecutor(this.plugin));

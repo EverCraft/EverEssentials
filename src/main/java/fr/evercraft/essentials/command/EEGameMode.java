@@ -115,7 +115,7 @@ public class EEGameMode extends ECommand<EverEssentials> {
 				} else {
 					EAMessages.PLAYER_NOT_FOUND.sender()
 						.prefix(EEMessages.PREFIX)
-						.replace("<player>", args.get(1))
+						.replace("{player}", args.get(1))
 						.sendTo(source);
 				}
 			// Il n'a pas la permission
@@ -147,14 +147,14 @@ public class EEGameMode extends ECommand<EverEssentials> {
 		// Gamemode identique à celui du joueur
 		if (gamemode.equals(player.getGameMode())) {
 			EEMessages.GAMEMODE_PLAYER_EQUAL.sender()
-				.replace("<gamemode>", UtilsGameMode.getName(gamemode))
+				.replace("{gamemode}", UtilsGameMode.getName(gamemode))
 				.sendTo(player);
 			return CompletableFuture.completedFuture(false);
 		}
 		
 		player.setGameMode(gamemode);
 		EEMessages.GAMEMODE_PLAYER_CHANGE.sender()
-			.replace("<gamemode>", UtilsGameMode.getName(gamemode))
+			.replace("{gamemode}", UtilsGameMode.getName(gamemode))
 			.sendTo(player);
 		return CompletableFuture.completedFuture(true);
 	}
@@ -179,8 +179,8 @@ public class EEGameMode extends ECommand<EverEssentials> {
 		// Gamemode identique à celui du joueur
 		if (gamemode_after.equals(gamemode_before)) {
 			EEMessages.GAMEMODE_OTHERS_EQUAL.sender()
-				.replace("<gamemode>", UtilsGameMode.getName(gamemode_after))
-				.replace("<player>", user.getName())
+				.replace("{gamemode}", UtilsGameMode.getName(gamemode_after))
+				.replace("{player}", user.getName())
 				.sendTo(staff);
 			return CompletableFuture.completedFuture(false);
 		}
@@ -188,15 +188,15 @@ public class EEGameMode extends ECommand<EverEssentials> {
 		user.setGameMode(gamemode_after);
 		
 		EEMessages.GAMEMODE_OTHERS_STAFF_CHANGE.sender()
-			.replace("<gamemode>", UtilsGameMode.getName(gamemode_after))
-			.replace("<player>", user.getName())
+			.replace("{gamemode}", UtilsGameMode.getName(gamemode_after))
+			.replace("{player}", user.getName())
 			.sendTo(staff);
 		
 		if (user instanceof EPlayer) {
 			EEMessages.GAMEMODE_OTHERS_PLAYER_CHANGE.sender()
-				.replace("<gamemode>", UtilsGameMode.getName(gamemode_after))
-				.replace("<player>", user.getName())
-				.replace("<staff>", staff.getName())
+				.replace("{gamemode}", UtilsGameMode.getName(gamemode_after))
+				.replace("{player}", user.getName())
+				.replace("{staff}", staff.getName())
 				.sendTo(((EPlayer) user));
 		}
 		return CompletableFuture.completedFuture(true);

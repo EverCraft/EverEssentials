@@ -141,7 +141,7 @@ public class EETime extends ECommand<EverEssentials> {
 				} else {
 					EAMessages.WORLD_NOT_FOUND.sender()
 						.prefix(EEMessages.PREFIX)
-						.replace("<world>", args.get(1))
+						.replace("{world}", args.get(1))
 						.sendTo(source);
 				}
 			}
@@ -155,9 +155,9 @@ public class EETime extends ECommand<EverEssentials> {
 
 	private CompletableFuture<Boolean> commandTime(final EPlayer player) {
 		EEMessages.TIME_INFORMATION.sender()
-			.replace("<world>", player.getWorld().getName())
-			.replace("<hours>", this.getTime(player.getWorld().getProperties().getWorldTime()))
-			.replace("<ticks>", String.valueOf(player.getWorld().getProperties().getWorldTime()))
+			.replace("{world}", player.getWorld().getName())
+			.replace("{hours}", this.getTime(player.getWorld().getProperties().getWorldTime()))
+			.replace("{ticks}", String.valueOf(player.getWorld().getProperties().getWorldTime()))
 			.sendTo(player);
 		return CompletableFuture.completedFuture(false);
 	}
@@ -166,7 +166,7 @@ public class EETime extends ECommand<EverEssentials> {
 		if (!this.plugin.getManagerServices().getEssentials().hasPermissionWorld(player, world)) {
 			EAMessages.NO_PERMISSION_WORLD.sender()
 				.prefix(EEMessages.PREFIX)
-				.replace("<world>", world.getName())
+				.replace("{world}", world.getName())
 				.sendTo(player);
 			return CompletableFuture.completedFuture(false);
 		}
@@ -178,9 +178,9 @@ public class EETime extends ECommand<EverEssentials> {
 		
 		this.setWorldTime(world.getProperties(), time.get());
 		EEMessages.TIME_SET_WORLD.sender()
-			.replace("<world>", world.getName())
-			.replace("<hours>", this.getTime(time.get()))
-			.replace("<ticks>", String.valueOf(time))
+			.replace("{world}", world.getName())
+			.replace("{hours}", this.getTime(time.get()))
+			.replace("{ticks}", String.valueOf(time))
 			.sendTo(player);
 		return CompletableFuture.completedFuture(true);
 	}
@@ -199,8 +199,8 @@ public class EETime extends ECommand<EverEssentials> {
 			}
 		}
 		EEMessages.TIME_SET_ALL_WORLD.sender()
-			.replace("<hours>", this.getTime(time.get()))
-			.replace("<ticks>", String.valueOf(time.get()))
+			.replace("{hours}", this.getTime(time.get()))
+			.replace("{ticks}", String.valueOf(time.get()))
 			.sendTo(player);
 		return CompletableFuture.completedFuture(true);
 	}
@@ -261,7 +261,7 @@ public class EETime extends ECommand<EverEssentials> {
 		minutes = Math.floor(minutes / DIFF_MINUTES_TIME);
 		
 		return EEMessages.TIME_FORMAT.getFormat().toText(
-				"<hours>", FORMAT.format(hours),
-				"<minutes>", FORMAT.format(minutes));
+				"{hours}", FORMAT.format(hours),
+				"{minutes}", FORMAT.format(minutes));
 	}
 }

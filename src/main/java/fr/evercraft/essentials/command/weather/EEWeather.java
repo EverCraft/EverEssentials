@@ -127,7 +127,7 @@ public class EEWeather extends ECommand<EverEssentials> {
 				} catch (NumberFormatException e) {
 					EAMessages.WORLD_NOT_FOUND.sender()
 						.prefix(EEMessages.PREFIX)
-						.replace("<world>", args.get(1))
+						.replace("{world}", args.get(1))
 						.sendTo(source);
 				}
 			}
@@ -141,13 +141,13 @@ public class EEWeather extends ECommand<EverEssentials> {
 				} catch (NumberFormatException e) {
 					EAMessages.IS_NOT_NUMBER.sender()
 						.prefix(EEMessages.PREFIX)
-						.replace("<number>", args.get(2))
+						.replace("{number}", args.get(2))
 						.sendTo(source);
 				}
 			} else {
 				EAMessages.WORLD_NOT_FOUND.sender()
 					.prefix(EEMessages.PREFIX)
-					.replace("<world>", args.get(1))
+					.replace("{world}", args.get(1))
 					.sendTo(source);
 			}
 		// Nombre d'argument incorrect
@@ -162,7 +162,7 @@ public class EEWeather extends ECommand<EverEssentials> {
 		if (!this.plugin.getManagerServices().getEssentials().hasPermissionWorld(player, world)) {
 			EAMessages.NO_PERMISSION_WORLD.sender()
 				.prefix(EEMessages.PREFIX)
-				.replace("<world>", world.getName())
+				.replace("{world}", world.getName())
 				.sendTo(player);
 			return CompletableFuture.completedFuture(false);
 		}
@@ -179,8 +179,8 @@ public class EEWeather extends ECommand<EverEssentials> {
 		
 		world.setWeather(weather.get());
 		this.getMessage(weather.get())
-			.replace("<world>", world.getName())
-			.replace("<weather>", weather.get().getName())
+			.replace("{world}", world.getName())
+			.replace("{weather}", weather.get().getName())
 			.sendTo(player);
 		return CompletableFuture.completedFuture(true);
 	}
@@ -189,7 +189,7 @@ public class EEWeather extends ECommand<EverEssentials> {
 		if (!this.plugin.getManagerServices().getEssentials().hasPermissionWorld(player, world)) {
 			EAMessages.NO_PERMISSION_WORLD.sender()
 				.prefix(EEMessages.PREFIX)
-				.replace("<world>", world.getName())
+				.replace("{world}", world.getName())
 				.sendTo(player);
 			return CompletableFuture.completedFuture(false);
 		}
@@ -206,9 +206,9 @@ public class EEWeather extends ECommand<EverEssentials> {
 		
 		world.setWeather(weather.get(), UtilsTick.parseMinutes(duration));
 		this.getMessageDuration(weather.get())
-			.replace("<world>", world.getName())
-			.replace("<duration>", String.valueOf(duration))
-			.replace("<weather>", weather.get().getName())
+			.replace("{world}", world.getName())
+			.replace("{duration}", String.valueOf(duration))
+			.replace("{weather}", weather.get().getName())
 			.sendTo(player);
 		return CompletableFuture.completedFuture(true);
 	}

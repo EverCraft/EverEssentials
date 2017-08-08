@@ -73,7 +73,7 @@ public class EEEffect extends ECommand<EverEssentials> implements ReloadCommand 
 
 	@Override
 	public Text help(final CommandSource source) {
-		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_EFFECT.getString() + "> "
+		return Text.builder("/" + this.getName() + " {" + EAMessages.ARGS_EFFECT.getString() + "} "
 				+ "[" + EAMessages.ARGS_AMPLIFICATION.getString() + "] [" + EAMessages.ARGS_SECONDS.getString() + "]")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
@@ -131,7 +131,7 @@ public class EEEffect extends ECommand<EverEssentials> implements ReloadCommand 
 				} catch (NumberFormatException e) {
 					EAMessages.IS_NOT_NUMBER.sender()
 						.prefix(EEMessages.PREFIX)
-						.replace("<number>", args.get(1))
+						.replace("{number}", args.get(1))
 						.sendTo(player);
 				}
 				
@@ -146,13 +146,13 @@ public class EEEffect extends ECommand<EverEssentials> implements ReloadCommand 
 					} catch (NumberFormatException e) {
 						EAMessages.IS_NOT_NUMBER.sender()
 							.prefix(EEMessages.PREFIX)
-							.replace("<number>", args.get(2))
+							.replace("{number}", args.get(2))
 							.sendTo(player);
 					}
 				} catch (NumberFormatException e) {
 					EAMessages.IS_NOT_NUMBER.sender()
 						.prefix(EEMessages.PREFIX)
-						.replace("<number>", args.get(1))
+						.replace("{number}", args.get(1))
 						.sendTo(player);
 				}
 				
@@ -174,7 +174,7 @@ public class EEEffect extends ECommand<EverEssentials> implements ReloadCommand 
 		// L'effet n'existe pas
 		if (!effect.isPresent()) {
 			EEMessages.EFFECT_ERROR_NAME.sender()
-				.replace("<effect>", name_effect)
+				.replace("{effect}", name_effect)
 				.sendTo(player);
 			return CompletableFuture.completedFuture(false);
 		}
@@ -189,7 +189,7 @@ public class EEEffect extends ECommand<EverEssentials> implements ReloadCommand 
 		// L'effet n'existe pas
 		if (!effect.isPresent()) {
 			EEMessages.EFFECT_ERROR_NAME.sender()
-				.replace("<effect>", name_effect)
+				.replace("{effect}", name_effect)
 				.sendTo(player);
 			return CompletableFuture.completedFuture(false);
 		}
@@ -197,8 +197,8 @@ public class EEEffect extends ECommand<EverEssentials> implements ReloadCommand 
 		// La valeur de l'amplifieur n'est pas correcte
 		if (amplifier < 1 || (amplifier > effect.get().getMaxAmplifier() && !this.unsafe)) {
 			EEMessages.EFFECT_ERROR_AMPLIFIER.sender()
-				.replace("<min>", "1")
-				.replace("<max>", String.valueOf(effect.get().getMaxAmplifier()))
+				.replace("{min}", "1")
+				.replace("{max}", String.valueOf(effect.get().getMaxAmplifier()))
 				.sendTo(player);
 			return CompletableFuture.completedFuture(false);
 		}
@@ -213,7 +213,7 @@ public class EEEffect extends ECommand<EverEssentials> implements ReloadCommand 
 		// L'effet n'existe pas
 		if (!effect.isPresent()) {
 			EEMessages.EFFECT_ERROR_NAME.sender()
-				.replace("<effect>", name_effect)
+				.replace("{effect}", name_effect)
 				.sendTo(player);
 			return CompletableFuture.completedFuture(false);
 		}
@@ -221,8 +221,8 @@ public class EEEffect extends ECommand<EverEssentials> implements ReloadCommand 
 		// La valeur de l'amplifieur n'est pas correcte
 		if (amplifier < 1 || (amplifier > effect.get().getMaxAmplifier() && !this.unsafe)) {
 			EEMessages.EFFECT_ERROR_AMPLIFIER.sender()
-				.replace("<min>", "1")
-				.replace("<max>", String.valueOf(effect.get().getMaxAmplifier()))
+				.replace("{min}", "1")
+				.replace("{max}", String.valueOf(effect.get().getMaxAmplifier()))
 				.sendTo(player);
 			return CompletableFuture.completedFuture(false);
 		}
@@ -230,8 +230,8 @@ public class EEEffect extends ECommand<EverEssentials> implements ReloadCommand 
 		// La durée n'est pas correcte
 		if (duration < 0 || duration > this.max_duration) {
 			EEMessages.EFFECT_ERROR_DURATION.sender()
-				.replace("<min>", "1")
-				.replace("<max>", String.valueOf(this.max_duration))
+				.replace("{min}", "1")
+				.replace("{max}", String.valueOf(this.max_duration))
 				.sendTo(player);
 			return CompletableFuture.completedFuture(false);
 		}

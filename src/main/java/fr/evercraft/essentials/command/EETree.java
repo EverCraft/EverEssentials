@@ -120,7 +120,7 @@ public class EETree extends ECommand<EverEssentials> {
 					return this.commandTree((EPlayer) source, generator.get());
 				} else {
 					EEMessages.TREE_INCONNU.sender()
-						.replace("<type>", args.get(0))
+						.replace("{type}", args.get(0))
 						.sendTo(source);
 				}
 			// La source n'est pas un joueur

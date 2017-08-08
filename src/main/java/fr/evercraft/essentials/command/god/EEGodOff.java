@@ -96,7 +96,7 @@ public class EEGodOff extends ESubCommand<EverEssentials> {
 				} else {
 					EAMessages.PLAYER_NOT_FOUND.sender()
 						.prefix(EEMessages.PREFIX)
-						.replace("<player>", args.get(0))
+						.replace("{player}", args.get(0))
 						.sendTo(source);
 				}
 			// Il n'a pas la permission
@@ -138,26 +138,26 @@ public class EEGodOff extends ESubCommand<EverEssentials> {
 		// God mode est déjà désactivé
 		if (!user.isGod()) {
 			EEMessages.GOD_OFF_OTHERS_ERROR.sender()
-				.replace("<player>", user.getName())
+				.replace("{player}", user.getName())
 				.sendTo(staff);
 			return CompletableFuture.completedFuture(false);
 		}
 			
 		if (!user.setGod(false)) {
 			EEMessages.GOD_OFF_OTHERS_CANCEL.sender()
-				.replace("<player>", user.getName())
+				.replace("{player}", user.getName())
 				.sendTo(staff);
 			return CompletableFuture.completedFuture(false);
 		}
 		
 		user.heal();
 		EEMessages.GOD_OFF_OTHERS_STAFF.sender()
-			.replace("<player>", user.getName())
+			.replace("{player}", user.getName())
 			.sendTo(staff);
 		
 		if(user instanceof EPlayer) {
 			EEMessages.GOD_OFF_OTHERS_PLAYER.sender()
-				.replace("<staff>", staff.getName())
+				.replace("{staff}", staff.getName())
 				.sendTo((EPlayer) user);
 		}
 		return CompletableFuture.completedFuture(true);

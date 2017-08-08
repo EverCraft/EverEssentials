@@ -67,7 +67,7 @@ public class EEItemLoreAdd extends ESubCommand<EverEssentials> {
 
 	@Override
 	public Text help(final CommandSource source) {
-		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_DESCRIPTION.getString() + ">")
+		return Text.builder("/" + this.getName() + " {" + EAMessages.ARGS_DESCRIPTION.getString() + "}")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
 					.build();
@@ -105,7 +105,7 @@ public class EEItemLoreAdd extends ESubCommand<EverEssentials> {
 		lore.add(EChat.of(name));
 		item.offer(Keys.ITEM_LORE, lore);
 		EEMessages.ITEM_LORE_ADD_LORE.sender()
-			.replace("<item>", EChat.getButtomItem(item, EEMessages.ITEM_LORE_ADD_COLOR.getColor()))
+			.replace("{item}", EChat.getButtomItem(item, EEMessages.ITEM_LORE_ADD_COLOR.getColor()))
 			.sendTo(player);
 		item.offer(Keys.ITEM_LORE, lore);
 		player.setItemInHand(HandTypes.MAIN_HAND, item);

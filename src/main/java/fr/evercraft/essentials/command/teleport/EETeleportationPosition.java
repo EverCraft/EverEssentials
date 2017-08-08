@@ -57,12 +57,12 @@ public class EETeleportationPosition extends ECommand<EverEssentials> {
 	@Override
 	public Text help(final CommandSource source) {
 		if (source.hasPermission(EEPermissions.TPPOS_OTHERS.get())){
-			return Text.builder("/" + this.getName() + " <x> <y> <z> [" + EAMessages.ARGS_WORLD.getString() + " [" + EAMessages.ARGS_PLAYER.getString() + "]]")
+			return Text.builder("/" + this.getName() + " {x} {y} {z} [" + EAMessages.ARGS_WORLD.getString() + " [" + EAMessages.ARGS_PLAYER.getString() + "]]")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
 					.build();
 		} 
-		return Text.builder("/" + this.getName() + " <x> <y> <z> [" + EAMessages.ARGS_WORLD.getString() + "]")
+		return Text.builder("/" + this.getName() + " {x} {y} {z} [" + EAMessages.ARGS_WORLD.getString() + "]")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
 					.build();
@@ -120,7 +120,7 @@ public class EETeleportationPosition extends ECommand<EverEssentials> {
 				} else {
 					EAMessages.PLAYER_NOT_FOUND.sender()
 						.prefix(EEMessages.PREFIX)
-						.replace("<player>", args.get(4))
+						.replace("{player}", args.get(4))
 						.sendTo(source);
 				}
 			// Il n'a pas la permission
@@ -143,12 +143,12 @@ public class EETeleportationPosition extends ECommand<EverEssentials> {
 		if (!location.isError()) {
 			if (player.teleportSafeZone(player.getWorld().getLocation(location.getLocation().get()), true)) {
 				EEMessages.TPPOS_PLAYER.sender()
-					.replace("<position>", this.getButtonPosition(player.getLocation()))
+					.replace("{position}", this.getButtonPosition(player.getLocation()))
 					.sendTo(player);
 				return CompletableFuture.completedFuture(true);
 			} else {
 				EEMessages.TPPOS_PLAYER_ERROR.sender()
-					.replace("<position>", this.getButtonPosition(player.getWorld().getLocation(location.getLocation().get())))
+					.replace("{position}", this.getButtonPosition(player.getWorld().getLocation(location.getLocation().get())))
 					.sendTo(player);
 			}
 		}
@@ -162,7 +162,7 @@ public class EETeleportationPosition extends ECommand<EverEssentials> {
 		if (location.isError()) {
 			EAMessages.WORLD_NOT_FOUND.sender()
 				.prefix(EEMessages.PREFIX)
-				.replace("<world>", world_name)
+				.replace("{world}", world_name)
 				.sendTo(player);
 			return CompletableFuture.completedFuture(false);
 		}
@@ -172,7 +172,7 @@ public class EETeleportationPosition extends ECommand<EverEssentials> {
 		if (!world.isPresent()) {
 			EAMessages.WORLD_NOT_FOUND.sender()
 				.prefix(EEMessages.PREFIX)
-				.replace("<world>", world_name)
+				.replace("{world}", world_name)
 				.sendTo(player);
 			return CompletableFuture.completedFuture(false);
 		}
@@ -180,20 +180,20 @@ public class EETeleportationPosition extends ECommand<EverEssentials> {
 		if (!player.getWorld().equals(world.get()) && !this.plugin.getManagerServices().getEssentials().hasPermissionWorld(player, world.get())) {
 			EAMessages.NO_PERMISSION_WORLD.sender()
 				.prefix(EEMessages.PREFIX)
-				.replace("<world>", world_name)
+				.replace("{world}", world_name)
 				.sendTo(player);
 			return CompletableFuture.completedFuture(false);
 		}
 		
 		if (!player.teleportSafeZone(world.get().getLocation(location.getLocation().get()), true)) {
 			EEMessages.TPPOS_PLAYER_ERROR.sender()
-				.replace("<position>", () -> this.getButtonPosition(world.get().getLocation(location.getLocation().get())))
+				.replace("{position}", () -> this.getButtonPosition(world.get().getLocation(location.getLocation().get())))
 				.sendTo(player);
 			return CompletableFuture.completedFuture(false);
 		}
 		
 		EEMessages.TPPOS_PLAYER.sender()
-			.replace("<position>", () -> this.getButtonPosition(player.getLocation()))
+			.replace("{position}", () -> this.getButtonPosition(player.getLocation()))
 			.sendTo(player);
 		return CompletableFuture.completedFuture(true);
 	}
@@ -205,7 +205,7 @@ public class EETeleportationPosition extends ECommand<EverEssentials> {
 		if (location.isError()) {
 			EAMessages.WORLD_NOT_FOUND.sender()
 				.prefix(EEMessages.PREFIX)
-				.replace("<world>", world_name)
+				.replace("{world}", world_name)
 				.sendTo(staff);
 			return CompletableFuture.completedFuture(false);
 		}
@@ -222,26 +222,26 @@ public class EETeleportationPosition extends ECommand<EverEssentials> {
 		if (!player.getWorld().equals(world.get()) && !this.plugin.getManagerServices().getEssentials().hasPermissionWorld(player, world.get())) {
 			EAMessages.NO_PERMISSION_WORLD_OTHERS.sender()
 				.prefix(EEMessages.PREFIX)
-				.replace("<world>", world_name)
+				.replace("{world}", world_name)
 				.sendTo(staff);
 			return CompletableFuture.completedFuture(false);
 		}
 		
 		if (!player.teleportSafeZone(world.get().getLocation(location.getLocation().get()), true)) {
 			EEMessages.TPPOS_OTHERS_ERROR.sender()
-				.replace("<player>", player.getName())
-				.replace("<position>", this.getButtonPosition(world.get().getLocation(location.getLocation().get())))
+				.replace("{player}", player.getName())
+				.replace("{position}", this.getButtonPosition(world.get().getLocation(location.getLocation().get())))
 				.sendTo(staff);
 			return CompletableFuture.completedFuture(false);
 		}
 		
 		EEMessages.TPPOS_OTHERS_PLAYER.sender()
-			.replace("<staff>", staff.getName())
-			.replace("<position>", () -> this.getButtonPosition(player.getLocation()))
+			.replace("{staff}", staff.getName())
+			.replace("{position}", () -> this.getButtonPosition(player.getLocation()))
 			.sendTo(player);
 		EEMessages.TPPOS_OTHERS_STAFF.sender()
-			.replace("<player>", player.getName())
-			.replace("<position>", () -> this.getButtonPosition(player.getLocation()))
+			.replace("{player}", player.getName())
+			.replace("{position}", () -> this.getButtonPosition(player.getLocation()))
 			.sendTo(staff);
 		return CompletableFuture.completedFuture(true);
 	}
@@ -249,10 +249,10 @@ public class EETeleportationPosition extends ECommand<EverEssentials> {
 	private Text getButtonPosition(final Location<World> location){
 		return EEMessages.TPPOS_POSITION.getText().toBuilder()
 					.onHover(TextActions.showText(EEMessages.TPPOS_POSITION_HOVER.getFormat().toText(
-							"<world>", location.getExtent().getName(),
-							"<x>", String.valueOf(location.getBlockX()),
-							"<y>", String.valueOf(location.getBlockY()),
-							"<z>", String.valueOf(location.getBlockZ()))))
+							"{world}", location.getExtent().getName(),
+							"{x}", String.valueOf(location.getBlockX()),
+							"{y}", String.valueOf(location.getBlockY()),
+							"{z}", String.valueOf(location.getBlockZ()))))
 					.build();
 	}
 }

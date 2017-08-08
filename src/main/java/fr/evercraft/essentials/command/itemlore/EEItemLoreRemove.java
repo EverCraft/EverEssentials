@@ -77,7 +77,7 @@ public class EEItemLoreRemove extends ESubCommand<EverEssentials> {
 
 	@Override
 	public Text help(final CommandSource source) {
-		return Text.builder("/" + this.getName() + "<" + EAMessages.ARGS_LINE.getString() +  ">")
+		return Text.builder("/" + this.getName() + "{" + EAMessages.ARGS_LINE.getString() +  "}")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
 					.build();
@@ -104,7 +104,7 @@ public class EEItemLoreRemove extends ESubCommand<EverEssentials> {
 		if (line.isPresent()) {
 			EAMessages.IS_NOT_NUMBER.sender()
 				.prefix(EEMessages.PREFIX)
-				.replace("<number>", line_name)
+				.replace("{number}", line_name)
 				.sendTo(player);
 			return CompletableFuture.completedFuture(false);
 		}
@@ -124,15 +124,15 @@ public class EEItemLoreRemove extends ESubCommand<EverEssentials> {
 		
 		if(line.get() > lore.size() || line.get() == 0) {
 			EEMessages.ITEM_LORE_REMOVE_ERROR.sender()
-				.replace("<max>", String.valueOf(lore.size()))
+				.replace("{max}", String.valueOf(lore.size()))
 				.sendTo(player);
 		}
 		
 		lore.remove(line.get() - 1);
 		item.get().offer(Keys.ITEM_LORE, lore);
 		EEMessages.ITEM_LORE_REMOVE_LORE.sender()
-			.replace("<item>", EChat.getButtomItem(item.get(), EEMessages.ITEM_LORE_REMOVE_COLOR.getColor()))
-			.replace("<line>", String.valueOf(line.get()))
+			.replace("{item}", EChat.getButtomItem(item.get(), EEMessages.ITEM_LORE_REMOVE_COLOR.getColor()))
+			.replace("{line}", String.valueOf(line.get()))
 			.sendTo(player);
 		item.get().offer(Keys.ITEM_LORE, lore);
 		player.setItemInMainHand(item.get());

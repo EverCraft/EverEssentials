@@ -137,7 +137,7 @@ public class EEHome extends ECommand<EverEssentials> {
 		if (!subject.isPresent()) {
 			EAMessages.PLAYER_NOT_FOUND.sender()
 				.prefix(EEMessages.PREFIX)
-				.replace("<player>", player.getName())
+				.replace("{player}", player.getName())
 				.sendTo(player);
 			return CompletableFuture.completedFuture(false);
 		}
@@ -147,13 +147,13 @@ public class EEHome extends ECommand<EverEssentials> {
 			Optional<World> world = home.getValue().getWorld();
 			if (world.isPresent()){
 				lists.add(EEMessages.HOME_LIST_LINE.getFormat().toText(
-					"<home>", this.getButtonHome(home.getKey(), home.getValue()),
-					"<teleport>", this.getButtonTeleport(home.getKey(), home.getValue()),
-					"<delete>", this.getButtonDelete(home.getKey(), home.getValue())));
+					"{home}", this.getButtonHome(home.getKey(), home.getValue()),
+					"{teleport}", this.getButtonTeleport(home.getKey(), home.getValue()),
+					"{delete}", this.getButtonDelete(home.getKey(), home.getValue())));
 			} else {
 				lists.add(EEMessages.HOME_LIST_LINE_ERROR_WORLD.getFormat().toText(
-					"<home>", this.getButtonHome(home.getKey(), home.getValue()),
-					"<delete>", this.getButtonDelete(home.getKey(), home.getValue())));
+					"{home}", this.getButtonHome(home.getKey(), home.getValue()),
+					"{delete}", this.getButtonDelete(home.getKey(), home.getValue())));
 			}
 		}
 		
@@ -169,7 +169,7 @@ public class EEHome extends ECommand<EverEssentials> {
 		// Le joueur n'a pas de home qui porte ce nom
 		if (!home.isPresent()) {
 			EEMessages.HOME_INCONNU.sender()
-				.replace("<home>", name)
+				.replace("{home}", name)
 				.sendTo(player);
 			return CompletableFuture.completedFuture(false);
 		}
@@ -180,7 +180,7 @@ public class EEHome extends ECommand<EverEssentials> {
 		}
 		
 		EEMessages.HOME_TELEPORT.sender()
-			.replace("<home>", this.getButtonHome(name, home.get()))
+			.replace("{home}", this.getButtonHome(name, home.get()))
 			.sendTo(player);
 		return CompletableFuture.completedFuture(true);
 	}
@@ -188,7 +188,7 @@ public class EEHome extends ECommand<EverEssentials> {
 	private Text getButtonTeleport(final String name, final VirtualTransform location){
 		return EEMessages.HOME_LIST_TELEPORT.getText().toBuilder()
 					.onHover(TextActions.showText(EEMessages.HOME_LIST_TELEPORT_HOVER.getFormat()
-							.toText("<home>", name)))
+							.toText("{home}", name)))
 					.onClick(TextActions.runCommand("/home \"" + name+ "\""))
 					.build();
 	}
@@ -196,30 +196,30 @@ public class EEHome extends ECommand<EverEssentials> {
 	private Text getButtonDelete(final String name, final VirtualTransform location){
 		return EEMessages.HOME_LIST_DELETE.getText().toBuilder()
 					.onHover(TextActions.showText(EEMessages.HOME_LIST_DELETE_HOVER.getFormat()
-							.toText("<home>", name)))
+							.toText("{home}", name)))
 					.onClick(TextActions.runCommand("/delhome \"" + name+ "\""))
 					.build();
 	}
 	
 	private Text getButtonHome(final String name, final VirtualTransform location){
-		return EEMessages.HOME_NAME.getFormat().toText("<name>", name).toBuilder()
+		return EEMessages.HOME_NAME.getFormat().toText("{name}", name).toBuilder()
 					.onHover(TextActions.showText(EEMessages.HOME_NAME_HOVER.getFormat().toText(
-							"<home>", name,
-							"<world>", location.getWorldName(),
-							"<x>", String.valueOf(location.getPosition().getX()),
-							"<y>", String.valueOf(location.getPosition().getY()),
-							"<z>", String.valueOf(location.getPosition().getZ()))))
+							"{home}", name,
+							"{world}", location.getWorldName(),
+							"{x}", String.valueOf(location.getPosition().getX()),
+							"{y}", String.valueOf(location.getPosition().getY()),
+							"{z}", String.valueOf(location.getPosition().getZ()))))
 					.build();
 	}
 	
 	private Text getButtonHome(final String name, final Transform<World> location) {
-		return EEMessages.HOME_NAME.getFormat().toText("<name>", name).toBuilder()
+		return EEMessages.HOME_NAME.getFormat().toText("{name}", name).toBuilder()
 					.onHover(TextActions.showText(EEMessages.HOME_NAME_HOVER.getFormat().toText(
-							"<home>", name,
-							"<world>", location.getExtent().getName(),
-							"<x>", String.valueOf(location.getLocation().getBlockX()),
-							"<y>", String.valueOf(location.getLocation().getBlockY()),
-							"<z>", String.valueOf(location.getLocation().getBlockZ()))))
+							"{home}", name,
+							"{world}", location.getExtent().getName(),
+							"{x}", String.valueOf(location.getLocation().getBlockX()),
+							"{y}", String.valueOf(location.getLocation().getBlockY()),
+							"{z}", String.valueOf(location.getLocation().getBlockZ()))))
 					.build();
 	}
 }

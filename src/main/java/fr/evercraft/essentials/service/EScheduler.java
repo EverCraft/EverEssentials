@@ -137,11 +137,11 @@ public class EScheduler {
 						if (others.isPresent()) {
 							if (teleport.getValue().getType().equals(Type.TPA)) {
 								EEMessages.TPA_STAFF_EXPIRE.sender()
-									.replace("<player>", player.getName())
+									.replace("{player}", player.getName())
 									.sendTo(others.get());
 							} else if (teleport.getValue().getType().equals(Type.TPAHERE)) {
 								EEMessages.TPAHERE_STAFF_EXPIRE.sender()
-									.replace("<player>", player.getName())
+									.replace("{player}", player.getName())
 									.sendTo(others.get());
 							}
 						}

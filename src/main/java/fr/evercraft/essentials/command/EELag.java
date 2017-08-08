@@ -117,22 +117,22 @@ public class EELag extends ECommand<EverEssentials> implements ReloadCommand {
 		List<Text> list = new ArrayList<Text>();
 		
 		list.add(EEMessages.LAG_TIME.getFormat()
-				.toText("<time>", this.plugin.getEverAPI().getManagerUtils().getDate().formatDate(ManagementFactory.getRuntimeMXBean().getStartTime())));
+				.toText("{time}", this.plugin.getEverAPI().getManagerUtils().getDate().formatDate(ManagementFactory.getRuntimeMXBean().getStartTime())));
 		list.add(EEMessages.LAG_TPS.getFormat()
-				.toText("<tps>", Text.builder(tps.toString()).color(getColorTPS(tps)).build()));
+				.toText("{tps}", Text.builder(tps.toString()).color(getColorTPS(tps)).build()));
 		list.add(EEMessages.LAG_HISTORY_TPS.getFormat()
-				.toText("<tps>", getHistoryTPS()));
+				.toText("{tps}", getHistoryTPS()));
 		list.add(EEMessages.LAG_MEMORY.getFormat()
-				.toText("<usage>", String.valueOf(Runtime.getRuntime().totalMemory()/1024/1024),
-						"<total>", String.valueOf(Runtime.getRuntime().maxMemory()/1024/1024)));
+				.toText("{usage}", String.valueOf(Runtime.getRuntime().totalMemory()/1024/1024),
+						"{total}", String.valueOf(Runtime.getRuntime().maxMemory()/1024/1024)));
 		
 		List<Text> worlds = new ArrayList<Text>();
 		for (World world : this.plugin.getEServer().getWorlds()) {
 			Map<String, EReplace<?>> replaces = new HashMap<String, EReplace<?>>();
-			replaces.put("<world>", EReplace.of(world.getName()));
-			replaces.put("<entities>", EReplace.of(String.valueOf(world.getEntities().size())));
-			replaces.put("<tiles>", EReplace.of(String.valueOf(world.getTileEntities().size())));
-			replaces.put("<chunks>", EReplace.of(String.valueOf(Iterables.size(world.getLoadedChunks()))));
+			replaces.put("{world}", EReplace.of(world.getName()));
+			replaces.put("{entities}", EReplace.of(String.valueOf(world.getEntities().size())));
+			replaces.put("{tiles}", EReplace.of(String.valueOf(world.getTileEntities().size())));
+			replaces.put("{chunks}", EReplace.of(String.valueOf(Iterables.size(world.getLoadedChunks()))));
 			
 			Text text = EEMessages.LAG_WORLDS_WORLD.getFormat().toText2(replaces);
 			if (!text.getHoverAction().isPresent() && EEMessages.LAG_WORLDS_WORLD_HOVER.getMessage().getChat().isPresent()) {
@@ -143,7 +143,7 @@ public class EELag extends ECommand<EverEssentials> implements ReloadCommand {
 			worlds.add(text);
 		}
 		
-		list.add(EEMessages.LAG_WORLDS.getFormat().toText("<worlds>", Text.joinWith(EEMessages.LAG_WORLDS_SEPARATOR.getText(), worlds)));
+		list.add(EEMessages.LAG_WORLDS.getFormat().toText("{worlds}", Text.joinWith(EEMessages.LAG_WORLDS_SEPARATOR.getText(), worlds)));
 		
 		this.plugin.getEverAPI().getManagerService().getEPagination().sendTo(
 				EEMessages.LAG_TITLE.getText().toBuilder()
@@ -180,8 +180,8 @@ public class EELag extends ECommand<EverEssentials> implements ReloadCommand {
 		}
 		return resultat.style(TextStyles.BOLD)
 				.onHover(TextActions.showText(EEMessages.LAG_HISTORY_TPS_HOVER.getFormat().toText(
-							"<num>", String.valueOf(num),
-							"<tps>", Text.builder(String.valueOf(tps)).color(getColorTPS(tps)).build())))
+							"{num}", String.valueOf(num),
+							"{tps}", Text.builder(String.valueOf(tps)).color(getColorTPS(tps)).build())))
 				.build();
 	}
 	

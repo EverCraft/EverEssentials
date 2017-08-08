@@ -104,7 +104,7 @@ public class EEExt extends ECommand<EverEssentials> {
 					} else {
 						EAMessages.PLAYER_NOT_FOUND.sender()
 							.prefix(EEMessages.PREFIX)
-							.replace("<player>", args.get(0))
+							.replace("{player}", args.get(0))
 							.sendTo(source);
 					}
 				}
@@ -142,7 +142,7 @@ public class EEExt extends ECommand<EverEssentials> {
 		// Le joueur n'est pas en feu
 		if (player.getFireTicks() <= 0) {
 			EEMessages.EXT_OTHERS_ERROR.sender()
-				.replace("<player>", player.getName())
+				.replace("{player}", player.getName())
 				.sendTo(staff);
 			return CompletableFuture.completedFuture(false);
 		}
@@ -151,10 +151,10 @@ public class EEExt extends ECommand<EverEssentials> {
 		player.setFireTicks(0);
 		
 		EEMessages.EXT_OTHERS_STAFF.sender()
-			.replace("<player>", player.getName())
+			.replace("{player}", player.getName())
 			.sendTo(staff);
 		EEMessages.EXT_OTHERS_PLAYER.sender()
-			.replace("<staff>", player.getName())
+			.replace("{staff}", player.getName())
 			.sendTo(player);
 		return CompletableFuture.completedFuture(true);
 	}
@@ -167,7 +167,7 @@ public class EEExt extends ECommand<EverEssentials> {
 				// La source et le joueur sont différent
 				if (!staff.equals(player)) {
 					EEMessages.EXT_OTHERS_PLAYER.sender()
-						.replace("<staff>", staff.getName())
+						.replace("{staff}", staff.getName())
 						.sendTo(player);
 				}
 			}

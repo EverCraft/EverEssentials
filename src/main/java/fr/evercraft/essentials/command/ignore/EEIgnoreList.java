@@ -98,7 +98,7 @@ public class EEIgnoreList extends ESubCommand<EverEssentials> {
 				} else {
 					EAMessages.PLAYER_NOT_FOUND.sender()
 						.prefix(EEMessages.PREFIX)
-						.replace("<player>", args.get(0))
+						.replace("{player}", args.get(0))
 						.sendTo(source);
 				}
 			// Il n'a pas la permission
@@ -121,8 +121,8 @@ public class EEIgnoreList extends ESubCommand<EverEssentials> {
 			Optional<EUser> user = this.plugin.getEServer().getEUser(uuid);
 			if (user.isPresent()) {
 				lists.add(EEMessages.IGNORE_LIST_LINE_DELETE.getFormat().toText(
-						"<player>", user.get().getName(),
-						"<delete>", getButtonDelete(user.get().getName(),  user.get().getUniqueId())));
+						"{player}", user.get().getName(),
+						"{delete}", getButtonDelete(user.get().getName(),  user.get().getUniqueId())));
 			}
 		}
 			
@@ -131,7 +131,7 @@ public class EEIgnoreList extends ESubCommand<EverEssentials> {
 		}
 		
 		this.plugin.getEverAPI().getManagerService().getEPagination().sendTo(
-				EEMessages.IGNORE_LIST_PLAYER_TITLE.getFormat().toText("<player>", player.getName()).toBuilder()
+				EEMessages.IGNORE_LIST_PLAYER_TITLE.getFormat().toText("{player}", player.getName()).toBuilder()
 					.onClick(TextActions.runCommand("/" + this.getName())).build(), 
 				lists, player);
 		return CompletableFuture.completedFuture(true);
@@ -148,7 +148,7 @@ public class EEIgnoreList extends ESubCommand<EverEssentials> {
 			Optional<EUser> user = this.plugin.getEServer().getEUser(uuid);
 			if (user.isPresent()) {
 				lists.add(EEMessages.IGNORE_LIST_LINE.getFormat()
-						.toText("<player>", user.get().getName()));
+						.toText("{player}", user.get().getName()));
 			}
 		}
 			
@@ -157,7 +157,7 @@ public class EEIgnoreList extends ESubCommand<EverEssentials> {
 		}
 		
 		this.plugin.getEverAPI().getManagerService().getEPagination().sendTo(
-				EEMessages.IGNORE_LIST_OTHERS_TITLE.getFormat().toText("<player>", player.getName()).toBuilder()
+				EEMessages.IGNORE_LIST_OTHERS_TITLE.getFormat().toText("{player}", player.getName()).toBuilder()
 					.onClick(TextActions.runCommand("/" + this.getName() + " \"" + player.getUniqueId() + "\"")).build(), 
 				lists, staff);
 		return CompletableFuture.completedFuture(true);
@@ -166,7 +166,7 @@ public class EEIgnoreList extends ESubCommand<EverEssentials> {
 	private Text getButtonDelete(final String name, final UUID uuid){
 		return EEMessages.IGNORE_LIST_REMOVE.getText().toBuilder()
 					.onHover(TextActions.showText(EEMessages.IGNORE_LIST_REMOVE_HOVER.getFormat()
-							.toText("<player>", name)))
+							.toText("{player}", name)))
 					.onClick(TextActions.runCommand("/" + this.getParentName() + " remove " + uuid.toString()))
 					.build();
 	}

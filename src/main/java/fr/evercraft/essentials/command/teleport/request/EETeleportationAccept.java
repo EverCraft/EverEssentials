@@ -99,7 +99,7 @@ public class EETeleportationAccept extends ECommand<EverEssentials> {
 				} else {
 					EAMessages.PLAYER_NOT_FOUND.sender()
 						.prefix(EEMessages.PREFIX)
-						.replace("<player>", args.get(0))
+						.replace("{player}", args.get(0))
 						.sendTo(source);
 				}
 			// Si la source est une console ou un commande block
@@ -128,14 +128,14 @@ public class EETeleportationAccept extends ECommand<EverEssentials> {
 				one_player = player_request;
 				if (teleport.getValue().getType().equals(Type.TPA)) {
 					lists.add(EEMessages.TPA_PLAYER_LIST_LINE.getFormat().toText(
-						"<player>", player_request.get().getName(),
-						"<accept>", EETeleportationAsk.getButtonAccept(player_request.get().getName()),
-						"<deny>", EETeleportationAsk.getButtonDeny(player_request.get().getName())));
+						"{player}", player_request.get().getName(),
+						"{accept}", EETeleportationAsk.getButtonAccept(player_request.get().getName()),
+						"{deny}", EETeleportationAsk.getButtonDeny(player_request.get().getName())));
 				} else if (teleport.getValue().getType().equals(Type.TPAHERE)) {
 					lists.add(EEMessages.TPA_PLAYER_LIST_LINE.getFormat().toText(
-						"<player>", player_request.get().getName(),
-						"<accept>", EETeleportationAskHere.getButtonAccept(player_request.get().getName()),
-						"<deny>", EETeleportationAskHere.getButtonDeny(player_request.get().getName())));
+						"{player}", player_request.get().getName(),
+						"{accept}", EETeleportationAskHere.getButtonAccept(player_request.get().getName()),
+						"{deny}", EETeleportationAskHere.getButtonDeny(player_request.get().getName())));
 				}
 			}
 		}
@@ -161,7 +161,7 @@ public class EETeleportationAccept extends ECommand<EverEssentials> {
 		// Il y a une demande de téléportation
 		if (!teleports.isPresent()) {
 			EEMessages.TPA_PLAYER_EMPTY.sender()
-				.replace("<player>", player_request.getName())
+				.replace("{player}", player_request.getName())
 				.sendTo(player);
 			return CompletableFuture.completedFuture(false);
 		}
@@ -169,7 +169,7 @@ public class EETeleportationAccept extends ECommand<EverEssentials> {
 		// La demande a expiré
 		if (teleports.get().isExpire()) {
 			EEMessages.TPA_PLAYER_EXPIRE.sender()
-				.replace("<player>", player_request.getName())
+				.replace("{player}", player_request.getName())
 				.sendTo(player);
 			return CompletableFuture.completedFuture(false);
 		}
@@ -192,19 +192,19 @@ public class EETeleportationAccept extends ECommand<EverEssentials> {
 		if (!player_request.getWorld().equals(location.getExtent()) && !this.plugin.getManagerServices().getEssentials().hasPermissionWorld(player_request, location.getExtent())) {
 			EAMessages.NO_PERMISSION_WORLD.sender()
 				.prefix(EEMessages.PREFIX)
-				.replace("<world>", location.getExtent().getName())
+				.replace("{world}", location.getExtent().getName())
 				.sendTo(player_request);
 			return CompletableFuture.completedFuture(false);
 		}
 		
 		if (delay > 0) {
 			EEMessages.TPA_STAFF_ACCEPT.sender()
-				.replace("<player>", player.getName())
-				.replace("<delay>", delay_format)
+				.replace("{player}", player.getName())
+				.replace("{delay}", delay_format)
 				.sendTo(player_request);
 			EEMessages.TPA_PLAYER_ACCEPT.sender()
-				.replace("<player>", player_request.getName())
-				.replace("<delay>", delay_format)
+				.replace("{player}", player_request.getName())
+				.replace("{delay}", delay_format)
 				.sendTo(player);
 		}
 		
@@ -220,19 +220,19 @@ public class EETeleportationAccept extends ECommand<EverEssentials> {
 		if (!player.getWorld().equals(location.getExtent()) && !this.plugin.getManagerServices().getEssentials().hasPermissionWorld(player, location.getExtent())) {
 			EAMessages.NO_PERMISSION_WORLD.sender()
 				.prefix(EEMessages.PREFIX)
-				.replace("<world>", location.getExtent().getName())
+				.replace("{world}", location.getExtent().getName())
 				.sendTo(player_request);
 			return CompletableFuture.completedFuture(false);
 		}
 		
 		if (delay > 0) {
 			EEMessages.TPAHERE_STAFF_ACCEPT.sender()
-				.replace("<player>", player.getName())
-				.replace("<delay>", delay_format)
+				.replace("{player}", player.getName())
+				.replace("{delay}", delay_format)
 				.sendTo(player_request);
 			EEMessages.TPAHERE_PLAYER_ACCEPT.sender()
-				.replace("<player>", player_request.getName())
-				.replace("<delay>", delay_format)
+				.replace("{player}", player_request.getName())
+				.replace("{delay}", delay_format)
 				.sendTo(player);
 		}
 		
@@ -244,15 +244,15 @@ public class EETeleportationAccept extends ECommand<EverEssentials> {
 		if (player_request.isOnline() && player.isOnline()) {
 			if (player_request.teleportSafe(teleport, true)) {
 				EEMessages.TPA_STAFF_TELEPORT.sender()
-					.replace("<player>", player.getName())
-					.replace("<destination>", EETeleportationAsk.getButtonPosition(player.getName(), teleport.getLocation()))
+					.replace("{player}", player.getName())
+					.replace("{destination}", EETeleportationAsk.getButtonPosition(player.getName(), teleport.getLocation()))
 					.sendTo(player_request);
 				EEMessages.TPA_PLAYER_TELEPORT.sender()
-					.replace("<player>", EETeleportationAsk.getButtonPosition(player_request.getName(), teleport.getLocation()))
+					.replace("{player}", EETeleportationAsk.getButtonPosition(player_request.getName(), teleport.getLocation()))
 					.sendTo(player);
 			} else {
 				EEMessages.TPA_ERROR_LOCATION.sender()
-					.replace("<player>", player_request.getName())
+					.replace("{player}", player_request.getName())
 					.sendTo(player_request);
 			}
 		}
@@ -262,15 +262,15 @@ public class EETeleportationAccept extends ECommand<EverEssentials> {
 		if (player_request.isOnline() && player.isOnline()) {
 			if (player.teleportSafe(teleport, true)) {
 				EEMessages.TPAHERE_PLAYER_TELEPORT.sender()
-					.replace("<player>", player.getName())
-					.replace("<destination>", () -> EETeleportationAsk.getButtonPosition(player.getName(), teleport.getLocation()))
+					.replace("{player}", player.getName())
+					.replace("{destination}", () -> EETeleportationAsk.getButtonPosition(player.getName(), teleport.getLocation()))
 					.sendTo(player);
 				EEMessages.TPAHERE_STAFF_TELEPORT.sender()
-					.replace("<player>", EETeleportationAsk.getButtonPosition(player_request.getName(), teleport.getLocation()))
+					.replace("{player}", EETeleportationAsk.getButtonPosition(player_request.getName(), teleport.getLocation()))
 					.sendTo(player_request);
 			} else {
 				EEMessages.TPAHERE_ERROR_LOCATION.sender()
-					.replace("<player>", player_request.getName())
+					.replace("{player}", player_request.getName())
 					.sendTo(player);
 			}
 		}

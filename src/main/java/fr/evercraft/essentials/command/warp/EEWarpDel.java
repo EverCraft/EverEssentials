@@ -57,7 +57,7 @@ public class EEWarpDel extends ECommand<EverEssentials> {
 
 	@Override
 	public Text help(final CommandSource source) {
-		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_WARP.getString() + ">")
+		return Text.builder("/" + this.getName() + " {" + EAMessages.ARGS_WARP.getString() + "}")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
 					.build();
@@ -95,14 +95,14 @@ public class EEWarpDel extends ECommand<EverEssentials> {
 		// Le serveur n'a pas de warp qui porte ce nom
 		if (!warp.isPresent()) {
 			EEMessages.DELWARP_INCONNU.sender()
-				.replace("<warp>", name)
+				.replace("{warp}", name)
 				.sendTo(player);
 			return CompletableFuture.completedFuture(false);
 		}
 		
 		EEMessages.DELWARP_CONFIRMATION.sender()
-			.replace("<warp>", () -> this.getButtonWarp(name, warp.get()))
-			.replace("<confirmation>", () -> this.getButtonConfirmation(name))
+			.replace("{warp}", () -> this.getButtonWarp(name, warp.get()))
+			.replace("{confirmation}", () -> this.getButtonConfirmation(name))
 			.sendTo(player);
 		return CompletableFuture.completedFuture(false);
 	}
@@ -114,7 +114,7 @@ public class EEWarpDel extends ECommand<EverEssentials> {
 		// Le serveur n'a pas de warp qui porte ce nom
 		if (!warp.isPresent()) {
 			EEMessages.DELWARP_INCONNU.sender()
-				.replace("<warp>", name)
+				.replace("{warp}", name)
 				.sendTo(player);
 			return CompletableFuture.completedFuture(false);
 		}
@@ -122,32 +122,32 @@ public class EEWarpDel extends ECommand<EverEssentials> {
 		// Le warp n'a pas été supprimer
 		if (!this.plugin.getManagerServices().getWarp().remove(name)) {
 			EEMessages.DELWARP_CANCEL.sender()
-				.replace("<warp>", name)
+				.replace("{warp}", name)
 				.sendTo(player);
 			return CompletableFuture.completedFuture(false);
 		}
 		
 		EEMessages.DELWARP_DELETE.sender()
-			.replace("<warp>", () -> this.getButtonWarp(name, warp.get()))
+			.replace("{warp}", () -> this.getButtonWarp(name, warp.get()))
 			.sendTo(player);
 		return CompletableFuture.completedFuture(true);
 	}
 	
 	private Text getButtonWarp(final String name, final Transform<World> location){
-		return EEMessages.DELWARP_NAME.getFormat().toText("<name>", name).toBuilder()
+		return EEMessages.DELWARP_NAME.getFormat().toText("{name}", name).toBuilder()
 					.onHover(TextActions.showText(EEMessages.DELWARP_NAME_HOVER.getFormat().toText(
-								"<warp>", name,
-								"<world>", location.getExtent().getName(),
-								"<x>", String.valueOf(location.getLocation().getBlockX()),
-								"<y>", String.valueOf(location.getLocation().getBlockY()),
-								"<z>", String.valueOf(location.getLocation().getBlockZ()))))
+								"{warp}", name,
+								"{world}", location.getExtent().getName(),
+								"{x}", String.valueOf(location.getLocation().getBlockX()),
+								"{y}", String.valueOf(location.getLocation().getBlockY()),
+								"{z}", String.valueOf(location.getLocation().getBlockZ()))))
 					.build();
 	}
 	
 	private Text getButtonConfirmation(final String name){
 		return EEMessages.DELWARP_CONFIRMATION_VALID.getText().toBuilder()
 					.onHover(TextActions.showText(EEMessages.DELWARP_CONFIRMATION_VALID_HOVER.getFormat()
-							.toText("<warp>", name)))
+							.toText("{warp}", name)))
 					.onClick(TextActions.runCommand("/delwarp \"" + name + "\" confirmation"))
 					.build();
 	}

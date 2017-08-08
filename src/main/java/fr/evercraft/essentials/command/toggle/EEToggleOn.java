@@ -96,7 +96,7 @@ public class EEToggleOn extends ESubCommand<EverEssentials> {
 				} else {
 					EAMessages.PLAYER_NOT_FOUND.sender()
 						.prefix(EEMessages.PREFIX)
-						.replace("<player>", args.get(0))
+						.replace("{player}", args.get(0))
 						.sendTo(source);
 				}
 			// Il n'a pas la permission
@@ -136,25 +136,25 @@ public class EEToggleOn extends ESubCommand<EverEssentials> {
 		// Toggle activé
 		if (user.isToggle()) {
 			EEMessages.TOGGLE_ON_OTHERS_ERROR.sender()
-				.replace("<player>", user.getName())
+				.replace("{player}", user.getName())
 				.sendTo(staff);
 			return CompletableFuture.completedFuture(false);
 		}
 		
 		if (!user.setAllowFlight(true)) {
 			EEMessages.TOGGLE_ON_OTHERS_CANCEL.sender()
-				.replace("<player>", user.getName())
+				.replace("{player}", user.getName())
 				.sendTo(staff);
 			return CompletableFuture.completedFuture(false);
 		}
 		
 		EEMessages.TOGGLE_ON_OTHERS_STAFF.sender()
-			.replace("<player>", user.getName())
+			.replace("{player}", user.getName())
 			.sendTo(staff);
 		
 		if (user instanceof EPlayer) {
 			EEMessages.TOGGLE_ON_OTHERS_PLAYER.sender()
-				.replace("<staff>", staff.getName())
+				.replace("{staff}", staff.getName())
 				.sendTo((EPlayer) user);
 		}
 		return CompletableFuture.completedFuture(true);

@@ -101,7 +101,7 @@ public class EEPing extends ECommand<EverEssentials> {
 				} else {
 					EAMessages.PLAYER_NOT_FOUND.sender()
 						.prefix(EEMessages.PREFIX)
-						.replace("<player>", args.get(0))
+						.replace("{player}", args.get(0))
 						.sendTo(source);
 				}
 			// Il n'a pas la permission
@@ -121,7 +121,7 @@ public class EEPing extends ECommand<EverEssentials> {
 	
 	private CompletableFuture<Boolean> commandPing(final EPlayer player) {
 		EEMessages.PING_PLAYER.sender()
-			.replace("<ping>", String.valueOf(player.getConnection().getLatency()))
+			.replace("{ping}", String.valueOf(player.getConnection().getLatency()))
 			.sendTo(player);
 		return CompletableFuture.completedFuture(true);
 	}
@@ -133,8 +133,8 @@ public class EEPing extends ECommand<EverEssentials> {
 		}
 		
 		EEMessages.PING_OTHERS.sender()
-			.replace("<player>", player.getName())
-			.replace("<ping>", String.valueOf(player.getConnection().getLatency()))
+			.replace("{player}", player.getName())
+			.replace("{ping}", String.valueOf(player.getConnection().getLatency()))
 			.sendTo(staff);
 		return CompletableFuture.completedFuture(true);
 	}

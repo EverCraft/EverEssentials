@@ -126,9 +126,9 @@ public class EEColor extends ECommand<EverEssentials> {
 		Optional<EAMessages> color = EAMessages.getColor(text);
 		if (color.isPresent()) {
 			return EEMessages.COLOR_LIST_MESSAGE.getFormat().toText(
-					"<color>", "&" + id,
-					"<name>", color.get().getString(),
-					"<id>", Text.of("&" + id));
+					"{color}", "&" + id,
+					"{name}", color.get().getString(),
+					"{id}", Text.of("&" + id));
 		}
 		return Text.EMPTY;
 	}

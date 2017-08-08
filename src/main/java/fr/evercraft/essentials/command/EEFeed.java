@@ -105,7 +105,7 @@ public class EEFeed extends ECommand<EverEssentials> {
 					} else {
 						EAMessages.PLAYER_NOT_FOUND.sender()
 							.prefix(EEMessages.PREFIX)
-							.replace("<player>", args.get(0))
+							.replace("{player}", args.get(0))
 							.sendTo(source);
 					}
 				}
@@ -142,10 +142,10 @@ public class EEFeed extends ECommand<EverEssentials> {
 		player.setSaturation(20);
 		
 		EEMessages.FEED_OTHERS_STAFF.sender()
-			.replace("<player>", player.getName())
+			.replace("{player}", player.getName())
 			.sendTo(player);
 		EEMessages.FEED_OTHERS_PLAYER.sender()
-			.replace("<staff>", staff.getName())
+			.replace("{staff}", staff.getName())
 			.sendTo(player);
 		return CompletableFuture.completedFuture(true);
 	}
@@ -159,7 +159,7 @@ public class EEFeed extends ECommand<EverEssentials> {
 			// La source et le joueur sont différent
 			if (!staff.equals(player)) {
 				EEMessages.FEED_OTHERS_PLAYER.sender()
-					.replace("<staff>", staff.getName())
+					.replace("{staff}", staff.getName())
 					.sendTo(player);
 			}
 		});

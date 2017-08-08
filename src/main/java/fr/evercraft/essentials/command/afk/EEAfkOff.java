@@ -95,7 +95,7 @@ public class EEAfkOff extends ESubCommand<EverEssentials> {
 				} else {
 					EAMessages.PLAYER_NOT_FOUND.sender()
 						.prefix(EEMessages.PREFIX)
-						.replace("<player>", args.get(0))
+						.replace("{player}", args.get(0))
 						.sendTo(source);
 				}
 			// Il n'a pas la permission
@@ -139,10 +139,10 @@ public class EEAfkOff extends ESubCommand<EverEssentials> {
 			if (afk){
 				if (player.setAfk(false)) {
 					EEMessages.AFK_OFF_OTHERS_PLAYER.sender()
-						.replace("<staff>", staff.getName())
+						.replace("{staff}", staff.getName())
 						.sendTo(player);
 					EEMessages.AFK_OFF_OTHERS_STAFF.sender()
-						.replace("<player>", player.getName())
+						.replace("{player}", player.getName())
 						.sendTo(player);
 					EEMessages.AFK_OFF_ALL.sender()
 						.replace(player.getReplaces())
@@ -150,13 +150,13 @@ public class EEAfkOff extends ESubCommand<EverEssentials> {
 					return CompletableFuture.completedFuture(true);
 				} else {
 					EEMessages.AFK_OFF_OTHERS_CANCEL.sender()
-						.replace("<player>", player.getName())
+						.replace("{player}", player.getName())
 						.sendTo(staff);
 				}
 			// Le mode afk est déjà désactivé
 			} else {
 				EEMessages.AFK_OFF_OTHERS_ERROR.sender()
-					.replace("<player>", player.getName())
+					.replace("{player}", player.getName())
 					.sendTo(staff);
 			}
 		// La source et le joueur sont identique

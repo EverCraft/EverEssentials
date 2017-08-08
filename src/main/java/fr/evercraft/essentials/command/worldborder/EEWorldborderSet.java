@@ -81,7 +81,7 @@ public class EEWorldborderSet extends ESubCommand<EverEssentials> {
 
 	@Override
 	public Text help(final CommandSource source) {
-		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_BLOCK.getString() + "> [" + EAMessages.ARGS_SECONDS.getString() + "] [" 
+		return Text.builder("/" + this.getName() + " {" + EAMessages.ARGS_BLOCK.getString() + "} [" + EAMessages.ARGS_SECONDS.getString() + "] [" 
 				+ EAMessages.ARGS_WORLD.getString() + "]")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
@@ -118,7 +118,7 @@ public class EEWorldborderSet extends ESubCommand<EverEssentials> {
 			} else {
 				EAMessages.WORLD_NOT_FOUND.sender()
 					.prefix(EEMessages.PREFIX)
-					.replace("<world>", args.get(2))
+					.replace("{world}", args.get(2))
 					.sendTo(source);
 			}
 		} else {
@@ -134,15 +134,15 @@ public class EEWorldborderSet extends ESubCommand<EverEssentials> {
 			
 			world.getWorldBorder().setDiameter(diameter);
 			EEMessages.WORLDBORDER_SET_BORDER.sender()
-				.replace("<world>", world.getName())
-				.replace("<amount>", String.valueOf(diameter))
+				.replace("{world}", world.getName())
+				.replace("{amount}", String.valueOf(diameter))
 				.sendTo(source);
 			
 			return CompletableFuture.completedFuture(true);
 		} catch (NumberFormatException e) {
 			EAMessages.IS_NOT_NUMBER.sender()
 				.prefix(EEMessages.PREFIX)
-				.replace("<number>", diameter_string)
+				.replace("{number}", diameter_string)
 				.sendTo(source);
 			return CompletableFuture.completedFuture(false);
 		}
@@ -164,22 +164,22 @@ public class EEWorldborderSet extends ESubCommand<EverEssentials> {
 				}
 				
 				message.sender()
-					.replace("<world>", world.getName())
-					.replace("<amount>", String.valueOf(diameter))
-					.replace("<time>", String.valueOf(time))
+					.replace("{world}", world.getName())
+					.replace("{amount}", String.valueOf(diameter))
+					.replace("{time}", String.valueOf(time))
 					.sendTo(source);
 				
 				return CompletableFuture.completedFuture(true);
 			} catch (NumberFormatException e) {
 				EAMessages.IS_NOT_NUMBER.sender()
 					.prefix(EEMessages.PREFIX)
-					.replace("<number>", time_string)
+					.replace("{number}", time_string)
 					.sendTo(source);
 			}
 		} catch (NumberFormatException e) {
 			EAMessages.IS_NOT_NUMBER.sender()
 				.prefix(EEMessages.PREFIX)
-				.replace("<number>", diameter_string)
+				.replace("{number}", diameter_string)
 				.sendTo(source);
 		}
 		return CompletableFuture.completedFuture(false);

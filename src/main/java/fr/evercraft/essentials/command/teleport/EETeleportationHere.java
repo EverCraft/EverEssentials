@@ -55,7 +55,7 @@ public class EETeleportationHere extends ECommand<EverEssentials> {
 
 	@Override
 	public Text help(final CommandSource source) {
-		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_PLAYER.getString() + ">")
+		return Text.builder("/" + this.getName() + " {" + EAMessages.ARGS_PLAYER.getString() + "}")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
 					.build();
@@ -82,7 +82,7 @@ public class EETeleportationHere extends ECommand<EverEssentials> {
 				} else {
 					EAMessages.PLAYER_NOT_FOUND.sender()
 						.prefix(EEMessages.PREFIX)
-						.replace("<player>", args.get(0))
+						.replace("{player}", args.get(0))
 						.sendTo(source);
 				}
 			// Si la source est une console ou un commande block
@@ -108,7 +108,7 @@ public class EETeleportationHere extends ECommand<EverEssentials> {
 		
 		if (!player.getWorld().equals(staff.getWorld()) && !this.plugin.getManagerServices().getEssentials().hasPermissionWorld(player, staff.getWorld())) {
 			EAMessages.NO_PERMISSION_WORLD_OTHERS.sender()
-				.replace("<world>", staff.getWorld().getName())
+				.replace("{world}", staff.getWorld().getName())
 				.sendTo(staff);
 			return CompletableFuture.completedFuture(false);
 		}
@@ -119,12 +119,12 @@ public class EETeleportationHere extends ECommand<EverEssentials> {
 		}
 		
 		EEMessages.TPHERE_PLAYER.sender()
-			.replace("<staff>", staff.getName())
-			.replace("<destination>", () -> this.getButtonPosition(staff.getName(), player.getLocation()))
+			.replace("{staff}", staff.getName())
+			.replace("{destination}", () -> this.getButtonPosition(staff.getName(), player.getLocation()))
 			.sendTo(player);
 		EEMessages.TPHERE_STAFF.sender()
-			.replace("<player>", player.getName())
-			.replace("<destination>", () -> this.getButtonPosition(staff.getName(), player.getLocation()))
+			.replace("{player}", player.getName())
+			.replace("{destination}", () -> this.getButtonPosition(staff.getName(), player.getLocation()))
 			.sendTo(staff);
 		return CompletableFuture.completedFuture(true);
 	}
@@ -139,12 +139,12 @@ public class EETeleportationHere extends ECommand<EverEssentials> {
 	}
 	
 	private Text getButtonPosition(final String player, final Location<World> location){
-		return EEMessages.TPHERE_DESTINATION.getFormat().toText("<player>", player).toBuilder()
+		return EEMessages.TPHERE_DESTINATION.getFormat().toText("{player}", player).toBuilder()
 					.onHover(TextActions.showText(EEMessages.TPHERE_DESTINATION_HOVER.getFormat().toText(
-							"<world>", location.getExtent().getName(),
-							"<x>", String.valueOf(location.getBlockX()),
-							"<y>", String.valueOf(location.getBlockY()),
-							"<z>", String.valueOf(location.getBlockZ()))))
+							"{world}", location.getExtent().getName(),
+							"{x}", String.valueOf(location.getBlockX()),
+							"{y}", String.valueOf(location.getBlockY()),
+							"{z}", String.valueOf(location.getBlockZ()))))
 					.build();
 	}
 }

@@ -85,15 +85,15 @@ public class EEWhitelistList extends ESubCommand<EverEssentials> {
 				for (GameProfile profile : whitelist.getWhitelistedProfiles()) {
 					String name = profile.getName().orElse(profile.getUniqueId().toString());
 					lists.add(EEMessages.WHITELIST_LIST_LINE_DELETE.getFormat().toText(
-								"<player>", EReplace.of(name),
-								"<delete>", EReplace.of(() ->this.getButtonDelete(name, profile.getUniqueId()))));
+								"{player}", EReplace.of(name),
+								"{delete}", EReplace.of(() -> this.getButtonDelete(name, profile.getUniqueId()))));
 				}
 				
 			} else {
 				
 				for (GameProfile profile : whitelist.getWhitelistedProfiles()) {
 					lists.add(EEMessages.WHITELIST_LIST_LINE.getFormat()
-							.toText("<player>", profile.getName().orElse(profile.getUniqueId().toString())));
+							.toText("{player}", profile.getName().orElse(profile.getUniqueId().toString())));
 				}
 				
 			}
@@ -108,7 +108,7 @@ public class EEWhitelistList extends ESubCommand<EverEssentials> {
 	private Text getButtonDelete(final String name, final UUID uuid){
 		return EEMessages.WHITELIST_LIST_REMOVE.getText().toBuilder()
 					.onHover(TextActions.showText(EEMessages.WHITELIST_LIST_REMOVE_HOVER.getFormat()
-							.toText("<player>", name)))
+							.toText("{player}", name)))
 					.onClick(TextActions.runCommand("/" + this.getParentName() + " remove " + uuid.toString()))
 					.build();
 	}

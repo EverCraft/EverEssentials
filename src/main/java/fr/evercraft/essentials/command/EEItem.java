@@ -71,7 +71,7 @@ public class EEItem extends ECommand<EverEssentials> implements ReloadCommand {
 
 	@Override
 	public Text help(final CommandSource source) {
-		return Text.builder("/" + this.getName() + " <" +  EAMessages.ARGS_ITEM.getString() + "> [" + EAMessages.ARGS_TYPE.getString() +"] "
+		return Text.builder("/" + this.getName() + " {" +  EAMessages.ARGS_ITEM.getString() + "} [" + EAMessages.ARGS_TYPE.getString() +"] "
 				+ "[" + EAMessages.ARGS_AMOUNT.getString() + "]")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
@@ -151,7 +151,7 @@ public class EEItem extends ECommand<EverEssentials> implements ReloadCommand {
 		// Le type n'existe pas
 		if (!type.isPresent()) {
 			EEMessages.ITEM_ERROR_ITEM_NOT_FOUND.sender()
-				.replace("<item>", type_string)
+				.replace("{item}", type_string)
 				.sendTo(player);
 			return CompletableFuture.completedFuture(false);
 		}
@@ -172,7 +172,7 @@ public class EEItem extends ECommand<EverEssentials> implements ReloadCommand {
 		// Le type n'existe pas
 		if (!type.isPresent()) {
 			EEMessages.ITEM_ERROR_ITEM_NOT_FOUND.sender()
-				.replace("<item>", type_string)
+				.replace("{item}", type_string)
 				.sendTo(player);
 			return CompletableFuture.completedFuture(false);
 		}
@@ -198,7 +198,7 @@ public class EEItem extends ECommand<EverEssentials> implements ReloadCommand {
 		} catch (NumberFormatException e) {
 			EAMessages.IS_NOT_NUMBER.sender()
 				.prefix(EEMessages.PREFIX)
-				.replace("<number>", value)
+				.replace("{number}", value)
 				.sendTo(player);
 			return CompletableFuture.completedFuture(false);
 		}
@@ -206,7 +206,7 @@ public class EEItem extends ECommand<EverEssentials> implements ReloadCommand {
 		// La valeur n'est pas correcte
 		if (quantity < 1 && quantity > type.get().getMaxStackQuantity()) {
 			EEMessages.ITEM_ERROR_QUANTITY.sender()
-				.replace("<amount>", String.valueOf(type.get().getMaxStackQuantity()))
+				.replace("{amount}", String.valueOf(type.get().getMaxStackQuantity()))
 				.sendTo(player);
 			return CompletableFuture.completedFuture(false);
 		}
@@ -220,7 +220,7 @@ public class EEItem extends ECommand<EverEssentials> implements ReloadCommand {
 		// Le type n'existe pas
 		if (!type.isPresent()) {
 			EEMessages.ITEM_ERROR_ITEM_NOT_FOUND.sender()
-				.replace("<item>", type_string)
+				.replace("{item}", type_string)
 				.sendTo(player);
 			return CompletableFuture.completedFuture(false);
 		}
@@ -238,7 +238,7 @@ public class EEItem extends ECommand<EverEssentials> implements ReloadCommand {
 		// Si la valeur est une data
 		if (!item_data.isPresent()) {
 			EEMessages.ITEM_ERROR_DATA.sender()
-				.replace("<item>", data_string)
+				.replace("{item}", data_string)
 				.sendTo(player);
 			return CompletableFuture.completedFuture(false);
 		}
@@ -249,7 +249,7 @@ public class EEItem extends ECommand<EverEssentials> implements ReloadCommand {
 		} catch (NumberFormatException e) {
 			EAMessages.IS_NOT_NUMBER.sender()
 				.prefix(EEMessages.PREFIX)
-				.replace("<number>", quantity_string)
+				.replace("{number}", quantity_string)
 				.sendTo(player);
 			return CompletableFuture.completedFuture(false);
 		}
@@ -257,7 +257,7 @@ public class EEItem extends ECommand<EverEssentials> implements ReloadCommand {
 		// La valeur n'est pas correcte
 		if (quantity < 1 && quantity > type.get().getMaxStackQuantity()) {
 			EEMessages.ITEM_ERROR_DATA.sender()
-				.replace("<amount>", String.valueOf(type.get().getMaxStackQuantity()))
+				.replace("{amount}", String.valueOf(type.get().getMaxStackQuantity()))
 				.sendTo(player);
 			return CompletableFuture.completedFuture(false);
 		}
@@ -272,13 +272,13 @@ public class EEItem extends ECommand<EverEssentials> implements ReloadCommand {
 		if(player.giveItem(item).isPresent()) {
 			EAMessages.PLAYER_INVENTORY_FULL_AND_DROP.sender()
 				.prefix(EEMessages.PREFIX)
-				.replace("<item>", itemText)
+				.replace("{item}", itemText)
 				.sendTo(player);
 		}
 		
 		EEMessages.ITEM_GIVE.sender()
-			.replace("<quantity>", quantity.toString())
-			.replace("<item>", itemText)
+			.replace("{quantity}", quantity.toString())
+			.replace("{item}", itemText)
 			.sendTo(player);
 		return CompletableFuture.completedFuture(true);
 	}

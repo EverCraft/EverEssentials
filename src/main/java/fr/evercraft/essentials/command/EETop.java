@@ -104,7 +104,7 @@ public class EETop extends ECommand<EverEssentials> {
 		
 		if (delay > 0) {
 			EEMessages.TOP_DELAY.sender()
-				.replace("<delay>", this.plugin.getEverAPI().getManagerUtils().getDate().formatDate(System.currentTimeMillis() + delay))
+				.replace("{delay}", this.plugin.getEverAPI().getManagerUtils().getDate().formatDate(System.currentTimeMillis() + delay))
 				.sendTo(player);
 		}
 		
@@ -116,7 +116,7 @@ public class EETop extends ECommand<EverEssentials> {
 		if (player.isOnline()) {
 			if (player.teleport(location, true)) {
 				EEMessages.TOP_TELEPORT.sender()
-					.replace("<position>", this.getButtonPosition(player.getLocation()))
+					.replace("{position}", this.getButtonPosition(player.getLocation()))
 					.sendTo(player);
 			} else {
 				EEMessages.TOP_TELEPORT_ERROR.sendTo(player);
@@ -127,10 +127,10 @@ public class EETop extends ECommand<EverEssentials> {
 	private Text getButtonPosition(final Location<World> location){
 		return EEMessages.TOP_POSITION.getText().toBuilder()
 					.onHover(TextActions.showText(EEMessages.TOP_POSITION_HOVER.getFormat().toText(
-							"<world>", location.getExtent().getName(),
-							"<x>", String.valueOf(location.getBlockX()),
-							"<y>", String.valueOf(location.getBlockY()),
-							"<z>", String.valueOf(location.getBlockZ()))))
+							"{world}", location.getExtent().getName(),
+							"{x}", String.valueOf(location.getBlockX()),
+							"{y}", String.valueOf(location.getBlockY()),
+							"{z}", String.valueOf(location.getBlockZ()))))
 					.build();
 	}
 }

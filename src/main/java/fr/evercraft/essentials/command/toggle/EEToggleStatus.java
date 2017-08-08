@@ -96,7 +96,7 @@ public class EEToggleStatus extends ESubCommand<EverEssentials> {
 				} else {
 					EAMessages.PLAYER_NOT_FOUND.sender()
 						.prefix(EEMessages.PREFIX)
-						.replace("<player>", args.get(0))
+						.replace("{player}", args.get(0))
 						.sendTo(source);
 				}
 			// Il n'a pas la permission
@@ -116,12 +116,12 @@ public class EEToggleStatus extends ESubCommand<EverEssentials> {
 		// Toggle activé
 		if (player.isToggle()){
 			EEMessages.TOGGLE_STATUS_PLAYER_ON.sender()
-				.replace("<player>", player.getDisplayName())
+				.replace("{player}", player.getDisplayName())
 				.sendTo(player);
 		// Toggle désactivé
 		} else {
 			EEMessages.TOGGLE_STATUS_PLAYER_OFF.sender()
-				.replace("<player>", player.getDisplayName())
+				.replace("{player}", player.getDisplayName())
 				.sendTo(player);
 		}
 		return CompletableFuture.completedFuture(true);
@@ -136,12 +136,12 @@ public class EEToggleStatus extends ESubCommand<EverEssentials> {
 		// Toggle activé
 		if (user.isToggle()){
 			EEMessages.TOGGLE_STATUS_OTHERS_ON.sender()
-				.replace("<player>", user.getDisplayName())
+				.replace("{player}", user.getDisplayName())
 				.sendTo(staff);
 		// Toggle désactivé
 		} else {
 			EEMessages.TOGGLE_STATUS_OTHERS_OFF.sender()
-				.replace("<player>", user.getDisplayName())
+				.replace("{player}", user.getDisplayName())
 				.sendTo(staff);
 		}
 		return CompletableFuture.completedFuture(true);

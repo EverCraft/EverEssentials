@@ -83,7 +83,7 @@ public class EEItemLoreSet extends ESubCommand<EverEssentials> {
 
 	@Override
 	public Text help(final CommandSource source) {
-		return Text.builder("/" + this.getName() + "<" + EAMessages.ARGS_LINE.getString() +  "> <" + EAMessages.ARGS_DESCRIPTION.getString() + ">")
+		return Text.builder("/" + this.getName() + "{" + EAMessages.ARGS_LINE.getString() +  "} {" + EAMessages.ARGS_DESCRIPTION.getString() + "}")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
 					.build();
@@ -110,7 +110,7 @@ public class EEItemLoreSet extends ESubCommand<EverEssentials> {
 		if (line.isPresent()) {
 			EAMessages.IS_NOT_NUMBER.sender()
 				.prefix(EEMessages.PREFIX)
-				.replace("<number>", line_name)
+				.replace("{number}", line_name)
 				.sendTo(player);
 			return CompletableFuture.completedFuture(false);
 		}
@@ -141,8 +141,8 @@ public class EEItemLoreSet extends ESubCommand<EverEssentials> {
 		}
 		item.get().offer(Keys.ITEM_LORE, lore);
 		EEMessages.ITEM_LORE_SET_LORE.sender()
-			.replace("<item>", EChat.getButtomItem(item.get(), EEMessages.ITEM_LORE_SET_COLOR.getColor()))
-			.replace("<line>", line.get().toString())
+			.replace("{item}", EChat.getButtomItem(item.get(), EEMessages.ITEM_LORE_SET_COLOR.getColor()))
+			.replace("{line}", line.get().toString())
 			.sendTo(player);
 		item.get().offer(Keys.ITEM_LORE, lore);
 		player.setItemInMainHand(item.get());

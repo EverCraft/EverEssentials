@@ -93,12 +93,12 @@ public class EEItemLoreClear extends ESubCommand<EverEssentials> {
 		ItemStack item = player.getItemInMainHand().get();
 		if(!item.get(Keys.ITEM_LORE).isPresent()) {
 			EEMessages.ITEM_LORE_CLEAR_ERROR.sender()
-				.replace("<item>", EChat.getButtomItem(item, EEMessages.ITEM_LORE_CLEAR_COLOR.getColor()))
+				.replace("{item}", EChat.getButtomItem(item, EEMessages.ITEM_LORE_CLEAR_COLOR.getColor()))
 				.sendTo(player);
 		}
 		
 		EEMessages.ITEM_LORE_CLEAR_NAME.sender()
-			.replace("<item>", EChat.getButtomItem(item, EEMessages.ITEM_LORE_CLEAR_COLOR.getColor()))
+			.replace("{item}", EChat.getButtomItem(item, EEMessages.ITEM_LORE_CLEAR_COLOR.getColor()))
 			.sendTo(player);
 		
 		item.remove(Keys.ITEM_LORE);

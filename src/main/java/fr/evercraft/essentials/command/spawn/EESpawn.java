@@ -137,7 +137,7 @@ public class EESpawn extends ECommand<EverEssentials> implements ReloadCommand {
 								
 								if (!result) {
 									EEMessages.SPAWN_ERROR_GROUP.sender()
-										.replace("<name>", args.get(0))
+										.replace("{name}", args.get(0))
 										.sendTo(source);
 									return false;
 								}
@@ -173,7 +173,7 @@ public class EESpawn extends ECommand<EverEssentials> implements ReloadCommand {
 		
 		if (delay > 0) {
 			EEMessages.SPAWN_DELAY.sender()
-				.replace("<delay>", () -> this.plugin.getEverAPI().getManagerUtils().getDate().formatDate(System.currentTimeMillis() + delay))
+				.replace("{delay}", () -> this.plugin.getEverAPI().getManagerUtils().getDate().formatDate(System.currentTimeMillis() + delay))
 				.sendTo(player);
 		}
 		
@@ -192,7 +192,7 @@ public class EESpawn extends ECommand<EverEssentials> implements ReloadCommand {
 		}
 		
 		EEMessages.SPAWN_ERROR_SET.sender()
-			.replace("<name>", group)
+			.replace("{name}", group)
 			.sendTo(player);
 		return false;
 	}
@@ -202,7 +202,7 @@ public class EESpawn extends ECommand<EverEssentials> implements ReloadCommand {
 		
 		if (delay > 0) {
 			EEMessages.SPAWNS_DELAY.sender()
-				.replace("<delay>", () -> this.plugin.getEverAPI().getManagerUtils().getDate().formatDate(System.currentTimeMillis() + delay))
+				.replace("{delay}", () -> this.plugin.getEverAPI().getManagerUtils().getDate().formatDate(System.currentTimeMillis() + delay))
 				.sendTo(player);
 		}
 		
@@ -214,12 +214,12 @@ public class EESpawn extends ECommand<EverEssentials> implements ReloadCommand {
 		if (player.isOnline()) {
 			if (player.teleport(location, true)) {
 				EEMessages.SPAWN_PLAYER.sender()
-					.replace("<spawn>", this.getButtonSpawn(location))
+					.replace("{spawn}", this.getButtonSpawn(location))
 					.sendTo(player);
 
 			} else {
 				EEMessages.SPAWN_ERROR_TELEPORT.sender()
-					.replace("<spawn>", this.getButtonSpawn(location))
+					.replace("{spawn}", this.getButtonSpawn(location))
 					.sendTo(player);
 			}
 		}
@@ -229,13 +229,13 @@ public class EESpawn extends ECommand<EverEssentials> implements ReloadCommand {
 		if (player.isOnline()) {
 			if (player.teleport(location, true)) {
 				EEMessages.SPAWNS_PLAYER.sender()
-					.replace("<name>", name)
-					.replace("<spawn>", () -> this.getButtonSpawn(location))
+					.replace("{name}", name)
+					.replace("{spawn}", () -> this.getButtonSpawn(location))
 					.sendTo(player);
 			} else {
 				EEMessages.SPAWNS_ERROR_TELEPORT.sender()
-					.replace("<name>",  name)
-					.replace("<spawn>", () -> this.getButtonSpawn(location))
+					.replace("{name}",  name)
+					.replace("{spawn}", () -> this.getButtonSpawn(location))
 					.sendTo(player);
 			}
 		}
@@ -244,10 +244,10 @@ public class EESpawn extends ECommand<EverEssentials> implements ReloadCommand {
 	private Text getButtonSpawn(final Transform<World> location){
 		return EEMessages.SPAWN_NAME.getText().toBuilder()
 					.onHover(TextActions.showText(EEMessages.SPAWN_NAME_HOVER.getFormat().toText(
-							"<world>", location.getExtent().getName(),
-							"<x>", String.valueOf(location.getLocation().getBlockX()),
-							"<y>", String.valueOf(location.getLocation().getBlockY()),
-							"<z>", String.valueOf(location.getLocation().getBlockZ()))))
+							"{world}", location.getExtent().getName(),
+							"{x}", String.valueOf(location.getLocation().getBlockX()),
+							"{y}", String.valueOf(location.getLocation().getBlockY()),
+							"{z}", String.valueOf(location.getLocation().getBlockZ()))))
 					.build();
 	}
 }

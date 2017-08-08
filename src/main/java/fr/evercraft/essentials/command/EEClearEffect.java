@@ -98,7 +98,7 @@ public class EEClearEffect extends ECommand<EverEssentials> {
 				} else {
 					EAMessages.PLAYER_NOT_FOUND.sender()
 						.prefix(EEMessages.PREFIX)
-						.replace("<player>", args.get(0))
+						.replace("{player}", args.get(0))
 						.sendTo(source);
 				}
 			// Il n'a pas la permission
@@ -143,10 +143,10 @@ public class EEClearEffect extends ECommand<EverEssentials> {
 		player.clearPotions();
 		
 		EEMessages.CLEAREFFECT_OTHERS_STAFF.sender()
-			.replace("<player>", player.getName())
+			.replace("{player}", player.getName())
 			.sendTo(staff);
 		EEMessages.CLEAREFFECT_OTHERS_PLAYER.sender()
-			.replace("<staff>", staff.getName())
+			.replace("{staff}", staff.getName())
 			.sendTo(player);
 		return CompletableFuture.completedFuture(true);
 	}

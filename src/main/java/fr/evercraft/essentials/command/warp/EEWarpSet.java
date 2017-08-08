@@ -58,7 +58,7 @@ public class EEWarpSet extends ECommand<EverEssentials> {
 
 	@Override
 	public Text help(final CommandSource source) {
-		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_WARP.getString() + ">")
+		return Text.builder("/" + this.getName() + " {" + EAMessages.ARGS_WARP.getString() + "}")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
 					.build();
@@ -98,23 +98,23 @@ public class EEWarpSet extends ECommand<EverEssentials> {
 		if (warp.isPresent()) {
 			if (this.plugin.getManagerServices().getWarp().update(name, player.getTransform())) {
 				EEMessages.SETWARP_REPLACE.sender()
-					.replace("<warp>", () -> this.getButtonWarp(name, player.getLocation()))
+					.replace("{warp}", () -> this.getButtonWarp(name, player.getLocation()))
 					.sendTo(player);
 				return CompletableFuture.completedFuture(true);
 			} else {
 				EEMessages.SETWARP_REPLACE_CANCEL.sender()
-					.replace("<warp>", name)
+					.replace("{warp}", name)
 					.sendTo(player);
 			}
 		} else {
 			if (this.plugin.getManagerServices().getWarp().add(name, player.getTransform())) {
 				EEMessages.SETWARP_NEW.sender()
-					.replace("<warp>", () -> this.getButtonWarp(name, player.getLocation()))
+					.replace("{warp}", () -> this.getButtonWarp(name, player.getLocation()))
 					.sendTo(player);
 				return CompletableFuture.completedFuture(true);
 			} else {
 				EEMessages.SETWARP_NEW_CANCEL.sender()
-					.replace("<warp>", name)
+					.replace("{warp}", name)
 					.sendTo(player);
 			}
 		}
@@ -122,13 +122,13 @@ public class EEWarpSet extends ECommand<EverEssentials> {
 	}
 
 	private Text getButtonWarp(final String name, final Location<World> location){
-		return EEMessages.SETWARP_NAME.getFormat().toText("<name>", name).toBuilder()
+		return EEMessages.SETWARP_NAME.getFormat().toText("{name}", name).toBuilder()
 					.onHover(TextActions.showText(EEMessages.SETWARP_NAME_HOVER.getFormat().toText(
-								"<warp>", name,
-								"<world>", location.getExtent().getName(),
-								"<x>", String.valueOf(location.getBlockX()),
-								"<y>", String.valueOf(location.getBlockY()),
-								"<z>", String.valueOf(location.getBlockZ()))))
+								"{warp}", name,
+								"{world}", location.getExtent().getName(),
+								"{x}", String.valueOf(location.getBlockX()),
+								"{y}", String.valueOf(location.getBlockY()),
+								"{z}", String.valueOf(location.getBlockZ()))))
 					.build();
 	}
 }

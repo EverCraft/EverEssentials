@@ -97,7 +97,7 @@ public class EERepairHand extends ECommand<EverEssentials> {
 		Optional<Integer> durability = item.get(Keys.ITEM_DURABILITY);
 		if (!durability.isPresent()) {
 			EEMessages.REPAIR_HAND_ERROR.sender()
-	        	.replace("<item>", EChat.getButtomItem(item, EEMessages.REPAIR_HAND_ITEM_COLOR.getColor()))
+	        	.replace("{item}", EChat.getButtomItem(item, EEMessages.REPAIR_HAND_ITEM_COLOR.getColor()))
 	        	.sendTo(player);
 			return CompletableFuture.completedFuture(false);
 		}
@@ -105,14 +105,14 @@ public class EERepairHand extends ECommand<EverEssentials> {
 		item.offer(Keys.ITEM_DURABILITY, Integer.MAX_VALUE);
 		if (item.get(Keys.ITEM_DURABILITY).get() == durability.get()) {
 			EEMessages.REPAIR_HAND_MAX_DURABILITY.sender()
-	        	.replace("<item>", EChat.getButtomItem(item, EEMessages.REPAIR_HAND_ITEM_COLOR.getColor()))
+	        	.replace("{item}", EChat.getButtomItem(item, EEMessages.REPAIR_HAND_ITEM_COLOR.getColor()))
 	        	.sendTo(player);
 			return CompletableFuture.completedFuture(false);
 		}
 		
         player.setItemInMainHand(item);
         EEMessages.REPAIR_HAND_PLAYER.sender()
-        	.replace("<item>", EChat.getButtomItem(item, EEMessages.REPAIR_HAND_ITEM_COLOR.getColor()))
+        	.replace("{item}", EChat.getButtomItem(item, EEMessages.REPAIR_HAND_ITEM_COLOR.getColor()))
         	.sendTo(player);
         return CompletableFuture.completedFuture(true);
 	}

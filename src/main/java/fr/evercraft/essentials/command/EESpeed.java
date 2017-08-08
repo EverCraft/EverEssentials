@@ -130,7 +130,7 @@ public class EESpeed extends ECommand<EverEssentials> {
 				} else {
 					EAMessages.IS_NOT_NUMBER.sender()
 						.prefix(EEMessages.PREFIX)
-						.replace("<number>", args.get(0))
+						.replace("{number}", args.get(0))
 						.sendTo(source);
 				}
 			// La source n'est pas un joueur
@@ -156,7 +156,7 @@ public class EESpeed extends ECommand<EverEssentials> {
 				} else {
 					EAMessages.IS_NOT_NUMBER.sender()
 						.prefix(EEMessages.PREFIX)
-						.replace("<number>", args.get(0))
+						.replace("{number}", args.get(0))
 						.sendTo(source);
 				}
 			} else {
@@ -183,13 +183,13 @@ public class EESpeed extends ECommand<EverEssentials> {
 					} else {
 						EAMessages.PLAYER_NOT_FOUND.sender()
 							.prefix(EEMessages.PREFIX)
-							.replace("<player>", args.get(2))
+							.replace("{player}", args.get(2))
 							.sendTo(source);
 					}
 				} else {
 					EAMessages.IS_NOT_NUMBER.sender()
 						.prefix(EEMessages.PREFIX)
-						.replace("<number>", args.get(0))
+						.replace("{number}", args.get(0))
 						.sendTo(source);
 				}
 			// Il n'a pas la permission
@@ -210,11 +210,11 @@ public class EESpeed extends ECommand<EverEssentials> {
 	private CompletableFuture<Boolean> commandSpeedInfo(final EPlayer player) {
 		if (player.isFlying()) {
 			EEMessages.SPEED_INFO_FLY.sender()
-				.replace("<speed>", UtilsDouble.round(player.getFlySpeed() / EPlayer.CONVERSION_FLY, 3).toString())
+				.replace("{speed}", UtilsDouble.round(player.getFlySpeed() / EPlayer.CONVERSION_FLY, 3).toString())
 				.sendTo(player);
 		} else {
 			EEMessages.SPEED_INFO_WALK.sender()
-				.replace("<speed>", UtilsDouble.round(player.getWalkSpeed() / EPlayer.CONVERSION_WALF, 3).toString())
+				.replace("{speed}", UtilsDouble.round(player.getWalkSpeed() / EPlayer.CONVERSION_WALF, 3).toString())
 				.sendTo(player);
 		}
 		return CompletableFuture.completedFuture(true);
@@ -239,7 +239,7 @@ public class EESpeed extends ECommand<EverEssentials> {
 		
 		player.setWalkSpeed(speed * EPlayer.CONVERSION_WALF);
 		EEMessages.SPEED_PLAYER_WALK.sender()
-			.replace("<speed>", speed.toString())
+			.replace("{speed}", speed.toString())
 			.sendTo(player);
 		return CompletableFuture.completedFuture(true);
 	}
@@ -255,7 +255,7 @@ public class EESpeed extends ECommand<EverEssentials> {
 			
 		player.setFlySpeed(speed * EPlayer.CONVERSION_FLY);
 		EEMessages.SPEED_PLAYER_FLY.sender()
-			.replace("<speed>", speed.toString())
+			.replace("{speed}", speed.toString())
 			.sendTo(player);
 		return CompletableFuture.completedFuture(true);
 	}
@@ -271,13 +271,13 @@ public class EESpeed extends ECommand<EverEssentials> {
 		
 		user.setWalkSpeed(speed * EPlayer.CONVERSION_WALF);
 		EEMessages.SPEED_OTHERS_STAFF_WALK.sender()
-			.replace("<speed>", speed.toString())
-			.replace("<player>", user.getName())
+			.replace("{speed}", speed.toString())
+			.replace("{player}", user.getName())
 			.sendTo(staff);
 		
 		user.getPlayer().ifPresent(player -> EEMessages.SPEED_OTHERS_PLAYER_WALK.sender()
-				.replace("<speed>", speed.toString())
-				.replace("<staff>", staff.getName())
+				.replace("{speed}", speed.toString())
+				.replace("{staff}", staff.getName())
 				.sendTo(player));
 		return CompletableFuture.completedFuture(true);
 	}
@@ -293,13 +293,13 @@ public class EESpeed extends ECommand<EverEssentials> {
 		
 		user.setFlySpeed(speed * EPlayer.CONVERSION_FLY);
 		EEMessages.SPEED_OTHERS_STAFF_FLY.sender()
-			.replace("<speed>", speed.toString())
-			.replace("<player>", user.getName())
+			.replace("{speed}", speed.toString())
+			.replace("{player}", user.getName())
 			.sendTo(staff);
 
 		user.getPlayer().ifPresent(player -> EEMessages.SPEED_OTHERS_PLAYER_FLY.sender()
-				.replace("<speed>", speed.toString())
-				.replace("<staff>", staff.getName())
+				.replace("{speed}", speed.toString())
+				.replace("{staff}", staff.getName())
 				.sendTo(player));
 		return CompletableFuture.completedFuture(true);
 	}

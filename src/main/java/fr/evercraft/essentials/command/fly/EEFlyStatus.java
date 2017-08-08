@@ -96,7 +96,7 @@ public class EEFlyStatus extends ESubCommand<EverEssentials> {
 				} else {
 					EAMessages.PLAYER_NOT_FOUND.sender()
 						.prefix(EEMessages.PREFIX)
-						.replace("<player>", args.get(0))
+						.replace("{player}", args.get(0))
 						.sendTo(source);
 				}
 			// Il n'a pas la permission
@@ -115,12 +115,12 @@ public class EEFlyStatus extends ESubCommand<EverEssentials> {
 		// Fly activé
 		if (player.getAllowFlight()) {
 			EEMessages.FLY_STATUS_PLAYER_ON.sender()
-				.replace("<player>", player.getDisplayName())
+				.replace("{player}", player.getDisplayName())
 				.sendTo(player);
 		// Fly désactivé
 		} else {
 			EEMessages.FLY_STATUS_PLAYER_OFF.sender()
-				.replace("<player>", player.getDisplayName())
+				.replace("{player}", player.getDisplayName())
 				.sendTo(player);
 		}
 		return CompletableFuture.completedFuture(true);
@@ -135,12 +135,12 @@ public class EEFlyStatus extends ESubCommand<EverEssentials> {
 		// Fly activé
 		if (user.getAllowFlight()) {
 			EEMessages.FLY_STATUS_OTHERS_ON.sender()
-				.replace("<player>", user.getDisplayName())
+				.replace("{player}", user.getDisplayName())
 				.sendTo(staff);
 		// Fly désactivé
 		} else {
 			EEMessages.FLY_STATUS_OTHERS_OFF.sender()
-				.replace("<player>", user.getDisplayName())
+				.replace("{player}", user.getDisplayName())
 				.sendTo(staff);
 		}
 		return CompletableFuture.completedFuture(true);

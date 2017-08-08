@@ -102,7 +102,7 @@ public class EEPlayed extends ECommand<EverEssentials> {
 				} else {
 					EAMessages.PLAYER_NOT_FOUND.sender()
 						.prefix(EEMessages.PREFIX)
-						.replace("<player>", args.get(0))
+						.replace("{player}", args.get(0))
 						.sendTo(source);
 				}
 			// Il n'a pas la permission
@@ -122,7 +122,7 @@ public class EEPlayed extends ECommand<EverEssentials> {
 	
 	private CompletableFuture<Boolean> commandPlayed(final EPlayer player) {
 		EEMessages.PLAYED_PLAYER.sender()
-			.replace("<time>", this.plugin.getEverAPI().getManagerUtils().getDate().diff(player.getTotalTimePlayed()))
+			.replace("{time}", this.plugin.getEverAPI().getManagerUtils().getDate().diff(player.getTotalTimePlayed()))
 			.sendTo(player);
 		return CompletableFuture.completedFuture(true);
 	}
@@ -134,8 +134,8 @@ public class EEPlayed extends ECommand<EverEssentials> {
 		}
 		
 		EEMessages.PLAYED_OTHERS.sender()
-			.replace("<player>", user.getName())
-			.replace("<time>", this.plugin.getEverAPI().getManagerUtils().getDate().diff(user.getTotalTimePlayed()))
+			.replace("{player}", user.getName())
+			.replace("{time}", this.plugin.getEverAPI().getManagerUtils().getDate().diff(user.getTotalTimePlayed()))
 			.sendTo(staff);
 		return CompletableFuture.completedFuture(true);
 	}

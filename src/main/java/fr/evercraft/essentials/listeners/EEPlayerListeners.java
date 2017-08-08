@@ -330,7 +330,7 @@ public class EEPlayerListeners {
 		event.getPlayer().ifPresent(player -> {
 			if (!player.getIdentifier().equals(event.getMail().getTo())) {
 				EEMessages.MAIL_NEW_MESSAGE.sender()
-					.replace("<message>", this.getButtonReadMail(event.getMail()))
+					.replace("{message}", this.getButtonReadMail(event.getMail()))
 					.sendTo(player);
 			}
 		});
@@ -339,7 +339,7 @@ public class EEPlayerListeners {
 	private Text getButtonReadMail(final Mail mail){
 		return EEMessages.MAIL_BUTTON_NEW_MESSAGE.getText().toBuilder()
 					.onHover(TextActions.showText(EEMessages.MAIL_BUTTON_NEW_MESSAGE_HOVER.getFormat()
-							.toText("<player>", mail.getToName())))
+							.toText("{player}", mail.getToName())))
 					.onClick(TextActions.runCommand("/mail read " + mail.getID()))
 					.build();
 	}

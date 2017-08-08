@@ -97,7 +97,7 @@ public class EESuicide extends ECommand<EverEssentials> {
 		// Event cancel
 		if(!player.setHealth(0)) {
 			EEMessages.SUICIDE_CANCEL.sender()
-				.replace("<player>", player.getName())
+				.replace("{player}", player.getName())
 				.sendTo(player);
 			return CompletableFuture.completedFuture(false);
 		}
@@ -126,7 +126,7 @@ public class EESuicide extends ECommand<EverEssentials> {
     		event.getChannel().ifPresent(eventChannel -> eventChannel.send(player, event.getMessage()));
     	} else {
     		EEMessages.SUICIDE_PLAYER.sender()
-    			.replace("<player>", player.getName())
+    			.replace("{player}", player.getName())
     			.sendTo(player);
     	}
     	return CompletableFuture.completedFuture(true);
