@@ -48,7 +48,7 @@ public class EEItem extends ECommand<EverEssentials> implements ReloadCommand {
 	private Collection<ItemType> blacklist; 
 
 	public EEItem(final EverEssentials plugin) {
-        super(plugin, "item");
+        super(plugin, "item", "i");
         
         this.reload();
     }
