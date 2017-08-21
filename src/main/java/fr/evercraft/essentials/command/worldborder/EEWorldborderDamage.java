@@ -73,21 +73,21 @@ public class EEWorldborderDamage extends ESubCommand<EverEssentials> {
 
 	@Override
 	public Text help(final CommandSource source) {
-		return Text.builder("/" + this.getName() + " {buffer|amount} {" + EAMessages.ARGS_VALUE.getString() + "}")
+		return Text.builder("/" + this.getName() + " <buffer|amount> <" + EAMessages.ARGS_VALUE.getString() + ">")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
 					.build();
 	}
 	
 	public Text helpAmount(final CommandSource source) {
-		return Text.builder("/" + this.getName() + " amount {" + EAMessages.ARGS_DAMAGE.getString() + "} [" + EAMessages.ARGS_WORLD.getString() + "]")
+		return Text.builder("/" + this.getName() + " amount <" + EAMessages.ARGS_DAMAGE.getString() + "> [" + EAMessages.ARGS_WORLD.getString() + "]")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " amount "))
 					.color(TextColors.RED)
 					.build();
 	}
 	
 	public Text helpBuffer(final CommandSource source) {
-		return Text.builder("/" + this.getName() + " buffer {" + EAMessages.ARGS_BLOCK.getString() + "} [" + EAMessages.ARGS_WORLD.getString() + "]")
+		return Text.builder("/" + this.getName() + " buffer <" + EAMessages.ARGS_BLOCK.getString() + "> [" + EAMessages.ARGS_WORLD.getString() + "]")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " buffer "))
 					.color(TextColors.RED)
 					.build();

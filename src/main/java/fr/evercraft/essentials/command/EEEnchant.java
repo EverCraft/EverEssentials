@@ -61,7 +61,7 @@ public class EEEnchant extends ECommand<EverEssentials> {
 
 	@Override
 	public Text help(final CommandSource source) {
-		return Text.builder("/" + this.getName() + " {" + EAMessages.ARGS_ENCHANTMENT.getString() + "} [" + EAMessages.ARGS_LEVEL.getString() + "]")
+		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_ENCHANTMENT.getString() + "> [" + EAMessages.ARGS_LEVEL.getString() + "]")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
 					.build();

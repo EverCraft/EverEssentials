@@ -64,7 +64,7 @@ public class EEKill  extends ECommand<EverEssentials> {
 
 	@Override
 	public Text help(final CommandSource source) {
-		return Text.builder("/" + this.getName() + " {" + EAMessages.ARGS_PLAYER.getString() + "}")
+		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_PLAYER.getString() + ">")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
 					.build();
@@ -127,8 +127,8 @@ public class EEKill  extends ECommand<EverEssentials> {
 
         Map<Pattern, EReplace<?>> replaces = new HashMap<Pattern, EReplace<?>>();
         replaces.putAll(player.getReplaces());
-        replaces.put(Pattern.compile("{staff}"), EReplace.of(staff.getName()));
-        replaces.put(Pattern.compile("{player}"), EReplace.of(player.getName()));
+        replaces.put(Pattern.compile("\\{staff}"), EReplace.of(staff.getName()));
+        replaces.put(Pattern.compile("\\{player}"), EReplace.of(player.getName()));
         
         if (!player.equals(staff)) {
         	messageCancelled = !EEMessages.KILL_PLAYER_DEATH_MESSAGE.getMessage().getChat().isPresent();

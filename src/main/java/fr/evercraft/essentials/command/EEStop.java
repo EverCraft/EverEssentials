@@ -56,7 +56,7 @@ public class EEStop extends ECommand<EverEssentials> {
 
 	@Override
 	public Text help(final CommandSource source) {
-		return Text.builder("/" + this.getName() + " {" + EAMessages.ARGS_REASON.getString() + "}")
+		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_REASON.getString() + ">")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
 					.build();
@@ -87,7 +87,7 @@ public class EEStop extends ECommand<EverEssentials> {
 	private CompletableFuture<Boolean> commandStop(final CommandSource player) {
 		Map<Pattern, EReplace<?>> replaces = new HashMap<Pattern, EReplace<?>>();
 		replaces.putAll(this.plugin.getChat().getReplaceServer());
-		replaces.put(Pattern.compile("{staff}"), EReplace.of(player.getName()));
+		replaces.put(Pattern.compile("\\{staff}"), EReplace.of(player.getName()));
 		
 		this.plugin.getELogger().info("Server shutdown by '" + player.getName() + "'");
 		if (player instanceof ConsoleSource) {

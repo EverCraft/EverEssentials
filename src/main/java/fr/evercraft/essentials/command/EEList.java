@@ -172,15 +172,15 @@ public class EEList extends ECommand<EverEssentials> {
 			for (EPlayer player : group.getValue().values()) {
 				
 				if (player.isAfk()) {
-					replaces.put(Pattern.compile("{afk}"), EReplace.of(EEMessages.LIST_TAG_AFK));
+					replaces.put(Pattern.compile("\\{afk}"), EReplace.of(EEMessages.LIST_TAG_AFK));
 				} else {
-					replaces.put(Pattern.compile("{afk}"), EReplace.of(""));
+					replaces.put(Pattern.compile("\\{afk}"), EReplace.of(""));
 				}
 				
 				if (player.isVanish()) {
-					replaces.put(Pattern.compile("{vanish}"), EReplace.of(EEMessages.LIST_TAG_VANISH));
+					replaces.put(Pattern.compile("\\{vanish}"), EReplace.of(EEMessages.LIST_TAG_VANISH));
 				} else {
-					replaces.put(Pattern.compile("{vanish}"), EReplace.of(""));
+					replaces.put(Pattern.compile("\\{vanish}"), EReplace.of(""));
 				}
 				
 				replaces.putAll(player.getReplaces());
@@ -205,7 +205,7 @@ public class EEList extends ECommand<EverEssentials> {
 			title = EEMessages.LIST_TITLE;
 		} else {
 			title = EEMessages.LIST_TITLE_VANISH;
-			replaces.put(Pattern.compile("{vanish}"), EReplace.of(vanish.toString()));
+			replaces.put(Pattern.compile("\\{vanish}"), EReplace.of(vanish.toString()));
 		}
 		
 		this.plugin.getEverAPI().getManagerService().getEPagination().sendTo(

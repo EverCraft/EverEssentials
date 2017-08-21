@@ -59,12 +59,12 @@ public class EETeleportation extends ECommand<EverEssentials> {
 	@Override
 	public Text help(final CommandSource source) {
 		if (source.hasPermission(EEPermissions.TP_OTHERS.get())){
-			return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_RECIPIENT.getString() + "] {" + EAMessages.ARGS_PLAYER.getString() + "}")
+			return Text.builder("/" + this.getName() + " [" + EAMessages.ARGS_RECIPIENT.getString() + "] <" + EAMessages.ARGS_PLAYER.getString() + ">")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
 					.build();
 		} 
-		return Text.builder("/" + this.getName() + " {" + EAMessages.ARGS_PLAYER.getString() + "}")
+		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_PLAYER.getString() + ">")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
 					.build();

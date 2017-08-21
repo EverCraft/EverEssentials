@@ -51,7 +51,7 @@ public class EEBroadcast extends ECommand<EverEssentials> {
 
 	@Override
 	public Text help(final CommandSource source) {
-		Text help = Text.builder("/" + this.getName() + " {" + EAMessages.ARGS_MESSAGE.getString() + "}")
+		Text help = Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_MESSAGE.getString() + ">")
 						.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 						.color(TextColors.RED)
 						.build();

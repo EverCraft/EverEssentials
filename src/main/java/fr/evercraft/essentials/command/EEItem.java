@@ -71,7 +71,7 @@ public class EEItem extends ECommand<EverEssentials> implements ReloadCommand {
 
 	@Override
 	public Text help(final CommandSource source) {
-		return Text.builder("/" + this.getName() + " {" +  EAMessages.ARGS_ITEM.getString() + "} [" + EAMessages.ARGS_TYPE.getString() +"] "
+		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_ITEM.getString() + "> [" + EAMessages.ARGS_TYPE.getString() +"] "
 				+ "[" + EAMessages.ARGS_AMOUNT.getString() + "]")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)

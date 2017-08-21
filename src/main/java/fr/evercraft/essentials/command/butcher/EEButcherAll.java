@@ -57,7 +57,7 @@ public class EEButcherAll extends ESubCommand<EverEssentials> {
 	
 	@Override
 	public Text help(final CommandSource source) {
-		Builder build = Text.builder("/" + this.getName() + " {" + EAMessages.ARGS_ENTITY.getString() + "} {" + EAMessages.ARGS_RADIUS.getString());
+		Builder build = Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_ENTITY.getString() + "> <" + EAMessages.ARGS_RADIUS.getString());
 		if (source.hasPermission(EEPermissions.BUTCHER_WORLD.get())) {
 			build.append(Text.of("|" + EAMessages.ARGS_ALL.getString()));
 		}

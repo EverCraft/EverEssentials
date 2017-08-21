@@ -73,21 +73,21 @@ public class EEWorldborderWarning extends ESubCommand<EverEssentials> {
 
 	@Override
 	public Text help(final CommandSource source) {
-		return Text.builder("/" + this.getName() + " {time|distance} {" + EAMessages.ARGS_VALUE.getString() + "}")
+		return Text.builder("/" + this.getName() + " <time|distance> <" + EAMessages.ARGS_VALUE.getString() + ">")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
 					.build();
 	}
 	
 	public Text helpTime(final CommandSource source) {
-		return Text.builder("/" + this.getName() + " time {" + EAMessages.ARGS_SECONDS.getString() + "} [" + EAMessages.ARGS_WORLD.getString() + "]")
+		return Text.builder("/" + this.getName() + " time <" + EAMessages.ARGS_SECONDS.getString() + "> [" + EAMessages.ARGS_WORLD.getString() + "]")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " time "))
 					.color(TextColors.RED)
 					.build();
 	}
 	
 	public Text helpDistance(final CommandSource source) {
-		return Text.builder("/" + this.getName() + " distance {" + EAMessages.ARGS_DISTANCE.getString() + "} [" + EAMessages.ARGS_WORLD.getString() + "]")
+		return Text.builder("/" + this.getName() + " distance <" + EAMessages.ARGS_DISTANCE.getString() + "> [" + EAMessages.ARGS_WORLD.getString() + "]")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " distance "))
 					.color(TextColors.RED)
 					.build();

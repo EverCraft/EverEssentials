@@ -63,7 +63,7 @@ public class EEExp extends ECommand<EverEssentials> {
 							.append(Text.builder("set")
 										.onClick(TextActions.suggestCommand("/xp set "))
 										.build())
-							.append(Text.of("} {lvl|exp} {" + EAMessages.ARGS_AMOUNT.getString() + "}"));
+							.append(Text.of("> <lvl|exp> <" + EAMessages.ARGS_AMOUNT.getString() + ">"));
 		if (source.hasPermission(EEPermissions.EXP_OTHERS.get())) {
 			build = build.append(Text.of(" [" + EAMessages.ARGS_USER.getString() + "]"));
 		}

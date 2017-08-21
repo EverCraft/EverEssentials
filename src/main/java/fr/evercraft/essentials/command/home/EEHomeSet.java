@@ -97,7 +97,7 @@ public class EEHomeSet extends ECommand<EverEssentials> implements ReloadCommand
 	@Override
 	public Text help(final CommandSource source) {
 		if (source.hasPermission(EEPermissions.SETHOME_MULTIPLE.get())) {
-			return Text.builder("/" + this.getName() + " {" + EAMessages.ARGS_HOME.getString() + "}")
+			return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_HOME.getString() + ">")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
 					.build();

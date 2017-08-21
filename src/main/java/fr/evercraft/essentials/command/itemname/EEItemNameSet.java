@@ -74,7 +74,7 @@ public class EEItemNameSet extends ESubCommand<EverEssentials> {
 
 	@Override
 	public Text help(final CommandSource source) {
-		return Text.builder("/" + this.getName() + " {" + EAMessages.ARGS_NAME.getString() + "}")
+		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_NAME.getString() + ">")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
 					.build();

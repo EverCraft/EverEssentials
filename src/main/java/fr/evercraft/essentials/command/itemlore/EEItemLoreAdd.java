@@ -67,7 +67,7 @@ public class EEItemLoreAdd extends ESubCommand<EverEssentials> {
 
 	@Override
 	public Text help(final CommandSource source) {
-		return Text.builder("/" + this.getName() + " {" + EAMessages.ARGS_DESCRIPTION.getString() + "}")
+		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_DESCRIPTION.getString() + ">")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
 					.build();

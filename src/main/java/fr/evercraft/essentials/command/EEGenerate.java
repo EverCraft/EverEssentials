@@ -68,7 +68,7 @@ public class EEGenerate extends ECommand<EverEssentials> implements ReloadComman
 
 	@Override
 	public Text help(final CommandSource source) {
-		return Text.builder("/" + this.getName() + " {" + EAMessages.ARGS_WORLD.getString() + "}")
+		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_WORLD.getString() + ">")
 				.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 				.color(TextColors.RED)
 				.build();
