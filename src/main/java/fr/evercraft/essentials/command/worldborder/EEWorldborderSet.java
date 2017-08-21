@@ -81,7 +81,7 @@ public class EEWorldborderSet extends ESubCommand<EverEssentials> {
 
 	@Override
 	public Text help(final CommandSource source) {
-		return Text.builder("/" + this.getName() + " {" + EAMessages.ARGS_BLOCK.getString() + "} [" + EAMessages.ARGS_SECONDS.getString() + "] [" 
+		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_BLOCK.getString() + "> [" + EAMessages.ARGS_SECONDS.getString() + "] [" 
 				+ EAMessages.ARGS_WORLD.getString() + "]")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
