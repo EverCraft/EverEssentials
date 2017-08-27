@@ -294,6 +294,9 @@ public class EEMsg extends ECommand<EverEssentials> {
 		if (player.hasPermission(EEPermissions.MSG_ICONS.get())) {
 			replaces.putAll(chat.getReplaceIcons());
 		}
+		if (player.hasPermission(EEPermissions.MSG_URL.get())) {
+			replaces.putAll(chat.getReplaceUrl());
+		}
 		
 		if (replaces.isEmpty()) return message;
 		return EFormatString.of(message).toString(replaces);
