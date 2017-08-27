@@ -39,10 +39,12 @@ import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
+import fr.evercraft.everapi.message.format.EFormatString;
 import fr.evercraft.everapi.message.replace.EReplace;
 import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ECommand;
 import fr.evercraft.everapi.server.player.EPlayer;
+import fr.evercraft.everapi.services.ChatService;
 
 public class EEMsg extends ECommand<EverEssentials> {
 	
@@ -272,21 +274,28 @@ public class EEMsg extends ECommand<EverEssentials> {
 	}
 	
 	public static String replaceMessage(final EChat chat, final Subject player, String message) {
+		Map<Pattern, EReplace<?>> replaces = new HashMap<Pattern, EReplace<?>>();
+		
 		if (!player.hasPermission(EEPermissions.MSG_COLOR.get())) {
-			message = message.replaceAll(EChat.REGEX_COLOR, "");
+			message = message.replaceAll(ChatService.REGEX_COLOR, "");
 		}
 		if (!player.hasPermission(EEPermissions.MSG_FORMAT.get())) {
-			message = message.replaceAll(EChat.REGEX_FORMAT, "");
+			message = message.replaceAll(ChatService.REGEX_FORMAT, "");
 		}
 		if (!player.hasPermission(EEPermissions.MSG_MAGIC.get())) {
-			message = message.replaceAll(EChat.REGEX_MAGIC, "");
+			message = message.replaceAll(ChatService.REGEX_MAGIC, "");
 		}
 		if (player.hasPermission(EEPermissions.MSG_CHARACTER.get())) {
-			message = chat.replaceCharacter(message);
+			replaces.putAll(chat.getReplaceCharacters());
+		}
+		if (player.hasPermission(EEPermissions.MSG_COMMAND.get())) {
+			replaces.putAll(chat.getReplaceCommand());
 		}
 		if (player.hasPermission(EEPermissions.MSG_ICONS.get())) {
-			message = chat.replaceIcons(message);
+			replaces.putAll(chat.getReplaceIcons());
 		}
-		return message;
+		
+		if (replaces.isEmpty()) return message;
+		return EFormatString.of(message).toString(replaces);
 	}
 }

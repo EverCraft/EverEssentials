@@ -154,6 +154,8 @@ public enum EEPermissions implements EnumPermission {
 	MSG_FORMAT("msg.format"),
 	MSG_MAGIC("msg.magic"),
 	MSG_CHARACTER("msg.character"),
+	MSG_COMMAND("msg.command"),
+	MSG_URL("msg.url"),
 	MSG_ICONS("msg.icons"),
 	
 	MOJANG("mojang.command"),

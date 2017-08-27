@@ -30,7 +30,7 @@ import org.spongepowered.api.text.format.TextColors;
 import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
-import fr.evercraft.everapi.plugin.EChat;
+import fr.evercraft.everapi.message.format.EFormatListString;
 import fr.evercraft.everapi.plugin.command.ECommand;
 
 public class EERules extends ECommand<EverEssentials> {
@@ -75,10 +75,10 @@ public class EERules extends ECommand<EverEssentials> {
 		return CompletableFuture.completedFuture(false);
 	}
 	
-	private CompletableFuture<Boolean> commandRules(final CommandSource player) {		
+	private CompletableFuture<Boolean> commandRules(final CommandSource player) {
 		this.plugin.getEverAPI().getManagerService().getEPagination().sendTo(
 				this.plugin.getRules().getTitle(),
-				EChat.of(this.plugin.getChat().replaceGlobal(this.plugin.getRules().getList())),
+				Arrays.asList(EFormatListString.of(this.plugin.getRules().getList()).toText(this.plugin.getChat().getReplaceServer())),
 				player);
 		return CompletableFuture.completedFuture(true);
 	}
