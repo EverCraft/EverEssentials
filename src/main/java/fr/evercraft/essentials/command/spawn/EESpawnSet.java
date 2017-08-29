@@ -38,7 +38,7 @@ import fr.evercraft.everapi.exception.ServerDisableException;
 import fr.evercraft.everapi.plugin.command.ECommand;
 import fr.evercraft.everapi.server.location.VirtualTransform;
 import fr.evercraft.everapi.server.player.EPlayer;
-import fr.evercraft.everapi.services.essentials.SpawnService;
+import fr.evercraft.everapi.services.SpawnService;
 
 public class EESpawnSet extends ECommand<EverEssentials> {
 	

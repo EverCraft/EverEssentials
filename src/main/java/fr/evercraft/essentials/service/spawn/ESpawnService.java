@@ -37,7 +37,7 @@ import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.exception.ServerDisableException;
 import fr.evercraft.everapi.server.location.EVirtualTransform;
 import fr.evercraft.everapi.server.location.VirtualTransform;
-import fr.evercraft.everapi.services.essentials.SpawnService;
+import fr.evercraft.everapi.services.SpawnService;
 
 public class ESpawnService implements SpawnService {
 	

@@ -20,8 +20,8 @@ import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.essentials.service.EEssentialsService;
 import fr.evercraft.essentials.service.spawn.ESpawnService;
 import fr.evercraft.essentials.service.warp.EWarpService;
+import fr.evercraft.everapi.services.SpawnService;
 import fr.evercraft.everapi.services.essentials.EssentialsService;
-import fr.evercraft.everapi.services.essentials.SpawnService;
 import fr.evercraft.everapi.services.essentials.WarpService;
 
 public class EEManagerServices {
