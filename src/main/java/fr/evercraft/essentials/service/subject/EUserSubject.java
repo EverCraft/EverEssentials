@@ -147,6 +147,7 @@ public class EUserSubject implements SubjectUserEssentials {
 				player.offer(Keys.INVISIBLE, vanish);
 			}
 			
+			this.updateLastActivated();
 			this.startTotalTimePlayed();
 			this.setLastIp(player.getConnection().getAddress().getAddress());
 			
