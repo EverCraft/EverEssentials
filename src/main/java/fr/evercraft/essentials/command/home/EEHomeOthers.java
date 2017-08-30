@@ -240,7 +240,7 @@ public class EEHomeOthers extends ECommand<EverEssentials> {
 	private CompletableFuture<Boolean> commandHomeDelete(final CommandSource staff, final EUser user, final String home_name){
 		String name = EChat.fixLength(home_name, this.plugin.getEverAPI().getConfigs().getMaxCaractere());
 
-		Optional<EUserSubject> subject = this.plugin.getManagerServices().getEssentials().getSubject(user.getUniqueId());
+		Optional<EUserSubject> subject = this.plugin.getEssentials().getSubject(user.getUniqueId());
 		if (!subject.isPresent()) {
 			EAMessages.PLAYER_NOT_FOUND.sender()
 				.prefix(EEMessages.PREFIX)
@@ -270,7 +270,7 @@ public class EEHomeOthers extends ECommand<EverEssentials> {
 	private CompletableFuture<Boolean> commandHomeDeleteConfirmation(final CommandSource staff, final EUser user, final String home_name){
 		String name = EChat.fixLength(home_name, this.plugin.getEverAPI().getConfigs().getMaxCaractere());
 		
-		Optional<EUserSubject> subject = this.plugin.getManagerServices().getEssentials().getSubject(user.getUniqueId());
+		Optional<EUserSubject> subject = this.plugin.getEssentials().getSubject(user.getUniqueId());
 		if (!subject.isPresent()) {
 			EAMessages.PLAYER_NOT_FOUND.sender()
 				.prefix(EEMessages.PREFIX)

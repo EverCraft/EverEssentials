@@ -133,7 +133,7 @@ public class EETeleportationAskHere extends ECommand<EverEssentials> {
 		}
 		
 		// Le joueur n'a pas la permission
-		if (!player.getWorld().equals(staff.getWorld()) && !this.plugin.getManagerServices().getEssentials().hasPermissionWorld(player, staff.getWorld())) {
+		if (!player.getWorld().equals(staff.getWorld()) && !this.plugin.getEssentials().hasPermissionWorld(player, staff.getWorld())) {
 			EAMessages.NO_PERMISSION_WORLD_OTHERS.sender()
 				.prefix(EEMessages.PREFIX)
 				.replace("{world}", staff.getWorld().getName())

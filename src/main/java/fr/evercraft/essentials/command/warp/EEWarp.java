@@ -79,7 +79,7 @@ public class EEWarp extends ECommand<EverEssentials> implements ReloadCommand {
 	@Override
 	public Collection<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		if (args.size() == 1){
-			return this.plugin.getManagerServices().getWarp().getAll().keySet();
+			return this.plugin.getWarp().getAll().keySet();
 		} else if (args.size() == 2 && source.hasPermission(EEPermissions.WARP_OTHERS.get())) {
 			return this.getAllPlayers(source, true);
 		}
@@ -129,7 +129,7 @@ public class EEWarp extends ECommand<EverEssentials> implements ReloadCommand {
 	}
 	
 	public CompletableFuture<Boolean> commandWarpList(final CommandSource player) throws CommandException {
-		TreeMap<String, VirtualTransform> warps = new TreeMap<String, VirtualTransform>(this.plugin.getManagerServices().getWarp().getAllSQL());
+		TreeMap<String, VirtualTransform> warps = new TreeMap<String, VirtualTransform>(this.plugin.getWarp().getAllSQL());
 		
 		List<Text> lists = new ArrayList<Text>();
 		if (player.hasPermission(EEPermissions.DELWARP.get())) {
@@ -177,7 +177,7 @@ public class EEWarp extends ECommand<EverEssentials> implements ReloadCommand {
 	private CompletableFuture<Boolean> commandWarpTeleport(final EPlayer player, final String warp_name) {
 		String name = EChat.fixLength(warp_name, this.plugin.getEverAPI().getConfigs().getMaxCaractere());
 		
-		Optional<Transform<World>> warp = this.plugin.getManagerServices().getWarp().get(name);
+		Optional<Transform<World>> warp = this.plugin.getWarp().get(name);
 		// Le serveur n'a pas de warp qui porte ce nom
 		if (!warp.isPresent()) {
 			EEMessages.WARP_INCONNU.sender()
@@ -210,7 +210,7 @@ public class EEWarp extends ECommand<EverEssentials> implements ReloadCommand {
 	private CompletableFuture<Boolean> commandWarpTeleportOthers(final CommandSource staff, final EPlayer player, final String warp_name) {
 		String name = EChat.fixLength(warp_name, this.plugin.getEverAPI().getConfigs().get("maxCaractere").getInt(16));
 		
-		Optional<Transform<World>> warp = this.plugin.getManagerServices().getWarp().get(name);
+		Optional<Transform<World>> warp = this.plugin.getWarp().get(name);
 		// Le serveur a un warp qui porte ce nom
 		if (!warp.isPresent()) {
 			EEMessages.WARP_INCONNU.sender()

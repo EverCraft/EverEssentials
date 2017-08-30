@@ -43,10 +43,9 @@ import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ECommand;
 import fr.evercraft.everapi.plugin.command.ReloadCommand;
 import fr.evercraft.everapi.server.player.EPlayer;
+import fr.evercraft.everapi.services.essentials.EssentialsService;
 
 public class EEHomeSet extends ECommand<EverEssentials> implements ReloadCommand {
-	
-	private final static String DEFAULT_HOME = "home";
 	
 	private List<Entry<String, Integer>> permissions;
 	private int permission_default;
@@ -161,7 +160,7 @@ public class EEHomeSet extends ECommand<EverEssentials> implements ReloadCommand
 		int max = this.getMaxHome(player);
 		int homes = player.getHomes().size();
 		
-		boolean hasHome = player.hasHome(DEFAULT_HOME);
+		boolean hasHome = player.hasHome(EssentialsService.DEFAULT_HOME);
 		
 		// Il a déjà le nombre maximum d'home
 		if (!hasHome && homes != 0 && homes >= max) {
@@ -181,29 +180,29 @@ public class EEHomeSet extends ECommand<EverEssentials> implements ReloadCommand
 	}
 	
 	private CompletableFuture<Boolean> commandSetHomeAdd(final EPlayer player) {
-		if (!player.addHome(DEFAULT_HOME)) {
+		if (!player.addHome(EssentialsService.DEFAULT_HOME)) {
 			EEMessages.SETHOME_SET_CANCEL.sender()
-				.replace("{home}", this.getButtonHome(DEFAULT_HOME, player.getLocation()))
+				.replace("{home}", this.getButtonHome(EssentialsService.DEFAULT_HOME, player.getLocation()))
 				.sendTo(player);
 			return CompletableFuture.completedFuture(false);
 		}
 			
 		EEMessages.SETHOME_SET.sender()
-			.replace("{home}", this.getButtonHome(DEFAULT_HOME, player.getLocation()))
+			.replace("{home}", this.getButtonHome(EssentialsService.DEFAULT_HOME, player.getLocation()))
 			.sendTo(player);
 		return CompletableFuture.completedFuture(true);
 	}
 	
 	private CompletableFuture<Boolean> commandSetHomeMove(final EPlayer player) {
-		if (!player.moveHome(DEFAULT_HOME)) {
+		if (!player.moveHome(EssentialsService.DEFAULT_HOME)) {
 			EEMessages.SETHOME_MOVE_CANCEL.sender()
-				.replace("{home}", this.getButtonHome(DEFAULT_HOME, player.getLocation()))
+				.replace("{home}", this.getButtonHome(EssentialsService.DEFAULT_HOME, player.getLocation()))
 				.sendTo(player);
 			return CompletableFuture.completedFuture(false);
 		}
 			
 		EEMessages.SETHOME_MOVE.sender()
-			.replace("{home}", this.getButtonHome(DEFAULT_HOME, player.getLocation()))
+			.replace("{home}", this.getButtonHome(EssentialsService.DEFAULT_HOME, player.getLocation()))
 			.sendTo(player);
 		return CompletableFuture.completedFuture(true);
 	}

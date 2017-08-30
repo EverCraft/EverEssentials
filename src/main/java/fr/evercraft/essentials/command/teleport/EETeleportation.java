@@ -154,7 +154,7 @@ public class EETeleportation extends ECommand<EverEssentials> {
 		}
 			
 		if (!player.getWorld().equals(destination.getWorld()) && 
-			!this.plugin.getManagerServices().getEssentials().hasPermissionWorld(player, destination.getWorld())) {
+			!this.plugin.getEssentials().hasPermissionWorld(player, destination.getWorld())) {
 			
 			EAMessages.NO_PERMISSION_WORLD.sender()
 				.prefix(EEMessages.PREFIX)
@@ -176,7 +176,7 @@ public class EETeleportation extends ECommand<EverEssentials> {
 	
 	private CompletableFuture<Boolean> commandTeleportation(CommandSource staff, EPlayer player, EPlayer destination) {
 		if (!player.getWorld().equals(destination.getWorld()) && 
-			!this.plugin.getManagerServices().getEssentials().hasPermissionWorld(player, destination.getWorld())) {
+			!this.plugin.getEssentials().hasPermissionWorld(player, destination.getWorld())) {
 			
 			EAMessages.NO_PERMISSION_WORLD_OTHERS.sender()
 				.replace("{world}", destination.getWorld().getName())

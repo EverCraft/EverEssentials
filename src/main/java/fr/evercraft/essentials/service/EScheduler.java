@@ -87,7 +87,7 @@ public class EScheduler {
 		
 		final Set<UUID> players = new HashSet<UUID>();
 		
-		for (EUserSubject player : this.plugin.getManagerServices().getEssentials().getOnlines()) {			
+		for (EUserSubject player : this.plugin.getEssentials().getOnlines()) {			
 			// Teleport Ask
 			for (Entry<UUID, TeleportRequest> teleport : player.getAllTeleportsAsk().entrySet()) {
 				if (!teleport.getValue().isExpire() && teleport.getValue().getTime().isPresent() &&  teleport.getValue().getTime().get() <= current_time) {
@@ -159,7 +159,7 @@ public class EScheduler {
 					if (player.hasPermission(EEPermissions.AFK_BYPASS_AUTO.get())) {
 						player.setAfkAutoFake(true);
 					} else {
-						Optional<EUserSubject> subject = this.plugin.getManagerServices().getEssentials().getSubject(player.getUniqueId());
+						Optional<EUserSubject> subject = this.plugin.getEssentials().getSubject(player.getUniqueId());
 						if (subject.isPresent()) {
 							if (subject.get().setAfkAuto(true)) {
 								EEMessages.AFK_ON_PLAYER.sendTo(player);

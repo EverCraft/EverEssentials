@@ -106,7 +106,7 @@ public class EETeleportationHere extends ECommand<EverEssentials> {
 			return CompletableFuture.completedFuture(false);
 		}
 		
-		if (!player.getWorld().equals(staff.getWorld()) && !this.plugin.getManagerServices().getEssentials().hasPermissionWorld(player, staff.getWorld())) {
+		if (!player.getWorld().equals(staff.getWorld()) && !this.plugin.getEssentials().hasPermissionWorld(player, staff.getWorld())) {
 			EAMessages.NO_PERMISSION_WORLD_OTHERS.sender()
 				.replace("{world}", staff.getWorld().getName())
 				.sendTo(staff);

@@ -16,17 +16,26 @@
  */
 package fr.evercraft.essentials;
 
+import java.util.Map;
+import java.util.Optional;
+import java.util.TreeMap;
+
+import org.spongepowered.api.entity.Transform;
 import org.spongepowered.api.plugin.Dependency;
 import org.spongepowered.api.plugin.Plugin;
+import org.spongepowered.api.world.World;
 
 import fr.evercraft.essentials.listeners.EEPlayerListeners;
 import fr.evercraft.essentials.managers.EEManagerCommands;
 import fr.evercraft.essentials.managers.EEManagerEvent;
-import fr.evercraft.essentials.managers.EEManagerServices;
+import fr.evercraft.essentials.service.EEssentialsService;
 import fr.evercraft.essentials.service.EScheduler;
+import fr.evercraft.essentials.service.spawn.ESpawnService;
+import fr.evercraft.essentials.service.warp.EWarpService;
 import fr.evercraft.everapi.EverAPI;
 import fr.evercraft.everapi.exception.PluginDisableException;
 import fr.evercraft.everapi.plugin.EPlugin;
+import fr.evercraft.everapi.services.essentials.EssentialsService;
 
 @Plugin(id = "everessentials", 
 		name = "EverEssentials", 
@@ -36,7 +45,6 @@ import fr.evercraft.everapi.plugin.EPlugin;
 		authors = {"rexbut","lesbleu"},
 		dependencies = {
 		    @Dependency(id = "everapi", version = EverAPI.VERSION),
-		    @Dependency(id = "everchat", version = EverAPI.VERSION, optional = true),
 		    @Dependency(id = "spongeapi", version = EverAPI.SPONGEAPI_VERSION)
 		})
 public class EverEssentials extends EPlugin<EverEssentials> {
@@ -46,9 +54,12 @@ public class EverEssentials extends EPlugin<EverEssentials> {
 	private EEConfig config;
 	private EEMessage messages;
 	
-	private EEManagerServices managerServices;
 	private EEManagerCommands managerCommands;
 	private EEManagerEvent managerEvent;
+	
+	private EEssentialsService essentials;
+	private EWarpService warp;
+	private ESpawnService spawn;
 	
 	private EScheduler scheduler;
 	
@@ -60,12 +71,19 @@ public class EverEssentials extends EPlugin<EverEssentials> {
 		// Configurations
 		this.config = new EEConfig(this);
 		this.databases = new EEDataBase(this);
-		
-		this.managerServices = new EEManagerServices(this);
+	}
+	
+	@Override
+	protected void onEnable() throws PluginDisableException {
+		this.essentials = new EEssentialsService(this);
+		this.warp = new EWarpService(this); // After EverAPI
+		this.spawn = new ESpawnService(this);
 		
 		this.messages = new EEMessage(this, "messages");
 		this.motd = new EEConfigMotd(this, "motd");
 		this.rules = new EEConfigRules(this, "rules");
+		
+		this.register();
 	}
 	
 	@Override
@@ -84,15 +102,29 @@ public class EverEssentials extends EPlugin<EverEssentials> {
 		this.scheduler.stop();
 		
 		this.reloadConfigurations();
-		
-		
 		this.databases.reload();
 		
-		this.managerServices.reload();
+		this.essentials.reload();
+		this.warp.reload();
+		this.spawn.reload();
+		
 		this.managerCommands.reload();
 		this.scheduler.reload();
 		
 		this.scheduler.start();
+	}
+	
+	public void register() {
+		this.getEverAPI().getManagerService().getSpawn().register(EssentialsService.Priorities.HOME, user -> {
+			Map<String, Transform<World>> homes = user.getHomes();
+			if (homes.isEmpty()) return Optional.empty();
+			
+			Transform<World> home = homes.get(EssentialsService.DEFAULT_HOME);
+			if (home == null) return Optional.of(home);
+			
+			homes = new TreeMap<String, Transform<World>>(homes);
+			return Optional.of(homes.values().iterator().next());
+		});
 	}
 	
 	@Override
@@ -128,11 +160,19 @@ public class EverEssentials extends EPlugin<EverEssentials> {
 		return this.managerCommands;
 	}
 	
-	public EEManagerServices getManagerServices() {
-		return this.managerServices;
-	}
-
 	public EEManagerEvent getManagerEvent() {
 		return this.managerEvent;
+	}
+	
+	public EWarpService getWarp() {
+		return this.warp;
+	}
+
+	public ESpawnService getSpawn() {
+		return this.spawn;
+	}
+
+	public EEssentialsService getEssentials() {
+		return this.essentials;
 	}
 }

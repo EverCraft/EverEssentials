@@ -27,6 +27,7 @@ import java.util.TreeMap;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
+import org.spongepowered.api.service.permission.Subject;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
@@ -37,6 +38,7 @@ import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.plugin.command.ECommand;
 import fr.evercraft.everapi.server.location.VirtualTransform;
+import fr.evercraft.everapi.services.SpawnSubjectService;
 
 public class EESpawns extends ECommand<EverEssentials> {
 		
@@ -79,7 +81,20 @@ public class EESpawns extends ECommand<EverEssentials> {
 	}
 	
 	private CompletableFuture<Boolean> commandSpawns(final CommandSource player) throws CommandException {
-		TreeMap<String, VirtualTransform> spawns = new TreeMap<String, VirtualTransform>(this.plugin.getManagerServices().getSpawn().getAllSQL());
+		TreeMap<String, VirtualTransform> spawns = new TreeMap<String, VirtualTransform>();
+		SpawnSubjectService service = this.plugin.getSpawn();
+		
+		service.getAllVirtual().forEach((reference, virtual) -> {
+			Optional<Subject> subject = this.plugin.getEverAPI().getManagerService().getPermission().getGroupSubjects().getSubject(reference.getSubjectIdentifier());
+			if (subject.isPresent()) {
+				spawns.put(subject.get().getFriendlyIdentifier().orElse(subject.get().getIdentifier()), virtual);
+			} else {
+				spawns.put(reference.getSubjectIdentifier(), virtual);
+			}
+		});
+		
+		service.getDefault().ifPresent(spawn -> spawns.put(SpawnSubjectService.DEFAULT, spawn));
+		service.getNewbie().ifPresent(spawn -> spawns.put(SpawnSubjectService.NEWBIE, spawn));
 		
 		List<Text> lists = new ArrayList<Text>();
 		if (player.hasPermission(EEPermissions.DELSPAWN.get())) {
@@ -140,7 +155,7 @@ public class EESpawns extends ECommand<EverEssentials> {
 		return EEMessages.SPAWNS_NAME.getFormat().toText("{name}", name).toBuilder()
 					.onHover(TextActions.showText(EEMessages.SPAWNS_NAME_HOVER.getFormat().toText(
 							"{name}", name,
-							"{world}", location.getWorldName(),
+							"{world}", location.getWorldName().orElse(location.getWorldIdentifier()),
 							"{x}", String.valueOf(location.getPosition().getFloorX()),
 							"{y}", String.valueOf(location.getPosition().getFloorY()),
 							"{z}", String.valueOf(location.getPosition().getFloorZ()))))

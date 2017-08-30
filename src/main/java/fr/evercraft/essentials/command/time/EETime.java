@@ -93,7 +93,7 @@ public class EETime extends ECommand<EverEssentials> {
 		} else if (args.size() == 2) {
 			List<String> suggests = new ArrayList<String>();
 			for (World world : this.plugin.getEServer().getWorlds()) {
-				if (this.plugin.getManagerServices().getEssentials().hasPermissionWorld(source, world)) {
+				if (this.plugin.getEssentials().hasPermissionWorld(source, world)) {
 					if (world.getProperties().getDimensionType().equals(DimensionTypes.OVERWORLD)) {
 						suggests.add(world.getName());
 					}
@@ -163,7 +163,7 @@ public class EETime extends ECommand<EverEssentials> {
 	}
 	
 	private CompletableFuture<Boolean> commandTimeSet(final CommandSource player, final Optional<Long> time, final World world) {
-		if (!this.plugin.getManagerServices().getEssentials().hasPermissionWorld(player, world)) {
+		if (!this.plugin.getEssentials().hasPermissionWorld(player, world)) {
 			EAMessages.NO_PERMISSION_WORLD.sender()
 				.prefix(EEMessages.PREFIX)
 				.replace("{world}", world.getName())
@@ -192,7 +192,7 @@ public class EETime extends ECommand<EverEssentials> {
 		}
 		
 		for (World world : this.plugin.getEServer().getWorlds()) {
-			if (this.plugin.getManagerServices().getEssentials().hasPermissionWorld(player, world)) {
+			if (this.plugin.getEssentials().hasPermissionWorld(player, world)) {
 				if (world.getProperties().getDimensionType().equals(DimensionTypes.OVERWORLD)) {
 					setWorldTime(world.getProperties(), time.get());
 				}

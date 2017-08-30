@@ -78,7 +78,7 @@ public class EEWorlds extends ECommand<EverEssentials> {
 		if (args.size() == 1) {
 			List<String> suggests = new ArrayList<String>();
 			for (World world : this.plugin.getEServer().getWorlds()) {
-				if (this.plugin.getManagerServices().getEssentials().hasPermissionWorld(source, world)) {
+				if (this.plugin.getEssentials().hasPermissionWorld(source, world)) {
 					suggests.add(world.getProperties().getWorldName());
 				}
 			}
@@ -142,7 +142,7 @@ public class EEWorlds extends ECommand<EverEssentials> {
 		List<Text> lists = new ArrayList<Text>();
 		
 		for (World world : this.plugin.getEServer().getWorlds()) {
-			if (this.plugin.getManagerServices().getEssentials().hasPermissionWorld(player, world)) {
+			if (this.plugin.getEssentials().hasPermissionWorld(player, world)) {
 				String name = world.getName();
 				if (name.equalsIgnoreCase("DIM-1")) {
 					name = name + " (" + DIM_1 + ")";
@@ -172,7 +172,7 @@ public class EEWorlds extends ECommand<EverEssentials> {
 			return CompletableFuture.completedFuture(false);
 		}
 			
-		if (!this.plugin.getManagerServices().getEssentials().hasPermissionWorld(player, world.get())) {
+		if (!this.plugin.getEssentials().hasPermissionWorld(player, world.get())) {
 			EAMessages.NO_PERMISSION_WORLD.sender()
 				.prefix(EEMessages.PREFIX)
 				.replace("{world}", world.get().getName())
@@ -208,7 +208,7 @@ public class EEWorlds extends ECommand<EverEssentials> {
 			return CompletableFuture.completedFuture(false);
 		}
 				
-		if (!this.plugin.getManagerServices().getEssentials().hasPermissionWorld(player, world.get())) {
+		if (!this.plugin.getEssentials().hasPermissionWorld(player, world.get())) {
 			EAMessages.NO_PERMISSION_WORLD_OTHERS.sender()
 				.prefix(EEMessages.PREFIX)
 				.replace("{world}", world.get().getName())

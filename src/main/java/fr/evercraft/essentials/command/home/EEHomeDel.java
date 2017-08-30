@@ -68,7 +68,7 @@ public class EEHomeDel extends ECommand<EverEssentials> {
 	@Override
 	public Collection<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		if (args.size() == 1 && source instanceof Player) {
-			Optional<SubjectUserEssentials> player = this.plugin.getManagerServices().getEssentials().get(((Player) source).getUniqueId());
+			Optional<SubjectUserEssentials> player = this.plugin.getEssentials().get(((Player) source).getUniqueId());
 			// Le joueur existe
 			if (player.isPresent()) {
 				List<String> suggests = new ArrayList<String>();
@@ -115,7 +115,7 @@ public class EEHomeDel extends ECommand<EverEssentials> {
 	private CompletableFuture<Boolean> commandDeleteHome(final EPlayer player, final String home_name) {
 		String name = EChat.fixLength(home_name, this.plugin.getEverAPI().getConfigs().getMaxCaractere());
 		
-		Optional<EUserSubject> subject = this.plugin.getManagerServices().getEssentials().getSubject(player.getUniqueId());
+		Optional<EUserSubject> subject = this.plugin.getEssentials().getSubject(player.getUniqueId());
 		if (!subject.isPresent()) {
 			EAMessages.PLAYER_NOT_FOUND.sender()
 				.prefix(EEMessages.PREFIX)
@@ -144,7 +144,7 @@ public class EEHomeDel extends ECommand<EverEssentials> {
 	private CompletableFuture<Boolean> commandDeleteHomeConfirmation(final EPlayer player, final String home_name) {
 		String name = EChat.fixLength(home_name, this.plugin.getEverAPI().getConfigs().getMaxCaractere());
 		
-		Optional<EUserSubject> subject = this.plugin.getManagerServices().getEssentials().getSubject(player.getUniqueId());
+		Optional<EUserSubject> subject = this.plugin.getEssentials().getSubject(player.getUniqueId());
 		if (!subject.isPresent()) {
 			EAMessages.PLAYER_NOT_FOUND.sender()
 				.prefix(EEMessages.PREFIX)

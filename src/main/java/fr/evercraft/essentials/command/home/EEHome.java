@@ -73,7 +73,7 @@ public class EEHome extends ECommand<EverEssentials> {
 	@Override
 	public Collection<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		if (args.size() == 1 && source instanceof Player){
-			Optional<SubjectUserEssentials> player = this.plugin.getManagerServices().getEssentials().get(((Player) source).getUniqueId());
+			Optional<SubjectUserEssentials> player = this.plugin.getEssentials().get(((Player) source).getUniqueId());
 			// Le joueur existe
 			if (player.isPresent()) {
 				List<String> suggests = new ArrayList<String>();
@@ -133,7 +133,7 @@ public class EEHome extends ECommand<EverEssentials> {
 		}
 		
 		// Le joueur a plusieurs home
-		Optional<EUserSubject> subject = this.plugin.getManagerServices().getEssentials().getSubject(player.getUniqueId());
+		Optional<EUserSubject> subject = this.plugin.getEssentials().getSubject(player.getUniqueId());
 		if (!subject.isPresent()) {
 			EAMessages.PLAYER_NOT_FOUND.sender()
 				.prefix(EEMessages.PREFIX)

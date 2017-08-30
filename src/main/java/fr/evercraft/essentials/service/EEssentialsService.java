@@ -88,6 +88,8 @@ public class EEssentialsService implements EssentialsService {
 					            return subject;
 					        }
 					    });
+		
+		this.plugin.getGame().getServiceManager().setProvider(this.plugin, EssentialsService.class, this);
 	}
 
 	@Override

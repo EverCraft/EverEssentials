@@ -66,7 +66,7 @@ public class EEWarpDel extends ECommand<EverEssentials> {
 	@Override
 	public Collection<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		if (args.size() == 1){
-			return this.plugin.getManagerServices().getWarp().getAll().keySet();
+			return this.plugin.getWarp().getAll().keySet();
 		} else if (args.size() == 2){
 			return Arrays.asList("confirmation");
 		}
@@ -91,7 +91,7 @@ public class EEWarpDel extends ECommand<EverEssentials> {
 	private CompletableFuture<Boolean> commandDeleteWarp(final EPlayer player, final String warp_name) {
 		String name = EChat.fixLength(warp_name, this.plugin.getEverAPI().getConfigs().getMaxCaractere());
 		
-		Optional<Transform<World>> warp = this.plugin.getManagerServices().getWarp().get(name);
+		Optional<Transform<World>> warp = this.plugin.getWarp().get(name);
 		// Le serveur n'a pas de warp qui porte ce nom
 		if (!warp.isPresent()) {
 			EEMessages.DELWARP_INCONNU.sender()
@@ -110,7 +110,7 @@ public class EEWarpDel extends ECommand<EverEssentials> {
 	private CompletableFuture<Boolean> commandDeleteWarpConfirmation(final EPlayer player, final String warp_name) throws ServerDisableException {
 		String name = EChat.fixLength(warp_name, this.plugin.getEverAPI().getConfigs().getMaxCaractere());
 		
-		Optional<Transform<World>> warp = this.plugin.getManagerServices().getWarp().get(name);
+		Optional<Transform<World>> warp = this.plugin.getWarp().get(name);
 		// Le serveur n'a pas de warp qui porte ce nom
 		if (!warp.isPresent()) {
 			EEMessages.DELWARP_INCONNU.sender()
@@ -120,7 +120,7 @@ public class EEWarpDel extends ECommand<EverEssentials> {
 		}
 		
 		// Le warp n'a pas été supprimer
-		if (!this.plugin.getManagerServices().getWarp().remove(name)) {
+		if (!this.plugin.getWarp().remove(name)) {
 			EEMessages.DELWARP_CANCEL.sender()
 				.replace("{warp}", name)
 				.sendTo(player);

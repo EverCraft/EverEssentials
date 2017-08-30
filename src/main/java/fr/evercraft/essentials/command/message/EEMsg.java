@@ -224,7 +224,7 @@ public class EEMsg extends ECommand<EverEssentials> {
 					.build());
 		
 		receive.setReplyTo(player.getIdentifier());
-		this.plugin.getManagerServices().getEssentials().getConsole().setReplyTo(receive.getIdentifier());
+		this.plugin.getEssentials().getConsole().setReplyTo(receive.getIdentifier());
 		return CompletableFuture.completedFuture(true);
 	}
 	
@@ -249,7 +249,7 @@ public class EEMsg extends ECommand<EverEssentials> {
 					.build());
 		
 		player.setReplyTo(EEMsg.CONSOLE);
-		this.plugin.getManagerServices().getEssentials().getConsole().setReplyTo(player.getIdentifier());
+		this.plugin.getEssentials().getConsole().setReplyTo(player.getIdentifier());
 		return CompletableFuture.completedFuture(true);
 	}
 	

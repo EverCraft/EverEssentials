@@ -20,11 +20,14 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.concurrent.CompletableFuture;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.service.permission.Subject;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
@@ -32,11 +35,13 @@ import org.spongepowered.api.text.format.TextColors;
 import fr.evercraft.essentials.EEMessage.EEMessages;
 import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
+import fr.evercraft.essentials.service.spawn.ESpawnService;
 import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.exception.ServerDisableException;
 import fr.evercraft.everapi.plugin.command.ECommand;
 import fr.evercraft.everapi.server.location.VirtualTransform;
 import fr.evercraft.everapi.server.player.EPlayer;
+import fr.evercraft.everapi.services.SpawnSubjectService;
 
 public class EESpawnDel extends ECommand<EverEssentials> {
 	
@@ -64,9 +69,27 @@ public class EESpawnDel extends ECommand<EverEssentials> {
 	
 	@Override
 	public Collection<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
-		if (args.size() == 1 && source instanceof Player){
-			return this.plugin.getManagerServices().getSpawn().getAll().keySet();
-		} else if (args.size() == 2){
+		if (args.size() == 1 && source instanceof Player) {
+			Set<String> spawns = new TreeSet<String>();
+			
+			SpawnSubjectService service = this.plugin.getSpawn();
+			this.plugin.getSpawn().getAll().keySet().forEach(reference -> {
+				Optional<Subject> subject = this.plugin.getEverAPI().getManagerService().getPermission().getGroupSubjects().getSubject(reference.getSubjectIdentifier());
+				if (subject.isPresent()) {
+					spawns.add(subject.get().getFriendlyIdentifier().orElse(subject.get().getIdentifier()));
+				} else {
+					spawns.add(reference.getSubjectIdentifier());
+				}
+			});
+			if (service.getDefault().isPresent()) {
+				spawns.add(SpawnSubjectService.DEFAULT);
+			}
+			if (service.getNewbie().isPresent()) {
+				spawns.add(SpawnSubjectService.NEWBIE);
+			}
+
+			return spawns;
+		} else if (args.size() == 2) {
 			return Arrays.asList("confirmation");
 		}
 		return Arrays.asList();
@@ -76,58 +99,103 @@ public class EESpawnDel extends ECommand<EverEssentials> {
 	public CompletableFuture<Boolean> execute(final CommandSource source, final List<String> args) throws CommandException, ServerDisableException {
 		// Si on ne connait pas le joueur
 		if (args.size() == 1) {
-			return this.commandDeleteSpawn((EPlayer) source, args.get(0));
+			return this.execute((EPlayer) source, args.get(0), false);
 		} else if (args.size() == 2 && args.get(1).equalsIgnoreCase("confirmation")) {
-			return this.commandDeleteSpawnConfirmation((EPlayer) source, args.get(0));
+			return this.execute((EPlayer) source, args.get(0), true);
 		// Nombre d'argument incorrect
 		} else {
 			source.sendMessage(this.help(source));
 		}
-		
 		return CompletableFuture.completedFuture(false);
 	}
 	
-	private CompletableFuture<Boolean> commandDeleteSpawn(final EPlayer player, final String spawn_name) {
-		Optional<VirtualTransform> spawn = this.plugin.getManagerServices().getSpawn().get(spawn_name);
+	private CompletableFuture<Boolean> execute(final CommandSource source, String argument, final boolean confirmation) {
+		ESpawnService service = this.plugin.getSpawn();
 		
-		// Le serveur a un spawn qui porte ce nom
-		if (spawn.isPresent()) {
-			EEMessages.DELSPAWN_CONFIRMATION.sender()
-				.replace("{spawn}", () -> this.getButtonSpawn(spawn_name, spawn.get()))
-				.replace("{confirmation}", () -> this.getButtonConfirmation(spawn_name))
-				.sendTo(player);
-		// Le serveur n'a pas de spawn qui porte ce nom
+		if (argument.equalsIgnoreCase(SpawnSubjectService.NEWBIE)) {
+			if (!service.getNewbie().isPresent()) {
+				EEMessages.DELSPAWN_INCONNU.sender()
+					.replace("{name}", SpawnSubjectService.NEWBIE)
+					.sendTo(source);
+				return CompletableFuture.completedFuture(false);
+			}
+			
+			return this.commandDeleteSpawn((EPlayer) source, SpawnSubjectService.NEWBIE, SpawnSubjectService.NEWBIE, service.getNewbie().get(), confirmation);
+		} else if (argument.equalsIgnoreCase(SpawnSubjectService.DEFAULT)) {
+			if (!service.getDefault().isPresent()) {
+				EEMessages.DELSPAWN_INCONNU.sender()
+					.replace("{name}", SpawnSubjectService.DEFAULT)
+					.sendTo(source);
+				return CompletableFuture.completedFuture(false);
+			}
+			
+			return this.commandDeleteSpawn((EPlayer) source, SpawnSubjectService.DEFAULT, SpawnSubjectService.DEFAULT, service.getDefault().get(), confirmation);
 		} else {
-			EEMessages.DELSPAWN_INCONNU.sender()
-				.replace("{name}", spawn_name)
-				.sendTo(player);
+			return this.plugin.getEverAPI().getManagerService().getPermission().getGroupSubjects().hasSubject(argument)
+				.exceptionally(e -> null)
+				.thenCompose(result -> {
+					if (result == null) {
+						EAMessages.COMMAND_ERROR.sender()
+							.prefix(EEMessages.PREFIX)
+							.sendTo(source);
+						return CompletableFuture.completedFuture(false);
+					}
+					
+					String identifier = argument;
+					String name = argument;
+					if (result) {
+						Subject subject = this.plugin.getEverAPI().getManagerService().getPermission().getGroupSubjects().loadSubject(argument).join();
+						identifier = subject.getIdentifier();
+						name = subject.getFriendlyIdentifier().orElse(identifier);
+					}
+					
+					Optional<VirtualTransform> virtual = service.get(identifier);
+					if (!virtual.isPresent()) {
+						EEMessages.DELSPAWN_INCONNU.sender()
+							.replace("{name}", name)
+							.sendTo(source);
+						return CompletableFuture.completedFuture(false);
+					}
+					
+					return this.commandDeleteSpawn((EPlayer) source, identifier, name, virtual.get(), confirmation);
+				});
 		}
-		return CompletableFuture.completedFuture(false);
 	}
 	
-	private CompletableFuture<Boolean> commandDeleteSpawnConfirmation(final EPlayer player, final String spawn_name) throws ServerDisableException {
-		Optional<VirtualTransform> spawn = this.plugin.getManagerServices().getSpawn().get(spawn_name);
-		
-		// Le serveur n'a pas de spawn qui porte ce nom
-		if (!spawn.isPresent()) {
-			EEMessages.DELSPAWN_INCONNU.sender()
-				.replace("{name}", spawn_name)
-				.sendTo(player);
-			return CompletableFuture.completedFuture(false);
-		}
-
-		// Le spawn n'a pas été supprimer
-		if (!this.plugin.getManagerServices().getSpawn().remove(spawn_name)) {
-			EAMessages.COMMAND_ERROR.sender()
-				.prefix(EEMessages.PREFIX)
+	private CompletableFuture<Boolean> commandDeleteSpawn(final EPlayer player, final String identifier, final String name, final VirtualTransform virtual, final boolean confirmation) {
+		if (!confirmation) {
+			EEMessages.DELSPAWN_CONFIRMATION.sender()
+				.replace("{spawn}", () -> this.getButtonSpawn(name, virtual))
+				.replace("{confirmation}", () -> this.getButtonConfirmation(name))
 				.sendTo(player);
 			return CompletableFuture.completedFuture(false);
 		}
 		
-		EEMessages.DELSPAWN_DELETE.sender()
-			.replace("{spawn}", this.getButtonSpawn(spawn_name, spawn.get()))
-			.sendTo(player);
-		return CompletableFuture.completedFuture(true);
+		ESpawnService service = this.plugin.getSpawn();
+		CompletableFuture<Boolean> value;
+		
+		if (identifier.equalsIgnoreCase(SpawnSubjectService.NEWBIE)) {
+			value = service.setNewbie(null);
+		} else if (identifier.equalsIgnoreCase(SpawnSubjectService.DEFAULT)) {
+			value = service.setDefault(null);
+		} else {
+			value = service.set(identifier, null);
+		}
+		
+		return value.exceptionally(e -> false)
+			.thenApply(result -> {
+				if (!result) {
+					EAMessages.COMMAND_ERROR.sender()
+						.prefix(EEMessages.PREFIX)
+						.sendTo(player);
+					return false;
+				}
+				
+				EEMessages.DELSPAWN_DELETE.sender()
+					.replace("{spawn}", this.getButtonSpawn(name, virtual))
+					.sendTo(player);
+				return true;
+			});
 	}
 	
 	private Text getButtonSpawn(final String name, final VirtualTransform location) {

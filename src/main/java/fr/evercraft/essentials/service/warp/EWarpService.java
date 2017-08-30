@@ -49,7 +49,9 @@ public class EWarpService implements WarpService {
 		
 		this.warps = new ConcurrentHashMap<String, VirtualTransform>();
 		
-		reload();
+		this.reload();
+		
+		this.plugin.getGame().getServiceManager().setProvider(this.plugin, WarpService.class, this);
 	}
 	
 	public void reload() {

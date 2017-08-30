@@ -81,7 +81,7 @@ public class EEWeather extends ECommand<EverEssentials> {
 			List<String> suggests = new ArrayList<String>();
 			for (World world : this.plugin.getEServer().getWorlds()) {
 				if (world.getProperties().getDimensionType().equals(DimensionTypes.OVERWORLD)) {
-					if (this.plugin.getManagerServices().getEssentials().hasPermissionWorld(source, world)) {
+					if (this.plugin.getEssentials().hasPermissionWorld(source, world)) {
 						suggests.add(world.getName());
 					}
 				}
@@ -159,7 +159,7 @@ public class EEWeather extends ECommand<EverEssentials> {
 	}
 
 	private CompletableFuture<Boolean> commandWeather(final CommandSource player, final Optional<Weather> weather, final World world) {
-		if (!this.plugin.getManagerServices().getEssentials().hasPermissionWorld(player, world)) {
+		if (!this.plugin.getEssentials().hasPermissionWorld(player, world)) {
 			EAMessages.NO_PERMISSION_WORLD.sender()
 				.prefix(EEMessages.PREFIX)
 				.replace("{world}", world.getName())
@@ -186,7 +186,7 @@ public class EEWeather extends ECommand<EverEssentials> {
 	}
 	
 	private CompletableFuture<Boolean> commandWeather(final CommandSource player, final Optional<Weather> weather, final World world, final int duration) {
-		if (!this.plugin.getManagerServices().getEssentials().hasPermissionWorld(player, world)) {
+		if (!this.plugin.getEssentials().hasPermissionWorld(player, world)) {
 			EAMessages.NO_PERMISSION_WORLD.sender()
 				.prefix(EEMessages.PREFIX)
 				.replace("{world}", world.getName())

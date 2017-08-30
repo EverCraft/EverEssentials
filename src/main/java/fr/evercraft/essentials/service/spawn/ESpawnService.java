@@ -20,14 +20,20 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Map.Entry;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
+
+import javax.annotation.Nullable;
 
 import org.spongepowered.api.entity.Transform;
+import org.spongepowered.api.service.permission.SubjectReference;
 import org.spongepowered.api.world.World;
 
 import com.google.common.base.Preconditions;
@@ -37,125 +43,215 @@ import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.exception.ServerDisableException;
 import fr.evercraft.everapi.server.location.EVirtualTransform;
 import fr.evercraft.everapi.server.location.VirtualTransform;
-import fr.evercraft.everapi.services.SpawnService;
+import fr.evercraft.everapi.server.user.EUser;
+import fr.evercraft.everapi.services.SpawnSubjectService;
 
-public class ESpawnService implements SpawnService {
+public class ESpawnService implements SpawnSubjectService {
 	
 	private final EverEssentials plugin;
 	
-	private final ConcurrentMap<String, VirtualTransform> spawns;
+	private final ConcurrentMap<String, VirtualTransform> subjects;
+	private VirtualTransform spawnDefault;
+	private VirtualTransform spawnNewbie;
+	
+	// MultiThreading
+	private final ReadWriteLock lock;
+	private final Lock write_lock;
+	private final Lock read_lock;
 	
 	public ESpawnService(final EverEssentials plugin){
 		this.plugin = plugin;
 		
-		this.spawns = new ConcurrentHashMap<String, VirtualTransform>();
+		this.subjects = new ConcurrentHashMap<String, VirtualTransform>();
+		
+		// MultiThreading
+		this.lock = new ReentrantReadWriteLock();
+		this.write_lock = this.lock.writeLock();
+		this.read_lock = this.lock.readLock();
 		
 		this.reload();
+		
+		this.plugin.getEverAPI().getManagerService().getSpawn().register(SpawnSubjectService.Priorities.SPAWN, user -> {
+			return this.getSpawn(user);
+		});
+		this.plugin.getEverAPI().getManagerService().getSpawn().register(SpawnSubjectService.Priorities.NEWBIE, user -> {
+			if (!user.isSpawnNewbie()) return Optional.empty();
+			
+			Optional<VirtualTransform> spawn = this.getNewbie();
+			if (!spawn.isPresent()) return Optional.empty();
+			
+			return spawn.get().getTransform();
+		});
+		
+		this.plugin.getGame().getServiceManager().setProvider(this.plugin, SpawnSubjectService.class, this);
 	}
 	
 	public void reload() {
-		this.spawns.clear();
-		
-		this.spawns.putAll(this.selectAsync());
-	}
-
-	@Override
-	public Map<String, Transform<World>> getAll() {
-		ImmutableMap.Builder<String, Transform<World>> spawns = ImmutableMap.builder();
-		for (Entry<String, VirtualTransform> spawn : this.spawns.entrySet()) {
-			Optional<Transform<World>> transform = spawn.getValue().getTransform();
-			if (transform.isPresent()) {
-				spawns.put(spawn.getKey(), transform.get());
-			}
+		this.write_lock.lock();
+		try {
+			this.subjects.clear();
+			this.spawnDefault = null;
+			this.spawnNewbie = null;
+			
+			this.selectExecute();
+		} finally {
+			this.write_lock.unlock();
 		}
-		return spawns.build();
-	}
-	
-	public Map<String, VirtualTransform> getAllSQL() {
-		return this.spawns;
-	}
-	
-	@Override
-	public boolean has(final String identifier) {
-		Preconditions.checkNotNull(identifier, "identifier");
-		
-		return this.spawns.containsKey(identifier);
 	}
 
 	@Override
+	public Map<SubjectReference, Transform<World>> getAll() {
+		this.read_lock.lock();
+		try {
+			ImmutableMap.Builder<SubjectReference, Transform<World>> spawns = ImmutableMap.builder();
+			for (Entry<String, VirtualTransform> spawn : this.subjects.entrySet()) {
+				Optional<Transform<World>> transform = spawn.getValue().getTransform();
+				if (transform.isPresent()) {
+					spawns.put(this.plugin.getEverAPI().getManagerService().getPermission().getGroupSubjects().newSubjectReference(spawn.getKey()), transform.get());
+				}
+			}
+			return spawns.build();
+		} finally {
+			this.read_lock.unlock();
+		}
+	}
+	
+	@Override
+	public Map<SubjectReference, VirtualTransform> getAllVirtual() {
+		this.read_lock.lock();
+		try {
+			ImmutableMap.Builder<SubjectReference, VirtualTransform> spawns = ImmutableMap.builder();
+			for (Entry<String, VirtualTransform> spawn : this.subjects.entrySet()) {
+				spawns.put(this.plugin.getEverAPI().getManagerService().getPermission().getGroupSubjects().newSubjectReference(spawn.getKey()), spawn.getValue());
+			}
+			return spawns.build();
+		} finally {
+			this.read_lock.unlock();
+		}
+	}
+
 	public Optional<VirtualTransform> get(final String identifier) {
 		Preconditions.checkNotNull(identifier, "identifier");
 		
-		if (this.spawns.containsKey(identifier)) {
-			return Optional.of(this.spawns.get(identifier));
+		this.read_lock.lock();
+		try {
+			return Optional.ofNullable(this.subjects.get(identifier.toLowerCase()));
+		} finally {
+			this.read_lock.unlock();
 		}
-		return Optional.empty();
 	}
 	
-	@Override
-	public Transform<World> getDefault() {
-		Optional<VirtualTransform> spawn = this.get(SpawnService.DEFAULT);
-		if (!spawn.isPresent()) return this.plugin.getEServer().getSpawn();
+	public CompletableFuture<Boolean> set(final String identifier, final @Nullable Transform<World> location) {
+		Preconditions.checkNotNull(identifier, "identifier");
+
+		boolean update = false;
+		this.read_lock.lock();
+		try {
+			update = (identifier.equalsIgnoreCase(SpawnSubjectService.DEFAULT) && this.spawnDefault != null) || 
+				(identifier.equalsIgnoreCase(SpawnSubjectService.NEWBIE) && this.spawnNewbie != null) ||
+				this.subjects.containsKey(identifier);
+		} finally {
+			this.read_lock.unlock();
+		}
 		
-		return spawn.get().getTransform().orElseGet(() -> this.plugin.getEServer().getSpawn());
+		if (location == null) {
+			if (!update) return CompletableFuture.completedFuture(false);
+			return this.remove(identifier);
+		} 
+		
+		if (update) {
+			return this.update(identifier, location);
+		} else {
+			return this.add(identifier, location);
+		}
 	}
 
-	@Override
-	public boolean add(final String identifier, final Transform<World> location) {
-		Preconditions.checkNotNull(identifier, "identifier");
-		Preconditions.checkNotNull(location, "location");
-		
-		if (!this.spawns.containsKey(identifier)) {
-			final VirtualTransform locationSQL = new EVirtualTransform(this.plugin, location);
-			this.spawns.put(identifier, locationSQL);
-			this.plugin.getThreadAsync().execute(() -> this.addAsync(identifier, locationSQL));
+	public CompletableFuture<Boolean> add(final String identifier, final Transform<World> location) {
+		final VirtualTransform locationVirtual = new EVirtualTransform(this.plugin, location);
+		return this.addExecute(identifier, locationVirtual).thenApply(result -> {
+			if (!result) return false;
+			
+			this.write_lock.lock();
+			try {
+				if (identifier.equalsIgnoreCase(SpawnSubjectService.DEFAULT)) {
+					this.spawnDefault = locationVirtual;
+				} else if (identifier.equalsIgnoreCase(SpawnSubjectService.NEWBIE)) {
+					this.spawnNewbie = locationVirtual;
+				} else {
+					this.subjects.put(identifier, locationVirtual);
+				}
+			} finally {
+				this.write_lock.unlock();
+			}
 			return true;
-		}
-		return false;
+		});
 	}
 	
-	@Override
-	public boolean update(final String identifier, final Transform<World> location) {
-		Preconditions.checkNotNull(identifier, "identifier");
-		Preconditions.checkNotNull(location, "location");
-		
-		if (this.spawns.containsKey(identifier)) {
-			final VirtualTransform locationSQL = new EVirtualTransform(this.plugin, location);
-			this.spawns.put(identifier, locationSQL);
-			this.plugin.getThreadAsync().execute(() -> this.updateAsync(identifier, locationSQL));
+	public CompletableFuture<Boolean> update(final String identifier, final Transform<World> location) {
+		final VirtualTransform locationVirtual = new EVirtualTransform(this.plugin, location);
+		return this.updateExecute(identifier, locationVirtual).thenApply(result -> {
+			if (!result) return false;
+			
+			this.write_lock.lock();
+			try {
+				if (identifier.equalsIgnoreCase(SpawnSubjectService.DEFAULT)) {
+					this.spawnDefault = locationVirtual;
+				} else if (identifier.equalsIgnoreCase(SpawnSubjectService.NEWBIE)) {
+					this.spawnNewbie = locationVirtual;
+				} else {
+					this.subjects.put(identifier, locationVirtual);
+				}
+			} finally {
+				this.write_lock.unlock();
+			}
 			return true;
-		}
-		return false;
+		});
+	}
+
+	public CompletableFuture<Boolean> remove(final String identifier) {
+		return this.removeExecute(identifier).thenApply(result -> {
+			if (!result) return false;
+			
+			this.write_lock.lock();
+			try {
+				if (identifier.equalsIgnoreCase(SpawnSubjectService.DEFAULT)) {
+					this.spawnDefault = null;
+				} else if (identifier.equalsIgnoreCase(SpawnSubjectService.DEFAULT)) {
+					this.spawnNewbie = null;
+				} else {
+					this.subjects.remove(identifier);
+				}
+			} finally {
+				this.write_lock.unlock();
+			}
+			return true;
+		});
 	}
 
 	@Override
-	public boolean remove(final String identifier) {
-		Preconditions.checkNotNull(identifier, "identifier");
+	public CompletableFuture<Boolean> clearAll() {
+		if (this.subjects.isEmpty() && this.spawnDefault == null && this.spawnNewbie == null) return CompletableFuture.completedFuture(false);
 		
-		if (this.spawns.containsKey(identifier)) {
-			this.spawns.remove(identifier);
-			this.plugin.getThreadAsync().execute(() -> this.removeAsync(identifier));
+		return this.clearExecute().thenApply(result -> {
+			if (!result) return false;
+			
+			this.write_lock.lock();
+			try {
+				this.subjects.clear();
+				this.spawnDefault = null;
+				this.spawnNewbie = null;
+			} finally {
+				this.write_lock.unlock();
+			}
 			return true;
-		}
-		return false;
-	}
-
-	@Override
-	public boolean clearAll() {
-		if (!this.spawns.isEmpty()) {
-			this.spawns.clear();
-			this.plugin.getThreadAsync().execute(() -> this.clearAsync());
-			return true;
-		}
-		return false;
+		});
 	}
 	
 	/*
 	 * DataBases
 	 */
 	
-	private Map<String, VirtualTransform> selectAsync() {
-		Map<String, VirtualTransform> spawns = new HashMap<String, VirtualTransform>();
+	private void selectExecute() {
 		Connection connection = null;
 		PreparedStatement preparedStatement = null;
     	try {
@@ -171,7 +267,13 @@ public class ESpawnService implements SpawnService {
 														list.getDouble("z"),
 														list.getDouble("yaw"),
 														list.getDouble("pitch"));
-				spawns.put(list.getString("identifier"), location);
+				if (list.getString("identifier").equalsIgnoreCase(SpawnSubjectService.NEWBIE)) {
+					this.spawnNewbie = location;
+				} else if (list.getString("identifier").equalsIgnoreCase(SpawnSubjectService.DEFAULT)) {
+					this.spawnDefault = location;
+				} else {
+					this.subjects.put(list.getString("identifier"), location);
+				}
 				this.plugin.getELogger().debug("Loading : (spawn='" + list.getString("identifier") + "';location='" + location + "')");
 			}
     	} catch (SQLException e) {
@@ -184,119 +286,195 @@ public class ESpawnService implements SpawnService {
 				if (connection != null) connection.close();
 			} catch (SQLException e) {}
 	    }
-    	return spawns;
 	}
 	
-	private void addAsync(final String identifier, final VirtualTransform location) {
-		Connection connection = null;
-		PreparedStatement preparedStatement = null;
-    	try {
-    		connection = this.plugin.getDataBases().getConnection();
-    		String query = 	  "INSERT INTO `" + this.plugin.getDataBases().getTableSpawns() + "` "
-    						+ "VALUES (?, ?, ?, ?, ?, ?, ?);";
-			preparedStatement = connection.prepareStatement(query);
-			preparedStatement.setString(1, identifier);
-			preparedStatement.setString(2, location.getWorldIdentifier());
-			preparedStatement.setDouble(3, location.getPosition().getX());
-			preparedStatement.setDouble(4, location.getPosition().getY());
-			preparedStatement.setDouble(5, location.getPosition().getZ());
-			preparedStatement.setDouble(6, location.getYaw());
-			preparedStatement.setDouble(7, location.getPitch());
-			
-			preparedStatement.execute();
-			this.plugin.getELogger().debug("Adding to the database : (spawn='" + identifier + "';location='" + location + "')");
-    	} catch (SQLException e) {
-        	this.plugin.getELogger().warn("Error during a change of spawn : " + e.getMessage());
-		} catch (ServerDisableException e) {
-			e.execute();
-		} finally {
-			try {
-				if (preparedStatement != null) preparedStatement.close();
-				if (connection != null) connection.close();
-			} catch (SQLException e) {}
-	    }
+	private CompletableFuture<Boolean> addExecute(final String identifier, final VirtualTransform location) {
+		return CompletableFuture.supplyAsync(() -> {
+			Connection connection = null;
+			PreparedStatement preparedStatement = null;
+	    	try {
+	    		connection = this.plugin.getDataBases().getConnection();
+	    		String query = 	  "INSERT INTO `" + this.plugin.getDataBases().getTableSpawns() + "` "
+	    						+ "VALUES (?, ?, ?, ?, ?, ?, ?);";
+				preparedStatement = connection.prepareStatement(query);
+				preparedStatement.setString(1, identifier);
+				preparedStatement.setString(2, location.getWorldIdentifier());
+				preparedStatement.setDouble(3, location.getPosition().getX());
+				preparedStatement.setDouble(4, location.getPosition().getY());
+				preparedStatement.setDouble(5, location.getPosition().getZ());
+				preparedStatement.setDouble(6, location.getYaw());
+				preparedStatement.setDouble(7, location.getPitch());
+				
+				preparedStatement.execute();
+				this.plugin.getELogger().debug("Adding to the database : (spawn='" + identifier + "';location='" + location + "')");
+				return true;
+	    	} catch (SQLException e) {
+	        	this.plugin.getELogger().warn("Error during a change of spawn : " + e.getMessage());
+			} catch (ServerDisableException e) {
+				e.execute();
+			} finally {
+				try {
+					if (preparedStatement != null) preparedStatement.close();
+					if (connection != null) connection.close();
+				} catch (SQLException e) {}
+		    }
+	    	return false;
+		}, this.plugin.getThreadAsync());
 	}
 	
-	private void updateAsync(final String identifier, final VirtualTransform location) {
-		Connection connection = null;
-		PreparedStatement preparedStatement = null;
-    	try {
-    		connection = this.plugin.getDataBases().getConnection();
-    		String query = 	  "UPDATE `" + this.plugin.getDataBases().getTableSpawns() + "` "
-    						+ "SET `world` = ?, "
-	    						+ "`x` = ?, "
-	    						+ "`y` = ?, "
-	    						+ "`z` = ?, "
-	    						+ "`yaw` = ?, "
-	    						+ "`pitch` = ? "
-    						+ "WHERE `identifier` = ? ;";
-			preparedStatement = connection.prepareStatement(query);
-			preparedStatement.setString(1, location.getWorldIdentifier());
-			preparedStatement.setDouble(2, location.getPosition().getX());
-			preparedStatement.setDouble(3, location.getPosition().getY());
-			preparedStatement.setDouble(4, location.getPosition().getZ());
-			preparedStatement.setDouble(5, location.getYaw());
-			preparedStatement.setDouble(6, location.getPitch());
-			preparedStatement.setString(7, identifier);
-			
-			preparedStatement.execute();
-			this.plugin.getELogger().debug("Updating the database : (spawn='" + identifier + "';location='" + location + "')");
-    	} catch (SQLException e) {
-        	this.plugin.getELogger().warn("Error during a change of spawn : " + e.getMessage());
-		} catch (ServerDisableException e) {
-			e.execute();
-		} finally {
-			try {
-				if (preparedStatement != null) preparedStatement.close();
-				if (connection != null) connection.close();
-			} catch (SQLException e) {}
-	    }
+	private CompletableFuture<Boolean> updateExecute(final String identifier, final VirtualTransform location) {
+		return CompletableFuture.supplyAsync(() -> {
+			Connection connection = null;
+			PreparedStatement preparedStatement = null;
+	    	try {
+	    		connection = this.plugin.getDataBases().getConnection();
+	    		String query = 	  "UPDATE `" + this.plugin.getDataBases().getTableSpawns() + "` "
+	    						+ "SET `world` = ?, "
+		    						+ "`x` = ?, "
+		    						+ "`y` = ?, "
+		    						+ "`z` = ?, "
+		    						+ "`yaw` = ?, "
+		    						+ "`pitch` = ? "
+	    						+ "WHERE `identifier` = ? ;";
+				preparedStatement = connection.prepareStatement(query);
+				preparedStatement.setString(1, location.getWorldIdentifier());
+				preparedStatement.setDouble(2, location.getPosition().getX());
+				preparedStatement.setDouble(3, location.getPosition().getY());
+				preparedStatement.setDouble(4, location.getPosition().getZ());
+				preparedStatement.setDouble(5, location.getYaw());
+				preparedStatement.setDouble(6, location.getPitch());
+				preparedStatement.setString(7, identifier);
+				
+				preparedStatement.execute();
+				this.plugin.getELogger().debug("Updating the database : (spawn='" + identifier + "';location='" + location + "')");
+				return true;
+	    	} catch (SQLException e) {
+	        	this.plugin.getELogger().warn("Error during a change of spawn : " + e.getMessage());
+			} catch (ServerDisableException e) {
+				e.execute();
+			} finally {
+				try {
+					if (preparedStatement != null) preparedStatement.close();
+					if (connection != null) connection.close();
+				} catch (SQLException e) {}
+		    }
+	    	return false;
+		}, this.plugin.getThreadAsync());
 	}
 	
-	private void removeAsync(final String identifier) {
-		Connection connection = null;
-		PreparedStatement preparedStatement = null;
-    	try {
-    		connection = this.plugin.getDataBases().getConnection();
-    		String query = 	  "DELETE " 
-		    				+ "FROM `" + this.plugin.getDataBases().getTableSpawns() + "` "
-		    				+ "WHERE `identifier` = ? ;";
-			preparedStatement = connection.prepareStatement(query);
-			preparedStatement.setString(1, identifier);
-			
-			preparedStatement.execute();
-			this.plugin.getELogger().debug("Remove from database : (spawn='" + identifier + "')");
-    	} catch (SQLException e) {
-        	this.plugin.getELogger().warn("Error during a change of spawn : " + e.getMessage());
-		} catch (ServerDisableException e) {
-			e.execute();
-		} finally {
-			try {
-				if (preparedStatement != null) preparedStatement.close();
-				if (connection != null) connection.close();
-			} catch (SQLException e) {}
-	    }
+	private CompletableFuture<Boolean> removeExecute(final String identifier) {
+		return CompletableFuture.supplyAsync(() -> {
+			Connection connection = null;
+			PreparedStatement preparedStatement = null;
+	    	try {
+	    		connection = this.plugin.getDataBases().getConnection();
+	    		String query = 	  "DELETE " 
+			    				+ "FROM `" + this.plugin.getDataBases().getTableSpawns() + "` "
+			    				+ "WHERE `identifier` = ? ;";
+				preparedStatement = connection.prepareStatement(query);
+				preparedStatement.setString(1, identifier);
+				
+				preparedStatement.execute();
+				this.plugin.getELogger().debug("Remove from database : (spawn='" + identifier + "')");
+				return true;
+	    	} catch (SQLException e) {
+	        	this.plugin.getELogger().warn("Error during a change of spawn : " + e.getMessage());
+			} catch (ServerDisableException e) {
+				e.execute();
+			} finally {
+				try {
+					if (preparedStatement != null) preparedStatement.close();
+					if (connection != null) connection.close();
+				} catch (SQLException e) {}
+		    }
+	    	return false;
+		}, this.plugin.getThreadAsync());
 	}
 	
-	private void clearAsync() {
-		Connection connection = null;
-		PreparedStatement preparedStatement = null;
-    	try {
-    		connection = this.plugin.getDataBases().getConnection();
-    		String query = 	  "TRUNCATE `" + this.plugin.getDataBases().getTableSpawns() + "` ;";
-			preparedStatement = connection.prepareStatement(query);
-			
-			preparedStatement.execute();
-			this.plugin.getELogger().debug("Removes the database spawns");
-    	} catch (SQLException e) {
-    		this.plugin.getELogger().warn("Error spawns deletions : " + e.getMessage());
-		} catch (ServerDisableException e) {
-			e.execute();
-		} finally {
-			try {
-				if (preparedStatement != null) preparedStatement.close();
-				if (connection != null) connection.close();
-			} catch (SQLException e) {}
-	    }
+	private CompletableFuture<Boolean> clearExecute() {
+		return CompletableFuture.supplyAsync(() -> {
+			Connection connection = null;
+			PreparedStatement preparedStatement = null;
+	    	try {
+	    		connection = this.plugin.getDataBases().getConnection();
+	    		String query = 	  "TRUNCATE `" + this.plugin.getDataBases().getTableSpawns() + "` ;";
+				preparedStatement = connection.prepareStatement(query);
+				
+				preparedStatement.execute();
+				this.plugin.getELogger().debug("Removes the database spawns");
+				return true;
+	    	} catch (SQLException e) {
+	    		this.plugin.getELogger().warn("Error spawns deletions : " + e.getMessage());
+			} catch (ServerDisableException e) {
+				e.execute();
+			} finally {
+				try {
+					if (preparedStatement != null) preparedStatement.close();
+					if (connection != null) connection.close();
+				} catch (SQLException e) {}
+		    }
+	    	return false;
+		}, this.plugin.getThreadAsync());
+	}
+
+	@Override
+	public Optional<VirtualTransform> getDefault() {
+		return Optional.ofNullable(this.spawnDefault);
+	}
+
+	@Override
+	public Optional<VirtualTransform> getNewbie() {
+		return Optional.ofNullable(this.spawnNewbie);
+	}
+
+	@Override
+	public Optional<VirtualTransform> get(final SubjectReference subject) {
+		Preconditions.checkNotNull(subject, "subject");
+		return this.get(subject.getSubjectIdentifier());
+	}
+
+	@Override
+	public CompletableFuture<Boolean> setDefault(final @Nullable Transform<World> location) {
+		return this.set(SpawnSubjectService.DEFAULT, location);
+	}
+
+	@Override
+	public CompletableFuture<Boolean> setNewbie(final @Nullable Transform<World> location) {
+		return this.set(SpawnSubjectService.NEWBIE, location);
+	}
+
+	@Override
+	public CompletableFuture<Boolean> set(final SubjectReference subject, final @Nullable Transform<World> location) {
+		Preconditions.checkNotNull(subject, "subject");
+		return this.set(subject.getSubjectIdentifier().toLowerCase(), location);
+	}
+
+	@Override
+	public Optional<Transform<World>> getSpawn(final EUser user) {
+		Preconditions.checkNotNull(user, "user");
+		
+		Optional<SubjectReference> group = user.getGroup();
+		if (!group.isPresent()) return this.getSpawnDefault();
+				
+		Optional<Transform<World>> spawn = this.getSpawn(group.get());
+		if (spawn.isPresent()) return spawn;
+				
+		return this.getSpawnDefault();
+	}
+	
+	@Override
+	public Optional<Transform<World>> getSpawn(final SubjectReference reference) {
+		Preconditions.checkNotNull(reference, "reference");
+		
+		Optional<VirtualTransform> spawn = this.get(reference);
+		if (!spawn.isPresent()) return Optional.empty();
+				
+		return spawn.get().getTransform();
+	}
+	
+	public Optional<Transform<World>> getSpawnDefault() {
+		if (this.spawnDefault == null) return Optional.empty();
+
+		return this.spawnDefault.getTransform();
 	}
 }

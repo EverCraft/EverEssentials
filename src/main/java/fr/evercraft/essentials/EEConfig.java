@@ -252,14 +252,7 @@ public class EEConfig extends EConfig<EverEssentials> {
 	/*
 	 * Near
 	 */
-	
-	/*
-	 * Spawn
-	 */
-	
-	public String getSpawnNewbies() {
-		return this.get("spawn.newbies-spawnpoint").getString("newbies");
-	}
+
 	
 	/*
 	 * SpawnMob

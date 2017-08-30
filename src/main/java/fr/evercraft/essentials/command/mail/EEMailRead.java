@@ -73,7 +73,7 @@ public class EEMailRead extends ESubCommand<EverEssentials> {
 	@Override
 	public Collection<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		if (args.size() == 1) {
-			Optional<SubjectUserEssentials> player = this.plugin.getManagerServices().getEssentials().get(((Player) source).getUniqueId());
+			Optional<SubjectUserEssentials> player = this.plugin.getEssentials().get(((Player) source).getUniqueId());
 			// Le joueur existe
 			if (player.isPresent()) {
 				List<String> suggests = new ArrayList<String>();

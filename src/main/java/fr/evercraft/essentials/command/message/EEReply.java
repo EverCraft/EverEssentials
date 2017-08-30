@@ -92,7 +92,7 @@ public class EEReply extends ECommand<EverEssentials> {
 				return this.commandReply(source, ((EPlayer) source).getReplyTo(), message);
 			// La source est une console
 			} else if (source instanceof ConsoleSource) {
-				return this.commandReply(source, this.plugin.getManagerServices().getEssentials().getConsole().getReplyTo(), message);
+				return this.commandReply(source, this.plugin.getEssentials().getConsole().getReplyTo(), message);
 			} else {
 				EAMessages.COMMAND_ERROR_FOR_PLAYER.sender()
 					.prefix(EEMessages.PREFIX)

@@ -28,6 +28,7 @@ import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.entity.Transform;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.service.permission.Subject;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
@@ -38,26 +39,16 @@ import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.command.ECommand;
-import fr.evercraft.everapi.plugin.command.ReloadCommand;
 import fr.evercraft.everapi.server.location.VirtualTransform;
 import fr.evercraft.everapi.server.player.EPlayer;
-import fr.evercraft.everapi.services.SpawnService;
+import fr.evercraft.everapi.services.SpawnSubjectService;
 
-public class EESpawn extends ECommand<EverEssentials> implements ReloadCommand {
-	
-	public String newbies;
-	
+public class EESpawn extends ECommand<EverEssentials> {
+		
 	public EESpawn(final EverEssentials plugin) {
         super(plugin, "spawn");
-        
-        reload();
     }
 	
-	@Override
-	public void reload() {
-		this.newbies = this.plugin.getConfigs().getSpawnNewbies();
-	}
-
 	@Override
 	public boolean testPermission(final CommandSource source) {
 		return source.hasPermission(EEPermissions.SPAWN.get());
@@ -85,13 +76,20 @@ public class EESpawn extends ECommand<EverEssentials> implements ReloadCommand {
 	@Override
 	public Collection<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		if (args.size() == 1 && source instanceof Player && source.hasPermission(EEPermissions.SPAWNS.get())) {
-			Set<String> homes = new TreeSet<String>();
+			Set<String> spawns = new TreeSet<String>();
 			
-			homes.addAll(this.plugin.getManagerServices().getSpawn().getAll().keySet());
-			homes.add(this.newbies);
-			homes.add(SpawnService.DEFAULT);
+			this.plugin.getSpawn().getAll().keySet().forEach(reference -> {
+				Optional<Subject> subject = this.plugin.getEverAPI().getManagerService().getPermission().getGroupSubjects().getSubject(reference.getSubjectIdentifier());
+				if (subject.isPresent()) {
+					spawns.add(subject.get().getFriendlyIdentifier().orElse(subject.get().getIdentifier()));
+				} else {
+					spawns.add(reference.getSubjectIdentifier());
+				}
+			});
+			spawns.add(SpawnSubjectService.NEWBIE);
+			spawns.add(SpawnSubjectService.DEFAULT);
 
-			return homes;
+			return spawns;
 		}
 		return Arrays.asList();
 	}
@@ -119,19 +117,21 @@ public class EESpawn extends ECommand<EverEssentials> implements ReloadCommand {
 				// Si il a la permission
 				if (source.hasPermission(EEPermissions.SPAWNS.get())) {
 					
-					// Spawn par défaut
-					if (args.get(0).equalsIgnoreCase(SpawnService.DEFAULT)) {
-						return CompletableFuture.completedFuture(this.commandSpawn((EPlayer) source, this.plugin.getManagerServices().getSpawn().getDefault(), SpawnService.DEFAULT));
-					// Spawn Newbie
-					} else if (args.get(0).equalsIgnoreCase(this.newbies)) {
-						return CompletableFuture.completedFuture(this.commandSpawn((EPlayer) source, this.newbies));
-					// Pas le spawn par défaut
-					} else { 
+					// Default
+					if (args.get(0).equalsIgnoreCase(SpawnSubjectService.DEFAULT)) {
+						return CompletableFuture.completedFuture(this.commandSpawn((EPlayer) source, this.plugin.getSpawn().getDefault(), SpawnSubjectService.DEFAULT));
+					// Newbie
+					} else if (args.get(0).equalsIgnoreCase(SpawnSubjectService.NEWBIE)) {
+						return CompletableFuture.completedFuture(this.commandSpawn((EPlayer) source, this.plugin.getSpawn().getNewbie(), SpawnSubjectService.NEWBIE));
+					// Subject
+					} else {
 						return this.plugin.getEverAPI().getManagerService().getPermission().getGroupSubjects().hasSubject(args.get(0))
 							.exceptionally(e -> null)
 							.thenApplyAsync(result -> {
 								if (result == null) {
-									EAMessages.COMMAND_ERROR.sendTo(source);
+									EAMessages.COMMAND_ERROR.sender()
+										.prefix(EEMessages.PREFIX)
+										.sendTo(source);
 									return false;
 								}
 								
@@ -142,7 +142,7 @@ public class EESpawn extends ECommand<EverEssentials> implements ReloadCommand {
 									return false;
 								}
 								
-								return this.commandSpawn((EPlayer) source, args.get(0));
+								return this.commandSpawn((EPlayer) source, this.plugin.getEverAPI().getManagerService().getPermission().getGroupSubjects().loadSubject(args.get(0)).join());
 							});
 					}
 					
@@ -181,23 +181,26 @@ public class EESpawn extends ECommand<EverEssentials> implements ReloadCommand {
 		return CompletableFuture.completedFuture(true);
 	}
 	
-	private boolean commandSpawn(final EPlayer player, final String group) {
-		Optional<VirtualTransform> spawn = this.plugin.getManagerServices().getSpawn().get(group);
-		
-		if (spawn.isPresent()) {
-			Optional<Transform<World>> transform = spawn.get().getTransform();
-			if (transform.isPresent()) {
-				return this.commandSpawn(player, transform.get(), group);
-			}
-		}
-		
-		EEMessages.SPAWN_ERROR_SET.sender()
-			.replace("{name}", group)
-			.sendTo(player);
-		return false;
+	private boolean commandSpawn(final EPlayer player, final Subject subject) {
+		return this.commandSpawn(player, this.plugin.getSpawn().get(subject.asSubjectReference()), subject.getFriendlyIdentifier().orElse(subject.getIdentifier()));
 	}
 	
-	private boolean commandSpawn(final EPlayer player, final Transform<World> spawn, final String name) {
+	private boolean commandSpawn(final EPlayer player, final Optional<VirtualTransform> virtual, final String name) {
+		if (!virtual.isPresent()) {
+			EEMessages.SPAWN_ERROR_SET.sender()
+				.replace("{name}", name)
+				.sendTo(player);
+			return false;
+		}
+		
+		Optional<Transform<World>> transform = virtual.get().getTransform();
+		if (!transform.isPresent()) {
+			EEMessages.SPAWN_ERROR_SET.sender()
+				.replace("{name}", name)
+				.sendTo(player);
+			return false;
+		}
+		
 		long delay = this.plugin.getConfigs().getTeleportDelay(player);
 		
 		if (delay > 0) {
@@ -206,7 +209,7 @@ public class EESpawn extends ECommand<EverEssentials> implements ReloadCommand {
 				.sendTo(player);
 		}
 		
-		player.setTeleport(delay, () -> this.teleport(player, spawn, name), player.hasPermission(EEPermissions.TELEPORT_BYPASS_MOVE.get()));
+		player.setTeleport(delay, () -> this.teleport(player, transform.get(), name), player.hasPermission(EEPermissions.TELEPORT_BYPASS_MOVE.get()));
 		return false;
 	}
 	

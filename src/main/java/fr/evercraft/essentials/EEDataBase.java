@@ -121,7 +121,7 @@ public class EEDataBase extends EDataBase<EverEssentials> {
 		
 		this.table_spawns = "spawns";
 		String spawns = 	"CREATE TABLE IF NOT EXISTS {table} (" +
-							"`identifier` varchar(25) NOT NULL," +
+							"`identifier` varchar(36) NOT NULL," +
 							"`world` varchar(36) NOT NULL," +
 							"`x` double NOT NULL," +
 							"`y` double NOT NULL," +
@@ -742,7 +742,7 @@ public class EEDataBase extends EDataBase<EverEssentials> {
 				sendMail(connection, datetime, identifier, list.getString("uuid"), message);
 			}
 			
-			for (EUserSubject subject : this.plugin.getManagerServices().getEssentials().getAll()) {
+			for (EUserSubject subject : this.plugin.getEssentials().getAll()) {
 				subject.loadMails(connection);
 			}
     	} catch (SQLException e) {

@@ -94,9 +94,9 @@ public class EEWarpSet extends ECommand<EverEssentials> {
 	private CompletableFuture<Boolean> commandSetWarp(final EPlayer player, final String warp_name) throws ServerDisableException {
 		String name = EChat.fixLength(warp_name, this.plugin.getEverAPI().getConfigs().getMaxCaractere());
 		
-		Optional<Transform<World>> warp = this.plugin.getManagerServices().getWarp().get(name);
+		Optional<Transform<World>> warp = this.plugin.getWarp().get(name);
 		if (warp.isPresent()) {
-			if (this.plugin.getManagerServices().getWarp().update(name, player.getTransform())) {
+			if (this.plugin.getWarp().update(name, player.getTransform())) {
 				EEMessages.SETWARP_REPLACE.sender()
 					.replace("{warp}", () -> this.getButtonWarp(name, player.getLocation()))
 					.sendTo(player);
@@ -107,7 +107,7 @@ public class EEWarpSet extends ECommand<EverEssentials> {
 					.sendTo(player);
 			}
 		} else {
-			if (this.plugin.getManagerServices().getWarp().add(name, player.getTransform())) {
+			if (this.plugin.getWarp().add(name, player.getTransform())) {
 				EEMessages.SETWARP_NEW.sender()
 					.replace("{warp}", () -> this.getButtonWarp(name, player.getLocation()))
 					.sendTo(player);

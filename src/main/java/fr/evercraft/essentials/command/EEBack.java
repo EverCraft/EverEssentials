@@ -100,7 +100,7 @@ public class EEBack extends ECommand<EverEssentials> {
 		}
 		
 		// Le joueur n'a pas la permission d'aller dans le monde
-		if (!this.plugin.getManagerServices().getEssentials().hasPermissionWorld(player, back.get().getExtent())) {
+		if (!this.plugin.getEssentials().hasPermissionWorld(player, back.get().getExtent())) {
 			EAMessages.NO_PERMISSION_WORLD_OTHERS.sender()
 				.prefix(EEMessages.PREFIX)
 				.sendTo(player);

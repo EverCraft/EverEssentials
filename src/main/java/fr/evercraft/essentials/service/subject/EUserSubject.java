@@ -704,7 +704,7 @@ public class EUserSubject implements SubjectUserEssentials {
 		Preconditions.checkNotNull(location, "location");
 		
 		Optional<EPlayer> player = this.getEPlayer();
-		if (this.plugin.getManagerServices().getEssentials().hasPermissionWorld(player.get(), location.getExtent())) {
+		if (this.plugin.getEssentials().hasPermissionWorld(player.get(), location.getExtent())) {
 			if (!this.back.isPresent()) {
 				final EVirtualTransform locationSQL = new EVirtualTransform(this.plugin, location);
 				this.back = Optional.of(locationSQL);

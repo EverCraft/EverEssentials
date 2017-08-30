@@ -81,7 +81,7 @@ public class EEPlayerListeners {
 	 */
 	@Listener
 	public void onClientConnectionEvent(final ClientConnectionEvent.Auth event) {
-		this.plugin.getManagerServices().getEssentials().get(event.getProfile().getUniqueId());
+		this.plugin.getEssentials().get(event.getProfile().getUniqueId());
 	}
 
 	/**
@@ -89,7 +89,7 @@ public class EEPlayerListeners {
 	 */
 	@Listener
 	public void onClientConnectionEvent(final ClientConnectionEvent.Join event) {
-		this.plugin.getManagerServices().getEssentials().registerPlayer(event.getTargetEntity().getUniqueId());
+		this.plugin.getEssentials().registerPlayer(event.getTargetEntity().getUniqueId());
 		this.plugin.getScheduler().start();
 		
 		// WhiteLit
@@ -120,7 +120,7 @@ public class EEPlayerListeners {
 	 */
 	@Listener
 	public void onClientConnectionEvent(final ClientConnectionEvent.Disconnect event) {
-		this.plugin.getManagerServices().getEssentials().removePlayer(event.getTargetEntity().getUniqueId());
+		this.plugin.getEssentials().removePlayer(event.getTargetEntity().getUniqueId());
 		
 		if (this.plugin.getEServer().getOnlinePlayers().size() <= 1) {
 			this.plugin.getScheduler().stop();
