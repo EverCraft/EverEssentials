@@ -22,318 +22,251 @@ import com.google.common.base.Preconditions;
 import fr.evercraft.everapi.plugin.EnumPermission;
 
 public enum EEPermissions implements EnumPermission {
-	EVERESSENTIALS("plugin.command"),
+	EVERESSENTIALS("commands.execute"),
+	HELP("commands.help"),
+	RELOAD("commands.reload"),
 	
-	HELP("plugin.help"),
-	RELOAD("plugin.reload"),
+	AFK("commands.afk.execute"),
+	AFK_OTHERS("commands.afk.others"),
+	AFK_BYPASS_AUTO("commands.afk.bypass.auto"),
+	AFK_BYPASS_KICK("commands.afk.bypass.kick"),
 	
-	AFK("afk.command"),
-	AFK_OTHERS("afk.others"),
-	AFK_BYPASS_AUTO("afk.bypass.auto"),
-	AFK_BYPASS_KICK("afk.bypass.kick"),
+	BACK("commands.back.execute"),
 	
-	BACK("back.command"),
+	BED("commands.bed.execute"),
+	BED_OTHERS("commands.bed.others"),
 	
-	BED("bed.command"),
-	BED_OTHERS("bed.others"),
+	BOOK("commands.book.execute"),
 	
-	BOOK("book.command"),
+	BROADCAST("commands.broadcast.execute"),
 	
-	BROADCAST("broadcast.command"),
+	BUTCHER("commands.butcher.execute"),
+	BUTCHER_ANIMAL("commands.butcher.animal"),
+	BUTCHER_MONSTER("commands.butcher.monster"),
+	BUTCHER_TYPE("commands.butcher.type"),
+	BUTCHER_ALL("commands.butcher.all"),
+	BUTCHER_WORLD("commands.butcher.world"),
 	
-	BUTCHER("butcher.command"),
-	BUTCHER_ANIMAL("butcher.animal"),
-	BUTCHER_MONSTER("butcher.monster"),
-	BUTCHER_TYPE("butcher.type"),
-	BUTCHER_ALL("butcher.all"),
-	BUTCHER_WORLD("butcher.world"),
+	CLEAREFFECT("commands.cleareffect.execute"),
+	CLEAREFFECT_OTHERS("commands.cleareffect.others"),
 	
-	CLEAREFFECT("cleareffect.command"),
-	CLEAREFFECT_OTHERS("cleareffect.others"),
+	CLEARINVENTORY("commands.clearinventory.execute"),
+	CLEARINVENTORY_OTHERS("commands.clearinventory.others"),
 	
-	CLEARINVENTORY("clearinventory.command"),
-	CLEARINVENTORY_OTHERS("clearinventory.others"),
+	COLOR("commands.color.execute"),
 	
-	COLOR("color.command"),
+	EFFECT("commands.effect.execute"),
 	
-	EFFECT("effect.command"),
+	ENCHANT("commands.enchant.execute"),
 	
-	ENCHANT("enchant.command"),
+	ENDERCHEST("commands.enderchest.execute"),
+	ENDERCHEST_OTHERS("commands.enderchest.others"),
 	
-	ENDERCHEST("enderchest.command"),
-	ENDERCHEST_OTHERS("enderchest.others"),
+	EXP("commands.exp.execute"),
+	EXP_OTHERS("commands.exp.others"),
 	
-	EXP("exp.command"),
-	EXP_OTHERS("exp.others"),
+	EXT("commands.ext.execute"),
+	EXT_OTHERS("commands.ext.others"),
 	
-	EXT("ext.command"),
-	EXT_OTHERS("ext.others"),
+	FEED("commands.feed.execute"),
+	FEED_OTHERS("commands.feed.others"),
 	
-	FEED("feed.command"),
-	FEED_OTHERS("feed.others"),
+	FORMAT("commands.format.execute"),
 	
-	FORMAT("format.command"),
+	FREEZE("commands.freeze.execute"),
+	FREEZE_OTHERS("commands.freeze.others"),
 	
-	FREEZE("freeze.command"),
-	FREEZE_OTHERS("freeze.others"),
+	FLY("commands.fly.execute"),
+	FLY_OTHERS("commands.fly.others"),
 	
-	FLY("fly.command"),
-	FLY_OTHERS("fly.others"),
+	GAMEMODE("commands.gamemode.execute"),
+	GAMEMODE_OTHERS("commands.gamemode.others"),
 	
-	GAMEMODE("gamemode.command"),
-	GAMEMODE_OTHERS("gamemode.others"),
+	GENERATE("commands.generate.execute"),
 	
-	GENERATE("generate.command"),
+	GETPOS("commands.getpos.execute"),
+	GETPOS_OTHERS("commands.getpos.others"),
 	
-	GETPOS("getpos.command"),
-	GETPOS_OTHERS("getpos.others"),
+	GOD("commands.god.execute"),
+	GOD_OTHERS("commands.god.others"),
 	
-	GOD("god.command"),
-	GOD_OTHERS("god.others"),
+	HAT("commands.hat.execute"),
 	
-	HAT("hat.command"),
+	HEAL("commands.heal.execute"),
+	HEAL_OTHERS("commands.heal.others"),
 	
-	HEAL("heal.command"),
-	HEAL_OTHERS("heal.others"),
+	HOME("commands.home.execute"),
 	
-	HOME("home.command"),
+	DELHOME("commands.delhome.execute"),
 	
-	DELHOME("delhome.command"),
+	HOME_OTHERS("commands.homeothers.execute"),
+	HOME_OTHERS_DELETE("commands.homeothers.delete"),
 	
-	HOME_OTHERS("homeothers.command"),
-	HOME_OTHERS_DELETE("homeothers.delete"),
+	SETHOME("commands.sethome.execute"),
+	SETHOME_MULTIPLE("commands.sethome.multiple.execute"),
+	SETHOME_MULTIPLE_GROUP("commands.sethome.multiples"),
+	SETHOME_MULTIPLE_UNLIMITED("commands.sethome.multiple.unlimited"),
 	
-	SETHOME("sethome.command"),
-	SETHOME_MULTIPLE("sethome.multiple.command"),
-	SETHOME_MULTIPLE_GROUP("sethome.multiples"),
-	SETHOME_MULTIPLE_UNLIMITED("sethome.multiple.unlimited"),
+	IGNORE("commands.ignore.execute"),
+	IGNORE_OTHERS("commands.ignore.others"),
+	IGNORE_BYPASS("commands.ignore.bypass"),
 	
-	IGNORE("ignore.command"),
-	IGNORE_OTHERS("ignore.others"),
-	IGNORE_BYPASS("ignore.bypass"),
+	INVSEE("commands.invsee.execute"),
+	INVSEE_MODIFY("commands.invsee.modify"),
 	
-	INVSEE("invsee.command"),
-	INVSEE_MODIFY("invsee.modify"),
+	INFO("commands.info.execute"),
 	
-	INFO("info.command"),
+	ITEM("commands.item.execute"),
+	ITEM_BYPASS("commands.item.bypass"),
 	
-	ITEM("item.command"),
-	ITEM_BYPASS("item.bypass"),
+	ITEM_NAME("commands.itemname.execute"),
+	ITEM_LORE("commands.itemlore.execute"),
 	
-	ITEM_NAME("itemname.command"),
-	ITEM_LORE("itemlore.command"),
+	JUMP("commands.jump.execute"),
 	
-	JUMP("jump.command"),
+	KICK("commands.kick.execute"),
+	KICK_BYPASS("commands.kick.bypass"),
 	
-	KICK("kick.command"),
-	KICK_BYPASS("kick.bypass"),
+	KICKALL("commands.kickall.execute"),
 	
-	KICKALL("kickall.command"),
+	KILL("commands.kill.execute"),
 	
-	KILL("kill.command"),
+	LAG("commands.lag.execute"),
 	
-	LAG("lag.command"),
+	LIST("commands.list.execute"),
 	
-	LIST("list.command"),
+	REPAIR("commands.repair.execute"),
+	REPAIR_HAND("commands.repair.hand"),
+	REPAIR_HOTBAR("commands.repair.hotbar"),
+	REPAIR_ALL("commands.repair.all"),
 	
-	REPAIR("repair.command"),
-	REPAIR_HAND("repair.hand"),
-	REPAIR_HOTBAR("repair.hotbar"),
-	REPAIR_ALL("repair.all"),
+	REPLY("commands.reply.execute"),
 	
-	REPLY("reply.command"),
+	MAIL("commands.mail.execute"),
+	MAIL_SEND("commands.mail.send"),
+	MAIL_SENDALL("commands.mail.sendall"),
 	
-	MAIL("mail.command"),
-	MAIL_SEND("mail.send"),
-	MAIL_SENDALL("mail.sendall"),
+	ME("commands.me.execute"),
 	
-	ME("me.command"),
+	MSG("commands.msg.execute"),
+	MSG_COLOR("commands.msg.color"),
+	MSG_FORMAT("commands.msg.format"),
+	MSG_MAGIC("commands.msg.magic"),
+	MSG_CHARACTER("commands.msg.character"),
+	MSG_COMMAND("commands.msg.execute"),
+	MSG_URL("commands.msg.url"),
+	MSG_ICONS("commands.msg.icons"),
 	
-	MSG("msg.command"),
-	MSG_COLOR("msg.color"),
-	MSG_FORMAT("msg.format"),
-	MSG_MAGIC("msg.magic"),
-	MSG_CHARACTER("msg.character"),
-	MSG_COMMAND("msg.command"),
-	MSG_URL("msg.url"),
-	MSG_ICONS("msg.icons"),
+	MOJANG("commands.mojang.execute"),
 	
-	MOJANG("mojang.command"),
+	MORE("commands.more.execute"),
+	MORE_UNLIMITED("commands.more.unlimited"),
 	
-	MORE("more.command"),
-	MORE_UNLIMITED("more.unlimited"),
+	MOTD("commands.motd.execute"),
 	
-	MOTD("motd.command"),
+	NAMES("commands.names.execute"),
+	NAMES_OTHERS("commands.names.others"),
 	
-	NAMES("names.command"),
-	NAMES_OTHERS("names.others"),
+	NEAR("commands.near.execute"),
+	NEARS("commands.near"),
 	
-	NEAR("near.command"),
+	PING("commands.ping.execute"),
+	PING_OTHERS("commands.ping.others"),
 	
-	PING("ping.command"),
-	PING_OTHERS("ping.others"),
+	PLAYED("commands.played.execute"),
+	PLAYED_OTHERS("commands.played.others"),
 	
-	PLAYED("played.command"),
-	PLAYED_OTHERS("played.others"),
+	RULES("commands.rules.execute"),
 	
-	RULES("rules.command"),
+	SAY("commands.say.execute"),
 	
-	SAY("say.command"),
-	
-	SEEN("seen.command"),
+	SEEN("commands.seen.execute"),
 
-	SKULL("skull.command"),
-	SKULL_OTHERS("skull.others"),
+	SKULL("commands.skull.execute"),
+	SKULL_OTHERS("commands.skull.others"),
 	
 	//Spawn
-	SPAWN("spawn.command"),
-	SPAWNS("spawns.command"),
-	SETSPAWN("setspawn.command"),
-	DELSPAWN("delspawn.command"),
+	SPAWN("commands.spawn.execute"),
+	SPAWNS("commands.spawns.execute"),
+	SETSPAWN("commands.setspawn.execute"),
+	DELSPAWN("commands.delspawn.execute"),
 	
-	SPAWNER("spawner.command"),
+	SPAWNER("commands.spawner.execute"),
 	
-	SPAWNMOB("spawnmob.command"),
+	SPAWNMOB("commands.spawnmob.execute"),
 	
-	SPEED("speed.command"),
-	SPEED_FLY("speed.fly"),
-	SPEED_WALK("speed.walk"),
-	SPEED_OTHERS("speed.others"),
+	SPEED("commands.speed.execute"),
+	SPEED_FLY("commands.speed.fly"),
+	SPEED_WALK("commands.speed.walk"),
+	SPEED_OTHERS("commands.speed.others"),
 	
-	STOP("stop.command"),
+	STOP("commands.stop.execute"),
 	
-	SUDO("sudo.command"),
-	SUDO_CONSOLE("sudo.console"),
-	SUDO_BYPASS("sudo.bypass"),
+	SUDO("commands.sudo.execute"),
+	SUDO_CONSOLE("commands.sudo.console"),
+	SUDO_BYPASS("commands.sudo.bypass"),
 	
-	SUICIDE("suicide.command"),
+	SUICIDE("commands.suicide.execute"),
 	
-	TP("tp.command"),
-	TP_OTHERS("tp.others"),
+	TP("commands.tp.execute"),
+	TP_OTHERS("commands.tp.others"),
 	
-	TPACCEPT("tpaccept.command"),
-	TPDENY("tpadeny.command"),
+	TPACCEPT("commands.tpaccept.execute"),
+	TPDENY("commands.tpadeny.execute"),
 	
-	TPA("tpa.command"),
-	TPAHERE("tpahere.command"),
+	TPA("commands.tpa.execute"),
+	TPAHERE("commands.tpahere.execute"),
 	
-	TPAALL("tpaall.command"),
-	TPAALL_OTHERS("tpaall.others"),
+	TPAALL("commands.tpaall.execute"),
+	TPAALL_OTHERS("commands.tpaall.others"),
 	
-	TPALL("tpall.command"),
-	TPALL_OTHERS("tpall.others"),
+	TPALL("commands.tpall.execute"),
+	TPALL_OTHERS("commands.tpall.others"),
 	
-	TPPOS("tppos.command"),
-	TPPOS_OTHERS("tppos.others"),
+	TPPOS("commands.tppos.execute"),
+	TPPOS_OTHERS("commands.tppos.others"),
 	
-	TIME("time.command"),
+	TIME("commands.time.execute"),
 	
-	TELEPORT_BYPASS_TIME("teleport.bypass.time"),
-	TELEPORT_BYPASS_MOVE("teleport.bypass.move"),
+	TELEPORT_BYPASS_TIME("commands.teleport.bypass.time"),
+	TELEPORT_BYPASS_MOVE("commands.teleport.bypass.move"),
 	
-	TOGGLE("toggle.command"),
-	TOGGLE_OTHERS("toggle.others"),
+	TOGGLE("commands.toggle.execute"),
+	TOGGLE_OTHERS("commands.toggle.others"),
 	
-	TOP("top.command"),
+	TOP("commands.top.execute"),
 	
-	TPHERE("tphere.command"),
+	TPHERE("commands.tphere.execute"),
 	
-	TREE("tree.command"),
+	TREE("commands.tree.execute"),
 	
-	UUID("uuid.command"),
-	UUID_OTHERS("uuid.others"),
+	UUID("commands.uuid.execute"),
+	UUID_OTHERS("commands.uuid.others"),
 	
-	VANISH("vanish.command"),
-	VANISH_OTHERS("vanish.others"),
-	VANISH_SEE("vanish.see"),
-	VANISH_PVP("vanish.pvp"),
-	VANISH_INTERACT("vanish.interact"),
+	VANISH("commands.vanish.execute"),
+	VANISH_OTHERS("commands.vanish.others"),
+	VANISH_SEE("commands.vanish.see"),
+	VANISH_PVP("commands.vanish.pvp"),
+	VANISH_INTERACT("commands.vanish.interact"),
 	
-	WARP("warp.command"),
-	WARP_NAME("warps"),
-	WARP_OTHERS("warp.others"),
-	DELWARP("delwarp.command"),
-	SETWARP("setwarp.command"),
+	WARP("commands.warp.execute"),
+	WARP_NAME("commands.warps"),
+	WARP_OTHERS("commands.warp.others"),
+	DELWARP("commands.delwarp.execute"),
+	SETWARP("commands.setwarp.execute"),
 	
-	WEATHER("weather.command"),
+	WEATHER("commands.weather.execute"),
 	
-	WHITELIST("whitelist.command"),
-	WHITELIST_MANAGE("whitelist.manage"),
+	WHITELIST("commands.whitelist.execute"),
+	WHITELIST_MANAGE("commands.whitelist.manage"),
 	
-	WORLDBORDER("worldborder.command"),
+	WORLDBORDER("commands.worldborder.execute"),
 	
-	WORLDS("worlds.command"),
-	WORLDS_OTHERS("worlds.others"),
+	WORLDS("commands.worlds.execute"),
+	WORLDS_OTHERS("commands.worlds.others"),
 	
-	WORLD("world"),
-	
-	WHOIS("whois.command"),
-	WHOIS_OTHERS("whois.others"),
-	
-	SIGN_COLOR("sign.color"),
-	SIGN_FORMAT("sign.format"),
-	SIGN_MAGIC("sign.magic"),
-	
-	SIGN_MAIL_BREAK("sign.break.balance"),
-	SIGN_MAIL_CREATE("sign.create.balance"),
-	SIGN_MAIL_USE("sign.use.balance"),
-	
-	SIGN_BALANCE_BREAK("sign.break.balance"),
-	SIGN_BALANCE_CREATE("sign.create.balance"),
-	SIGN_BALANCE_USE("sign.use.balance"),
-	
-	SIGN_DISPOSAL_BREAK("sign.break.disposal"),
-	SIGN_DISPOSAL_CREATE("sign.create.disposal"),
-	SIGN_DISPOSAL_USE("sign.use.disposal"),
-	
-	SIGN_ENCHANT_BREAK("sign.break.enchant"),
-	SIGN_ENCHANT_CREATE("sign.create.enchant"),
-	SIGN_ENCHANT_USE("sign.use.enchant"),
-	
-	SIGN_FREE_BREAK("sign.break.free"),
-	SIGN_FREE_CREATE("csign.reate.free"),
-	SIGN_FREE_USE("sign.use.free"),
-	
-	SIGN_FOOD_BREAK("sign.break.food"),
-	SIGN_FOOD_CREATE("sign.create.food"),
-	SIGN_FOOD_USE("sign.use.food"),
-	
-	SIGN_GAMEMODE_BREAK("sign.break.gamemode"),
-	SIGN_GAMEMODE_CREATE("sign.create.gamemode"),
-	SIGN_GAMEMODE_USE("sign.use.gamemode"),
-	
-	SIGN_HEAL_BREAK("sign.break.heal"),
-	SIGN_HEAL_CREATE("sign.create.heal"),
-	SIGN_HEAL_USE("sign.use.heal"),
-
-	SIGN_KIT_BREAK("sign.break.kit"),
-	SIGN_KIT_CREATE("sign.create.kit"),
-	SIGN_IKIT_USE("sign.use.kit"),
-
-	SIGN_PROTECTION_BREAK("sign.break.protection"),
-	SIGN_PROTECTION_CREATE("sign.create.protection"),
-	SIGN_PROTECTION_USE("sign.use.protection"),
-	SIGN_PROTECTION_BYPASS("sign.protection.bypass"),
-	
-	SIGN_REPAIR_BREAK("sign.break.repair"),
-	SIGN_REPAIR_CREATE("sign.create.repair"),
-	SIGN_REPAIR_USE("sign.use.repair"),
-	
-	SIGN_SPAWNMOB_BREAK("sign.break.spawnmob"),
-	SIGN_SPAWNMOB_CREATE("sign.create.spawnmob"),
-	SIGN_SPAWNMOB_USE("sign.use.spawnmob"),
-	
-	SIGN_TIME_BREAK("sign.break.time"),
-	SIGN_TIME_CREATE("sign.create.time"),
-	SIGN_TIME_USE("sign.use.time"),
-	
-	SIGN_WARP_BREAK("sign.break.warp"),
-	SIGN_WARP_CREATE("sign.create.warp"),
-	SIGN_WARP_USE("sign.use.warp"),
-	
-	SIGN_WEATHER_BREAK("sign.break.weather"),
-	SIGN_WEATHER_CREATE("sign.create.weather"),
-	SIGN_WEATHER_USE("sign.use.weather");
+	WHOIS("commands.whois.execute"),
+	WHOIS_OTHERS("commands.whois.others");
 	
 	private final static String prefix = "everessentials";
 	

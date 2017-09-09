@@ -177,7 +177,7 @@ public class EETeleportationPosition extends ECommand<EverEssentials> {
 			return CompletableFuture.completedFuture(false);
 		}
 		
-		if (!player.getWorld().equals(world.get()) && !this.plugin.getEssentials().hasPermissionWorld(player, world.get())) {
+		if (!player.getWorld().equals(world.get()) && !this.plugin.getEverAPI().hasPermissionWorld(player, world.get())) {
 			EAMessages.NO_PERMISSION_WORLD.sender()
 				.prefix(EEMessages.PREFIX)
 				.replace("{world}", world_name)
@@ -219,7 +219,7 @@ public class EETeleportationPosition extends ECommand<EverEssentials> {
 			return CompletableFuture.completedFuture(false);
 		}
 		
-		if (!player.getWorld().equals(world.get()) && !this.plugin.getEssentials().hasPermissionWorld(player, world.get())) {
+		if (!player.getWorld().equals(world.get()) && !this.plugin.getEverAPI().hasPermissionWorld(player, world.get())) {
 			EAMessages.NO_PERMISSION_WORLD_OTHERS.sender()
 				.prefix(EEMessages.PREFIX)
 				.replace("{world}", world_name)

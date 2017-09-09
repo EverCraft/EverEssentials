@@ -168,7 +168,7 @@ public class EESpawn extends ECommand<EverEssentials> {
 	}
 	
 	private CompletableFuture<Boolean> commandSpawn(final EPlayer player) {
-		final Transform<World> spawn = player.getSpawn();
+		final Transform<World> spawn = this.plugin.getSpawn().getSpawn(player).orElse(this.plugin.getEServer().getSpawn());
 		long delay = this.plugin.getConfigs().getTeleportDelay(player);
 		
 		if (delay > 0) {

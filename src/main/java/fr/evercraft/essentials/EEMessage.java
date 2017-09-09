@@ -436,12 +436,12 @@ public class EEMessage extends EMessage<EverEssentials> {
 		
 		KILL_DESCRIPTION("killDescription", 						"Tue un joueur"),
 		KILL_PLAYER("killPlayer", 									"&7Vous avez été tué par &6{staff}&7."),
-		KILL_PLAYER_DEATH_MESSAGE("killPlayerDeathMessage", 		"&f{" + EReplacesPlayer.DISPLAYNAME.getName() + "} s'est tué par {staff}."),
+		KILL_PLAYER_DEATH_MESSAGE("killPlayerDeathMessage", 		"&f<" + EReplacesPlayer.DISPLAYNAME.getName() + "&f> s'est tué par {staff}&f."),
 		KILL_PLAYER_CANCEL("killPlayerCancel", 						"&cImpossible de tuer &6{player}&c."),
 		KILL_STAFF("killStaff", 									"&7Vous avez tué &6{player}&7."),
 		KILL_EQUALS("killEquals", 									"&7Vous vous êtes suicidé."),
 		
-		KILL_EQUALS_DEATH_MESSAGE("killEqualsDeathMessage", 		"&f{" + EReplacesPlayer.DISPLAYNAME.getName() + "} s'est suicidé."),
+		KILL_EQUALS_DEATH_MESSAGE("killEqualsDeathMessage", 		"&f<" + EReplacesPlayer.DISPLAYNAME.getName() + "> s'est suicidé&f."),
 		KILL_EQUALS_CANCEL("killEqualsCancel", 						"&cImpossible de vous suicider."),
 		
 		LAG_DESCRIPTION("lagDescription", 							"Connaître l'état du serveur"),
@@ -526,9 +526,9 @@ public class EEMessage extends EMessage<EverEssentials> {
 		MOJANG_SERVER_SESSIONSERVER("mojangServerSessionServer", 	"SessionServer"),
 		MOJANG_SERVER_SKINS("mojangServerSkins", 					"Skins"),
 		MOJANG_SERVER_TEXTURES("mojangServerTextures", 				"Textures"),
-		MOJANG_COLOR_GREEN("mojangColorGreen", 						"&aEn ligne"),
-		MOJANG_COLOR_YELLOW("mojangColorYellow", 					"&6Problème de connexion"),
-		MOJANG_COLOR_RED("mojangColorRed", 							"&4Hors ligne"),
+		MOJANG_STATUS_ONLINE("mojangStatusOnline", 					"&aEn ligne"),
+		MOJANG_STATUS_WARN("mojangStatusWarn", 						"&6Problème de connexion"),
+		MOJANG_STATUS_OFFLINE("mojangStatusOffline", 				"&4Hors ligne"),
 		
 		MORE_DESCRIPTION("moreDescription", 						"Donne la quantité maximum d'un objet"),
 		MORE_PLAYER("morePlayer", 									"&7Vous avez maintenant &6{quantity} &6{item}&7."),
@@ -663,7 +663,7 @@ public class EEMessage extends EMessage<EverEssentials> {
 		SPAWNS_ERROR_TELEPORT("spawnsErrorTeleport",								"&cImpossible de vous téléporter au spawn {spawn}&7."),
 
 		DELSPAWN_DESCRIPTION("delspawnDescription", 								"Supprime un spawn"),
-		DELSPAWN_INCONNU("delspawnInconnu", 										"&cIl n'y pas de spawn qui s'appelle &6{spawn}&c."),
+		DELSPAWN_INCONNU("delspawnInconnu", 										"&cIl n'y pas de spawn qui s'appelle &6{name}&c."),
 		DELSPAWN_NAME("delspawnName", 												"&6{name}"),
 		DELSPAWN_NAME_HOVER("delspawnNameHover", 									"&cMonde : &6{world}[RT]&cX : &6{x}[RT]&cY : &6{y}[RT]&cZ : &6{z}"),
 		DELSPAWN_CONFIRMATION("delspawnConfirmation", 								"&7Souhaitez-vous vraiment supprimer le spawn &6{spawn} &7: {confirmation}"),
@@ -716,7 +716,7 @@ public class EEMessage extends EMessage<EverEssentials> {
 		SUICIDE_DESCRIPTION("suicideDescription", 									"Permet de vous suicider"),
 		SUICIDE_PLAYER("suicidePlayer", 											"&7Vous vous êtes suicidé."),
 		
-		SUICIDE_DEATH_MESSAGE("suicideEqualsDeathMessage", 							"&f" + EReplacesPlayer.DISPLAYNAME.getName() + " s'est suicidé."),
+		SUICIDE_DEATH_MESSAGE("suicideEqualsDeathMessage", 							"&f<" + EReplacesPlayer.DISPLAYNAME.getName() + "> s'est suicidé."),
 		SUICIDE_CANCEL("suicideEqualsCancel", 										"&cImpossible de vous suicider."),
 		
 		// TP
@@ -945,7 +945,7 @@ public class EEMessage extends EMessage<EverEssentials> {
 		WARP_LIST_DELETE_HOVER("warpListDeleteHover", 								"&cCliquez ici pour supprimer le warp &6{warp}&c."),
 		WARP_TELEPORT_PLAYER("warpTeleportPlayer", 									"&7Vous avez été téléporté au warp &6{warp}&7."),
 		WARP_TELEPORT_PLAYER_ERROR("warpTeleportPlayerError", 						"&cImpossible de vous téléporter au warp &6{warp}&c."),
-		WARP_TELEPORT_OTHERS_PLAYER("warpTeleportOthersPlayer", 					"&7Vous avez été téléporté au warp &6{warp} &7par &6{player}&7."),
+		WARP_TELEPORT_OTHERS_PLAYER("warpTeleportOthersPlayer", 					"&7Vous avez été téléporté au warp &6{warp} &7par &6{staff}&7."),
 		WARP_TELEPORT_OTHERS_STAFF("warpTeleportOthersStaff", 						"&7Vous avez téléporté &6{player} &7au warp &6{warp}&7."),
 		WARP_TELEPORT_OTHERS_ERROR("warpTeleportOthersError", 						"&cImpossible de téléporter &6{player} &7au warp &6{warp}&c."),
 		

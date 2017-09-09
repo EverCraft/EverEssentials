@@ -36,7 +36,7 @@ import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.message.replace.EReplace;
 import fr.evercraft.everapi.plugin.command.ECommand;
 import fr.evercraft.everapi.server.player.EPlayer;
-import fr.evercraft.everapi.services.mojang.namehistory.NameHistory;
+import fr.evercraft.everapi.services.mojang.NameHistory;
 
 public class EEName extends ECommand<EverEssentials> {
 	

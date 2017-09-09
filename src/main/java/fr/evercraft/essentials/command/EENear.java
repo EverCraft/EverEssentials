@@ -29,6 +29,7 @@ import ninja.leaping.configurate.ConfigurationNode;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
+import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
@@ -69,7 +70,7 @@ public class EENear extends ECommand<EverEssentials> implements ReloadCommand {
 		int max = this.permission_default;
 		int cpt = 0;
 		while (cpt < this.permissions.size() && max == this.permission_default) {
-			if (player.hasPermission(EEPermissions.NEAR.get() + "." + this.permissions.get(cpt).getKey())) {
+			if (player.hasPermission(EEPermissions.NEARS.get() + "." + this.permissions.get(cpt).getKey())) {
 				max = this.permissions.get(cpt).getValue();
 			}
 			cpt++;
@@ -122,7 +123,7 @@ public class EENear extends ECommand<EverEssentials> implements ReloadCommand {
 	}
 	
 	public CompletableFuture<Boolean> commandNear(final EPlayer player) {
-		Map <EPlayer, Integer> list = player.getEPlayers(this.getValue(player));		
+		Map<Player, Integer> list = player.getEPlayers(this.getValue(player));		
 		
 		// Aucun joueur
 		if (list.isEmpty()) {
@@ -131,7 +132,7 @@ public class EENear extends ECommand<EverEssentials> implements ReloadCommand {
 		}
 		
 		List<Text> lists = new ArrayList<Text>();
-		for (Entry<EPlayer, Integer> position : UtilsMap.valueASC(list)){
+		for (Entry<Player, Integer> position : UtilsMap.valueASC(list)){
 			lists.add(EEMessages.NEAR_LIST_LINE.getFormat().toText(
 					"{player}", position.getKey().getName(),
 					"{distance}", position.getValue().toString()));

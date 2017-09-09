@@ -26,9 +26,6 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
-import org.spongepowered.api.service.permission.Subject;
-import org.spongepowered.api.world.World;
-
 import com.google.common.base.Preconditions;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
@@ -52,8 +49,6 @@ public class EEssentialsService implements EssentialsService {
 	private final LoadingCache<UUID, EUserSubject> cache;
 	
 	private final EVirtualSubject console;
-	
-	private boolean world;
 
 	public EEssentialsService(final EverEssentials plugin) {		
 		this.plugin = plugin;
@@ -128,9 +123,7 @@ public class EEssentialsService implements EssentialsService {
 	/**
 	 * Rechargement : Vide le cache et recharge tous les joueurs
 	 */
-	public void reload() {
-		this.world = this.plugin.getConfigs().isWorldTeleportPermissions();
-		
+	public void reload() {		
 		this.cache.cleanUp();
 		for (EUserSubject subject : this.subjects.values()) {
 			subject.reloadData();
@@ -192,14 +185,6 @@ public class EEssentialsService implements EssentialsService {
 	
 	public Collection<EUserSubject> getOnlines() {
 		return this.subjects.values();
-	}
-	
-	/*
-	 * World
-	 */
-	
-	public boolean hasPermissionWorld(Subject player, World world) {
-		return !this.world || player.hasPermission(EEPermissions.WORLD.get() + "." + world.getName());
 	}
 	
 	@Override

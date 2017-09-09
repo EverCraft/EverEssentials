@@ -100,12 +100,6 @@ public class EEConfig extends EConfig<EverEssentials> {
 		// Warp
 		addDefault("warp-permission", true, "Set this true to enable permission per warp.");
 		
-		// World
-		addDefault("world-teleport-permissions", false, "Set to true to enable per-world permissions for teleporting between worlds with essentials commands.",
-														"This applies to /world, /back, /tp[a|o][here|all], but not warps.",
-														"Give someone permission to teleport to a world with everessentials.worlds.{worldname}",
-														"This does not affect the /home command, there is a separate toggle below for this.");
-		
 		// Effect
 		addDefault("effect.duration-default", 60, "Int");
 		addDefault("effect.duration-max", 600, "Int");
@@ -307,14 +301,6 @@ public class EEConfig extends EConfig<EverEssentials> {
 	
 	public boolean isWarpPermissions() {
 		return this.get("warp-permission").getBoolean(false);
-	}
-	
-	/*
-	 * World
-	 */
-	
-	public boolean isWorldTeleportPermissions() {
-		return this.get("world-teleport-permissions").getBoolean(false);
 	}
 	
 	/*

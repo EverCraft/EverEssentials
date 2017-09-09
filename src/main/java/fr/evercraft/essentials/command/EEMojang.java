@@ -16,12 +16,12 @@
  */
 package fr.evercraft.essentials.command;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.TreeSet;
 import java.util.concurrent.CompletableFuture;
 
 import org.spongepowered.api.command.CommandException;
@@ -35,9 +35,8 @@ import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.command.ECommand;
+import fr.evercraft.everapi.registers.MojangServer;
 import fr.evercraft.everapi.services.MojangService;
-import fr.evercraft.everapi.services.mojang.check.MojangServer;
-import fr.evercraft.everapi.services.mojang.check.MojangServer.Status;
 
 public class EEMojang extends ECommand<EverEssentials> {
 	
@@ -88,56 +87,51 @@ public class EEMojang extends ECommand<EverEssentials> {
 	private CompletableFuture<Boolean> commandMojang(final CommandSource player) {
 		MojangService service = this.plugin.getEverAPI().getManagerService().getMojangService();
 		
-		try {
-			service.getCheck().update();
-		} catch (IOException e) {
-			EAMessages.COMMAND_ERROR.sender()
-				.prefix(EEMessages.PREFIX)
-				.sendTo(player);
-			return CompletableFuture.completedFuture(false);
-		}
-
-		List<Text> lists = new ArrayList<Text>();
-
-		lists.add(this.server(MojangServer.ACCOUNT));
-		lists.add(this.server(MojangServer.API));
-		lists.add(this.server(MojangServer.MOJANG));
-		lists.add(this.server(MojangServer.AUTH));
-		lists.add(this.server(MojangServer.AUTHSERVER));
-		lists.add(this.server(MojangServer.MINECRAFT_NET));
-		lists.add(this.server(MojangServer.SESSION));
-		lists.add(this.server(MojangServer.SESSIONSERVER));
-		lists.add(this.server(MojangServer.SKINS));
-		lists.add(this.server(MojangServer.TEXTURES));
-		
-		this.plugin.getEverAPI().getManagerService().getEPagination().sendTo(
-				EEMessages.MOJANG_TITLE.getText().toBuilder()
-					.onClick(TextActions.runCommand("/mojang ")).build(), 
-				lists, player);
-		return CompletableFuture.completedFuture(true);
+		return service.getCheck().update().exceptionally(e -> null).thenApply(result -> {
+			if (!result) {
+				EAMessages.COMMAND_ERROR.sender()
+					.prefix(EEMessages.PREFIX)
+					.sendTo(player);
+				return false;
+			}
+			
+			List<Text> lists = new ArrayList<Text>();
+			TreeSet<MojangServer> servers = new TreeSet<MojangServer>((s1, s2) -> s1.getId().compareTo(s2.getId()));
+			servers.addAll(this.plugin.getGame().getRegistry().getAllOf(MojangServer.class));
+			
+			for (MojangServer server : servers) {
+				lists.add(this.server(server));
+			}
+			
+			this.plugin.getEverAPI().getManagerService().getEPagination().sendTo(
+					EEMessages.MOJANG_TITLE.getText().toBuilder()
+						.onClick(TextActions.runCommand("/mojang ")).build(), 
+					lists, player);
+			return true;
+		});
 	}
 	
 	private Text server(final MojangServer server) {
 		Optional<EEMessages> server_name = EEMojang.getMojangServer(server);
-		Optional<EEMessages> color_name = EEMojang.getMojangColor(server.getColor());
-		if (server_name.isPresent() && color_name.isPresent()) {
+		Optional<EEMessages> status_name = EEMojang.getMojangColor(server.getStatus());
+		if (server_name.isPresent() && status_name.isPresent()) {
 			return EEMessages.MOJANG_LINE.getFormat().toText(
 					"{server}", server_name.get().getText(),
-					"{color}", color_name.get().getText());
+					"{color}", status_name.get().getText());
 		}
 		return Text.of();
 	}
 	
 	private static Optional<EEMessages> getMojangServer(MojangServer server) {
 		try {
-			return Optional.of(EEMessages.valueOf("MOJANG_SERVER_" + server.name()));
+			return Optional.of(EEMessages.valueOf("MOJANG_SERVER_" + server.getId().toUpperCase()));
 		} catch (IllegalArgumentException e) {}
 		return Optional.empty();
 	}
 	
-	private static Optional<EEMessages> getMojangColor(Status color) {
+	private static Optional<EEMessages> getMojangColor(MojangServer.Status state) {
 		try {
-			return Optional.of(EEMessages.valueOf("MOJANG_COLOR_" + color.name()));
+			return Optional.of(EEMessages.valueOf("MOJANG_STATUS_" + state.name()));
 		} catch (IllegalArgumentException e) {}
 		return Optional.empty();
 	}

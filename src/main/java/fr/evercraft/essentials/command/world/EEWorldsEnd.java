@@ -65,7 +65,7 @@ public class EEWorldsEnd extends ECommand<EverEssentials> {
 		if (args.size() == 1 && source.hasPermission(EEPermissions.WORLDS_OTHERS.get())) {
 			List<String> suggests = new ArrayList<String>();
 			for (World world : this.plugin.getEServer().getWorlds()) {
-				if (this.plugin.getEssentials().hasPermissionWorld(source, world)) {
+				if (this.plugin.getEverAPI().hasPermissionWorld(source, world)) {
 					suggests.add(world.getProperties().getWorldName());
 				}
 			}

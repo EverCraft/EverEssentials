@@ -189,7 +189,7 @@ public class EETeleportationAccept extends ECommand<EverEssentials> {
 		String delay_format = this.plugin.getEverAPI().getManagerUtils().getDate().formatDate(System.currentTimeMillis() + delay);
 		final Transform<World> location = player.getTransform();
 		
-		if (!player_request.getWorld().equals(location.getExtent()) && !this.plugin.getEssentials().hasPermissionWorld(player_request, location.getExtent())) {
+		if (!player_request.getWorld().equals(location.getExtent()) && !this.plugin.getEverAPI().hasPermissionWorld(player_request, location.getExtent())) {
 			EAMessages.NO_PERMISSION_WORLD.sender()
 				.prefix(EEMessages.PREFIX)
 				.replace("{world}", location.getExtent().getName())
@@ -217,7 +217,7 @@ public class EETeleportationAccept extends ECommand<EverEssentials> {
 		String delay_format = this.plugin.getEverAPI().getManagerUtils().getDate().formatDate(System.currentTimeMillis() + delay);
 		final Transform<World> location = teleport.getLocation().orElse(player_request.getTransform());
 		
-		if (!player.getWorld().equals(location.getExtent()) && !this.plugin.getEssentials().hasPermissionWorld(player, location.getExtent())) {
+		if (!player.getWorld().equals(location.getExtent()) && !this.plugin.getEverAPI().hasPermissionWorld(player, location.getExtent())) {
 			EAMessages.NO_PERMISSION_WORLD.sender()
 				.prefix(EEMessages.PREFIX)
 				.replace("{world}", location.getExtent().getName())

@@ -255,7 +255,7 @@ public class EEWarp extends ECommand<EverEssentials> implements ReloadCommand {
 	private Text getButtonWarp(final String name, final VirtualTransform location){
 		return EEMessages.WARP_NAME.getFormat().toText("{name}", name).toBuilder()
 					.onHover(TextActions.showText(EEMessages.WARP_NAME_HOVER.getFormat().toText(
-								"{warp}", name,
+							"{warp}", name,
 							"{world}", location.getWorldName(),
 							"{x}", String.valueOf(location.getPosition().getFloorX()),
 							"{y}", String.valueOf(location.getPosition().getFloorY()),

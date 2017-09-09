@@ -126,7 +126,7 @@ public class EETeleportationAll extends ECommand<EverEssentials> {
 		for (EPlayer player : this.plugin.getEServer().getOnlineEPlayers()) {
 			if (!staff.equals(player)) {
 				if (player.getWorld().equals(transform.get().getExtent()) || 
-						this.plugin.getEssentials().hasPermissionWorld(player, transform.get().getExtent())) {
+						this.plugin.getEverAPI().hasPermissionWorld(player, transform.get().getExtent())) {
 					
 					player.teleport(transform.get(), true);
 					
@@ -159,7 +159,7 @@ public class EETeleportationAll extends ECommand<EverEssentials> {
 			if (!destination.equals(player)) {
 				
 				if (player.getWorld().equals(transform.get().getExtent()) || 
-						this.plugin.getEssentials().hasPermissionWorld(player, transform.get().getExtent())) {
+						this.plugin.getEverAPI().hasPermissionWorld(player, transform.get().getExtent())) {
 					
 					player.teleport(transform.get(), true);
 					if (!player.equals(staff)) {
