@@ -663,7 +663,7 @@ public class EEMessage extends EMessage<EverEssentials> {
 		SPAWNS_ERROR_TELEPORT("spawnsErrorTeleport",								"&cImpossible de vous téléporter au spawn {spawn}&7."),
 
 		DELSPAWN_DESCRIPTION("delspawnDescription", 								"Supprime un spawn"),
-		DELSPAWN_INCONNU("delspawnInconnu", 										"&cIl n'y pas de spawn qui s'appelle &6{name}&c."),
+		DELSPAWN_INCONNU("delspawnInconnu", 										"&cIl n'y pas de spawn qui s'appelle &6{spawn}&c."),
 		DELSPAWN_NAME("delspawnName", 												"&6{name}"),
 		DELSPAWN_NAME_HOVER("delspawnNameHover", 									"&cMonde : &6{world}[RT]&cX : &6{x}[RT]&cY : &6{y}[RT]&cZ : &6{z}"),
 		DELSPAWN_CONFIRMATION("delspawnConfirmation", 								"&7Souhaitez-vous vraiment supprimer le spawn &6{spawn} &7: {confirmation}"),
@@ -708,9 +708,9 @@ public class EEMessage extends EMessage<EverEssentials> {
 		SUDO_DESCRIPTION("sudoDescription", 										"Fait exécuter une commande par un autre joueur"),
 		SUDO_COMMAND("sudoCommand", 												"&6commande"),
 		SUDO_COMMAND_HOVER("sudoCommandHover", 										"&c{command}"),
-		SUDO_PLAYER("sudoPlayer", 													"&7Votre {command} &7a bien était éxecutée par &6{player}&7."),
+		SUDO_PLAYER("sudoPlayer", 													"&7Votre {command} &7a bien été éxecutée par &6{player}&7."),
 		SUDO_BYPASS("sudoBypass", 													"&cVous ne pouvez pas faire exécuter de commande à &6{player}&7."),
-		SUDO_CONSOLE("sudoConsole", 												"&7Votre {command} &7à bien était éxecutée par la &6console&7."),
+		SUDO_CONSOLE("sudoConsole", 												"&7Votre {command} &7à bien été éxecutée par la &6console&7."),
 		
 		// SUICIDE
 		SUICIDE_DESCRIPTION("suicideDescription", 									"Permet de vous suicider"),
@@ -772,7 +772,7 @@ public class EEMessage extends EMessage<EverEssentials> {
 		TPA_STAFF_QUESTION("tpaStaffQuestion", 										"&7Votre demande a été envoyée à &6{player}&7."),
 		TPA_STAFF_ACCEPT("tpaStaffAccept", 											"&7Votre demande de téléportation a été acceptée par &6{player}&7."),
 		TPA_STAFF_DENY("tpaStaffDeny", 												"&7Votre demande de téléportation a été refusée par &6{player}&7."),
-		TPA_STAFF_EXPIRE("tpaStaffExpire", 											"&7Votre demande de téléportation à &6{player} &7vient d'expirée."),
+		TPA_STAFF_EXPIRE("tpaStaffExpire", 											"&7Votre demande de téléportation à &6{player} &7vient d'expirer."),
 		TPA_STAFF_TELEPORT("tpaStaffTeleport", 										"&7Vous avez été téléporté vers &6{destination}&7."),
 		TPA_PLAYER_QUESTION("tpaPlayerQuestion", 									"&6{player} &7souhaite se téléporter vers vous : [RT]  {accept} {deny}[RT]"
 																				  + "&7Cette demande de téléportation expira dans &6{delay}&7."),
@@ -782,7 +782,7 @@ public class EEMessage extends EMessage<EverEssentials> {
 		TPA_PLAYER_QUESTION_DENY_HOVER("tpaPlayerQuestionDenyHover", 				"&cCliquez ici pour refuser la téléportation de &6{player}&7."),
 		TPA_PLAYER_DENY("tpaPlayerDeny", 											"&7Vous avez refusé la demande de téléportation de &6{player}&7."),
 		TPA_PLAYER_ACCEPT("tpaPlayerAccept", 										"&6{player} &7sera téléporté dans &6{delay}&7."),
-		TPA_PLAYER_EXPIRE("tpaPlayerExpire", 										"&cLa demande de téléportation de &6{player} &ca expirée."),
+		TPA_PLAYER_EXPIRE("tpaPlayerExpire", 										"&cLa demande de téléportation de &6{player} &ca expiré."),
 		TPA_PLAYER_TELEPORT("tpaPlayerTeleport", 									"&6{player} &7vient d'être téléporté."),
 		TPA_ERROR_EQUALS("tpaErrorEquals", 											"&cImpossible de vous envoyer une demande à vous même."),
 		TPA_ERROR_DELAY("tpaErrorDelay", 											"&cIl y a déjà une demande de téléportation en cours."),
