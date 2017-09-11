@@ -17,6 +17,7 @@
 package fr.evercraft.essentials;
 
 import java.util.Arrays;
+import java.util.List;
 
 import ninja.leaping.configurate.ConfigurationNode;
 import fr.evercraft.everapi.plugin.file.EConfig;
@@ -31,6 +32,14 @@ public class EEConfig extends EConfig<EverEssentials> {
 	public void reload() {
 		super.reload();
 		this.plugin.getELogger().setDebug(this.isDebug());
+	}
+	
+	@Override
+	public List<String> getHeader() {
+		return 	Arrays.asList(	"####################################################### #",
+								"                EverEssentials (By rexbut)               #",
+								"    For more information : https://docs.evercraft.fr     #",
+								"####################################################### #");
 	}
 
 	@Override
