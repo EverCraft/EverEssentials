@@ -44,11 +44,10 @@ import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.command.ECommand;
-import fr.evercraft.everapi.plugin.command.ReloadCommand;
 import fr.evercraft.everapi.server.player.EPlayer;
 import fr.evercraft.everapi.services.entity.EntityTemplate;
 
-public class EESpawnMob extends ECommand<EverEssentials> implements ReloadCommand {
+public class EESpawnMob extends ECommand<EverEssentials> {
 	
 	private int limit;
 	
@@ -59,6 +58,8 @@ public class EESpawnMob extends ECommand<EverEssentials> implements ReloadComman
 	
 	@Override
 	public void reload() {
+		super.reload();
+		
 		this.limit = this.plugin.getConfigs().getSpawnMobLimit();
 	}
 
@@ -82,7 +83,7 @@ public class EESpawnMob extends ECommand<EverEssentials> implements ReloadComman
 	
 	@Override
 	public Collection<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
-		if (args.size() == 1){
+		if (args.size() == 1) {
 			List<String> suggests = new ArrayList<String>();
 			this.plugin.getGame().getRegistry().getAllForMinecraft(EntityType.class).stream()
 				.filter(entity -> !entity.equals(EntityTypes.UNKNOWN) && 

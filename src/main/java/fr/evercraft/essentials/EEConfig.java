@@ -20,7 +20,6 @@ import java.util.Arrays;
 
 import ninja.leaping.configurate.ConfigurationNode;
 import fr.evercraft.everapi.plugin.file.EConfig;
-import fr.evercraft.everapi.plugin.file.EMessage;
 import fr.evercraft.everapi.server.player.EPlayer;
 
 public class EEConfig extends EConfig<EverEssentials> {
@@ -36,22 +35,8 @@ public class EEConfig extends EConfig<EverEssentials> {
 
 	@Override
 	public void loadDefault() {
-		addDefault("DEBUG", false, 	"Displays plugin performance in the logs");
-		addDefault("LANGUAGE", EMessage.FRENCH, 
-										"Select language messages", 
-										"Examples : ", 
-										"  French : FR_fr", 
-										"  English : EN_en");
-		
-		// SQL
-		addComment("SQL", 				"Save the user in a database : ",
-										" H2 : \"jdbc:h2:" + this.plugin.getPath().toAbsolutePath() + "/data\"",
-										" SQL : \"jdbc:mysql://[login[:password]@]{host}:{port}/{database}\"",
-										" Default users are saving in the 'data.mv.db'");
-		addDefault("SQL.enable", false);
-		addDefault("SQL.url", "jdbc:mysql://root:password@localhost:3306/minecraft");
-		addDefault("SQL.prefix", "everessentials_");
-		
+		this.configDefault();
+		this.sqlDefault();
 		
 		// Home
 		addComment("sethome-multiple", 	"Allow players to have multiple homes.",

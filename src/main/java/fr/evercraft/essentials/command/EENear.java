@@ -40,10 +40,9 @@ import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.java.UtilsMap;
 import fr.evercraft.everapi.plugin.command.ECommand;
-import fr.evercraft.everapi.plugin.command.ReloadCommand;
 import fr.evercraft.everapi.server.player.EPlayer;
 
-public class EENear extends ECommand<EverEssentials> implements ReloadCommand {
+public class EENear extends ECommand<EverEssentials> {
 	
 	private List<Entry<String, Integer>> permissions;
 	private int permission_default;
@@ -55,7 +54,9 @@ public class EENear extends ECommand<EverEssentials> implements ReloadCommand {
     }
 	
 	@Override
-	public void reload(){
+	public void reload() {
+		super.reload();
+		
 		Map<String, Integer> permissions = new HashMap<String, Integer>();
 		this.permission_default = this.plugin.getConfigs().get("near-distance.default").getInt(1);
 		for (Entry<Object, ? extends ConfigurationNode> key : this.plugin.getConfigs().get("near-distance").getChildrenMap().entrySet()) {

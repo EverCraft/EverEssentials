@@ -41,11 +41,10 @@ import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.java.UtilsMap;
 import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ECommand;
-import fr.evercraft.everapi.plugin.command.ReloadCommand;
 import fr.evercraft.everapi.server.player.EPlayer;
 import fr.evercraft.everapi.services.essentials.EssentialsService;
 
-public class EEHomeSet extends ECommand<EverEssentials> implements ReloadCommand {
+public class EEHomeSet extends ECommand<EverEssentials> {
 	
 	private List<Entry<String, Integer>> permissions;
 	private int permission_default;
@@ -56,7 +55,9 @@ public class EEHomeSet extends ECommand<EverEssentials> implements ReloadCommand
     }
 	
 	@Override
-	public void reload(){
+	public void reload() {
+		super.reload();
+		
 		Map<String, Integer> permissions = new HashMap<String, Integer>();
 		this.permission_default = this.plugin.getConfigs().get("sethome-multiple.default").getInt(1);
 		for (Entry<Object, ? extends ConfigurationNode> key : this.plugin.getConfigs().get("sethome-multiple").getChildrenMap().entrySet()) {

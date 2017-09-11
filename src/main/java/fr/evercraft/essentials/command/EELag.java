@@ -45,9 +45,8 @@ import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.java.UtilsDouble;
 import fr.evercraft.everapi.message.replace.EReplace;
 import fr.evercraft.everapi.plugin.command.ECommand;
-import fr.evercraft.everapi.plugin.command.ReloadCommand;
 
-public class EELag extends ECommand<EverEssentials> implements ReloadCommand {
+public class EELag extends ECommand<EverEssentials> {
 	
 	private static final double HISTORY_LENGTH = 15;
 	private static final int TPS_LENGTH = 2;
@@ -68,6 +67,8 @@ public class EELag extends ECommand<EverEssentials> implements ReloadCommand {
 			this.scheduler.cancel();
 			this.scheduler = null;
 		}
+		
+		super.reload();
 		
 		this.scheduler = this.plugin.getGame().getScheduler().createTaskBuilder().execute(() -> {
 		    	this.historys.add(getTPS());

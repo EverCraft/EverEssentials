@@ -34,6 +34,7 @@ import fr.evercraft.essentials.service.spawn.ESpawnService;
 import fr.evercraft.essentials.service.warp.EWarpService;
 import fr.evercraft.everapi.EverAPI;
 import fr.evercraft.everapi.exception.PluginDisableException;
+import fr.evercraft.everapi.exception.ServerDisableException;
 import fr.evercraft.everapi.plugin.EPlugin;
 import fr.evercraft.everapi.services.essentials.EssentialsService;
 
@@ -98,17 +99,16 @@ public class EverEssentials extends EPlugin<EverEssentials> {
 	}
 	
 	@Override
-	protected void onReload() throws PluginDisableException {
+	protected void onReload() throws PluginDisableException, ServerDisableException {
 		this.scheduler.stop();
 		
-		this.reloadConfigurations();
+		super.onReload();
 		this.databases.reload();
 		
 		this.essentials.reload();
 		this.warp.reload();
 		this.spawn.reload();
 		
-		this.managerCommands.reload();
 		this.scheduler.reload();
 		
 		this.scheduler.start();

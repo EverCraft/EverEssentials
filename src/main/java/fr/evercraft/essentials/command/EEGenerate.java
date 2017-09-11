@@ -35,10 +35,9 @@ import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.command.ECommand;
-import fr.evercraft.everapi.plugin.command.ReloadCommand;
 import fr.evercraft.everapi.server.player.EPlayer;
 
-public class EEGenerate extends ECommand<EverEssentials> implements ReloadCommand {
+public class EEGenerate extends ECommand<EverEssentials> {
 	
 	private float tickPercentLimit;
 	private int tickInterval;
@@ -51,6 +50,8 @@ public class EEGenerate extends ECommand<EverEssentials> implements ReloadComman
 	
 	@Override
 	public void reload() {
+		super.reload();
+		
 		this.tickPercentLimit =  this.plugin.getConfigs().getGenerateTickPercentLimit();
 		this.tickInterval =  this.plugin.getConfigs().getGenerateTickInterval();
 		this.chunksPerTick =  this.plugin.getConfigs().getGenerateChuncksPerTick();

@@ -37,11 +37,10 @@ import fr.evercraft.essentials.EEPermissions;
 import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.command.ECommand;
-import fr.evercraft.everapi.plugin.command.ReloadCommand;
 import fr.evercraft.everapi.server.player.EPlayer;
 import fr.evercraft.everapi.sponge.UtilsEffect;
 
-public class EEEffect extends ECommand<EverEssentials> implements ReloadCommand {
+public class EEEffect extends ECommand<EverEssentials> {
 	
 	private int default_duration;
 	private int max_duration;
@@ -55,6 +54,8 @@ public class EEEffect extends ECommand<EverEssentials> implements ReloadCommand 
 
 	@Override
 	public void reload() {
+		super.reload();
+		
 		this.default_duration = this.plugin.getConfigs().getEffectDurationDefault();
 		this.max_duration = this.plugin.getConfigs().getEffectDurationMax();
 		this.default_amplifier = this.plugin.getConfigs().getEffectAmplifierDefault();

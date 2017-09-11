@@ -37,12 +37,11 @@ import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ECommand;
-import fr.evercraft.everapi.plugin.command.ReloadCommand;
 import fr.evercraft.everapi.server.player.EPlayer;
 import fr.evercraft.everapi.sponge.UtilsItemStack;
 import fr.evercraft.everapi.sponge.UtilsItemType;
 
-public class EEItem extends ECommand<EverEssentials> implements ReloadCommand {
+public class EEItem extends ECommand<EverEssentials> {
 	
 	private Collection<ItemType> items;
 	private Collection<ItemType> blacklist; 
@@ -55,6 +54,8 @@ public class EEItem extends ECommand<EverEssentials> implements ReloadCommand {
 	
 	@Override
 	public void reload() {
+		super.reload();
+		
 		this.items = UtilsItemType.getItems();
 		this.blacklist = this.getBlacklist();
 	}

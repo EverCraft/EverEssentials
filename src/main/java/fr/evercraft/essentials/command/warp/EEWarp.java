@@ -39,11 +39,10 @@ import fr.evercraft.essentials.EverEssentials;
 import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ECommand;
-import fr.evercraft.everapi.plugin.command.ReloadCommand;
 import fr.evercraft.everapi.server.location.VirtualTransform;
 import fr.evercraft.everapi.server.player.EPlayer;
 
-public class EEWarp extends ECommand<EverEssentials> implements ReloadCommand {
+public class EEWarp extends ECommand<EverEssentials> {
 	
 	private boolean permission;
 	
@@ -55,6 +54,8 @@ public class EEWarp extends ECommand<EverEssentials> implements ReloadCommand {
 	
 	@Override
 	public void reload() {
+		super.reload();
+		
 		this.permission = this.plugin.getConfigs().get("warp-permission").getBoolean(true);
 	}
 
