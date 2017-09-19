@@ -1326,4 +1326,9 @@ public class EEMessage extends EMessage<EverEssentials> {
 			this.builder = message;
 		}
 	}
+	
+	@Override
+	public EnumMessage getPrefix() {
+		return EEMessages.PREFIX;
+	}
 }
