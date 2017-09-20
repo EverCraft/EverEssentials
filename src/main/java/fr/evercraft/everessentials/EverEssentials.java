@@ -140,6 +140,10 @@ public class EverEssentials extends EPlugin<EverEssentials> {
 		return this.messages;
 	}
 	
+	public EEPermissions[] getPermissions() {
+		return EEPermissions.values();
+	}
+	
 	public EEConfigMotd getMotd(){
 		return this.motd;
 	}
