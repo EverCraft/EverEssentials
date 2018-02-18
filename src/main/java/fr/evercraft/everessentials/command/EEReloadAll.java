@@ -24,8 +24,6 @@ import java.util.concurrent.CompletableFuture;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.event.SpongeEventFactory;
-import org.spongepowered.api.event.cause.Cause;
-import org.spongepowered.api.event.cause.NamedCause;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
@@ -78,7 +76,7 @@ public class EEReloadAll extends ECommand<EverEssentials>{
 	private CompletableFuture<Boolean> commandReload(final CommandSource player) {
 		EEMessages.RELOAD_ALL_START.sender()
 			.sendAll(this.plugin.getEServer().getOnlineEPlayers());
-		this.plugin.getGame().getEventManager().post(SpongeEventFactory.createGameReloadEvent(Cause.of(NamedCause.source(player))));
+		this.plugin.getGame().getEventManager().post(SpongeEventFactory.createGameReloadEvent(this.plugin.getCurrentCause()));
 		EEMessages.RELOAD_ALL_END.sender()
 			.sendAll(this.plugin.getEServer().getOnlineEPlayers());
 		return CompletableFuture.completedFuture(true);

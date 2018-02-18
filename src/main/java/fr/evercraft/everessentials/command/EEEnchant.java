@@ -25,10 +25,10 @@ import java.util.concurrent.CompletableFuture;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.data.manipulator.mutable.item.EnchantmentData;
-import org.spongepowered.api.data.meta.ItemEnchantment;
 import org.spongepowered.api.data.type.HandTypes;
 import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.item.Enchantment;
+import org.spongepowered.api.item.enchantment.Enchantment;
+import org.spongepowered.api.item.enchantment.EnchantmentType;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
@@ -79,21 +79,21 @@ public class EEEnchant extends ECommand<EverEssentials> {
 					
 					// Si il y a plusieurs enchantements
 					if (enchantmentData != null && !enchantmentData.enchantments().isEmpty()) {
-						for (Enchantment enchant : UtilsEnchantment.getAll()) {
+						for (EnchantmentType enchant : UtilsEnchantment.getAll()) {
 							if(UtilsEnchantment.canBeAppliedToItemStack(item, enchant)){
 								suggests.add(enchant.getId().toLowerCase().replace("minecraft:", ""));
 							}
 						}
 					// Il y a un seul enchantements
 					} else {
-						for (Enchantment enchant : UtilsEnchantment.getAll()) {
+						for (EnchantmentType enchant : UtilsEnchantment.getAll()) {
 							if(UtilsEnchantment.canBeAppliedToItemStack(item, enchant)){
 								suggests.add(enchant.getId().toLowerCase().replace("minecraft:", ""));
 							}
 						}
 					}
 				} else if (args.size() == 2){
-					Optional<Enchantment> enchantment = this.getEnchantment(args.get(0));
+					Optional<EnchantmentType> enchantment = this.getEnchantment(args.get(0));
 					if (enchantment.isPresent()) {
 						for (int cpt = enchantment.get().getMinimumLevel() ; cpt <= enchantment.get().getMaximumLevel() ; cpt++){
 							suggests.add(String.valueOf(cpt));
@@ -112,7 +112,7 @@ public class EEEnchant extends ECommand<EverEssentials> {
 			EPlayer player = (EPlayer) source;
 			
 			if (args.size() == 1) {
-				Optional<Enchantment> enchantment = this.getEnchantment(args.get(0));
+				Optional<EnchantmentType> enchantment = this.getEnchantment(args.get(0));
 				
 				// Si l'enchantement existe
 				if (enchantment.isPresent()) {
@@ -121,7 +121,7 @@ public class EEEnchant extends ECommand<EverEssentials> {
 					EEMessages.ENCHANT_NOT_FOUND.sendTo(player);
 				}
 			} else if (args.size() == 2) {
-				Optional<Enchantment> enchantment = this.getEnchantment(args.get(0));
+				Optional<EnchantmentType> enchantment = this.getEnchantment(args.get(0));
 				
 				// Si l'enchantement existe
 				if (enchantment.isPresent()) {
@@ -152,7 +152,7 @@ public class EEEnchant extends ECommand<EverEssentials> {
 		return CompletableFuture.completedFuture(false);
 	}
 	
-	private CompletableFuture<Boolean> commandEnchant(final EPlayer player, Enchantment enchantment, int level) {
+	private CompletableFuture<Boolean> commandEnchant(final EPlayer player, EnchantmentType enchantment, int level) {
 		// Le joueur n'a pas d'item dans la main
 		if (!player.getItemInMainHand().isPresent()) {
 			EAMessages.EMPTY_ITEM_IN_HAND.sender()
@@ -190,7 +190,7 @@ public class EEEnchant extends ECommand<EverEssentials> {
 			return CompletableFuture.completedFuture(false);
 		}
 		
-		enchantment_data.set(enchantment_data.enchantments().add(new ItemEnchantment(enchantment, level)));
+		enchantment_data.set(enchantment_data.enchantments().add(Enchantment.of(enchantment, level)));
 		item.offer(enchantment_data);
 		player.setItemInMainHand(item);
 		
@@ -202,7 +202,7 @@ public class EEEnchant extends ECommand<EverEssentials> {
 		return CompletableFuture.completedFuture(true);
 	}
 	
-	private Optional<Enchantment> getEnchantment(String enchant) {
+	private Optional<EnchantmentType> getEnchantment(String enchant) {
 		return UtilsEnchantment.getID("minecraft:" + enchant.toLowerCase().replace("minecraft:", ""));
 	}
 }

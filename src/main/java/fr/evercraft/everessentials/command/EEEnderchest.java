@@ -24,8 +24,6 @@ import java.util.concurrent.CompletableFuture;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
-import org.spongepowered.api.event.cause.Cause;
-import org.spongepowered.api.event.cause.NamedCause;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
@@ -129,7 +127,7 @@ public class EEEnderchest extends ECommand<EverEssentials> {
 	}
 	
 	private CompletableFuture<Boolean> commandEnderchest(final EPlayer player, final EPlayer target) {		
-		player.openInventory(target.getEnderChestInventory(), Cause.of(NamedCause.source(player)));
+		player.openInventory(target.getEnderChestInventory());
 		return CompletableFuture.completedFuture(true);
 	}
 }

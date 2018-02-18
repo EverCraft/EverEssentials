@@ -40,7 +40,7 @@ public class EEManagerEvent {
 	}
 	
 	public Cause getCause() {
-		return Cause.source(this.plugin).build();
+		return this.plugin.getCurrentCause();
 	}
 	
 	/*

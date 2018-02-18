@@ -313,7 +313,8 @@ public class EEPlayerListeners {
 
 	@Listener
 	public void onPlayerFood(ChangeDataHolderEvent.ValueChange event, @First Player player) {
-		this.plugin.getEServer().broadcast("EverEssentials : Test ChangeDataHolderEvent");
+		/*event.getTargetHolder().getKeys().stream()
+			.forEach(key -> this.plugin.getEServer().broadcast("EverEssentials : Test ChangeDataHolderEvent : " + key.getId()));*/
 	}
 	
 	@Listener

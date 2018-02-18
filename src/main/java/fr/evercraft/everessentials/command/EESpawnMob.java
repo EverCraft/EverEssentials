@@ -31,7 +31,6 @@ import org.spongepowered.api.entity.EntityType;
 import org.spongepowered.api.entity.EntityTypes;
 import org.spongepowered.api.entity.living.Creature;
 import org.spongepowered.api.entity.living.Hostile;
-import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
@@ -176,12 +175,7 @@ public class EESpawnMob extends ECommand<EverEssentials> {
 			Entity entity = player.getWorld().createEntityNaturally(format.getType(), location);
 			format.apply(entity, player.get());
 			
-			player.getWorld().spawnEntity(
-					entity,
-					Cause.source(this.plugin)
-						.owner(player.get())
-						.notifier(player.get())
-						.build());
+			player.getWorld().spawnEntity(entity);
 		}
 		
 		EEMessages.SPAWNMOB_MOB.sender()

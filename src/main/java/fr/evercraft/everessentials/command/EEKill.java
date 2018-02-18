@@ -16,7 +16,6 @@
  */
 package fr.evercraft.everessentials.command;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -29,8 +28,6 @@ import java.util.regex.Pattern;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.event.SpongeEventFactory;
-import org.spongepowered.api.event.cause.Cause;
-import org.spongepowered.api.event.cause.NamedCause;
 import org.spongepowered.api.event.entity.DestructEntityEvent;
 import org.spongepowered.api.event.message.MessageEvent;
 import org.spongepowered.api.text.Text;
@@ -42,6 +39,7 @@ import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.message.replace.EReplace;
 import fr.evercraft.everapi.plugin.command.ECommand;
 import fr.evercraft.everapi.server.player.EPlayer;
+import fr.evercraft.everapi.sponge.UtilsGameRule;
 import fr.evercraft.everessentials.EEPermissions;
 import fr.evercraft.everessentials.EverEssentials;
 import fr.evercraft.everessentials.EEMessage.EEMessages;
@@ -139,12 +137,12 @@ public class EEKill  extends ECommand<EverEssentials> {
         }
         formatter.getBody().add(new MessageEvent.DefaultBodyApplier(originalMessage));
         
-        List<NamedCause> causes = new ArrayList<NamedCause>();
+        /*List<NamedCause> causes = new ArrayList<NamedCause>();
         causes.add(NamedCause.of("Command", "kill"));
         causes.add(NamedCause.owner(staff));
-        Cause cause = Cause.of(causes);
+        Cause cause = Cause.of(causes);*/
         
-        DestructEntityEvent.Death event = SpongeEventFactory.createDestructEntityEventDeath(cause, originalChannel, Optional.of(channel), formatter, player, messageCancelled);
+        DestructEntityEvent.Death event = SpongeEventFactory.createDestructEntityEventDeath(this.plugin.getCurrentCause(), originalChannel, Optional.of(channel), formatter, player, UtilsGameRule.KEEP_INVENTORY.getValue(player.getWorld()).orElse(false), messageCancelled);
         this.plugin.getGame().getEventManager().post(event);
 
     	if (!event.isMessageCancelled() && !event.getMessage().isEmpty()) {

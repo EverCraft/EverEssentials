@@ -26,6 +26,7 @@ import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.item.inventory.Slot;
 import org.spongepowered.api.item.inventory.entity.Hotbar;
 import org.spongepowered.api.item.inventory.equipment.EquipmentInventory;
+import org.spongepowered.api.item.inventory.query.QueryOperationTypes;
 import org.spongepowered.api.item.inventory.type.GridInventory;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
@@ -88,10 +89,10 @@ public class EERepairAll extends ECommand<EverEssentials> {
 	}
 
 	private CompletableFuture<Boolean> commandRepairAll(final EPlayer player) {
-		UtilsInventory.repair(player.getInventory().query(Hotbar.class));
-		UtilsInventory.repair(player.getInventory().query(GridInventory.class));
-		UtilsInventory.repair(player.getInventory().query(EquipmentInventory.class));
-		UtilsInventory.repair(player.getInventory().query(Slot.class));
+		UtilsInventory.repair(player.getInventory().query(QueryOperationTypes.INVENTORY_TYPE.of(Hotbar.class)));
+		UtilsInventory.repair(player.getInventory().query(QueryOperationTypes.INVENTORY_TYPE.of(GridInventory.class)));
+		UtilsInventory.repair(player.getInventory().query(QueryOperationTypes.INVENTORY_TYPE.of(EquipmentInventory.class)));
+		UtilsInventory.repair(player.getInventory().query(QueryOperationTypes.INVENTORY_TYPE.of(Slot.class)));
 		
 		EEMessages.REPAIR_ALL_PLAYER.sendTo(player);
 		return CompletableFuture.completedFuture(true);
